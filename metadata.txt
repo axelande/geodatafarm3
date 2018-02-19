@@ -9,12 +9,13 @@
 [general]
 name=GeoDataFarm
 qgisMinimumVersion=2.0
-description=This is a plugin that aims to determine the yield impact of different parameters
-version=0.8.2
+qgisMaximumVersion=2.98
+description=This is a plugin for farmers that aims to determine impact of different parameters to the harvest yield.
+version=1.0.0
 author=Axel Andersson
-email=axel.n.c.andersson@gmail.com
+email=geodatafarm@gmail.com
 
-about=This is a plugin that aims to determine the yield impact of different parameters. It is built for any crops and any other field parameter. The program requieres an internet connection all data is going inserted will be saved locally in a shapefile and on GeoDataFarms server. This is to increase the speed of the analyses. For all questions and request for modifications etc. please contact: axel.n.c.andersson@gmail.com
+about=This is a plugin that aims to determine the yield impact of different parameters. It is built for any crops and any other field parameter. The program requieres an internet connection all data is going inserted will be saved locally in a shapefile and on GeoDataFarms server. This is to increase the speed of the analyses. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
 
 tracker=github.com
 repository=github.com
@@ -29,7 +30,7 @@ repository=github.com
 tags=Farm, data analysis, csv file reader
 
 homepage=www.geodatafarm.com
-category=Plugins
+category=Database
 icon=icon.png
 # experimental flag
 experimental=False
