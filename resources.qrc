@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/GeoDataFarm" >
+        <file>img/icon.png</file>
+    </qresource>
+</RCC>

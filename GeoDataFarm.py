@@ -45,13 +45,16 @@ from import_data.insert_input_to_db import InsertInputToDB
 from import_data.handle_input_shp_data import InputShpHandler
 from import_data.handle_db_file_data import DBFileHandler
 from import_data.insert_harvest_to_db import InsertHarvestData
+from import_data.handle_irrigation import IrrigationHandler
 from database_scripts.table_managment import TableManagement
 from support_scripts.create_layer import CreateLayer
 
 
 # TODO: Known bugs:
-# TODO: Create source file for fertilizer
-# TODO: Create different yields map, per crop, normalised over years.
+# TODO: Add polygon while importing shapefiles
+# TODO: Data till g?dning
+# TODO: Different yields map, per crop, normalised over years.
+# TODO: "planet labs" for satelite data
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
 
@@ -181,7 +184,7 @@ class GeoDataFarm:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        icon_path = ':/plugins/GeoDataFarm/icon.png'
+        icon_path = ':/plugins/GeoDataFarm/img/icon.png'
         self.add_action(
             icon_path,
             text=self.tr(u'GeoDataFarm'),
