@@ -23,13 +23,13 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'Run_analyse_base.ui'))
 
 
-class RunAnalyseDialog(QtGui.QDialog, FORM_CLASS):
+class RunAnalyseDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(RunAnalyseDialog, self).__init__(parent)

@@ -23,13 +23,13 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'table_managment.ui'))
 
 
-class TableMgmtDialog(QtGui.QDialog, FORM_CLASS):
+class TableMgmtDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(TableMgmtDialog, self).__init__(parent)

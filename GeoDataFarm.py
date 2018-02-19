@@ -29,10 +29,11 @@ import os
 import os.path
 import sys
 sys.path.append(os.path.dirname(__file__))
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
-from PyQt4.QtGui import QAction, QIcon, QMessageBox
+from qgis.core import QgsProject, QgsVectorLayer
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from PyQt5.QtWidgets import QAction, QMessageBox
+from PyQt5.QtGui import QIcon
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dock_widget and the subwidgets
@@ -232,7 +233,7 @@ class GeoDataFarm:
                 layer = self.DB.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
             create_layer = CreateLayer(self.DB)
             create_layer.create_layer_style(layer, target_field, tbl_name.lower(), parameters[nr]['schema'])
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            QgsProject.instance().addMapLayer(layer)
 
     def reload_layer(self):
         create_layer = CreateLayer(self.DB, self.dock_widget)
@@ -358,7 +359,7 @@ class GeoDataFarm:
             except:
                 polygon = None
             try:
-                QgsMapLayerRegistry.instance().removeMapLayer(self.df)
+                QgsProject.instance().removeMapLayer(self.df)
             except:
                 pass
             if schema == 'harvest':
@@ -373,7 +374,7 @@ class GeoDataFarm:
         """Creates an empty polygon that's define a field"""
         self.df = QgsVectorLayer("Polygon?crs=epsg:4326", "temporary_points", "memory")
         self.df.startEditing()
-        QgsMapLayerRegistry.instance().addMapLayer(self.df)
+        QgsProject.instance().addMapLayer(self.df)
 
     def tbl_mgmt(self):
         """Open the table manager widget"""

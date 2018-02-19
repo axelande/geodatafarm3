@@ -23,13 +23,13 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'create_farm_popup_base.ui'))
 
 
-class CreateFarmPopup(QtGui.QDialog, FORM_CLASS):
+class CreateFarmPopup(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(CreateFarmPopup, self).__init__(parent)

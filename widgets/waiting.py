@@ -1,4 +1,4 @@
-from PyQt4.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from widgets.waiting_msg import WaitingMsg
 
 

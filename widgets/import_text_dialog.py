@@ -22,13 +22,13 @@
 """
 
 import os
-from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'import_text_dialog_base.ui'))
 
 
-class ImportTextDialog(QtGui.QDialog, FORM_CLASS):
+class ImportTextDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(ImportTextDialog, self).__init__(parent)

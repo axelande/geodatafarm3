@@ -23,13 +23,13 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'ImportHarvest_dialog_base.ui'))
 
 
-class ImportHarvestDialog(QtGui.QDialog, FORM_CLASS):
+class ImportHarvestDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(ImportHarvestDialog, self).__init__(parent)
