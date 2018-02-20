@@ -1,5 +1,5 @@
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt5.QtWidgets import QMessageBox
 import os
 from support_scripts.__init__ import check_text
 import requests

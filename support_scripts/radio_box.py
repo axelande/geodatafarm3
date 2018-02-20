@@ -1,6 +1,7 @@
 __author__ = 'Axel Andersson'
-from PyQt4 import QtCore
-from PyQt4.QtGui import QComboBox, QStandardItemModel
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtGui import QStandardItemModel
 
 
 class RadioComboBox(QComboBox):

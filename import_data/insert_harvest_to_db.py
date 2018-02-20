@@ -1,8 +1,8 @@
 import support_scripts.shapefile as shp
 from support_scripts.__init__ import check_text
-from PyQt4 import QtCore
-from PyQt4.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
-from qgis.core import QgsMapLayerRegistry
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
+from qgis.core import QgsProject
 from support_scripts.create_layer import CreateLayer
 from widgets.waiting import Waiting
 import time
@@ -42,8 +42,8 @@ class InsertHarvestData:
         self.CreateLayer.create_layer_style(self.worker2.layer,
                                             check_text(self.worker2.harvest_yield_col),
                                             self.worker2.tbl_name.lower(), 'harvest')
-        QgsMapLayerRegistry.instance().addMapLayer(self.worker2.layer)
-        QgsMapLayerRegistry.instance().removeMapLayer(self.IH.input_layer.id())
+        QgsProject.instance().addMapLayer(self.worker2.layer)
+        QgsProject.instance().removeMapLayer(self.IH.input_layer.id())
         self.wait.stop_work()
 
 

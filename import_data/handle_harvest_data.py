@@ -1,8 +1,7 @@
 from qgis.core import *
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QTableWidgetItem, QFileDialog, QAbstractItemView
-from PyQt4 import QtCore
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QFileDialog, QAbstractItemView
 # Import the code for the dialog
 from database_scripts.db import DB
 import support_scripts.shapefile as shp
@@ -314,7 +313,7 @@ class InputHarvestHandler:
         text_file.close()
 
         input_layer = self.iface.addVectorLayer(self.file_name + ".shp", self.IHD.LEYear.text() + str(self.input_file_name), "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(input_layer)
+        QgsProject.instance().addMapLayer(input_layer)
         self.input_layer = input_layer
         self.columns_to_add = columns_to_add
         self.column_types = column_types

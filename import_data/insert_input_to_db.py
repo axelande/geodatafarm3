@@ -1,6 +1,6 @@
-from PyQt4 import QtCore
-from PyQt4.QtCore import pyqtSignal, QObject, QThread
-from qgis.core import QgsMapLayerRegistry
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal, QObject, QThread
+from qgis.core import QgsProject
 import time
 from widgets.waiting import Waiting
 from support_scripts.__init__ import check_text
@@ -56,14 +56,14 @@ class InsertInputToDB:
         schema = self.schema
         self.dock_widget.PBAddFieldToDB.setEnabled(False)
         if not self.is_shp:
-            QgsMapLayerRegistry.instance().removeMapLayer(
+            QgsProject.instance().removeMapLayer(
                 self.IH.point_layer.id())
 
         for param_layer in self.idata.redone_param_list:
             target_field = param_layer
             layer = self.db.addPostGISLayer(self.idata.tbl_name.lower(), 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
             self.CreateLayer.create_layer_style(layer, check_text(target_field), self.idata.tbl_name.lower(), schema)
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            QgsProject.instance().addMapLayer(layer)
         self.wait.stop_work()
 
 

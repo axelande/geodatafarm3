@@ -1,8 +1,8 @@
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer
 import processing
-from PyQt4 import QtCore
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, pyqtSignal, QObject, QThread
-from PyQt4.QtGui import QTableWidgetItem, QFileDialog, QAbstractItemView, \
+from PyQt5 import QtCore
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, pyqtSignal, QObject, QThread
+from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
     QMessageBox
 from osgeo import osr
 import os
@@ -363,20 +363,20 @@ class InputTextHandler(object):
         with open(self.input_file_path + 'shapefiles/temp.prj', 'a') as prj_file:
             prj_file.write(esri_output)
         vlayer = QgsVectorLayer(self.input_file_path + 'shapefiles/temp.shp','temp', "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        QgsProject.instance().addMapLayer(vlayer)
         text = self.file_name
         only_char = check_text(text)
         self.file_name = only_char
         file_name_with_path = self.input_file_path + "shapefiles/" + self.file_name
         processing.runalg('qgis:reprojectlayer', self.input_file_path + "shapefiles/temp.shp",'EPSG:4326', file_name_with_path + '.shp')
-        QgsMapLayerRegistry.instance().removeMapLayer(vlayer.id())
+        QgsProject.instance().removeMapLayer(vlayer.id())
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(4326)
         esri_output = srs.ExportToWkt()
         with open(file_name_with_path + '.prj', 'a') as prj_file:
             prj_file.write(esri_output)
         self.point_layer = QgsVectorLayer(file_name_with_path + ".shp", self.file_name, "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(self.point_layer)
+        QgsProject.instance().addMapLayer(self.point_layer)
         os.remove(self.input_file_path + "shapefiles/temp.shp")
         os.remove(self.input_file_path + "shapefiles/temp.shx")
         os.remove(self.input_file_path + "shapefiles/temp.dbf")

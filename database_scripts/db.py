@@ -2,7 +2,7 @@ import psycopg2
 import psycopg2.extras
 import time
 from qgis.core import QgsDataSourceURI, QgsVectorLayer
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 __author__ = 'Axel Andersson'
 
 

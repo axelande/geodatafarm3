@@ -2,7 +2,7 @@ import RG
 from qgis.core import QgsSymbolV2, QGis, QgsMarkerSymbolV2, QgsRendererRangeV2,\
     QgsLineSymbolV2, QgsFillSymbolV2, QgsGraduatedSymbolRendererV2, \
     QgsMapLayerRegistry, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2
-from PyQt4.QtGui import QColor
+from PyQt5.QtGui import QColor
 import numpy as np
 __author__ = 'Axel'
 

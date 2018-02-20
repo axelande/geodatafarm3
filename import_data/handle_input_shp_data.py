@@ -1,9 +1,9 @@
 __author__ = 'Axel Andersson'
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer
 import processing
-from PyQt4 import QtCore
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QTableWidgetItem, QFileDialog, QAbstractItemView, QMessageBox
+from PyQt5 import QtCore
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, QMessageBox
 from osgeo import osr
 import matplotlib.path as mplPath
 import time
@@ -240,12 +240,12 @@ class InputShpHandler:
         with open(str(self.input_file_path) + 'temp.prj', 'w') as prj_file:
             prj_file.write(esri_output)
         vlayer = QgsVectorLayer(str(self.input_file_path) + 'temp.shp', 'temp', "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        QgsProject.instance().addMapLayer(vlayer)
         only_char = check_text(self.file_name)
         self.file_name = only_char
         file_name = str(self.input_file_path) + self.ISD.data_prefix.text() + "_" + str(self.file_name)
         processing.runalg('qgis:reprojectlayer', str(self.input_file_path) + "temp.shp",'EPSG:4326', file_name + '.shp')
-        QgsMapLayerRegistry.instance().removeMapLayer(vlayer.id())
+        QgsProject.instance().removeMapLayer(vlayer.id())
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(4326)
         esri_output = srs.ExportToWkt()

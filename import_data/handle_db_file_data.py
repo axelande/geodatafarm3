@@ -1,5 +1,6 @@
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
-from PyQt4.QtGui import QTableWidgetItem, QFileDialog, QAbstractItemView, QComboBox, QStandardItemModel, QStandardItem
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
+from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, QComboBox
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import sqlite3
 import os
 from operator import xor

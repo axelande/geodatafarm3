@@ -21,10 +21,10 @@ def shapefile_create( path, geom_type, fields_dict_list, plugin_dir, layer_name 
     
     outShapefile = driver.CreateDataSource( str( path ) )
     if outShapefile is None:
-        raise OGRIOException, 'Unable to save shapefile in provided path'
+        raise (Exception, 'Unable to save shapefile in provided path')
 
     outShapelayer = outShapefile.CreateLayer("layer", geom_type=geom_type )
         
-    map( lambda field_def_params : outShapelayer.CreateField( shapefile_create_def_field( field_def_params ) ), fields_dict_list ) 
+    map( lambda field_def_params: outShapelayer.CreateField( shapefile_create_def_field( field_def_params ) ), fields_dict_list )
 
     return outShapefile, outShapelayer

@@ -3,7 +3,7 @@ from matplotlib.backends.backend_qt4agg import (FigureCanvasQTAgg as FigureCanva
 import matplotlib.colors as mplib_colors
 import numpy as np
 import time
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 from widgets.run_analyse import RunAnalyseDialog
 from widgets.waiting import Waiting
 from support_scripts.__init__ import isfloat, isint
@@ -85,13 +85,13 @@ class Analyze:
         colors = ['green', 'blue', 'red']
         for key in mplib_colors.cnames.keys():
             colors.append(key)
-        self.scrollWidget = QtGui.QWidget()
-        scroll_area_layout = QtGui.QVBoxLayout()
-        constranint_area = QtGui.QWidget()
-        constranint_layout = QtGui.QVBoxLayout()
+        self.scrollWidget = QtWidgets.QWidget()
+        scroll_area_layout = QtWidgets.QVBoxLayout()
+        constranint_area = QtWidgets.QWidget()
+        constranint_layout = QtWidgets.QVBoxLayout()
         first_radio = True
         first_param = True
-        self.radio_group = QtGui.QButtonGroup()
+        self.radio_group = QtWidgets.QButtonGroup()
         harvest_nbr = 0
         self.qbox_constraint = []
         for nbr, param_text in enumerate(self.parameters.keys()):
@@ -105,21 +105,21 @@ class Analyze:
             nbr = nbr - harvest_nbr
             self.max_min_checked[nbr] = {}
             self.max_min_checked[nbr]['column'] = self.parameters[param_text]['index_col']
-            self.qbox_constraint.append(QtGui.QGroupBox())
+            self.qbox_constraint.append(QtWidgets.QGroupBox())
             self.qbox_constraint[nbr].setMinimumSize(QtCore.QSize(30, 35))
             self.qbox_constraint[nbr].setStyleSheet("border:0px;")
-            param_label = QtGui.QLabel(self.parameters[param_text]['index_col'].replace('_', ' '), self.qbox_constraint[nbr])
+            param_label = QtWidgets.QLabel(self.parameters[param_text]['index_col'].replace('_', ' '), self.qbox_constraint[nbr])
             param_label.move(10, 5)
             constranint_layout.addWidget(self.qbox_constraint[nbr])
             self.max_min_checked[nbr]['tbl'] = self.parameters[param_text]['tbl_name']
             self.max_min_checked[nbr]['schema'] = self.parameters[param_text]['schema']
-            qbox = QtGui.QGroupBox()
+            qbox = QtWidgets.QGroupBox()
             qbox.setTitle(self.parameters[param_text]['index_col'].replace('_', ' '))
             qbox.setMinimumSize(QtCore.QSize(100, 55))
             qbox.setStyleSheet('QWidget{color:' + colors[nbr] + '}')
             scroll_area_layout.addWidget(qbox)
-            QtGui.QLabel('Show:', qbox).move(10, 15)
-            self.cb.append(QtGui.QRadioButton('', qbox))
+            QtWidgets.QLabel('Show:', qbox).move(10, 15)
+            self.cb.append(QtWidgets.QRadioButton('', qbox))
             if first_radio:
                 self.cb[len(self.cb)-1].setChecked(True)
                 first_radio = False
@@ -128,7 +128,7 @@ class Analyze:
 
             self.radio_group.addButton(self.cb[len(self.cb)-1], len(self.cb)-1)
             self.cb[len(self.cb)-1].move(15, 34)
-            QtGui.QLabel('Limit:', qbox).move(50, 34)
+            QtWidgets.QLabel('Limit:', qbox).move(50, 34)
             analyse_params = self.get_initial_distinct_values(self.parameters[param_text]['index_col'], self.parameters[param_text]['tbl_name'], self.parameters[param_text]['schema'])
             if first_param:
                 first_param = False
@@ -151,46 +151,46 @@ class Analyze:
                     investigating_param['type'] = 'checked'
 
             if isint(analyse_params['distinct_values'][0]) or isfloat(analyse_params['distinct_values'][0]):
-                QtGui.QLabel('Min:', qbox).move(83, 34)
-                min_value = QtGui.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
+                QtWidgets.QLabel('Min:', qbox).move(83, 34)
+                min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
                 min_value.move(108, 32)
-                QtGui.QLabel('('+str(np.nanmin(analyse_params['distinct_values'])) + ')', qbox).move(112, 15)
-                QtGui.QLabel('Max:', qbox).move(263, 34)
-                max_value = QtGui.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
+                QtWidgets.QLabel('('+str(np.nanmin(analyse_params['distinct_values'])) + ')', qbox).move(112, 15)
+                QtWidgets.QLabel('Max:', qbox).move(263, 34)
+                max_value = QtWidgets.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
                 max_value.move(288, 32)
-                QtGui.QLabel('('+str(np.nanmax(analyse_params['distinct_values'])) + ')', qbox).move(292, 15)
+                QtWidgets.QLabel('('+str(np.nanmax(analyse_params['distinct_values'])) + ')', qbox).move(292, 15)
                 self.max_min_checked[nbr]['type'] = 'max_min'
                 self.max_min_checked[nbr]['min'] = np.nanmin(analyse_params['distinct_values'])
                 self.max_min_checked[nbr]['min_text'] = min_value
                 self.max_min_checked[nbr]['max'] = np.nanmax(analyse_params['distinct_values'])
                 self.max_min_checked[nbr]['max_text'] = max_value
                 if isfloat(max_value.text()):
-                    param_label = QtGui.QLabel('Min: ' + str(round(float(min_value.text()), 2)) + ' Max: ' + str(round(float(max_value.text()), 2)), self.qbox_constraint[nbr])
+                    param_label = QtWidgets.QLabel('Min: ' + str(round(float(min_value.text()), 2)) + ' Max: ' + str(round(float(max_value.text()), 2)), self.qbox_constraint[nbr])
                 else:
-                    param_label = QtGui.QLabel('Min: ' + str(min_value.text()) + ' Max: ' + str(max_value.text()), self.qbox_constraint[nbr])
+                    param_label = QtWidgets.QLabel('Min: ' + str(min_value.text()) + ' Max: ' + str(max_value.text()), self.qbox_constraint[nbr])
                 param_label.move(10, 20)
             else:
                 self.max_min_checked[nbr]['type'] = 'checked'
                 self.max_min_checked[nbr]['checked'] = []
                 self.max_min_checked[nbr]['checked_items'] = []
                 names = analyse_params['distinct_values']
-                model = QtGui.QStandardItemModel(len(names), 1)
-                firstItem = QtGui.QStandardItem("---- Select ----")
-                firstItem.setBackground(QtGui.QBrush(QtGui.QColor(200, 200, 200)))
+                model = QtWidgets.QStandardItemModel(len(names), 1)
+                firstItem = QtWidgets.QStandardItem("---- Select ----")
+                firstItem.setBackground(QtWidgets.QBrush(QtWidgets.QColor(200, 200, 200)))
                 firstItem.setSelectable(False)
                 model.setItem(0, 0, firstItem)
                 name_text = ''
                 for i, name in enumerate(names):
-                    item = QtGui.QStandardItem(name)
+                    item = QtWidgets.QStandardItem(name)
                     name_text += name + ' '
                     item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
                     item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
                     self.max_min_checked[nbr]['checked'].append(name)
                     self.max_min_checked[nbr]['checked_items'].append(item)
                     model.setItem(i+1, 0, item)
-                param_label = QtGui.QLabel(name_text, self.qbox_constraint[nbr])
+                param_label = QtWidgets.QLabel(name_text, self.qbox_constraint[nbr])
                 param_label.move(10, 20)
-                QComb = QtGui.QComboBox(qbox)
+                QComb = QtWidgets.QComboBox(qbox)
                 QComb.setModel(model)
                 QComb.move(83, 34)
                 self.max_min_checked[nbr]['model'] = model
