@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import (FigureCanvasQTAgg as FigureCanvas)
+from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg as FigureCanvas)
 import matplotlib.colors as mplib_colors
 import numpy as np
 import time
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QThread
 from widgets.run_analyse import RunAnalyseDialog
 from widgets.waiting import Waiting
 from support_scripts.__init__ import isfloat, isint
@@ -41,7 +42,7 @@ class Analyze:
 
     def run_update(self):
         #self.update_pic()
-        from PyQt4.QtCore import QThread
+        
         #TODO: Fix threading
         self.next_thread = QThread()
         self.next_thread.started.connect(self.update_pic)
