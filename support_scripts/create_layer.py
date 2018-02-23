@@ -1,7 +1,7 @@
-import RG
-from qgis.core import QgsSymbolV2, QGis, QgsMarkerSymbolV2, QgsRendererRangeV2,\
-    QgsLineSymbolV2, QgsFillSymbolV2, QgsGraduatedSymbolRendererV2, \
-    QgsMapLayerRegistry, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2
+import support_scripts.RG
+from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
+    QgsLineSymbol, QgsFillSymbol, QgsGraduatedSymbolRenderer, \
+    QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer
 from PyQt5.QtGui import QColor
 import numpy as np
 __author__ = 'Axel'
@@ -42,27 +42,27 @@ class CreateLayer:
                                                      distinct_values[i + 1],
                                                      str(distinct_values[i]) + ' - ' + str(distinct_values[i + 1]),
                                                      QColor(int(red*255),int(green*255), int(blue*255), 128) ) )
-            renderer = QgsGraduatedSymbolRendererV2(field, range_list)
-            renderer.setMode(QgsGraduatedSymbolRendererV2.Custom )
+            renderer = QgsGraduatedSymbolRenderer(field, range_list)
+            renderer.setMode(QgsGraduatedSymbolRenderer.Custom )
         except TypeError:
             categories = []
             for i in range(len(distinct_values)):
-                symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
+                symbol = QgsSymbol.defaultSymbol(layer.geometryType())
                 red, green, blue = colors[i]
                 symbol.setColor(QColor(int(red*255),int(green*255), int(blue*255), 128))
                 symbol.symbolLayer(0).setOutlineColor(QColor(int(red*255),int(green*255), int(blue*255), 128))
-                category = QgsRendererCategoryV2(str(distinct_values[i]), symbol, str(distinct_values[i]))
+                category = QgsRendererCategory(str(distinct_values[i]), symbol, str(distinct_values[i]))
                 categories.append(category)
-            renderer = QgsCategorizedSymbolRendererV2(field, categories)
-            #renderer.setMode(QgsCategorizedSymbolRendererV2.Custom)
-        layer.setRendererV2(renderer)
+            renderer = QgsCategorizedSymbolRenderer(field, categories)
+            #renderer.setMode(QgsCategorizedSymbolRenderer.Custom)
+        layer.setRenderer(renderer)
 
     def _make_symbology(self, layer, min , max, title, color):
         """Creates the symbols and sets the coloring of the layer"""
         symbol = self._validated_default_symbol(layer.geometryType() )
         symbol.setColor(color)
         symbol.symbolLayer(0).setOutlineColor(color)
-        range = QgsRendererRangeV2(min, max, symbol, title)
+        range = QgsRendererRange(min, max, symbol, title)
         return range
 
     def _create_colors(self, number_of_items):
@@ -77,26 +77,26 @@ class CreateLayer:
     def _validated_default_symbol(self, geometryType ):
         """Validates that the symbol is of the correct type, (point, line or
         polygon and then returning a Qgis type symbol)"""
-        symbol = QgsSymbolV2.defaultSymbol( geometryType )
+        symbol = QgsSymbol.defaultSymbol( geometryType )
         if symbol is None:
-            if geometryType == QGis.Point:
-                symbol = QgsMarkerSymbolV2()
-            elif geometryType == QGis.Line:
-                symbol =  QgsLineSymbolV2()
-            elif geometryType == QGis.Polygon:
-                symbol = QgsFillSymbolV2()
+            if geometryType == Qgis.Point:
+                symbol = QgsMarkerSymbol()
+            elif geometryType == Qgis.Line:
+                symbol =  QgsLineSymbol()
+            elif geometryType == Qgis.Polygon:
+                symbol = QgsFillSymbol()
         return symbol
 
     def create_layer_style(self, layer, target_field, tbl_name, schema, min=None, max=None, steps=None):
         """Create the layer and adds the layer to the canvas"""
         if layer.isValid():
             self._apply_symbology_fixed_divisions(layer, target_field, tbl_name, schema, min, max, steps)
-            QgsMapLayerRegistry.instance().addMapLayers([layer])
+            QgsProject.instance().addMapLayers([layer])
 
     def repaint_layer(self):
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
-        field = layer.rendererV2().classAttribute()
+        field = layer.renderer().classAttribute()
         min_user_val = float(self.dock_widget.LEMinColor.text())
         max_user_val = float(self.dock_widget.LEMaxColor.text())
         max_nbr_user_val = float(self.dock_widget.LEMaxNbrColor.text())

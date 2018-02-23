@@ -8,8 +8,8 @@
 
 [general]
 name=GeoDataFarm
-qgisMinimumVersion=2.0
-qgisMaximumVersion=2.98
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
 description=This is a plugin for farmers that aims to determine impact of different parameters to the harvest yield.
 version=1.0.0
 author=Axel Andersson

@@ -32,7 +32,7 @@ sys.path.append(os.path.dirname(__file__))
 from qgis.core import QgsProject, QgsVectorLayer
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
-from PyQt5.QtWidgets import QAction, QMessageBox
+from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from PyQt5.QtGui import QIcon
 # Initialize Qt resources from file resources.py
 import resources
@@ -262,8 +262,8 @@ class GeoDataFarm:
                                "temp_polygon"]:
                     continue
                 item_name = str(name[0])
-                _name = QtGui.QApplication.translate("qadashboard", item_name, None)
-                item = QtGui.QListWidgetItem(_name, lw)
+                _name = QApplication.translate("qadashboard", item_name, None)
+                item = QListWidgetItem(_name, lw)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
                 item.setCheckState(QtCore.Qt.Unchecked)
                 self.tables_in_db[i] += 1
