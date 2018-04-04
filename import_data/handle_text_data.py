@@ -1,7 +1,7 @@
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 import processing
 from PyQt5 import QtCore
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, pyqtSignal, QObject, QThread
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
     QMessageBox
 from osgeo import osr
@@ -13,13 +13,12 @@ from operator import xor, itemgetter
 from datetime import datetime
 from dateutil.parser import parse
 # Import the code for the dialog
-from widgets.import_text_dialog import ImportTextDialog
-from widgets.waiting import Waiting
-from support_scripts.radio_box import RadioComboBox
-from support_scripts.__init__ import check_text, isfloat, isint
-import support_scripts.shapefile as shp
+from ..widgets.import_text_dialog import ImportTextDialog
+from ..widgets.waiting_msg import WaitingMsg
+from ..support_scripts.radio_box import RadioComboBox
+from ..support_scripts.__init__ import check_text, isfloat, isint
+from ..support_scripts import shapefile as shp
 __author__ = 'Axel Andersson'
-
 
 
 class InputTextHandler(object):
@@ -54,6 +53,7 @@ class InputTextHandler(object):
         self.tr = parent_widget.tr
         self.iface = parent_widget.iface
         self.parent_widget = parent_widget
+        self.tsk_mngr = parent_widget.tsk_mngr
         self.rb_pressed = False
         self.fields_to_DB = False
         self.combo = None
@@ -335,29 +335,25 @@ class InputTextHandler(object):
         coordinates is in EPSG:4326
         :return:
         """
-        self.worker_thread = QThread()
-        self.worker_thread.start()
+        end_method = EndMethod()
+        task1 = QgsTask.fromFunction('running script', end_method.run,
+                                     self.parent_widget, self.ITD,
+                                     self.add_to_DB_row_count, self.sep,
+                                     self.col_types,
+                                     self.add_to_param_row_count,
+                                     self.file_name_with_path,
+                                     self.input_file_path,
+                                     on_finished=self.finish)
         wait_msg = self.tr('Data is being processed, please wait')
-        self.worker = Waiting(wait_msg)
-        self.worker.moveToThread(self.worker_thread)
-        self.worker2 = EndMethod(self.parent_widget, self.ITD,
-                                self.add_to_DB_row_count, self.sep,
-                                self.col_types, self.add_to_param_row_count,
-                                self.file_name_with_path, self.input_file_path)
-        self.worker_thread_work = QThread()
-        self.worker_thread_work.start()
-        self.worker2.moveToThread(self.worker_thread_work)
+        waiting_msg = WaitingMsg()
+        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
+        self.tsk_mngr.addTask(task1)
+        self.tsk_mngr.addTask(task2)
 
-        self.worker2.start.connect(self.worker2.run)
-        self.worker2.start.emit('run')
-        self.worker.start.connect(self.worker.start_work)
-        self.worker.start.emit('run')
-        while not self.worker2.finished:
-            time.sleep(0.1)
+    def finish(self, result, values):
         [columns_to_add, column_types, heading_row, time_dict,
-         params] = self.worker2.arg
+         params] = values
         self.params_to_evaluate = params
-        self.worker.stop_work()
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(int(self.ITD.LEEPSG.text()))
         esri_output = srs.ExportToWkt()
@@ -369,7 +365,10 @@ class InputTextHandler(object):
         only_char = check_text(text)
         self.file_name = only_char
         file_name_with_path = self.input_file_path + "shapefiles/" + self.file_name
-        processing.runalg('qgis:reprojectlayer', self.input_file_path + "shapefiles/temp.shp",'EPSG:4326', file_name_with_path + '.shp')
+        para = {'INPUT': self.input_file_path + "shapefiles/temp.shp",
+                'TARGET_CRS': 'EPSG: 4326',
+                'OUTPUT': file_name_with_path + '.shp'}
+        processing.run('qgis:reprojectlayer', para)
         QgsProject.instance().removeMapLayer(vlayer.id())
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(4326)
@@ -395,16 +394,19 @@ class InputTextHandler(object):
         self.ITD.pButInsertDataIntoDB.clicked.disconnect()
         self.ITD.pButContinue.clicked.disconnect()
         self.ITD.done(0)
+        for task in self.tsk_mngr.tasks():
+            if task.description() == 'waiting':
+                task.cancel()
 
 
-class EndMethod(QObject):
-    signalStatus = pyqtSignal(str)
+class EndMethod:
+    def __init__(self):
+        self = self
 
-    def __init__(self, parent_widget, ITD, add_to_DB_row_count, sep,
-                 col_types, add_to_param_row_count, file_name_with_path,
-                 input_file_path):
+    def run(self, task, parent_widget, ITD, add_to_DB_row_count, sep,
+            col_types, add_to_param_row_count, file_name_with_path,
+            input_file_path):
         super(EndMethod, self).__init__()
-        self.finished = False
         self.iface = parent_widget.iface
         self.dock_widget = parent_widget.dock_widget
         self.ITD = ITD
@@ -414,10 +416,6 @@ class EndMethod(QObject):
         self.add_to_param_row_count = add_to_param_row_count
         self.file_name_with_path = file_name_with_path
         self.input_file_path = input_file_path
-
-    start = pyqtSignal(str)
-    @QtCore.pyqtSlot()
-    def run(self):
         only_char = check_text(self.ITD.ComBNorth.currentText())
         self.latitude_col = only_char
         only_char = check_text(self.ITD.ComBEast.currentText())
@@ -579,6 +577,5 @@ class EndMethod(QObject):
                 w.record(*data_row) #write the attributes
             w.save(str(self.input_file_path) + "shapefiles/temp")
         del(w)
-        self.arg = [columns_to_add, column_types, heading_row, time_dict,
+        return [columns_to_add, column_types, heading_row, time_dict,
                     self.params_to_evaluate]
-        self.finished = True

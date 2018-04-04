@@ -9,7 +9,7 @@ __author__ = 'Axel Andersson'
 
 
 class InsertInputToDB:
-    def __init__(self, IH, iface, dock_widget, defined_field, db):
+    def __init__(self, IH, iface, dock_widget, defined_field, tsk_mngr, db):
         """
         This class adds the data from the shapefile, created in the
         InputHandler widget, into the database
@@ -23,6 +23,7 @@ class InsertInputToDB:
         self.IH = IH
         self.dock_widget = dock_widget
         self.defined_field = defined_field
+        self.tsk_mngr = tsk_mngr
         self.CreateLayer = CreateLayer(db)
 
     def import_data_to_db(self, schema, convert2polygon=True, is_shp=False):
@@ -32,59 +33,51 @@ class InsertInputToDB:
         polygons?
         :param is_shp bool, is the data from a shp file?
         """
-        #TODO: fix the treading!
         self.is_shp = is_shp
         self.schema = schema
-        self.idata = InsertData(self.IH, self.defined_field, self.db, schema, convert2polygon, is_shp)
-        worker_thread_work = QThread()
-        self.idata.moveToThread(worker_thread_work)
-        worker_thread_work.started.connect(self.idata.import_data_to_db)
-        worker_thread_work.start()
-        waiting_thread = QThread()
-        waiting_thread.start()
+        insert_data = InsertData()
+        ##Debugg
+        #insert_data.import_data_to_db('test', self.IH, self.defined_field, self.db,
+        #                             schema, convert2polygon, is_shp)
+        #self.end_method(1,2)
+        task1 = QgsTask.fromFunction('running script', insert_data.import_data_to_db,
+                                     self.IH, self.defined_field, self.db,
+                                     schema, convert2polygon, is_shp,
+                                     on_finished=self.end_method)
         wait_msg = 'Please wait while data is being prosecuted'
-        self.wait = Waiting(wait_msg)
-        self.wait.moveToThread(waiting_thread)
-        self.wait.start.connect(self.wait.start_work)
-        self.wait.start.emit('run')
-        while not self.idata.finish:
-            time.sleep(1)
-        self.end_method()
+        waiting_msg = WaitingMsg()
+        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
+        self.tsk_mngr.addTask(task1)
+        self.tsk_mngr.addTask(task2)
 
-    def end_method(self):
+    def end_method(self, result, values):
         schema = self.schema
         self.dock_widget.PBAddFieldToDB.setEnabled(False)
         if not self.is_shp:
             QgsProject.instance().removeMapLayer(
                 self.IH.point_layer.id())
-
-        for param_layer in self.idata.redone_param_list:
+        for param_layer in self.IH.params_to_evaluate:
+            param_layer = check_text(param_layer)
             target_field = param_layer
-            layer = self.db.addPostGISLayer(self.idata.tbl_name.lower(), 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
-            self.CreateLayer.create_layer_style(layer, check_text(target_field), self.idata.tbl_name.lower(), schema)
+            layer = self.db.addPostGISLayer(str(self.IH.file_name).lower(), 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
+            self.CreateLayer.create_layer_style(layer, check_text(target_field), str(self.IH.file_name).lower(), schema)
             QgsProject.instance().addMapLayer(layer)
-        self.wait.stop_work()
+        for task in self.tsk_mngr.tasks():
+            if task.description() == 'waiting':
+                task.cancel()
 
 
 class InsertData(QtCore.QObject):
-    signalStatus = pyqtSignal(str)
+    def __init__(self):
+        self.IH = None
+        self.db = None
 
-    def __init__(self, IH, defined_field, db, schema, convert2polygon, is_shp, *args, **kwargs):
-        QtCore.QObject.__init__(self, *args, **kwargs)
-        self.IH = IH
-        self.defined_field = defined_field
-        self.db = db
-        self.schema = schema
-        self.convert2polygon = convert2polygon
-        self.is_shp = is_shp
-        self.finish = False
-
-    def import_data_to_db(self):
+    def import_data_to_db(self, task, IH, defined_field, db,
+                                     schema, convert2polygon, is_shp):
         """Imports the data into the database.
         """
-        schema = self.schema
-        convert2polygon = self.convert2polygon
-        is_shp = self.is_shp
+        self.IH = IH
+        self.db = db
         column_types = self.IH.column_types
         heading_row = self.IH.heading_row
         params_to_eval = self.IH.params_to_evaluate
@@ -115,7 +108,7 @@ class InsertData(QtCore.QObject):
         sql += ")"
         self.db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
         with shp.Reader(file_name_with_path + '.shp') as shpfile:
-            records = shpfile.records()
+            # records = shpfile.records()
             shapes = shpfile.shapeRecords()
             fields = shpfile.fields
             data_dict = {"pos": [], 'field_row_id': []}
@@ -125,8 +118,8 @@ class InsertData(QtCore.QObject):
                     continue
                 field_names.append(name)
                 data_dict[name] = []
-            for k, row in enumerate(records):
-                for i, col in enumerate(row):
+            for k, row in enumerate(shapes):
+                for i, col in enumerate(row.record):
                     if col == b'                    ':
                         col = "' '"
                     elif isinstance(col, str):
@@ -139,7 +132,7 @@ class InsertData(QtCore.QObject):
                 data_dict['field_row_id'].append(k)
             cols = []
             for key in heading_row:
-                cols.append(key.encode('ascii'))
+                cols.append(key.encode('ascii').decode('utf-8'))
             for j, name in enumerate(field_names):
                 found = False
                 for col in cols:
@@ -147,6 +140,7 @@ class InsertData(QtCore.QObject):
                         data_dict[col] = data_dict.pop(name)
                         found = True
                 if not found:
+                    #cols.remove(name) ?
                     del data_dict[name]
             key_list = list(data_dict.keys())
             sql_raw = "INSERT INTO {schema}.temp_table ({cols}) VALUES".format(schema=schema, cols=", ".join(str(e).replace("'","") for e in key_list))
@@ -160,18 +154,19 @@ class InsertData(QtCore.QObject):
                 only_char = check_text(param)
                 redone_param_list.append(only_char)
             self.db.insert_data(sql, '{schema}.temp_table'.format(schema=schema), redone_param_list)
-            if self.defined_field is not None:
-                field_coord = str(self.defined_field)[1:-1].replace(',',' ').replace(')  (', ',')
+            if defined_field is not None:
                 sql = """SELECT * INTO {schema}.{tbl} 
 from {schema}.temp_table
-where st_intersects(pos, ST_GeomFromText('POLYGON({field})',4326))""".format(schema=schema, tbl=tbl_name, field=field_coord)
+where st_intersects(pos, ST_GeomFromText('{field}',4326))""".format(schema=schema, tbl=tbl_name, field=defined_field)
             else:
                 sql = """SELECT * INTO {schema}.{tbl} 
                 from {schema}.temp_table""".format(schema=schema, tbl=tbl_name)
             time.sleep(0.1)
+
             self.db.execute_sql(sql)
         if convert2polygon:
             self.db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
+
             sql = """drop table if exists {schema}.temp_tbl2;
 WITH voronoi_temp2 AS (
     SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
@@ -180,12 +175,11 @@ SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
 FROM voronoi_temp2  ;
  create index temp_index on {schema}.temp_tbl2 Using gist(geom);
 update {schema}.{tbl}
-SET polygon = ST_Intersection(geom,ST_GeomFromText('POLYGON({field})',4326))
+SET polygon = ST_Intersection(geom,ST_GeomFromText('{field}',4326))
 FROM {schema}.temp_tbl2
-WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field_coord)
+WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=defined_field)
+
             self.db.execute_sql(sql)
         self.db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
         self.db.create_indexes(tbl_name, redone_param_list, schema)
-        self.redone_param_list = redone_param_list
-        self.tbl_name = tbl_name
-        self.finish = True
+        return 1

@@ -98,6 +98,8 @@ class GeoDataFarm:
         self.tables_in_db = [0, 0, 0]
         self.DB = None
         self.IH = None
+        self.df = None
+        self.tsk_mngr = QgsApplication.taskManager()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -364,13 +366,15 @@ class GeoDataFarm:
                                   polygon, self.DB, self.tr)
                 obj.insert_to_db()
             else:
-                iitdb = InsertInputToDB(self.IH, self.iface, self.dock_widget, polygon, self.DB)
+                iitdb = InsertInputToDB(self.IH, self.iface, self.dock_widget, polygon, self.tsk_mngr, self.DB)
                 iitdb.import_data_to_db(schema)
 
     def clicked_define_field(self):
         """Creates an empty polygon that's define a field"""
         self.df = QgsVectorLayer("Polygon?crs=epsg:4326", "temporary_points", "memory")
         self.df.startEditing()
+        QgsProject.instance().addMapLayer(layer)
+
         QgsProject.instance().addMapLayer(self.df)
 
     def tbl_mgmt(self):
