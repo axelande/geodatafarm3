@@ -86,7 +86,7 @@ class DB:
         password = self.dbpass
 
         ## Adds a PostGIS table to the map
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setConnection(str(host), str(port), str(dbname), str(username), str(password))
         uri.setDataSource(str(schema), str(table), str(geom_col), '', 'field_row_id')
         uri.setKeyColumn('field_row_id')
@@ -94,8 +94,7 @@ class DB:
 
         if not vlayer.isValid():
             QMessageBox.information(None,'Layer not loaded', uri.host(),
-                   uri.database(), uri.port(), uri.username(), uri.password(),
-                   uri.schema(), uri.table(), uri.geometryColumn())
+                   uri.database(), uri.port())
         return vlayer
 
     def check_table_exists(self, tablename):

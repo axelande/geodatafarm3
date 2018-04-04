@@ -61,7 +61,7 @@ class CreateLayer:
         """Creates the symbols and sets the coloring of the layer"""
         symbol = self._validated_default_symbol(layer.geometryType() )
         symbol.setColor(color)
-        symbol.symbolLayer(0).setOutlineColor(color)
+        symbol.symbolLayer(0).setStrokeColor(color)
         range = QgsRendererRange(min, max, symbol, title)
         return range
 
@@ -71,7 +71,7 @@ class CreateLayer:
         colors = []
         for i in range(number_of_items):
             value = float(i) / float(number_of_items)
-            colors.append(RG.rg(value))
+            colors.append(rg(value))
         return colors
 
     def _validated_default_symbol(self, geometryType ):
