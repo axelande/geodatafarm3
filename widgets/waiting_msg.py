@@ -39,3 +39,22 @@ class WaitingMsg(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.task = None
+        self.my_timer = None
+
+    def set_cancel(self):
+        if self.task.isCanceled():
+            self.done(0)
+
+    def run(self, task, msg):
+        self.LWatingMsgs.setText(msg)
+
+        self.task = task
+        self.show()
+        self.my_timer = QtCore.QTimer(self)
+        self.my_timer.timeout.connect(self.set_cancel)
+        self.my_timer.start(500)  # 1 sec intervall
+        sleep(.6)
+        self.exec_()
+        self.done(0)
+
