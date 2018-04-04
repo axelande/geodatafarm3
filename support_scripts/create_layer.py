@@ -1,9 +1,9 @@
-import support_scripts.RG
 from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsLineSymbol, QgsFillSymbol, QgsGraduatedSymbolRenderer, \
     QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer
 from PyQt5.QtGui import QColor
 import numpy as np
+from ..support_scripts.RG import rg
 __author__ = 'Axel'
 
 

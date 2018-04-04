@@ -32,4 +32,6 @@ def classFactory(iface):  # pylint: disable=invalid-name
     """
     #
     from .GeoDataFarm import GeoDataFarm
+    from . import resources
+    from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
     return GeoDataFarm(iface)

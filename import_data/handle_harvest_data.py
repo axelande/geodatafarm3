@@ -3,13 +3,12 @@ from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QFileDialog, QAbstractItemView
 # Import the code for the dialog
-from database_scripts.db import DB
-import support_scripts.shapefile as shp
 import os
 from operator import xor
-from widgets.import_harvest_dialog import ImportHarvestDialog
-from support_scripts.__init__ import check_text, isint, isfloat
-from support_scripts.radio_box import RadioComboBox
+from ..widgets.import_harvest_dialog import ImportHarvestDialog
+from ..support_scripts.__init__ import check_text, isint, isfloat
+from ..support_scripts.radio_box import RadioComboBox
+from ..support_scripts import shapefile as shp
 __author__ = 'Axel Andersson'
 
 

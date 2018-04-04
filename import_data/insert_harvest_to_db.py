@@ -1,10 +1,10 @@
-import support_scripts.shapefile as shp
-from support_scripts.__init__ import check_text
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
 from qgis.core import QgsProject
-from support_scripts.create_layer import CreateLayer
-from widgets.waiting import Waiting
+from ..support_scripts.create_layer import CreateLayer
+from ..widgets.waiting import Waiting
+from ..support_scripts import shapefile as shp
+from ..support_scripts.__init__ import check_text
 import time
 __author__ = 'Axel Andersson'
 

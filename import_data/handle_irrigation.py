@@ -3,7 +3,7 @@
 import os
 # Import the code for the dialog
 #from widgets.import_shp_dialog import ImportShpDialog
-from support_scripts.rain_dancer import MyRainDancer
+from ..support_scripts.rain_dancer import MyRainDancer
 #from test.test_db_con import DB
 #from database_scripts.db import DB
 #from support_scripts.create_layer import CreateLayer

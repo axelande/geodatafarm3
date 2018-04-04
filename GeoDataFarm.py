@@ -23,32 +23,29 @@
 
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
-#import pydevd
-#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 import os
 import os.path
 import sys
-sys.path.append(os.path.dirname(__file__))
-from qgis.core import QgsProject, QgsVectorLayer
+from . import resources
+from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
+from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from PyQt5.QtGui import QIcon
 # Initialize Qt resources from file resources.py
-import resources
 # Import the code for the dock_widget and the subwidgets
-from GeoDataFarm_dockwidget import GeoDataFarmDockWidget
-from database_scripts.db import DB
-from database_scripts.mean_analyse import Analyze
-from import_data.handle_text_data import InputTextHandler
-from database_scripts.create_new_farm import CreateFarm
-from import_data.insert_input_to_db import InsertInputToDB
-from import_data.handle_input_shp_data import InputShpHandler
-from import_data.handle_db_file_data import DBFileHandler
-from import_data.insert_harvest_to_db import InsertHarvestData
-from import_data.handle_irrigation import IrrigationHandler
-from database_scripts.table_managment import TableManagement
-from support_scripts.create_layer import CreateLayer
+from .database_scripts.db import DB
+from .database_scripts.mean_analyse import Analyze
+from .import_data.handle_text_data import InputTextHandler
+from .database_scripts.create_new_farm import CreateFarm
+from .import_data.insert_input_to_db import InsertInputToDB
+from .import_data.handle_input_shp_data import InputShpHandler
+from .import_data.handle_db_file_data import DBFileHandler
+from .import_data.insert_harvest_to_db import InsertHarvestData
+from .import_data.handle_irrigation import IrrigationHandler
+from .database_scripts.table_managment import TableManagement
+from .support_scripts.create_layer import CreateLayer
 
 
 # TODO: Known bugs:

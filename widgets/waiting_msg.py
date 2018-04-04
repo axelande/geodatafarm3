@@ -22,8 +22,8 @@
 """
 
 import os
-
-from PyQt5 import QtWidgets, uic
+from time import sleep
+from PyQt5 import QtWidgets, uic, QtCore
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'waiting_msg.ui'))

@@ -1,10 +1,10 @@
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtWidgets import QMessageBox
 import os
-from support_scripts.__init__ import check_text
 import requests
 import hashlib
-from widgets.create_farm_popup import CreateFarmPopup
+from ..widgets.create_farm_popup import CreateFarmPopup
+from ..support_scripts.__init__ import check_text
 __author__ = 'Axel Andersson'
 
 

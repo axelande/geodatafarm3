@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
-from widgets.waiting_msg import WaitingMsg
+from ..widgets.waiting_msg import WaitingMsg
 
 
 class Waiting(QObject):

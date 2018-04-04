@@ -1,11 +1,10 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal, QObject, QThread
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsTask
 import time
-from widgets.waiting import Waiting
-from support_scripts.__init__ import check_text
-from support_scripts.create_layer import CreateLayer
-import support_scripts.shapefile as shp
+from ..widgets.waiting import WaitingMsg
+from ..support_scripts.__init__ import check_text
+from ..support_scripts.create_layer import CreateLayer
+from ..support_scripts import shapefile as shp
 __author__ = 'Axel Andersson'
 
 

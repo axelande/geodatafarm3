@@ -6,10 +6,7 @@ import os
 from operator import xor
 from collections import OrderedDict
 # Import the code for the dialog
-from widgets.import_db_file_dialog import ImportDBFileDialog
-from support_scripts.rain_dancer import MyRainDancer
-from database_scripts.db import DB
-from support_scripts.create_layer import CreateLayer
+from ..widgets.import_db_file_dialog import ImportDBFileDialog
 __author__ = 'Axel Andersson'
 
 

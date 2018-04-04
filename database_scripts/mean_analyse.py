@@ -5,9 +5,9 @@ import numpy as np
 import time
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
-from widgets.run_analyse import RunAnalyseDialog
-from widgets.waiting import Waiting
-from support_scripts.__init__ import isfloat, isint
+from ..widgets.run_analyse import RunAnalyseDialog
+from ..widgets.waiting import Waiting
+from ..support_scripts.__init__ import isfloat, isint
 __author__ = 'Axel Andersson'
 
 
