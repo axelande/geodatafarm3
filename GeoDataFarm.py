@@ -351,8 +351,8 @@ class GeoDataFarm:
         if self._q_replace_db_data():
             schema = self.dock_widget.CBDataType.currentText()
             try:
-                feature = self.df.getFeatures().next()
-                polygon = feature.geometry().asPolygon()[0]
+                feature = self.df.getFeature(1)
+                polygon = feature.geometry().asWkt()
             except:
                 polygon = None
             try:
