@@ -1,8 +1,7 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsTask
 from ..support_scripts.create_layer import CreateLayer
-from ..widgets.waiting import Waiting
+from ..widgets.waiting import WaitingMsg
 from ..support_scripts import shapefile as shp
 from ..support_scripts.__init__ import check_text
 import time
@@ -10,7 +9,7 @@ __author__ = 'Axel Andersson'
 
 
 class InsertHarvestData:
-    def __init__(self, IH, iface, dock_widget, polygon, db, tr):
+    def __init__(self, IH, iface, dock_widget, polygon, db, tr, tsk_mngr):
         self.IH = IH
         self.iface = iface
         self.dock_widget = dock_widget
@@ -18,70 +17,64 @@ class InsertHarvestData:
         self.db = db
         self.CreateLayer = CreateLayer(db)
         self.tr = tr
+        self.tsk_mngr = tsk_mngr
 
-    def insert_to_db(self):
-        self.waiting_thread = QThread()
-        self.waiting_thread.start()
+    def run(self):
+        insert_data = InsertHarvestToDB()
+        #Debugg
+        #nr = insert_data.insert_to_db(self.IH, self.iface, self.polygon, self.db)
+        #self.create_qgis_layer(1, 2)
+        task1 = QgsTask.fromFunction('Inserting data and prepare layout',
+                                     insert_data.insert_to_db, self.IH,
+                                     self.iface, self.polygon, self.db,
+                                     on_finished=self.create_qgis_layer)
         wait_msg = 'Please wait while data is being prosecuted'
-        self.wait = Waiting(wait_msg)
-        self.wait.moveToThread(self.waiting_thread)
-        self.worker2 = InsertHarvestToDB(self.IH, self.iface,
-                                         self.polygon, self.db)
-        #self.worker2.insert_to_db()
-        self.worker_thread_work = QThread()
-        self.worker_thread_work.start()
-        time.sleep(1)
-        self.worker2.moveToThread(self.worker_thread_work)
-        self.worker2.starts.connect(self.worker2.insert_to_db)
-        self.worker2.starts.emit('run')
-        self.wait.start.connect(self.wait.start_work)
-        self.wait.start.emit('run')
-        self.dock_widget.PBAddFieldToDB.setEnabled(False)
-        while not self.worker2.finished:
-            time.sleep(1)
-        self.CreateLayer.create_layer_style(self.worker2.layer,
-                                            check_text(self.worker2.harvest_yield_col),
-                                            self.worker2.tbl_name.lower(), 'harvest')
-        QgsProject.instance().addMapLayer(self.worker2.layer)
+        waiting_msg = WaitingMsg()
+        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
+        self.tsk_mngr.addTask(task1)
+        self.tsk_mngr.addTask(task2)
+
+    def create_qgis_layer(self, result, values):
+        layer = self.db.addPostGISLayer(self.IH.file_name.lower(), 'pos', 'harvest',
+                                        'harvest')
+
+        self.CreateLayer.create_layer_style(layer,
+                                            check_text(str(self.IH.params_to_evaluate[0])),
+                                            self.IH.file_name.lower(), 'harvest')
+        QgsProject.instance().addMapLayer(layer)
         QgsProject.instance().removeMapLayer(self.IH.input_layer.id())
-        self.wait.stop_work()
+        for task in self.tsk_mngr.tasks():
+            if task.description() == 'waiting':
+                task.cancel()
 
 
+class InsertHarvestToDB(QtCore.QObject):
+    def __init__(self):
+        self.IH = None
+        self.DB = None
+        self.defined_field = None
+        self.iface = None
 
-class InsertHarvestToDB(QObject):
-    signalStatus = pyqtSignal(str)
-
-    def __init__(self, IH, iface, polygon, db):
-        super(InsertHarvestToDB, self).__init__()
+    def insert_to_db(self, task, IH, iface, polygon, db):
         """
         This class adds the data from the shapefile, created in the
         IH widget, into the database
+        :param task: QgsTask object
         :param IH: widget
         :param iface: the qgis interface
-        :param parent_widget: the docked widget
+        :param polygon a wkt string if the field is selected
+        :param db: the database connection
         :return:
         """
-
         self.DB = db
         self.iface = iface
         self.IH = IH
-        self.finished = False
         self.defined_field = polygon
-
-    starts = pyqtSignal(str)
-    @QtCore.pyqtSlot()
-    def insert_to_db(self):
-        """
-        Insert the data into the database, gathering all necessary data from
-        "self".
-        :return:
-        """
         columns_to_add = self.IH.columns_to_add
         column_types = self.IH.column_types
         heading_row = self.IH.heading_row
         tbl_name = self.IH.file_name
         harvest_yield_col = str(self.IH.params_to_evaluate[0])
-        print(str(self.IH.params_to_evaluate[0]))
         self.longitude_col = self.IH.longitude_col
         self.latitude_col = self.IH.latitude_col
         if self.defined_field ==  None:
@@ -110,8 +103,9 @@ class InsertHarvestToDB(QObject):
             self.DB.create_table(sql, 'harvest.' + tbl_name)
         else:
             self.DB.create_table(sql, 'harvest.temp_table')
+        print(1)
         with shp.Reader(self.IH.input_file_path + "shapefiles/" + self.IH.file_name + '.shp') as shpfile:
-            records = shpfile.records()
+            # records = shpfile.records()
             shapes = shpfile.shapeRecords()
             fields = shpfile.fields
             data_dict = {"pos": [], 'field_row_id': []}
@@ -121,8 +115,8 @@ class InsertHarvestToDB(QObject):
                     continue
                 field_names.append(name)
                 data_dict[name] = []
-            for k, row in enumerate(records):
-                for i, col in enumerate(row):
+            for k, row in enumerate(shapes):
+                for i, col in enumerate(row.record):
                     if col == b'                    ':
                         col = "' '"
                     elif isinstance(col, str):
@@ -132,7 +126,7 @@ class InsertHarvestToDB(QObject):
                 data_dict['field_row_id'].append(k)
             cols = []
             for key in columns_to_add.keys():
-                cols.append(key.encode('ascii'))
+                cols.append(key.encode('ascii').decode('utf-8'))
             for j, name in enumerate(field_names):
                 found = False
                 for col in cols:
@@ -142,6 +136,7 @@ class InsertHarvestToDB(QObject):
                 if not found:
                     del data_dict[name]
             key_list = list(data_dict.keys())
+            print(2)
             for i in range(0, len(data_dict['field_row_id']), 10000):
                 if self.defined_field is None:
                     sql_raw = "INSERT INTO harvest.{tbl} ({cols}) VALUES".format(tbl=tbl_name, cols=", ".join(str(e).replace("'","") for e in key_list))
@@ -158,17 +153,15 @@ class InsertHarvestToDB(QObject):
                 else:
                     self.DB.execute_sql(sql)
         if self.defined_field is not None:
-            coord = str(self.defined_field)[1:-1].replace(',', ' ').replace(')  (', ',')
+            coord = str(self.defined_field)
             sql = """DROP TABLE IF EXISTS harvest.{tbl};
 SELECT * INTO harvest.{tbl} 
 FROM harvest.temp_table 
-WHERE st_intersects(pos, ST_GeomFromText('POLYGON({coord})',4326))""".format(
+WHERE st_intersects(pos, ST_GeomFromText('{coord}',4326))""".format(
                 tbl=tbl_name, coord=coord)
             time.sleep(0.1)
             self.DB.execute_sql(sql)
             self.DB.execute_sql("DROP TABLE harvest.temp_table")
+        print(3)
         self.DB.create_indexes(tbl_name.lower(), params_to_eval=[check_text(harvest_yield_col)], schema='harvest')
-        self.layer = self.DB.addPostGISLayer(tbl_name.lower(), 'pos', 'harvest', 'harvest')
-        self.harvest_yield_col = harvest_yield_col
-        self.tbl_name = tbl_name
-        self.finished = True
+        return 1

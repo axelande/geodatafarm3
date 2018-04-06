@@ -363,8 +363,8 @@ class GeoDataFarm:
                 pass
             if schema == 'harvest':
                 obj = InsertHarvestData(self.IH, self.iface, self.dock_widget,
-                                  polygon, self.DB, self.tr)
-                obj.insert_to_db()
+                                  polygon, self.DB, self.tr, self.tsk_mngr)
+                obj.run()
             else:
                 iitdb = InsertInputToDB(self.IH, self.iface, self.dock_widget, polygon, self.tsk_mngr, self.DB)
                 iitdb.import_data_to_db(schema)
@@ -373,8 +373,7 @@ class GeoDataFarm:
         """Creates an empty polygon that's define a field"""
         self.df = QgsVectorLayer("Polygon?crs=epsg:4326", "temporary_points", "memory")
         self.df.startEditing()
-        QgsProject.instance().addMapLayer(layer)
-
+        self.iface.actionAddFeature().trigger()
         QgsProject.instance().addMapLayer(self.df)
 
     def tbl_mgmt(self):
