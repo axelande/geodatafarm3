@@ -90,11 +90,9 @@ class DB:
         uri.setConnection(str(host), str(port), str(dbname), str(username), str(password))
         uri.setDataSource(str(schema), str(table), str(geom_col), '', 'field_row_id')
         uri.setKeyColumn('field_row_id')
-        vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table[1:]), 'postgres')
-
+        vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table), 'postgres')
         if not vlayer.isValid():
-            QMessageBox.information(None,'Layer not loaded', uri.host(),
-                   uri.database(), uri.port())
+            QMessageBox.information(None, 'Error', 'Layer not loaded correctly')
         return vlayer
 
     def check_table_exists(self, tablename):
