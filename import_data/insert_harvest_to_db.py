@@ -103,7 +103,6 @@ class InsertHarvestToDB(QtCore.QObject):
             self.DB.create_table(sql, 'harvest.' + tbl_name)
         else:
             self.DB.create_table(sql, 'harvest.temp_table')
-        print(1)
         with shp.Reader(self.IH.input_file_path + "shapefiles/" + self.IH.file_name + '.shp') as shpfile:
             # records = shpfile.records()
             shapes = shpfile.shapeRecords()
@@ -136,7 +135,6 @@ class InsertHarvestToDB(QtCore.QObject):
                 if not found:
                     del data_dict[name]
             key_list = list(data_dict.keys())
-            print(2)
             for i in range(0, len(data_dict['field_row_id']), 10000):
                 if self.defined_field is None:
                     sql_raw = "INSERT INTO harvest.{tbl} ({cols}) VALUES".format(tbl=tbl_name, cols=", ".join(str(e).replace("'","") for e in key_list))
@@ -162,6 +160,5 @@ WHERE st_intersects(pos, ST_GeomFromText('{coord}',4326))""".format(
             time.sleep(0.1)
             self.DB.execute_sql(sql)
             self.DB.execute_sql("DROP TABLE harvest.temp_table")
-        print(3)
         self.DB.create_indexes(tbl_name.lower(), params_to_eval=[check_text(harvest_yield_col)], schema='harvest')
         return 1

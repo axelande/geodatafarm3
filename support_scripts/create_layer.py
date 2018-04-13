@@ -50,7 +50,7 @@ class CreateLayer:
                 symbol = QgsSymbol.defaultSymbol(layer.geometryType())
                 red, green, blue = colors[i]
                 symbol.setColor(QColor(int(red*255),int(green*255), int(blue*255), 128))
-                symbol.symbolLayer(0).setOutlineColor(QColor(int(red*255),int(green*255), int(blue*255), 128))
+                symbol.symbolLayer(0).setStrokeColor(QColor(int(red*255),int(green*255), int(blue*255), 128))
                 category = QgsRendererCategory(str(distinct_values[i]), symbol, str(distinct_values[i]))
                 categories.append(category)
             renderer = QgsCategorizedSymbolRenderer(field, categories)
