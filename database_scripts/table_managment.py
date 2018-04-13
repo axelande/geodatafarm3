@@ -1,7 +1,5 @@
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt5.QtWidgets import QInputDialog, QMessageBox
-import os
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 from ..widgets.table_managment_dialog import TableMgmtDialog
 __author__ = 'Axel Andersson'
@@ -92,8 +90,8 @@ class TableManagement:
                                  'polygon', 'tableoid', '_']:
                 continue
             item_name = str(param_name[0])
-            testcase_name = QtGui.QApplication.translate("qadashboard", item_name, None)
-            item = QtGui.QListWidgetItem(testcase_name, self.TMD.SAParams)
+            testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
+            item = QListWidgetItem(testcase_name, self.TMD.SAParams)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             if param_name[0] in checked_params:
                 item.setCheckState(QtCore.Qt.Checked)
@@ -177,8 +175,8 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 if name[0] in ["spatial_ref_sys", "pointcloud_formats", "temp_polygon"]:
                     continue
                 item_name = schema + '.' + str(name[0])
-                testcase_name = QtGui.QApplication.translate("qadashboard", item_name, None)
-                item = QtGui.QListWidgetItem(testcase_name, self.TMD.SATables)
+                testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
+                item = QListWidgetItem(testcase_name, self.TMD.SATables)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
                 item.setCheckState(QtCore.Qt.Unchecked)
                 self.tables_in_db += 1
@@ -189,8 +187,8 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         """Removes the selected tables from the database"""
         msgBox = QMessageBox()
         msgBox.setText(self.tr('Do you really want to remove the selected tables from the database?'))
-        msgBox.addButton(QtGui.QPushButton(self.tr('Yes')), QtGui.QMessageBox.YesRole)
-        msgBox.addButton(QtGui.QPushButton(self.tr('No')), QtGui.QMessageBox.NoRole)
+        msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
+        msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
         ret = msgBox.exec_()
         if ret == 1:
             return
