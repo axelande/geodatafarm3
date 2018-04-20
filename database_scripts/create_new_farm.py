@@ -52,7 +52,7 @@ class CreateFarm:
         farmname_inp = self.CF.farm_name.text()
         email_inp = self.CF.email_field.text()
         username = check_text(username_inp)
-        password = check_text(password_inp)
+        password = check_text(password_inp).encode('utf-8')
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
         r = requests.post('http://geodatafarm.com:5000/create', data={'username':username,'password':password, 'farmname':farmname, 'email':email_inp})
