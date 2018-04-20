@@ -383,6 +383,9 @@ class InputTextHandler(object):
         os.remove(self.input_file_path + "shapefiles/temp.prj")
         self.input_layer = self.point_layer
         self.file_name_with_path = file_name_with_path
+        columns_to_add['year'] = 0
+        column_types.append(0)
+        heading_row.append('year')
         self.columns_to_add = columns_to_add
         self.column_types = column_types
         self.heading_row = heading_row
@@ -566,6 +569,7 @@ class EndMethod:
                     w.field(str(key)[:10], 'F', max(10, len(str(key))), 8)
                 if column_types[heading_row.index(key)] == 2:
                     w.field(str(key)[:10], 'C', 20)
+            w.field('year', 'N', 4)
             #loop through the data and write the shapefile
             for j, k in enumerate(columns_to_add[self.longitude_col]):
                 w.point(k, columns_to_add[self.latitude_col][j])
@@ -574,6 +578,7 @@ class EndMethod:
                     if key in ignore_col:
                         continue
                     data_row.append(columns_to_add[key][j])
+                data_row.append(int(self.ITD.LEYearOnly.text()))
                 w.record(*data_row) #write the attributes
             w.save(str(self.input_file_path) + "shapefiles/temp")
         del(w)
