@@ -103,10 +103,14 @@ class InsertHarvestToDB(QtCore.QObject):
             self.DB.create_table(sql, 'harvest.' + tbl_name)
         else:
             self.DB.create_table(sql, 'harvest.temp_table')
+        if task != 1:
+            task.setProgress(2)
         with shp.Reader(self.IH.input_file_path + "shapefiles/" + self.IH.file_name + '.shp') as shpfile:
             # records = shpfile.records()
             shapes = shpfile.shapeRecords()
             fields = shpfile.fields
+            if task != 1:
+                task.setProgress(25)
             data_dict = {"pos": [], 'field_row_id': []}
             field_names = []
             for name, type, int1, int2 in fields:
@@ -136,6 +140,8 @@ class InsertHarvestToDB(QtCore.QObject):
                     del data_dict[name]
             key_list = list(data_dict.keys())
             for i in range(0, len(data_dict['field_row_id']), 10000):
+                if task != 1:
+                    task.setProgress(25 + i / len(data_dict['field_row_id']) * 70)
                 if self.defined_field is None:
                     sql_raw = "INSERT INTO harvest.{tbl} ({cols}) VALUES".format(tbl=tbl_name, cols=", ".join(str(e).replace("'","") for e in key_list))
                 else:
