@@ -353,6 +353,8 @@ class GeoDataFarm:
         if self._q_replace_db_data():
             schema = self.dock_widget.CBDataType.currentText()
             try:
+                self.iface.actionSaveActiveLayerEdits().trigger()
+                self.iface.actionToggleEditing().trigger()
                 feature = self.df.getFeature(1)
                 polygon = feature.geometry().asWkt()
             except:
