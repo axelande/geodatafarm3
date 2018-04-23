@@ -20,7 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+#import pydevd
+#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 import os
@@ -220,19 +221,22 @@ class GeoDataFarm:
             for item in list_widget:
                 if item.checkState() == 2:
                     tables.append(str(item.text()))
-        parameters = self.DB.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], False)
-        for nr in range(len(parameters)):
-            target_field = parameters[nr]['index_col']
-            tbl_name = parameters[nr]['tbl_name']
-            if 'field_row_id' in target_field:
-                continue
-            if parameters[nr]['schema'] == 'harvest':
-                layer = self.DB.addPostGISLayer(tbl_name.lower(), 'pos', parameters[nr]['schema'], target_field.lower())
-            else:
-                layer = self.DB.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
-            create_layer = CreateLayer(self.DB)
-            create_layer.create_layer_style(layer, target_field, tbl_name.lower(), parameters[nr]['schema'])
-            QgsProject.instance().addMapLayer(layer)
+            parameters = self.DB.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], schema)
+            for nr in range(len(parameters)):
+                target_field = parameters[nr]['index_col']
+                tbl_name = parameters[nr]['tbl_name']
+                if 'field_row_id' in target_field:
+                    continue
+                if parameters[nr]['schema'] == 'harvest':
+                    layer = self.DB.addPostGISLayer(tbl_name.lower(),
+                                                    'pos', 'harvest',
+                                                    'harvest')
+                    #layer = self.DB.addPostGISLayer(tbl_name.lower(), 'pos', parameters[nr]['schema'], 'harvest')
+                else:
+                    layer = self.DB.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
+                create_layer = CreateLayer(self.DB)
+                create_layer.create_layer_style(layer, target_field, tbl_name.lower(), parameters[nr]['schema'])
+                QgsProject.instance().addMapLayer(layer)
 
     def reload_layer(self):
         create_layer = CreateLayer(self.DB, self.dock_widget)
