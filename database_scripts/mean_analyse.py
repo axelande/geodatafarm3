@@ -130,14 +130,11 @@ class Analyze:
         """Filles the three dict tables"""
         for i, (schema, table) in enumerate(self.tables):
             if schema == 'harvest':
-                self.harvest_tables[i] = self.db.get_indexes("'" + table + "'",
-                                                             schema)
+                self.harvest_tables[i] = self.db.get_indexes(table, schema)
             if schema == 'activity':
-                self.activity_tables[i] = self.db.get_indexes("'" + table + "'",
-                                                              schema)
+                self.activity_tables[i] = self.db.get_indexes(table, schema)
             if schema == 'soil':
-                self.soil_tables[i] = self.db.get_indexes("'" + table + "'",
-                                                          schema)
+                self.soil_tables[i] = self.db.get_indexes(table, schema)
 
     def get_initial_distinct_values(self, parameter_to_eval, tbl, schema):
         """

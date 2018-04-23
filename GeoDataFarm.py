@@ -286,6 +286,7 @@ class GeoDataFarm:
     def run_analyse(self):
         """Gathers the "in parameters" and start the analyse session"""
         names = []
+        schemas = []
         harvest_file = False
         input_file = False
         lw_list = [[self.dock_widget.LWActivityTable, 'activity'],
@@ -298,11 +299,14 @@ class GeoDataFarm:
                         harvest_file = True
                     if schema == 'activity' or schema == 'soil':
                         input_file = True
-                    names.append(item.text().encode("ascii"))
+                    names.append([schema, item.text()])
         if harvest_file and input_file:
-            Analyze(names, self).add_input()
+            analyse = Analyze(self, names)
+            analyse.check_consistency()
+            analyse.default_layout()
+            analyse.run()
         else:
-            QMessageBox.information(None, "Error:", self.tr('You need to have at least one input and one harvest data set selected.'))
+            QMessageBox.information(None, "Error:", self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
 
     def clicked_input(self):
         """Connects the docked widget with the correct InputHandler script and 
