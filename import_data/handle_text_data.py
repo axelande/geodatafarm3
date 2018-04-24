@@ -493,7 +493,7 @@ class EndMethod:
             max_yield = float(self.ITD.LEMaximumYield.text())
             if min_yield > max_yield:
                 QMessageBox.information(None, "Error:",
-                                        message=self.tr('Min value is greater than the '
+                                        self.tr('Min value is greater than the '
                                                 'maximum value'))
                 return
             yield_row = check_text(self.params_to_evaluate[0])
@@ -564,7 +564,7 @@ class EndMethod:
                         except (ValueError, OverflowError):
                             columns_to_add[key].append(0)
                     else:
-                        columns_to_add[key].append(row[heading_row.index(key)])
+                        columns_to_add[key].append(check_text(row[heading_row.index(key)]))
             if some_wrong_len > 0:
                 QMessageBox.information(None, "Information:",
                                         str(some_wrong_len) + self.tr(' rows were skipped '
