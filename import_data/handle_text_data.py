@@ -96,9 +96,9 @@ class InputTextHandler(object):
             for i in range(row_count):
                 existing_values.append(self.ITD.TWtoParam.item(i, 0).text())
         for i, item in enumerate(self.ITD.TWColumnNames.selectedItems()):
-            if self.dock_widget.CBDataType.currentText() == 'harvest' and i > 0:
-                QMessageBox.information(None, "Error:",
-                                        message=self.tr('You can only select one yield column!'))
+            if self.dock_widget.CBDataType.currentText() == 'harvest' and len(existing_values) > 0:
+                QMessageBox.information(None, self.tr("Error:"),
+                                        self.tr('You can only select one yield column!'))
                 return
             if item.column() == 0 and item.text() not in existing_values:
                 items_to_add.append(item.text())
