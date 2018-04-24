@@ -58,6 +58,7 @@ class TableManagement:
         sql = sql[:-7]
         sql += ")"
         self.DB.execute_sql(sql)
+        self.DB.create_indexes(new_name, [], new_schema)
         self.TMD.LEName.setText('')
         self.TMD.CBDataType.setCurrentIndex(0)
         self.update_table_list()
@@ -81,7 +82,7 @@ class TableManagement:
         checked_params = []
         table = self.current_table
         schema = self.current_schema
-        indexes = self.DB.get_indexes(table, False)
+        indexes = self.DB.get_indexes(table, schema)
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
         columns = self.DB.get_all_columns(table, schema)
@@ -104,7 +105,7 @@ class TableManagement:
         checked_params = []
         table = self.current_table
         schema = self.current_schema
-        indexes = self.DB.get_indexes(table, False)
+        indexes = self.DB.get_indexes(table, schema)
         create_index_for = []
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
