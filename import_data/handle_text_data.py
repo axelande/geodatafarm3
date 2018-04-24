@@ -58,6 +58,7 @@ class InputTextHandler(object):
         self.fields_to_DB = False
         self.combo = None
         self.sep = None
+        self.encoding = 'utf-8'
         self.longitude_col = None
         self.latitude_col = None
 
@@ -124,7 +125,17 @@ class InputTextHandler(object):
         self.add_to_param_row_count = row_count
 
     def get_separator(self):
-        with open(self.file_name_with_path) as f:
+        with open(self.file_name_with_path, 'rb') as f:
+            # Join binary lines for specified number of lines
+            try:
+                dat = f.read()
+                read_all = dat.decode('utf-8')
+                self.encoding = 'utf-8'
+            except:
+                dat = f.read()
+                read_all = dat.decode('ansi')
+                self.encoding = 'ansi'
+        with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
             c = read_all[0].count(",")
             c_s = read_all[0].count(", ")
@@ -144,7 +155,7 @@ class InputTextHandler(object):
         """A function that retrieves the name of the columns from the .csv file
         and returns a list with name"""
         self.ITD.TWColumnNames.clear()
-        with open(self.file_name_with_path) as f:
+        with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
             first_row = True
             for row in read_all:
@@ -303,7 +314,7 @@ class InputTextHandler(object):
         :return: a list with with 0=int, 1=float, 2=char
         """
         row_types = []
-        with open(self.file_name_with_path) as f:
+        with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
             first_row = True
             max_rows = len(read_all)
@@ -347,6 +358,7 @@ class InputTextHandler(object):
                                      self.add_to_param_row_count,
                                      self.file_name_with_path,
                                      self.input_file_path,
+                                     self.encoding,
                                      on_finished=self.finish)
         wait_msg = self.tr('Data is being processed, please wait')
         waiting_msg = WaitingMsg()
@@ -412,7 +424,7 @@ class EndMethod:
 
     def run(self, task, parent_widget, ITD, add_to_DB_row_count, sep,
             col_types, add_to_param_row_count, file_name_with_path,
-            input_file_path):
+            input_file_path, encoding):
         super(EndMethod, self).__init__()
         self.iface = parent_widget.iface
         self.dock_widget = parent_widget.dock_widget
@@ -423,6 +435,7 @@ class EndMethod:
         self.add_to_param_row_count = add_to_param_row_count
         self.file_name_with_path = file_name_with_path
         self.input_file_path = input_file_path
+        self.encoding = encoding
         only_char = check_text(self.ITD.ComBNorth.currentText())
         self.latitude_col = only_char
         only_char = check_text(self.ITD.ComBEast.currentText())
@@ -487,7 +500,7 @@ class EndMethod:
             harvest = True
         else:
             harvest = False
-        with open(self.file_name_with_path) as f:
+        with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
             first_row = True
             some_wrong_len = 0
