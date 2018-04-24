@@ -58,8 +58,9 @@ class DB:
                     )
                 self.conn.set_isolation_level(0)
             except psycopg2.OperationalError as e:
-                raise DBException("Error connecting to database on '%s'. %s" %
-                                  (self.dbhost, str(e)))
+                raise DBException(
+                    "Error connecting to database on {host}. {e}".format(
+                        host=self.dbhost, e=str(e)))
 
     def _close(self):
         """
@@ -92,7 +93,7 @@ class DB:
         uri.setKeyColumn('field_row_id')
         vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table), 'postgres')
         if not vlayer.isValid():
-            QMessageBox.information(None, 'Error', 'Layer not loaded correctly')
+            QMessageBox.information(None, 'Error', 'Layer not loaded correctly, Connection:\n' + str(uri.uri()))
         return vlayer
 
     def check_table_exists(self, tablename):
@@ -285,8 +286,8 @@ ORDER BY table_name""".format(schema=schema)
                 continue
             ind += 1
             parameter_to_eval[ind] = {}
-            parameter_to_eval[ind]['tbl_name'] = table.encode("ascii")
-            parameter_to_eval[ind]['index_name'] = index_name.encode("ascii")
+            parameter_to_eval[ind]['tbl_name'] = table.encode("ascii").decode('utf-8')
+            parameter_to_eval[ind]['index_name'] = index_name.encode("ascii").decode('utf-8')
             parameter_to_eval[ind]['index_col'] = index_col
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
