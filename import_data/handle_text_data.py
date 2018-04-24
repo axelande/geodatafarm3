@@ -360,11 +360,11 @@ class InputTextHandler(object):
                                      self.input_file_path,
                                      self.encoding,
                                      on_finished=self.finish)
-        wait_msg = self.tr('Data is being processed, please wait')
-        waiting_msg = WaitingMsg()
-        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
+        #wait_msg = self.tr('Data is being processed, please wait')
+        #waiting_msg = WaitingMsg()
+        #task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
         self.tsk_mngr.addTask(task1)
-        self.tsk_mngr.addTask(task2)
+        #self.tsk_mngr.addTask(task2)
 
     def finish(self, result, values):
         [columns_to_add, column_types, heading_row, time_dict,
@@ -413,9 +413,9 @@ class InputTextHandler(object):
         self.ITD.pButInsertDataIntoDB.clicked.disconnect()
         self.ITD.pButContinue.clicked.disconnect()
         self.ITD.done(0)
-        for task in self.tsk_mngr.tasks():
-            if task.description() == 'waiting':
-                task.cancel()
+        #for task in self.tsk_mngr.tasks():
+        #    if task.description() == 'waiting':
+        #        task.cancel()
 
 
 class EndMethod:
@@ -504,7 +504,7 @@ class EndMethod:
             read_all = f.readlines()
             first_row = True
             some_wrong_len = 0
-            for row in read_all:
+            for row_count, row in enumerate(read_all):
                 row = re.split((self.sep + ' |' + self.sep), row)
                 if first_row:
                     heading_row = []
@@ -516,6 +516,8 @@ class EndMethod:
                 elif len(row) != len(heading_row) and len(row) < 3:
                     some_wrong_len += 1
                     continue
+                if task != 1:
+                    task.setProgress(2 + row_count / len(read_all) * 45)
                 for key in columns_to_add.keys():
                     if float(row[heading_row.index(self.latitude_col)]) < 0.1 or float(row[heading_row.index(self.longitude_col)]) < 0.1:
                         break
@@ -589,6 +591,8 @@ class EndMethod:
             w.field('year', 'N', 4)
             #loop through the data and write the shapefile
             for j, k in enumerate(columns_to_add[self.longitude_col]):
+                if task != 1:
+                    task.setProgress(50 + j/len(columns_to_add[self.longitude_col])*40)
                 w.point(k, columns_to_add[self.latitude_col][j])
                 data_row = []
                 for key in columns_to_add.keys():
