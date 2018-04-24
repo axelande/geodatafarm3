@@ -22,17 +22,17 @@ class InsertHarvestData:
     def run(self):
         insert_data = InsertHarvestToDB()
         #Debugg
-        #nr = insert_data.insert_to_db(self.IH, self.iface, self.polygon, self.db)
-        #self.create_qgis_layer(1, 2)
+        #nr = insert_data.insert_to_db(1, self.IH, self.iface, self.polygon, self.db)
+        #self.create_qgis_layer(nr, 2)
         task1 = QgsTask.fromFunction('Inserting data and prepare layout',
                                      insert_data.insert_to_db, self.IH,
                                      self.iface, self.polygon, self.db,
                                      on_finished=self.create_qgis_layer)
         wait_msg = 'Please wait while data is being prosecuted'
-        waiting_msg = WaitingMsg()
-        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
+        #waiting_msg = WaitingMsg()
+        #task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
         self.tsk_mngr.addTask(task1)
-        self.tsk_mngr.addTask(task2)
+        #self.tsk_mngr.addTask(task2)
 
     def create_qgis_layer(self, result, values):
         layer = self.db.addPostGISLayer(self.IH.file_name.lower(), 'pos', 'harvest',
@@ -43,9 +43,9 @@ class InsertHarvestData:
                                             self.IH.file_name.lower(), 'harvest')
         QgsProject.instance().addMapLayer(layer)
         QgsProject.instance().removeMapLayer(self.IH.input_layer.id())
-        for task in self.tsk_mngr.tasks():
-            if task.description() == 'waiting':
-                task.cancel()
+        #for task in self.tsk_mngr.tasks():
+        #    if task.description() == 'waiting':
+        #        task.cancel()
 
 
 class InsertHarvestToDB(QtCore.QObject):
