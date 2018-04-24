@@ -107,12 +107,16 @@ class InsertData(QtCore.QObject):
         sql = sql[:-2]
         sql += ")"
         self.db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+        if task != 1:
+            task.setProgress(5)
         with shp.Reader(file_name_with_path + '.shp') as shpfile:
             # records = shpfile.records()
             shapes = shpfile.shapeRecords()
             fields = shpfile.fields
             data_dict = {"pos": [], 'field_row_id': []}
             field_names = []
+            if task != 1:
+                task.setProgress(25)
             for name, type, int1, int2 in fields:
                 if name == 'DeletionFlag':
                     continue
@@ -162,8 +166,11 @@ where st_intersects(pos, ST_GeomFromText('{field}',4326))""".format(schema=schem
                 sql = """SELECT * INTO {schema}.{tbl} 
                 from {schema}.temp_table""".format(schema=schema, tbl=tbl_name)
             time.sleep(0.1)
-
+            if task != 1:
+                task.setProgress(50)
             self.db.execute_sql(sql)
+        if task != 1:
+            task.setProgress(70)
         if convert2polygon:
             self.db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
 
@@ -180,6 +187,8 @@ FROM {schema}.temp_tbl2
 WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=defined_field)
 
             self.db.execute_sql(sql)
+        if task != 1:
+            task.setProgress(90)
         self.db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
         self.db.create_indexes(tbl_name, redone_param_list, schema)
         return 1
