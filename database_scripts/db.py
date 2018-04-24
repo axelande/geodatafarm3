@@ -91,6 +91,7 @@ class DB:
         uri.setConnection(str(host), str(port), str(dbname), str(username), str(password))
         uri.setDataSource(str(schema), str(table), str(geom_col), '', 'field_row_id')
         uri.setKeyColumn('field_row_id')
+        uri.setSrid('4326')
         vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table), 'postgres')
         if not vlayer.isValid():
             QMessageBox.information(None, 'Error', 'Layer not loaded correctly, Connection:\n' + str(uri.uri()))
