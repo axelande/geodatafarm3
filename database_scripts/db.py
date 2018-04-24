@@ -152,10 +152,10 @@ class DB:
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
-        cur.execute("""create index gist_{tbl2}
+        cur.execute("""create index gist_{schema}_{tbl2}
     on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
         for parm in params_to_eval:
-            cur.execute("DROP INDEX IF EXISTS {param}_{schema}{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
+            cur.execute("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
             cur.execute("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
     using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
         cur.execute("""ALTER TABLE {schema}.{tbl}
@@ -249,13 +249,13 @@ ORDER BY table_name""".format(schema=schema)
         columns = self.execute_and_return(sql)
         return columns
 
-    def get_indexes(self, tables, analyse):
+    def get_indexes(self, tables, schema):
         """
-        :param tables: text string
-        :param analyse: True, False depending if it is to analyse or not
+        :param tables: str, what table to look for. (separated by comma if multiple)
+        :param schema: str, what schema to look in. 
         :return: list of strings of the index names
         """
-        sql= """select
+        sql = f"""select
              t.relname as table_name,
              i.relname as index_name,
              a.attname as column_name,
@@ -272,10 +272,11 @@ ORDER BY table_name""".format(schema=schema)
              and a.attrelid = t.oid
              and a.attnum = ANY(ix.indkey)
              and t.relkind = 'r'
-             and t.relname in ('{tbls}')
+             and t.relname in ('{tables}')
+             {"" if schema == '' else "and n.nspname='" + schema + "'"}
             order by
              t.relname,
-             i.relname;""".format(tbls=tables)
+             i.relname;"""
         big_table = self.execute_and_return(sql)
         parameter_to_eval = {}
         ind = -1
