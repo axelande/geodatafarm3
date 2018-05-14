@@ -5,6 +5,7 @@ import requests
 import hashlib
 from ..widgets.create_farm_popup import CreateFarmPopup
 from ..support_scripts.__init__ import check_text
+from .db import DB
 __author__ = 'Axel Andersson'
 
 
@@ -36,6 +37,8 @@ class CreateFarm:
         self.CF.PBConnectExisting.clicked.connect(self.connect_to_source)
         self.parent_widget = parent_widget
         self.tr = parent_widget.tr
+        self.plugin_dir = parent_widget.plugin_dir
+        self.dock_widget = parent_widget.dock_widget
 
     def run(self):
         """Presents the sub widget CreateFarm"""
@@ -85,5 +88,69 @@ class CreateFarm:
 
         with open(self.plugin_dir + '\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
+        self.create_spec_functions()
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.CF.done(0)
+
+    def create_spec_functions(self):
+        db = DB(self.dock_widget, path=self.plugin_dir)
+        connected = self.DB.get_conn()
+        sql = """CREATE OR REPLACE FUNCTION public.makegrid_2d (
+      bound_polygon public.geometry,
+      width_step integer,
+      height_step integer
+    )
+    RETURNS public.geometry AS
+    $body$
+    DECLARE
+      Xmin DOUBLE PRECISION;
+      Xmax DOUBLE PRECISION;
+      Ymax DOUBLE PRECISION;
+      X DOUBLE PRECISION;
+      Y DOUBLE PRECISION;
+      NextX DOUBLE PRECISION;
+      NextY DOUBLE PRECISION;
+      CPoint public.geometry;
+      sectors public.geometry[];
+      i INTEGER;
+      SRID INTEGER;
+    BEGIN
+      Xmin := ST_XMin(bound_polygon);
+      Xmax := ST_XMax(bound_polygon);
+      Ymax := ST_YMax(bound_polygon);
+      SRID := ST_SRID(bound_polygon);
+    
+      Y := ST_YMin(bound_polygon); --current sector's corner coordinate
+      i := -1;
+      <<yloop>>
+      LOOP
+        IF (Y > Ymax) THEN  
+            EXIT;
+        END IF;
+    
+        X := Xmin;
+        <<xloop>>
+        LOOP
+          IF (X > Xmax) THEN
+              EXIT;
+          END IF;
+    
+          CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
+          NextX := ST_X(ST_Project(CPoint, $2, radians(90))::geometry);
+          NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
+    
+          i := i + 1;
+          sectors[i] := ST_MakeEnvelope(X, Y, NextX, NextY, SRID);
+    
+          X := NextX;
+        END LOOP xloop;
+        CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
+        NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
+        Y := NextY;
+      END LOOP yloop;
+    
+      RETURN ST_Collect(sectors);
+    END;
+    $body$
+    LANGUAGE 'plpgsql';"""
+        db.execute_sql(sql)

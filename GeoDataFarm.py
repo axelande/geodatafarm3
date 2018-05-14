@@ -47,6 +47,7 @@ from .import_data.insert_harvest_to_db import InsertHarvestData
 from .import_data.handle_irrigation import IrrigationHandler
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
+from .support_scripts.create_guiding_file import CreateGuideFile
 
 
 # TODO: Known bugs:
@@ -391,6 +392,10 @@ class GeoDataFarm:
         tabel_mgmt = TableManagement(self)
         tabel_mgmt.run()
 
+    def create_guide(self):
+        guide = CreateGuideFile(self)
+        guide.run()
+
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
@@ -419,6 +424,7 @@ class GeoDataFarm:
             self.dock_widget.PBDefineField.clicked.connect(self.clicked_define_field)
             self.dock_widget.PBUpdateLists.clicked.connect(self.update_table_list)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
+            self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
             #self.dock_widget.pb_add_irrigation.clicked.connect(self.import_irrigation)

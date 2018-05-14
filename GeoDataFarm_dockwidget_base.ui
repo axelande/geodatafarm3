@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>302</width>
+    <width>295</width>
     <height>527</height>
    </rect>
   </property>
@@ -282,7 +282,7 @@ of colors:</string>
         <x>0</x>
         <y>0</y>
         <width>271</width>
-        <height>471</height>
+        <height>513</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -306,20 +306,40 @@ of colors:</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="PBEditTables">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="locale">
-          <locale language="English" country="UnitedKingdom"/>
-         </property>
-         <property name="text">
-          <string>Edit datasets</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="PBEditTables">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>23</height>
+            </size>
+           </property>
+           <property name="locale">
+            <locale language="English" country="UnitedKingdom"/>
+           </property>
+           <property name="text">
+            <string>Edit datasets</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="PBCreateGuide">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>23</height>
+            </size>
+           </property>
+           <property name="locale">
+            <locale language="English" country="UnitedKingdom"/>
+           </property>
+           <property name="text">
+            <string>Create guide file</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QLabel" name="LActivity">
