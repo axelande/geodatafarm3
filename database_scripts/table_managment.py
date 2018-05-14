@@ -58,6 +58,7 @@ class TableManagement:
         sql = sql[:-7]
         sql += ")"
         self.DB.execute_sql(sql)
+        self.DB.update_row_id(new_schema, new_name)
         self.DB.create_indexes(new_name, [], new_schema)
         self.TMD.LEName.setText('')
         self.TMD.CBDataType.setCurrentIndex(0)
@@ -88,7 +89,9 @@ class TableManagement:
         columns = self.DB.get_all_columns(table, schema)
         for param_name in columns:
             if param_name[0] in ['cmin', 'xmin', 'xmax', 'cmax', 'ctid', 'pos',
-                                 'polygon', 'tableoid', '_']:
+                                 'polygon', 'tableoid', '_', 'field_row_id']:
+                continue
+            if param_name[0][:3] == '...':
                 continue
             item_name = str(param_name[0])
             testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
