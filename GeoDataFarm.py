@@ -48,7 +48,7 @@ from .import_data.handle_irrigation import IrrigationHandler
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
-
+from .support_scripts.multiedit import MultiEdit
 
 # TODO: Known bugs:
 # TODO: Add polygon while importing shapefiles
@@ -392,6 +392,10 @@ class GeoDataFarm:
         tabel_mgmt = TableManagement(self)
         tabel_mgmt.run()
 
+    def multi_edit(self):
+        me = MultiEdit(self)
+        me.show()
+
     def create_guide(self):
         guide = CreateGuideFile(self)
         guide.run()
@@ -419,6 +423,7 @@ class GeoDataFarm:
             self.update_table_list()
             self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
             self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)
+            self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBAddNewFarm.clicked.connect(self.clicked_create_farm)
             self.dock_widget.PBDefineField.clicked.connect(self.clicked_define_field)
