@@ -3,8 +3,17 @@ from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer
 from PyQt5.QtGui import QColor
 import numpy as np
+import matplotlib.pyplot as plt
 from ..support_scripts.RG import rg
 __author__ = 'Axel'
+
+
+def histedges_equalN(x, nbin):
+    """Nice function found at https://stackoverflow.com/questions/39418380/histogram-with-equal-number-of-points-in-each-bin"""
+    npt = len(x)
+    return np.interp(np.linspace(0, npt, nbin + 1),
+                     np.arange(npt),
+                     np.sort(x))
 
 
 class CreateLayer:
@@ -86,6 +95,45 @@ class CreateLayer:
             elif geometryType == Qgis.Polygon:
                 symbol = QgsFillSymbol()
         return symbol
+
+    def equal_count(self, layer, data_values_list, field, steps=10,
+                    min_value=None, max_value=None):
+        if min_value is not None:
+            values = []
+            for value in data_values_list:
+                if value >= min_value:
+                    values.append(value)
+            data_values_list = values
+        if max_value is not None:
+            values = []
+            for value in data_values_list:
+                if value <= max_value:
+                    values.append(value)
+            data_values_list = values
+        count_0 = data_values_list.count(0)
+        if count_0 > 1:
+            def remove_values_from_list(the_list, val):
+                return [value for value in the_list if value != val]
+            data_values_list = remove_values_from_list(data_values_list, 0)
+            data_values_list.insert(0, 0)
+        n, bins, patches = plt.hist(data_values_list,
+                                    histedges_equalN(data_values_list, steps))
+        colors = self._create_colors(steps)
+        range_list = []
+        for i in range(steps):
+            red, green, blue = colors[i]
+            range_list.append(
+                self._make_symbology(layer, bins[i],
+                                     bins[i + 1],
+                                     str(bins[i]) + ' - ' + str(
+                                         bins[i + 1]),
+                                     QColor(int(red * 255),
+                                            int(green * 255),
+                                            int(blue * 255), 128)))
+        renderer = QgsGraduatedSymbolRenderer(field, range_list)
+        renderer.setMode(QgsGraduatedSymbolRenderer.Custom)
+        layer.setRenderer(renderer)
+        return layer
 
     def create_layer_style(self, layer, target_field, tbl_name, schema, min=None, max=None, steps=None):
         """Create the layer and adds the layer to the canvas"""

@@ -3,13 +3,15 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog
 from operator import xor
+from osgeo import osr
+from psycopg2 import ProgrammingError
 from ..widgets.create_guide_file import CreateGuideFileDialog
 from ..database_scripts.db import DB
+from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import shapefile as shp
-from psycopg2 import ProgrammingError
-
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+
 
 class CreateGuideFile:
     def __init__(self, parent_widget):
@@ -168,6 +170,7 @@ left join {tbl} on st_intersects(cell, pos)
 group by cell""".format(c_size=cell_size, eq=self.eq_text2,
                         tbl=self.selected_table, EPSG=EPSG)
         data = self.db.execute_and_return(sql)
+        attribute_values = []
         with shp.Writer(shp.POLYGON) as w:
             w.autoBalance = 1
             if float_type:
@@ -176,15 +179,29 @@ group by cell""".format(c_size=cell_size, eq=self.eq_text2,
                 w.field(attr_name[:10], 'N', max(10, len(attr_name)), 0)
             for polygon, value in data:
                 coord = []
-                polygon = polygon.replace('POLYGON((', '').replace('))','')
+                polygon = polygon.replace('POLYGON((', '').replace('))', '')
                 for pair in polygon.split(','):
                     coord.append([float(pair.split(' ')[0]),
                                   float(pair.split(' ')[1])])
                 if value is None:
                     value = 0
+                attribute_values.append(value)
                 w.poly(parts=[coord])
                 if float_type:
                     w.record(value)
                 else:
                     w.record(round(value))
             w.save(self.save_folder + '\\' + file_name)
+            srs = osr.SpatialReference()
+            srs.ImportFromEPSG(int(EPSG))
+            esri_output = srs.ExportToWkt()
+            with open(self.save_folder + '\\' + file_name + '.prj',
+                      'a') as prj_file:
+                prj_file.write(esri_output)
+            layer = QgsVectorLayer(self.save_folder + '\\' + file_name + ".shp",
+                                   file_name, "ogr")
+            cl = CreateLayer(self.db, self.dock_widget)
+            layer = cl.equal_count(layer, data_values_list=attribute_values,
+                                   field=attr_name[:10], steps=15)
+            QgsProject.instance().addMapLayer(layer)
+            self.CGF.done(0)
