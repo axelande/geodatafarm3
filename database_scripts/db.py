@@ -226,14 +226,15 @@ ORDER BY table_name""".format(schema=schema)
 
         return checked_values
 
-    def get_all_columns(self, table, schema):
+    def get_all_columns(self, table, schema, exclude=''):
         """
         :param table: text string
         :param schema: text string
+        :param exclude: optional, text comma sep string
         :return
         """
 
-        sql = """select
+        sql = f"""select
         a.attname as column_name
         from
         pg_class t
@@ -243,12 +244,20 @@ ORDER BY table_name""".format(schema=schema)
         where
         a.attrelid = t.oid
         and t.relkind = 'r'
-        and t.relname in ('{tbl}')
+        and t.relname in ('{table}')
         and n.nspname in ('{schema}')
+        and a.attname not in ('{exclude}')
         group by t.relname,
-        a.attname""".format(tbl=table, schema=schema)
+        a.attname order by a.attname"""
         columns = self.execute_and_return(sql)
         return columns
+
+    def update_row_id(self, schema, table):
+        """Update the field row id"""
+        sql = f"""ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
+        ALTER TABLE {schema}.{table} add COLUMN field_row_id serial UNIQUE NOT NULL
+"""
+        self.execute_sql(sql)
 
     def get_indexes(self, tables, schema):
         """
