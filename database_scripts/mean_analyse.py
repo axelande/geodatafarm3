@@ -9,18 +9,16 @@ from PyQt5.QtCore import QThread
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..widgets.waiting import Waiting
 from ..support_scripts.__init__ import isfloat, isint
-
+import copy
 __author__ = 'Axel Andersson'
 
 
-# import pydevd
-# pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class Analyze:
     def __init__(self, parent_widget, tables_to_analyse):
         """
         A widget that analyses the data in the database
         :param parent_widget: the docked widget
-        :param tables_to_analyse: list of list schemas and tables that should 
+        :param tables_to_analyse: list of list schemas and tables that should
         be included in the analyse
         :return:
         """
@@ -31,12 +29,12 @@ class Analyze:
         self.soil_tables = {}
         self.tables = tables_to_analyse
         self.cb = []
-        self.max_min_checked = {}
         self.harvest_tbls = {}
         self.dlg.pButRun.clicked.connect(self.run_update)
         self.scrollWidget = QtWidgets.QWidget()
         self.radio_group = QtWidgets.QButtonGroup()
         self.overlapping_tables = {}
+        self.layout_dict = {}
         self.top_right_panel = []
         # self.populate_list(parameters)
         self.finish = False
@@ -139,27 +137,26 @@ class Analyze:
     def get_initial_distinct_values(self, parameter_to_eval, tbl, schema):
         """
         Calls the database and gets distinct values
-        :param parameter_to_eval: list, What parameter to eval
-        :param tbl: list, In what table is the param located
-        :param schema: list, In what schema
+        :param parameter_to_eval: str, What parameter to eval
+        :param tbl: str, In what table is the param located
+        :param schema: str, In what schema
         :return: analyse_params{'distinct_values':[],'distinct_count':[]}
         """
         analyse_params = {}
         temp1 = []
         temp2 = []
-        for i, table in enumerate(tbl):
-            distinct = self.db.get_distinct(table, parameter_to_eval, schema[i])
-            for value, count in distinct:
-                temp1.append(value)
-                temp2.append(count)
+        distinct = self.db.get_distinct(tbl, parameter_to_eval, schema)
+        for value, count in distinct:
+            temp1.append(value)
+            temp2.append(count)
         analyse_params['distinct_values'] = temp1
         analyse_params['distinct_count'] = temp2
         return analyse_params
 
     def _set_checkbox_layout(self, qbox, analyse_params, col, nbr):
-        self.max_min_checked[col]['type'] = 'checked'
-        self.max_min_checked[col]['checked'] = []
-        self.max_min_checked[col]['checked_items'] = []
+        self.layout_dict[col]['type'] = 'checked'
+        self.layout_dict[col]['checked'] = []
+        self.layout_dict[col]['checked_items'] = []
         names = analyse_params['distinct_values']
         model = QtGui.QStandardItemModel(len(names), 1)
         firstItem = QtGui.QStandardItem("---- Select ----")
@@ -173,17 +170,17 @@ class Analyze:
             item.setFlags(
                 QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            self.max_min_checked[col]['checked'].append(name)
-            self.max_min_checked[col]['checked_items'].append(item)
+            self.layout_dict[col]['checked'].append(name)
+            self.layout_dict[col]['checked_items'].append(item)
             model.setItem(i + 1, 0, item)
         param_label = QtWidgets.QLabel(name_text, self.top_right_panel[nbr])
         param_label.move(10, 20)
         QComb = QtWidgets.QComboBox(qbox)
         QComb.setModel(model)
         QComb.move(83, 34)
-        self.max_min_checked[col]['model'] = model
-        self.max_min_checked[col]['name_text'] = name_text
-        self.max_min_checked[col]['param_label'] = param_label
+        self.layout_dict[col]['model'] = model
+        self.layout_dict[col]['name_text'] = name_text
+        self.layout_dict[col]['param_label'] = param_label
 
     def _set_number_layout(self, qbox, analyse_params, col, nbr):
         QtWidgets.QLabel('Min:', qbox).move(83, 34)
@@ -200,13 +197,13 @@ class Analyze:
         QtWidgets.QLabel(
             '({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))),
             qbox).move(292, 15)
-        self.max_min_checked[col]['type'] = 'max_min'
-        self.max_min_checked[col]['min'] = np.nanmin(
+        self.layout_dict[col]['type'] = 'max_min'
+        self.layout_dict[col]['min'] = np.nanmin(
             analyse_params['distinct_values'])
-        self.max_min_checked[col]['min_text'] = min_value
-        self.max_min_checked[col]['max'] = np.nanmax(
+        self.layout_dict[col]['min_text'] = min_value
+        self.layout_dict[col]['max'] = np.nanmax(
             analyse_params['distinct_values'])
-        self.max_min_checked[col]['max_text'] = max_value
+        self.layout_dict[col]['max_text'] = max_value
         if isfloat(max_value.text()):
             param_label = QtWidgets.QLabel('Min: ' + str(
                 round(float(min_value.text()), 2)) + ' Max: ' + str(
@@ -217,25 +214,25 @@ class Analyze:
                     max_value.text()), self.top_right_panel[nbr])
         param_label.move(10, 20)
 
-    def _update_max_min(self, analyse_params, col):
-        if self.max_min_checked[col]['type'] == 'max_min':
-            if self.max_min_checked[col]['min'] > np.nanmin(
+    def _update_layout(self, analyse_params, col):
+        if self.layout_dict[col]['type'] == 'max_min':
+            if self.layout_dict[col]['min'] > np.nanmin(
                     analyse_params['distinct_values']):
-                self.max_min_checked[col]['min'] = np.nanmin(
+                self.layout_dict[col]['min'] = np.nanmin(
                     analyse_params['distinct_values'])
-                self.max_min_checked[col]['min_text'].setText(
+                self.layout_dict[col]['min_text'].setText(
                     str(np.nanmin(analyse_params['distinct_values'])))
-            if self.max_min_checked[col]['max'] < np.nanmax(
+            if self.layout_dict[col]['max'] < np.nanmax(
                     analyse_params['distinct_values']):
-                self.max_min_checked[col]['max'] = np.nanmax(
+                self.layout_dict[col]['max'] = np.nanmax(
                     analyse_params['distinct_values'])
-                self.max_min_checked[col]['max_text'].setText(
+                self.layout_dict[col]['max_text'].setText(
                     str(np.nanmax(analyse_params['distinct_values'])))
         else:
             names = analyse_params['distinct_values']
-            name_text = self.max_min_checked[col]['name_text']
-            model = self.max_min_checked[col]['model']
-            param_label = self.max_min_checked[col]['param_label'] = param_label
+            name_text = self.layout_dict[col]['name_text']
+            model = self.layout_dict[col]['model']
+            param_label = self.layout_dict[col]['param_label']
             i = model.rowCount()
             for name in names:
                 if name in name_text:
@@ -246,18 +243,18 @@ class Analyze:
                 item.setFlags(
                     QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
                 item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-                self.max_min_checked[col]['checked'].append(name)
-                self.max_min_checked[col]['checked_items'].append(item)
+                self.layout_dict[col]['checked'].append(name)
+                self.layout_dict[col]['checked_items'].append(item)
                 model.setItem(i, 0, item)
             param_label.setText(name_text)
-            self.max_min_checked[col]['model'] = model
-            self.max_min_checked[col]['name_text'] = name_text
-            self.max_min_checked[col]['param_label'] = param_label
+            self.layout_dict[col]['model'] = model
+            self.layout_dict[col]['name_text'] = name_text
+            self.layout_dict[col]['param_label'] = param_label
 
     def default_layout(self):
         """
         Creating the layout, (the UI file only contains the plotting area).
-        This function adds parameters names and default value both in a scroll 
+        This function adds parameters names and default value both in a scroll
         area bellow and to the right of the drawing area.
         :return:
         """
@@ -275,9 +272,9 @@ class Analyze:
         for key in self.overlapping_tables.keys():
             self.harvest_tbls[harvest_nbr] = {}
             self.harvest_tbls[harvest_nbr]['column'] = \
-            self.overlapping_tables[key]['ha']['index_col']
+                self.overlapping_tables[key]['ha']['index_col']
             self.harvest_tbls[harvest_nbr]['tbl'] = \
-            self.overlapping_tables[key]['ha']['tbl_name']
+                self.overlapping_tables[key]['ha']['tbl_name']
             harvest_nbr += 1
             defining_tlbs = []
             if 'ac' in self.overlapping_tables[key].keys():
@@ -293,26 +290,26 @@ class Analyze:
                 table = self.overlapping_tables[key][sch][tbl_k]
                 analyse_params = self.get_initial_distinct_values(
                     self.overlapping_tables[key][sch][tbl_k]['index_col'],
-                    [self.overlapping_tables[key][sch][tbl_k]['tbl_name']],
-                    [self.overlapping_tables[key][sch][tbl_k]['schema']])
-                if table['index_col'] in self.max_min_checked.keys():
-                    self._update_max_min(analyse_params, table['index_col'])
-                    self.max_min_checked[table['index_col']]['tbl'].append(
+                    self.overlapping_tables[key][sch][tbl_k]['tbl_name'],
+                    self.overlapping_tables[key][sch][tbl_k]['schema'])
+                if table['index_col'] in self.layout_dict.keys():
+                    self._update_layout(analyse_params, table['index_col'])
+                    self.layout_dict[table['index_col']]['tbl'].append(
                         table['tbl_name'])
-                    self.max_min_checked[table['index_col']]['schema'].append(
+                    self.layout_dict[table['index_col']]['schema'].append(
                         table['schema'])
-                    self.max_min_checked[table['index_col']]['harvest'].append(
+                    self.layout_dict[table['index_col']]['harvest'].append(
                         self.overlapping_tables[key]['ha'])
                 else:
                     nbr += 1
-                    self.max_min_checked[table['index_col']] = {'tbl': [],
+                    self.layout_dict[table['index_col']] = {'tbl': [],
                                                                 'schema': [],
                                                                 'harvest': []}
-                    self.max_min_checked[table['index_col']]['tbl'].append(
+                    self.layout_dict[table['index_col']]['tbl'].append(
                         table['tbl_name'])
-                    self.max_min_checked[table['index_col']]['schema'].append(
+                    self.layout_dict[table['index_col']]['schema'].append(
                         table['schema'])
-                    self.max_min_checked[table['index_col']]['harvest'].append(
+                    self.layout_dict[table['index_col']]['harvest'].append(
                         self.overlapping_tables[key]['ha'])
                     ## set top right data basic data
                     self.top_right_panel.append(QtWidgets.QGroupBox())
@@ -357,32 +354,55 @@ class Analyze:
         self.update_pic()
 
     def update_checked_field(self, other_parameters, main_investigate_col):
-        """Updates the parameters listed as checked in max_min_checked
+        """Updates the parameters listed as checked in layout_dict
         :param other_parameters: dict"""
         added_texts = []
-        for key in self.max_min_checked.keys():
-            if self.max_min_checked[key]['type'] == 'checked':
-                for item in self.max_min_checked[key]['checked_items']:
-                    if item.checkState() == 0 and item.text() in \
-                            self.max_min_checked[key]['checked']:
-                        self.max_min_checked[key]['checked'].remove(item.text())
-                    if item.checkState() == 2 and item.text() not in \
-                            self.max_min_checked[key]['checked']:
-                        self.max_min_checked[key]['checked'].append(item.text())
-                    if item.text() in added_texts:
-                        continue
-                    if key != main_investigate_col:
-                        if key in other_parameters['check_text'].keys():
-                            other_parameters['check_text'][
-                                key] += item.text() + ', '
-                            added_texts.append(item.text())
-                        else:
-                            other_parameters['check_text'][
-                                key] = item.text() + ', '
-                            added_texts.append(item.text())
-                other_parameters['check_text'][key] = \
-                other_parameters['check_text'][key][:-2]
-        return other_parameters
+        for col in self.layout_dict.keys():
+            for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
+                if self.layout_dict[col]['type'] == 'checked':
+                    table = self.layout_dict[col]['tbl'][tbl_nr]
+                    schema = self.layout_dict[col]['schema'][tbl_nr]
+                    ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
+                    s_t = f'{schema}.{table}'
+                    for item in self.layout_dict[col]['checked_items']:
+                        if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
+                            other_parameters[ha][s_t][col]['check_text'] += item.text() + "', '"
+                        if item.checkState() == 2 and col in main_investigate_col[ha][s_t].keys() and item.text() not in main_investigate_col['values']:
+                            main_investigate_col['values'] += item.text() + "', '"
+                    if col in other_parameters[ha][s_t].keys():
+                        other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-3]
+                    if col in main_investigate_col[ha][s_t].keys():
+                        main_investigate_col['values'] = main_investigate_col['values'][:-3]
+                else:
+                    break
+        return other_parameters, main_investigate_col
+
+    def update_top_panel(self, nbr, col):
+        """Updates the top right panel with the data that complies the diagram
+        """
+        if self.layout_dict[col]['type'] == 'max_min':
+            self.layout_dict[col]['min'] = self.layout_dict[col][
+                'min_text'].text()
+            self.layout_dict[col]['max'] = self.layout_dict[col][
+                'max_text'].text()
+            if isfloat(self.layout_dict[col]['max']):
+                self.top_right_panel[nbr].children()[1].setText(
+                    'Min: ' + str(
+                        round(float(self.layout_dict[col]['min']),
+                              2)) + ' Max: ' + str(
+                        round(float(self.layout_dict[col]['max']), 2)))
+            else:
+                self.top_right_panel[nbr].children()[1].setText(
+                    'Min: ' + str(
+                        self.layout_dict[col]['min']) + ' Max: ' + str(
+                        self.layout_dict[col]['max']))
+        else:
+            text = ''
+            for item in self.layout_dict[col]['checked_items']:
+                if item.checkState() == 2:
+                    text += item.text() + ' '
+            text = text[:-1]
+            self.top_right_panel[nbr].children()[1].setText(text)
 
     def update_pic(self):
         """
@@ -391,95 +411,92 @@ class Analyze:
         """
         if self.canvas is not None:
             self.dlg.mplvl.removeWidget(self.canvas)
-        other_parameters = {'schema': [],
-                            'tbl': [],
-                            'col': [],
-                            'type': [],
-                            'min': {},
-                            'max': {},
-                            'check_text': {}}
-        for nbr, col in enumerate(self.max_min_checked.keys()):
-            ## Update the top right panel with the data
-            if self.max_min_checked[col]['type'] == 'max_min':
-                self.max_min_checked[col]['min'] = self.max_min_checked[col][
-                    'min_text'].text()
-                self.max_min_checked[col]['max'] = self.max_min_checked[col][
-                    'max_text'].text()
-                if isfloat(self.max_min_checked[col]['max']):
-                    self.top_right_panel[nbr].children()[1].setText(
-                        'Min: ' + str(
-                            round(float(self.max_min_checked[col]['min']),
-                                  2)) + ' Max: ' + str(
-                            round(float(self.max_min_checked[col]['max']), 2)))
+        other_parameters = {}
+        investigating_param = {}
+        investigating_param['values'] = []
+        prefixes = {}
+        prefix_count = 0
+        for nbr, col in enumerate(self.layout_dict.keys()):
+            self.update_top_panel(nbr, col)
+            for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
+                table = self.layout_dict[col]['tbl'][tbl_nr]
+                schema = self.layout_dict[col]['schema'][tbl_nr]
+                data_type = self.layout_dict[col]['type']
+                ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
+                s_t = f'{schema}.{table}'
+                if s_t not in prefixes.keys():
+                    prefix_count += 1
+                    prefixes[s_t] = f'a{prefix_count}'
+                if self.cb[nbr].isChecked():
+                    column_investigated = col
+                    if ha not in investigating_param.keys():
+                        investigating_param[ha] = {}
+                        investigating_param[ha]['ha_col'] = \
+                        self.layout_dict[col]['harvest'][tbl_nr]['index_col']
+                    if s_t not in investigating_param[ha].keys():
+                        investigating_param[ha][s_t] = {}
+                    investigating_param[ha][s_t] = {}
+                    investigating_param[ha][s_t]['prefix'] = prefixes[s_t]
+                    investigating_param[ha][s_t]['col'] = col
+                    i_col = col
+                    analyse_params = self.get_initial_distinct_values(col,
+                                                                      table,
+                                                                      schema)
+                    investigating_param['values'].extend(analyse_params['distinct_values'])
+                    # Can happens multiple times, hence shouldn't be a problem.
+                    if data_type == 'checked':
+                        investigating_param['checked'] = True
+                    else:
+                        investigating_param['checked'] = False
                 else:
-                    self.top_right_panel[nbr].children()[1].setText(
-                        'Min: ' + str(
-                            self.max_min_checked[col]['min']) + ' Max: ' + str(
-                            self.max_min_checked[col]['max']))
-            else:
-                text = ''
-                for name in self.max_min_checked[col]['checked']:
-                    text += name + ' '
-                text = text[:-1]
-                self.top_right_panel[nbr].children()[1].setText(text)
-            if self.cb[nbr].isChecked():
-                investigating_param = {}
-                investigating_param['tbl'] = self.max_min_checked[col]['tbl']
-                investigating_param['schema'] = self.max_min_checked[col][
-                    'schema']
-                investigating_param['col'] = col
-                analyse_params = self.get_initial_distinct_values(col,
-                                                                  self.max_min_checked[
-                                                                      col][
-                                                                      'tbl'],
-                                                                  self.max_min_checked[
-                                                                      col][
-                                                                      'schema'])
-                if len(analyse_params['distinct_values']) > 20:
-                    investigating_param['hist'] = True
-                    investigating_param['values'] = []
-                    for val in range(0, len(analyse_params['distinct_values']),
-                                     int(round(len(analyse_params[
-                                                       'distinct_values']) / 20))):
-                        investigating_param['values'].append(
-                            analyse_params['distinct_values'][val])
-                    investigating_param['values'].append(
-                        analyse_params['distinct_values'][-1])
-                else:
-                    investigating_param['hist'] = False
-                    investigating_param['values'] = analyse_params[
-                        'distinct_values']
-                if self.max_min_checked[col]['type'] != 'checked':
-                    minvalue = float(self.max_min_checked[col]['min'])
-                    maxvalue = float(self.max_min_checked[col]['max'])
-                    for value in investigating_param['values']:
-                        if round(value, 3) < minvalue or round(value,
-                                                               3) > maxvalue:
-                            investigating_param['values'].remove(value)
-                else:
-                    # This is solved for the text cases in update_checked_field,
-                    # which is called later on
-                    pass
-            else:
-                other_parameters['schema'].append(
-                    self.max_min_checked[col]['schema'])
-                other_parameters['tbl'].append(self.max_min_checked[col]['tbl'])
-                other_parameters['col'].append(col)
-                if self.max_min_checked[col]['type'] == 'max_min':
-                    other_parameters['type'].append('max_min')
-                    other_parameters['min'][col] = self.max_min_checked[col][
-                        'min']
-                    other_parameters['max'][col] = self.max_min_checked[col][
-                        'max']
-                else:
-                    other_parameters['type'].append('checked')
-        other_parameters = self.update_checked_field(other_parameters,
-                                                     investigating_param['col'])
-        filter = self.get_filter_text(investigating_param, other_parameters)
+                    if ha not in other_parameters.keys():
+                        other_parameters[ha] = {}
+                    if s_t not in other_parameters[ha].keys():
+                        other_parameters[ha][s_t] = {}
+
+                    other_parameters[ha][s_t]['prefix'] = prefixes[s_t]
+                    other_parameters[ha][s_t][col] = {}
+                    if self.layout_dict[col]['type'] == 'max_min':
+                        other_parameters[ha][s_t][col]['type'] = 'max_min'
+                        other_parameters[ha][s_t][col]['min'] = self.layout_dict[col]['min']
+                        other_parameters[ha][s_t][col]['max'] = self.layout_dict[col]['max']
+                    else:
+                        other_parameters[ha][s_t][col]['type'] = 'checked'
+                        other_parameters[ha][s_t][col]['check_text'] = "'"
+        if not investigating_param['checked']:
+            minvalue = float(self.layout_dict[i_col]['min'])
+            maxvalue = float(self.layout_dict[i_col]['max'])
+            values = copy.deepcopy(investigating_param['values'])
+            for value in investigating_param['values']:
+                if round(value, 3) < minvalue:
+                    values.remove(value)
+                if round(value, 3) > maxvalue:
+                    values.remove(value)
+            investigating_param['values'] = values
+        if not investigating_param['checked'] and len(
+                investigating_param['values']) > 20:
+            investigating_param['hist'] = True
+            investigating_param['values'].sort()
+            temp = []
+            for val in range(0, len(investigating_param['values']),
+                             int(round(len(investigating_param['values']) / 20))):
+                temp.append(investigating_param['values'][val])
+            temp.append(investigating_param['values'][-1])
+            investigating_param['values'] = temp
+        elif not investigating_param['checked']:
+            investigating_param['hist'] = False
+            investigating_param['values'].sort()
+        else:
+            investigating_param['hist'] = False
+            investigating_param['values'] = "'"
+        other_parameters, investigating_param = self.update_checked_field(other_parameters, investigating_param)
+        min_counts = self.dlg.minNumber.text()
+        filter = sql_queary(1, investigating_param, other_parameters, self.db,
+                            min_counts)
         fig, ax1 = plt.subplots()
         ax1.plot(filter[1], filter[0], color='green')
         ax1.yaxis.label.set_color('green')
-        ax1.set_xlabel(investigating_param['col'].replace('_', ' '))
+        ax1.set_xlabel(column_investigated.replace('_', ' '))
         ax1.set_ylabel('mean yield (kg/ha)')
         ax2 = ax1.twinx()
         ax2.plot(filter[1], filter[2], 'x', color='blue')
@@ -492,115 +509,111 @@ class Analyze:
         self.canvas.draw()
         self.finish = True
 
-    def get_filter_text(self, investigating_param, other_paramameters):
+    def get_filtered_data(self, investigating_param, other_paramameters, prefixes):
         """
         Writes the sql question
         :param investigating_param: What parameter to put on the x-axis
         :return: a diagram over the mean yield
         """
-        ## TODO enable the possibility to have more than one harvest table
-        # self.max_min_checked[nbr]['type'] = 'checked'
-        harvest_tables = []
-        for table in investigating_param['tbl']:
-            for key in self.overlapping_tables.keys():
-                if 'ac' in self.overlapping_tables[key].keys():
-                    for i in range(
-                            self.overlapping_tables[key]['ac'].__len__()):
-                        if self.overlapping_tables[key]['ac'][i][
-                            'tbl_name'] == table:
-                            harvest_tables.append(
-                                self.overlapping_tables[key]['ha'])
-                            break
-                if 'so' in self.overlapping_tables[key].keys():
-                    for i in range(
-                            self.overlapping_tables[key]['so'].__len__()):
-                        if self.overlapping_tables[key]['so'][i][
-                            'tbl_name'] == table:
-                            harvest_tables.append(
-                                self.overlapping_tables[key]['ha'])
-                            break
-        min_counts = self.dlg.minNumber.text()
-        results = sql_queary(1, investigating_param, harvest_tables,
-                             other_paramameters, self.db, min_counts)
-        return results
 
-
-def sql_queary(task, investigating_param, harvest_tables, other_parameters, db,
+def sql_queary(task, investigating_param, other_parameters, db,
                min_counts):
     mean_yields = [[], [], []]
     values = investigating_param['values']
+    if investigating_param['checked']:
+        values = values.split(',')
     values.sort()
     for value_nbr, value in enumerate(values):
         if investigating_param['hist'] and value_nbr == 0:
             continue
-        all_ready_joined = {}
-        sql = 'with harvest_tables as('
-        for ha_table in harvest_tables:
-            sql += """SELECT {col} as yield, pos
-            FROM harvest.{tbl} \nUNION\n""".format(col=ha_table['index_col'],
-                                                   tbl=ha_table['tbl_name'])
-        sql = sql[:-6] + ')\n'
-        sql += """select avg(yield), count(*) from harvest_tables ha\n"""
-        nbr = 0
-        for i, col in enumerate(other_parameters['col']):
-            for j, tbl in enumerate(other_parameters['tbl'][i]):
-                nbr += 1
-                sql += """join {schema}.{new_tbl} a{nbr} on st_intersects(ha.pos, a{nbr}.polygon)
-                """.format(schema=other_parameters['schema'][i][j],
-                           new_tbl=tbl, nbr=nbr)
-        sql = sql[:-5]
-        for i, tabel in enumerate(investigating_param['tbl']):
-            sql += """join {schema}.{tbl} b{nbr2} on st_intersects(ha.pos, b{nbr2}.polygon)
-            """.format(schema=investigating_param['schema'][i], tbl=tbl,
-                       nbr2=i + 1)
-        sql += "where "
-        nbr = 0
-        for i, col in enumerate(other_parameters['col']):
-            for j, tbl in enumerate(other_parameters['tbl'][i]):
-                nbr += 1
-                if other_parameters['type'][i] == 'checked':
-                    sql += "a{nbr}.{col} in ('{text}') and\n".format(nbr=nbr,
-                                                                     col=col,
-                                                                     text=
-                                                                     other_parameters[
-                                                                         'check_text'][
-                                                                         col])
-                else:
-                    sql += 'a{nbr}.{col} >= {min} and\n'.format(nbr=nbr,
-                                                                col=col,
-                                                                text=
-                                                                other_parameters[
-                                                                    'min'][col])
-                    sql += 'a{nbr}.{col} <= {max} and\n'.format(nbr=nbr,
-                                                                col=col,
-                                                                text=
-                                                                other_parameters[
-                                                                    'max'][col])
-        for i, tabel in enumerate(investigating_param['tbl']):
-            if investigating_param['hist']:
-                sql += "b{nbr2}.{col} >= {min} and\n".format(nbr2=i + 1,
-                                                             col=
-                                                             investigating_param[
-                                                                 'col'],
-                                                             min=
-                                                             investigating_param[
-                                                                 'values'][
-                                                                 value_nbr - 1])
-                sql += "b{nbr2}.{col} <= {max} and\n".format(nbr2=i + 1,
-                                                             col=
-                                                             investigating_param[
-                                                                 'col'],
-                                                             max=value)
-            elif not isint(value) and not isfloat(value):
-                sql += """b{nbr2}.{col} = '{val}' and\n""".format(
-                    nbr2=i + 1, col=investigating_param['col'],
-                    val=value)
-            else:
-                sql += """b{nbr2}.{col} = {val} and\n""".format(
-                    nbr2=i + 1, col=investigating_param['col'],
-                    _val=value)
-        # print(sql)
-        sql = sql[:-4]
+        if value == '':
+            value = ' '
+        sql = 'with '
+        for ha in investigating_param.keys():
+            all_ready_joined = []
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f"""{ha} as(select COALESCE(avg({investigating_param[ha]['ha_col']}),0) as yield, count(*)
+            FROM harvest.{ha} ha
+            """
+            for in_key in investigating_param[ha].keys():
+                if in_key == 'ha_col':
+                    continue
+                pre = investigating_param[ha][in_key]['prefix']
+                sql += f"""JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                """
+                all_ready_joined.append(in_key)
+            if ha in other_parameters.keys():
+                for oth_key in other_parameters[ha].keys():
+                    if not oth_key in sql:
+                        pre = other_parameters[ha][oth_key]['prefix']
+                        sql += f"""JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                        """
+                        all_ready_joined.append(oth_key)
+            sql += 'WHERE '
+            if ha in other_parameters.keys():
+                for oth_key in other_parameters[ha].keys():
+                    pre = other_parameters[ha][oth_key]['prefix']
+                    for attr in other_parameters[ha][oth_key].items():
+                        if attr[0] == 'prefix':
+                            continue
+                        if attr[1]['type'] == 'max_min':
+                            sql+= f"""{pre}.{attr[0]} >= {attr[1]['min']} AND
+                            """
+                            sql += f"""{pre}.{attr[0]} <= {attr[1]['max']} AND
+                            """
+                        if attr[1]['type'] == 'checked':
+                            sql+= f"""{pre}.{attr[0]} in ({attr[1]['check_text']}) AND
+                            """
+            for in_key in investigating_param[ha].keys():
+                if in_key == 'ha_col':
+                    continue
+                for in_key in investigating_param[ha].keys():
+                    if in_key == 'ha_col':
+                        continue
+                    pre = investigating_param[ha][in_key]['prefix']
+                    col = investigating_param[ha][in_key]['col']
+                    if investigating_param['checked']:
+                        sql += f"{pre}.{col} like '{value}),"
+                    elif investigating_param['hist']:
+                        if len(values) != value_nbr:
+                            sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
+                            {pre}.{col} < {value}),"""
+                        else:
+                            sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
+                            {pre}.{col} <= {value}),"""
+                    else:
+                        sql += f'{pre}.{col} = {value}),'
+        sql = sql[:-1]
+        sql += f"""
+        SELECT case when("""
+        for ha in investigating_param.keys():
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f'{ha}.count + '
+        sql = sql[:-3] + ') > 0 then ('
+        for ha in investigating_param.keys():
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f' {ha}.yield * {ha}.count + '
+        sql = sql[:-3] + ')/('
+        for ha in investigating_param.keys():
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f'{ha}.count + '
+        sql = sql[:-3] + ') else 0 end as yield, ('
+        for ha in investigating_param.keys():
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f'{ha}.count + '
+        sql = sql[:-3] + """)
+        FROM """
+        for ha in investigating_param.keys():
+            if not type(investigating_param[ha]) == dict:
+                continue
+            sql += f'{ha}, '
+        sql = sql[:-2]
+        print(sql)
         result = db.execute_and_return(sql)[0]
         mean_value = result[0]
         count_samples = result[1]
