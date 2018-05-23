@@ -13,6 +13,8 @@ import copy
 __author__ = 'Axel Andersson'
 
 
+#import pydevd
+#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class Analyze:
     def __init__(self, parent_widget, tables_to_analyse):
         """
@@ -184,26 +186,22 @@ class Analyze:
 
     def _set_number_layout(self, qbox, analyse_params, col, nbr):
         QtWidgets.QLabel('Min:', qbox).move(83, 34)
-        min_value = QtWidgets.QLineEdit(
-            str(np.nanmin(analyse_params['distinct_values'])), qbox)
+        min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(108, 32)
-        QtWidgets.QLabel(
-            '({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))),
-            qbox).move(112, 15)
+        org_min = QtWidgets.QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
+        org_min.move(112, 15)
         QtWidgets.QLabel('Max:', qbox).move(263, 34)
-        max_value = QtWidgets.QLineEdit(
-            str(np.nanmax(analyse_params['distinct_values'])), qbox)
+        max_value = QtWidgets.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
         max_value.move(288, 32)
-        QtWidgets.QLabel(
-            '({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))),
-            qbox).move(292, 15)
+        org_max = QtWidgets.QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
+        org_max.move(292, 15)
         self.layout_dict[col]['type'] = 'max_min'
-        self.layout_dict[col]['min'] = np.nanmin(
-            analyse_params['distinct_values'])
+        self.layout_dict[col]['min'] = np.nanmin(analyse_params['distinct_values'])
         self.layout_dict[col]['min_text'] = min_value
-        self.layout_dict[col]['max'] = np.nanmax(
-            analyse_params['distinct_values'])
+        self.layout_dict[col]['min_label_text'] = org_min
+        self.layout_dict[col]['max'] = np.nanmax(analyse_params['distinct_values'])
         self.layout_dict[col]['max_text'] = max_value
+        self.layout_dict[col]['max_label_text'] = org_max
         if isfloat(max_value.text()):
             param_label = QtWidgets.QLabel('Min: ' + str(
                 round(float(min_value.text()), 2)) + ' Max: ' + str(
@@ -216,18 +214,14 @@ class Analyze:
 
     def _update_layout(self, analyse_params, col):
         if self.layout_dict[col]['type'] == 'max_min':
-            if self.layout_dict[col]['min'] > np.nanmin(
-                    analyse_params['distinct_values']):
-                self.layout_dict[col]['min'] = np.nanmin(
-                    analyse_params['distinct_values'])
-                self.layout_dict[col]['min_text'].setText(
-                    str(np.nanmin(analyse_params['distinct_values'])))
-            if self.layout_dict[col]['max'] < np.nanmax(
-                    analyse_params['distinct_values']):
-                self.layout_dict[col]['max'] = np.nanmax(
-                    analyse_params['distinct_values'])
-                self.layout_dict[col]['max_text'].setText(
-                    str(np.nanmax(analyse_params['distinct_values'])))
+            if self.layout_dict[col]['min'] > np.nanmin(analyse_params['distinct_values']):
+                self.layout_dict[col]['min'] = np.nanmin(analyse_params['distinct_values'])
+                self.layout_dict[col]['min_text'].setText(str(np.nanmin(analyse_params['distinct_values'])))
+                self.layout_dict[col]['min_label_text'].setText(str(np.nanmin(analyse_params['distinct_values'])))
+            if self.layout_dict[col]['max'] < np.nanmax(analyse_params['distinct_values']):
+                self.layout_dict[col]['max'] = np.nanmax(analyse_params['distinct_values'])
+                self.layout_dict[col]['max_text'].setText(str(np.nanmax(analyse_params['distinct_values'])))
+                self.layout_dict[col]['max_label_text'].setText(str(np.nanmax(analyse_params['distinct_values'])))
         else:
             names = analyse_params['distinct_values']
             name_text = self.layout_dict[col]['name_text']
@@ -258,14 +252,13 @@ class Analyze:
         area bellow and to the right of the drawing area.
         :return:
         """
-        colors = ['green', 'blue', 'red']
-        for key in mplib_colors.cnames.keys():
-            colors.append(key)
+        colors = ['green', 'blue', 'red', 'green', 'blue', 'red', 'green', 'blue', 'red']
+        #for key in mplib_colors.cnames.keys():
+        #    colors.append(key)
         scroll_area_layout = QtWidgets.QVBoxLayout()
         constranint_area = QtWidgets.QWidget()
         constranint_layout = QtWidgets.QVBoxLayout()
         first_radio = True
-        first_param = True
         harvest_nbr = 0
         nbr = -1
         # Looping over all sets of overlapping data for each harvest table
@@ -294,12 +287,9 @@ class Analyze:
                     self.overlapping_tables[key][sch][tbl_k]['schema'])
                 if table['index_col'] in self.layout_dict.keys():
                     self._update_layout(analyse_params, table['index_col'])
-                    self.layout_dict[table['index_col']]['tbl'].append(
-                        table['tbl_name'])
-                    self.layout_dict[table['index_col']]['schema'].append(
-                        table['schema'])
-                    self.layout_dict[table['index_col']]['harvest'].append(
-                        self.overlapping_tables[key]['ha'])
+                    self.layout_dict[table['index_col']]['tbl'].append(table['tbl_name'])
+                    self.layout_dict[table['index_col']]['schema'].append(table['schema'])
+                    self.layout_dict[table['index_col']]['harvest'].append(self.overlapping_tables[key]['ha'])
                 else:
                     nbr += 1
                     self.layout_dict[table['index_col']] = {'tbl': [],
@@ -313,12 +303,9 @@ class Analyze:
                         self.overlapping_tables[key]['ha'])
                     ## set top right data basic data
                     self.top_right_panel.append(QtWidgets.QGroupBox())
-                    self.top_right_panel[nbr].setMinimumSize(
-                        QtCore.QSize(30, 35))
+                    self.top_right_panel[nbr].setMinimumSize(QtCore.QSize(30, 35))
                     self.top_right_panel[nbr].setStyleSheet("border:0px;")
-                    param_label = QtWidgets.QLabel(
-                        table['index_col'].replace('_', ' '),
-                        self.top_right_panel[nbr])
+                    param_label = QtWidgets.QLabel(table['index_col'].replace('_', ' '), self.top_right_panel[nbr])
                     param_label.move(10, 5)
                     constranint_layout.addWidget(self.top_right_panel[nbr])
 
@@ -356,8 +343,8 @@ class Analyze:
     def update_checked_field(self, other_parameters, main_investigate_col):
         """Updates the parameters listed as checked in layout_dict
         :param other_parameters: dict"""
-        added_texts = []
         for col in self.layout_dict.keys():
+            text_v = ""
             for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
                 if self.layout_dict[col]['type'] == 'checked':
                     table = self.layout_dict[col]['tbl'][tbl_nr]
@@ -366,15 +353,15 @@ class Analyze:
                     s_t = f'{schema}.{table}'
                     for item in self.layout_dict[col]['checked_items']:
                         if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
-                            other_parameters[ha][s_t][col]['check_text'] += item.text() + "', '"
-                        if item.checkState() == 2 and col in main_investigate_col[ha][s_t].keys() and item.text() not in main_investigate_col['values']:
-                            main_investigate_col['values'] += item.text() + "', '"
+                            other_parameters[ha][s_t][col]['check_text'] += item.text() + "','"
+                        if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
+                            text_v += f"'{item.text()}',"
                     if col in other_parameters[ha][s_t].keys():
-                        other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-3]
-                    if col in main_investigate_col[ha][s_t].keys():
-                        main_investigate_col['values'] = main_investigate_col['values'][:-3]
+                        other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-2]
                 else:
                     break
+            if len(text_v) > 0:
+                main_investigate_col['values'] = text_v[:-1]
         return other_parameters, main_investigate_col
 
     def update_top_panel(self, nbr, col):
@@ -494,12 +481,22 @@ class Analyze:
         filter = sql_queary(1, investigating_param, other_parameters, self.db,
                             min_counts)
         fig, ax1 = plt.subplots()
-        ax1.plot(filter[1], filter[0], color='green')
+        ax2 = ax1.twinx()
+        if investigating_param['checked']:
+            xlabels = filter[1]
+            x = np.arange(len(xlabels))
+            ax1.plot(x, filter[0], color='green')
+            ax1.set_xticks(x)
+            ax1.set_xticklabels(xlabels, rotation=40, ha='right')
+            ax2.plot(x, filter[2], 'x', color='blue')
+            ax2.set_xticks(x)
+            ax2.set_xticklabels(xlabels, rotation=40, ha='right')
+        else:
+            ax1.plot(filter[1], filter[0], color='green')
+            ax2.plot(filter[1], filter[2], 'x', color='blue')
         ax1.yaxis.label.set_color('green')
         ax1.set_xlabel(column_investigated.replace('_', ' '))
         ax1.set_ylabel('mean yield (kg/ha)')
-        ax2 = ax1.twinx()
-        ax2.plot(filter[1], filter[2], 'x', color='blue')
         ax2.yaxis.label.set_color('blue')
         ax2.set_ylabel('Number of harvest samples')
         plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.17, bottom=0.12,
@@ -574,7 +571,7 @@ def sql_queary(task, investigating_param, other_parameters, db,
                     pre = investigating_param[ha][in_key]['prefix']
                     col = investigating_param[ha][in_key]['col']
                     if investigating_param['checked']:
-                        sql += f"{pre}.{col} like '{value}),"
+                        sql += f"{pre}.{col} like {value}),"
                     elif investigating_param['hist']:
                         if len(values) != value_nbr:
                             sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>685</width>
+    <width>824</width>
     <height>652</height>
    </rect>
   </property>
@@ -27,7 +27,7 @@
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>461</width>
+     <width>591</width>
      <height>361</height>
     </rect>
    </property>
@@ -97,7 +97,7 @@
   <widget class="QScrollArea" name="groupBoxConstraints">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>610</x>
      <y>0</y>
      <width>201</width>
      <height>361</height>
