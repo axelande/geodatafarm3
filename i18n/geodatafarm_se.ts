@@ -2,84 +2,253 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="sv_SE" sourcelanguage="en">
 <context>
+    <name>CreateFarm</name>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="70"/>
+        <source>Error:</source>
+        <translation>Fel:</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="63"/>
+        <source>- Is your computer online? 
+- If you are sure that your computer please send an email to geo_farm@gmail.com</source>
+        <translation>Är din dator ansluten till internet? Om så är fallet skicka gärna ett e-mail till geodatafarm@gmail.com så hjälper jag dig</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="67"/>
+        <source>Farm name allready taken, please choose another name for your farm!</source>
+        <translation>Gårdsnamnet är redan taget, var god välj ett annat namn på gården!</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="70"/>
+        <source>User name allready taken, please choose another name as user name!</source>
+        <translation>Användarsnamnet är redan taget, var god välj ett annat namn aom användarnamn!</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="73"/>
+        <source>Done</source>
+        <translation>Klar</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="73"/>
+        <source>Database created</source>
+        <translation>Databasen är skapad</translation>
+    </message>
+</context>
+<context>
     <name>CreateFarmBase</name>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="14"/>
         <source>Create farm</source>
-        <translation>Skapa en gård</translation>
+        <translation type="obsolete">Skapa en gård</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="48"/>
         <source>Create a new 
 database</source>
-        <translation>Skapa en ny databas</translation>
+        <translation type="obsolete">Skapa en ny databas</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="62"/>
         <source>farmname</source>
-        <translation>Gårdsnamn</translation>
+        <translation type="obsolete">Gårdsnamn</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="75"/>
         <source>Farm name:</source>
-        <translation>Gårdsnamn:</translation>
+        <translation type="obsolete">Gårdsnamn:</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="88"/>
         <source>User name:</source>
-        <translation>Användarnamn:</translation>
+        <translation type="obsolete">Användarnamn:</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="101"/>
         <source>name</source>
-        <translation>Namn</translation>
+        <translation type="obsolete">Namn</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="114"/>
         <source>choose password</source>
-        <translation>Välj lösenord</translation>
+        <translation type="obsolete">Välj lösenord</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="127"/>
         <source>Password:</source>
-        <translation>Lösenord:</translation>
+        <translation type="obsolete">Lösenord:</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="140"/>
         <source>your@email.com</source>
-        <translation>din@epostadress</translation>
+        <translation type="obsolete">din@epostadress</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="153"/>
         <source>e-mail</source>
-        <translation>E-mail</translation>
+        <translation type="obsolete">E-mail</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="166"/>
         <source>(e-mail is only used to recover database)</source>
-        <translation>(e-post adressen är enbart tänkt att användas för att återskapa databasen)</translation>
+        <translation type="obsolete">(e-post adressen är enbart tänkt att användas för att återskapa databasen)</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="179"/>
         <source>Create a new farm database</source>
-        <translation>Skapa en ny Gård</translation>
+        <translation type="obsolete">Skapa en ny Gård</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="195"/>
         <source>Connect to 
 excisting database</source>
-        <translation>Anslut till en redan exiceterande databas</translation>
+        <translation type="obsolete">Anslut till en redan exiceterande databas</translation>
+    </message>
+</context>
+<context>
+    <name>CreateGuideFileBase</name>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="14"/>
+        <source>Add indata to the model</source>
+        <translation>Lägg till data</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="29"/>
+        <source>Cell size (m):</source>
+        <translation>Cell storlek (m):</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="42"/>
+        <source>Data source:</source>
+        <translation>Data källa:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="55"/>
+        <source>100 +  [0] *2 </source>
+        <translation>100 + [0] *2</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="68"/>
+        <source>EPSG:</source>
+        <translation>EPSG:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="81"/>
+        <source>Update</source>
+        <translation>Updatera</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="94"/>
+        <source>Max value: Not selected</source>
+        <translation>Max värde: Ej valt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="107"/>
+        <source>4326</source>
+        <translation>4326</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="121"/>
+        <source>Integear (1)</source>
+        <translation>Heltal</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="126"/>
+        <source>Float (1.234)</source>
+        <translation>Decimaltal (1,234)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="140"/>
+        <source>Attribute:</source>
+        <translation>Attribut:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="153"/>
+        <source>Write your equation here, 
+denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</source>
+        <translation>Skriv din ekvation här, 
+benämn ditt attribut som [0], [1] etc.:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="167"/>
+        <source>25</source>
+        <translation>25</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="181"/>
+        <source>-- Select base file --</source>
+        <translation>-- Välj fil att utgå från --</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="198"/>
+        <source>--&gt;</source>
+        <translation>--&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="243"/>
+        <source>&lt;--</source>
+        <translation>&lt;--</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="269"/>
+        <source>Store to a file:</source>
+        <translation>Spara till fil:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="282"/>
+        <source>Data type:</source>
+        <translation>Data typ:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="295"/>
+        <source>Min value: Not selected</source>
+        <translation>Min värde: Ej valt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="308"/>
+        <source>Setting_distance</source>
+        <translation>satt_avstand</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="321"/>
+        <source>New attr name:</source>
+        <translation>Nytt attributnamn:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="334"/>
+        <source>Select Outputpath</source>
+        <translation>Välj plats att spara filen på</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="350"/>
+        <source>Create Guide File</source>
+        <translation>Skapa styrfil</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="363"/>
+        <source>Path not selected</source>
+        <translation>Plats att spara på är ej definerad</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="376"/>
+        <source>File name</source>
+        <translation>Fil namn</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="389"/>
+        <source>guide_file</source>
+        <translation>styrfil</translation>
     </message>
 </context>
 <context>
     <name>EndMethod</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="476"/>
+        <location filename="../import_data/handle_text_data.py" line="495"/>
         <source>Min value is greater than the maximum value</source>
         <translation>Det minsta värdet är större än det största värdet</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="548"/>
+        <location filename="../import_data/handle_text_data.py" line="569"/>
         <source> rows were skipped since the row did not match the heading.</source>
         <translation>rader hoppades över då antalet columner inte matachade den översta radens antal.</translation>
     </message>
@@ -87,29 +256,44 @@ excisting database</source>
 <context>
     <name>GeoDataFarm</name>
     <message>
-        <location filename="../geodatafarm.py" line="207"/>
+        <location filename="../GeoDataFarm.py" line="209"/>
         <source>&amp;GeoFarm</source>
         <translation>&amp;GeoFarm</translation>
     </message>
     <message>
-        <location filename="../geodatafarm.py" line="188"/>
+        <location filename="../GeoDataFarm.py" line="190"/>
         <source>GeoDataFarm</source>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../geodatafarm.py" line="246"/>
+        <location filename="../GeoDataFarm.py" line="251"/>
         <source>No farm is created, please create a farm to continue</source>
         <translation>Ingen gård är skapad, var god god och gör det innan du fortsätter</translation>
     </message>
     <message>
         <location filename="../geodatafarm.py" line="305"/>
         <source>You need to have at least one input and one harvest data set selected.</source>
-        <translation>Du måste välja åtminstånde en indata fil och en skördefil för att se någon korrelation.</translation>
+        <translation type="obsolete">Du måste välja åtminstånde en indata fil och en skördefil för att se någon korrelation.</translation>
     </message>
     <message>
-        <location filename="../geodatafarm.py" line="337"/>
+        <location filename="../GeoDataFarm.py" line="352"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Namnet finns redan, vill du ersätta den datan?</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="314"/>
+        <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
+        <translation>Du måste välja åtminstånde en aktivitet eller jorddata och en skörde data.</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="323"/>
+        <source>Support for databasefiles are not implemented 100% yet</source>
+        <translation>Stöd för databas filer är inte implemeterat till 100% än</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="329"/>
+        <source>Support for shapefiles are not implemented 100% yet</source>
+        <translation>Stöd för shapefiler filer är inte implemeterat till 100% än</translation>
     </message>
 </context>
 <context>
@@ -191,93 +375,93 @@ excisting database</source>
         <translation type="obsolete">Välj ditt lager:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="170"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="279"/>
         <source>Reload layer</source>
         <translation>Ladda om lager</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="210"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="261"/>
         <source>Min value:</source>
         <translation>Minsta värde:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="203"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="254"/>
         <source>Max value:</source>
         <translation>Högsta värde:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="188"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="239"/>
         <source>Max number 
 of colors:</source>
         <translation>Max antal färger:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="196"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="247"/>
         <source>20</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="225"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="177"/>
         <source>Labels rules</source>
         <translation>Figursättnings regler</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="240"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="192"/>
         <source>Equal count intervals</source>
         <translation>Lika antal i varje interval</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="259"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="211"/>
         <source>Evenenly distrubuted intervals</source>
         <translation>Lika stora interval</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="277"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="290"/>
         <source>Data Management</source>
         <translation>Data Management</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="304"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="317"/>
         <source>Update lists</source>
         <translation>Updatera listorna</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="320"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="335"/>
         <source>Edit datasets</source>
         <translation>Gör analys förändringar</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="342"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="375"/>
         <source>Activity data sets:</source>
         <translation>Aktivitets listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="383"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="416"/>
         <source>Harvest data sets:</source>
         <translation>Skörde data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="424"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="457"/>
         <source>Soil data sets:</source>
         <translation>Jorddata listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="459"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="492"/>
         <source>Add selected tables to the canvas</source>
         <translation>Lägg till data till kartan</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="469"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="502"/>
         <source>Run the analyse</source>
         <translation>Kör analys</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="485"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="518"/>
         <source>Create new farm database</source>
         <translation>Skapa ny gård</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="507"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="540"/>
         <source>No farm database created</source>
         <translation>Ingen gård är skapad</translation>
     </message>
@@ -288,8 +472,106 @@ of colors:</source>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="154"/>
-        <source>Edit one layer on the map:</source>
-        <translation>Editera följande lager i kartan:</translation>
+        <source>Edit the attributes of the current layer</source>
+        <translation>Editera följande lager i kartan</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="164"/>
+        <source>Edit the presentation of the layer on the canvas:</source>
+        <translation>Ändra presentationen av följande läger i kartvyn:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="351"/>
+        <source>Create guide file</source>
+        <translation>Skapa styrfil</translation>
+    </message>
+</context>
+<context>
+    <name>ImportDBFileDialogBase</name>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="14"/>
+        <source>Add indata to the model</source>
+        <translation>Lägg till data</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="45"/>
+        <source>Add input file</source>
+        <translation>Indata fil</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="58"/>
+        <source>Select the main data set:</source>
+        <translation>Välj huvuddata fil:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="74"/>
+        <source>Add data to canvas</source>
+        <translation>Lägg till data till kartan</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="90"/>
+        <source>Continue</source>
+        <translation>Fortsätt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="106"/>
+        <source>Date and time 
+are stored in two 
+different columns</source>
+        <translation>Datum och tid är sparade i två kolumner</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="137"/>
+        <source>(YYYY)</source>
+        <translation>(åååå)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="192"/>
+        <source>Date and time 
+are stored in 
+the same column</source>
+        <translation>Datum och tid är sparade i samma kolumn</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="210"/>
+        <source>Date:</source>
+        <translation>Datum:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="223"/>
+        <source>Time:</source>
+        <translation>Tid:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="252"/>
+        <source>Date stored in 
+following column</source>
+        <translation>Datum finns i följande kolumn</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="279"/>
+        <source>Data prefix:</source>
+        <translation>Data prefix:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="292"/>
+        <source>(&quot;plant&quot;, &quot;soiltype&quot;, &quot;irrigation&quot; etc.)</source>
+        <translation>(&quot;sätt&quot;,&quot;jorddata&quot;, &quot;bevattning&quot; etc.)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="305"/>
+        <source>EPGS Coordinate system:</source>
+        <translation>EPGCS Kordinatsystem:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="318"/>
+        <source>4326</source>
+        <translation>4326</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_db_file_dialog_base.ui" line="331"/>
+        <source>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</source>
+        <translation>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</translation>
     </message>
 </context>
 <context>
@@ -297,113 +579,180 @@ of colors:</source>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="14"/>
         <source>Add indata to the model</source>
-        <translation type="unfinished">Lägg till indata till modellen</translation>
+        <translation>Lägg till indata till modellen</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="45"/>
         <source>Add input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Indata fil</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="58"/>
         <source>Columns in the file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumner i filen:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="84"/>
         <source>Parameters that could be analysed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameterar som kan bli analyserade:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="110"/>
         <source>&lt;--</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;--</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="123"/>
         <source>--&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>--&gt;</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="139"/>
         <source>Add data to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till data till kartan</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="155"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Fortsätt</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="171"/>
         <source>Not date related data</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="190"/>
         <source>No date column, hence 
 same date for all rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen datumn kolumn, men samma datum för alla rader</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="210"/>
         <source>Date and time 
 are stored in two 
 different columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum och tid är sparade i två kolumner</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="241"/>
         <source>(YYYY-mm-dd)</source>
-        <translation type="unfinished"></translation>
+        <translation>(åååå-mm-dd)</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="296"/>
         <source>Date and time 
 are stored in 
 the same column</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum och tid är sparade i samma kolumn</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="314"/>
         <source>Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="327"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="356"/>
         <source>Date stored in 
 following column</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum finns i följande kolumn</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="383"/>
         <source>Data prefix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Data prefix:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="396"/>
         <source>(&quot;plant&quot;, &quot;soiltype&quot;, &quot;irrigation&quot; etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>(&quot;sätt&quot;,&quot;jorddata&quot;, &quot;bevattning&quot; etc.)</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="409"/>
         <source>EPGS Coordinate system:</source>
-        <translation type="unfinished"></translation>
+        <translation>EPGCS Kordinatsystem:</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="422"/>
         <source>4326</source>
-        <translation type="unfinished"></translation>
+        <translation>4326</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="435"/>
         <source>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="14"/>
+        <source>Create farm</source>
+        <translation>Skapa en gård</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="48"/>
+        <source>Create a new 
+database</source>
+        <translation>Skapa en ny databas</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="62"/>
+        <source>farmname</source>
+        <translation>Gårdsnamn</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="75"/>
+        <source>Farm name:</source>
+        <translation>Gårdsnamn:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="88"/>
+        <source>User name:</source>
+        <translation>Användarnamn:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="101"/>
+        <source>name</source>
+        <translation>Namn</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="114"/>
+        <source>choose password</source>
+        <translation>Välj lösenord</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="127"/>
+        <source>Password:</source>
+        <translation>Lösenord:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="140"/>
+        <source>your@email.com</source>
+        <translation>din@epostadress</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="153"/>
+        <source>e-mail</source>
+        <translation>E-mail</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="166"/>
+        <source>(e-mail is only used to recover database)</source>
+        <translation>(e-post adressen är enbart tänkt att användas för att återskapa databasen)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="179"/>
+        <source>Create a new farm database</source>
+        <translation>Skapa en ny gård</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_farm_popup_base.ui" line="195"/>
+        <source>Connect to 
+excisting database</source>
+        <translation>Anslut till en redan exiceterande databas</translation>
     </message>
 </context>
 <context>
@@ -567,17 +916,17 @@ following column</source>
 <context>
     <name>InputShpHandler</name>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="175"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="170"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="101"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="96"/>
         <source>No shapes was found in the file</source>
         <translation>Ingen geometri hittades i filen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="175"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="170"/>
         <source>The projection is probably wrong, please change from 4326</source>
         <translation>Projektionen är troligen fel, var god ändra från 4326</translation>
     </message>
@@ -585,34 +934,39 @@ following column</source>
 <context>
     <name>InputTextHandler</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="115"/>
+        <location filename="../import_data/handle_text_data.py" line="120"/>
         <source>No row selected!</source>
         <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="229"/>
+        <location filename="../import_data/handle_text_data.py" line="245"/>
         <source>The shape file already exist on your computer, would you like to replace it?</source>
         <translation>Det finns redan en fil med samma namn på din dator, vill du spara över den?</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="275"/>
+        <location filename="../import_data/handle_text_data.py" line="291"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="272"/>
+        <location filename="../import_data/handle_text_data.py" line="288"/>
         <source>There needs to be a column called latitude (wgs84) or you need to change the EPSG system</source>
         <translation>Det måste finnas en kolumn som är döpt till latitude eller så måste du ändra koordinatssystem</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="275"/>
+        <location filename="../import_data/handle_text_data.py" line="291"/>
         <source>There needs to be a column called longitude (wgs84) or you need to change the EPSG system</source>
         <translation>Det måste finnas en kolumn som är döpt till longiitud eller så måste du ändra koordinatssystem</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="339"/>
         <source>Data is being processed, please wait</source>
-        <translation>Data håller på att analyseras, var god vänta</translation>
+        <translation type="obsolete">Data håller på att analyseras, var god vänta</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="101"/>
+        <source>You can only select one yield column!</source>
+        <translation>Du kan endast välja en kolumn med skörd resultat!</translation>
     </message>
 </context>
 <context>
@@ -641,6 +995,54 @@ following column</source>
         <location filename="../widgets/Run_analyse_base.ui" line="146"/>
         <source>100</source>
         <translation>100</translation>
+    </message>
+</context>
+<context>
+    <name>TableManagement</name>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="74"/>
+        <source>Error:</source>
+        <translation>Fel:</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="39"/>
+        <source>You need to fill in a new name</source>
+        <translation>Du måste fylla i ett nytt namn</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="42"/>
+        <source>You have to decide what type of data it is</source>
+        <translation>Du måste välja vilken typ av data det är</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="45"/>
+        <source>You need a new name</source>
+        <translation>Du behöver välja ett nytt namn</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="53"/>
+        <source>You need at least 2 dataset when merging</source>
+        <translation>Du måste välja två data mångder att slå samman</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="74"/>
+        <source>You can only have one dataset selected</source>
+        <translation>Du kan bara ha en en data mängd vald</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="193"/>
+        <source>Do you really want to remove the selected tables from the database?</source>
+        <translation>Vill du verkligen ta bort de valda data mängderna?</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="194"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="195"/>
+        <source>No</source>
+        <translation>Nej</translation>
     </message>
 </context>
 <context>
@@ -723,6 +1125,29 @@ following column</source>
         <location filename="../widgets/table_managment.ui" line="243"/>
         <source>soil</source>
         <translation>Jord data</translation>
+    </message>
+</context>
+<context>
+    <name>multieditform</name>
+    <message>
+        <location filename="../widgets/multi_attribute_edit_dialog.ui" line="14"/>
+        <source>MBupSelected</source>
+        <translation>Attribut editering</translation>
+    </message>
+    <message>
+        <location filename="../widgets/multi_attribute_edit_dialog.ui" line="65"/>
+        <source>For all selected elements in the current layer set the value of field:</source>
+        <translation>För alla valda punkter i lagret, sätt följande värde på attributet:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/multi_attribute_edit_dialog.ui" line="81"/>
+        <source>equal to:</source>
+        <translation>Är lika med:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/multi_attribute_edit_dialog.ui" line="94"/>
+        <source>Keep latest input value</source>
+        <translation>Spara senaste värde</translation>
     </message>
 </context>
 </TS>
