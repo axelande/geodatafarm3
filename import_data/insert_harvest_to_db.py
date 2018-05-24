@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 from qgis.core import QgsProject, QgsTask
 from ..support_scripts.create_layer import CreateLayer
-from ..widgets.waiting import WaitingMsg
 from ..support_scripts import shapefile as shp
 from ..support_scripts.__init__ import check_text
 import time

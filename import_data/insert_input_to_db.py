@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 from qgis.core import QgsProject, QgsTask
 import time
-from ..widgets.waiting import WaitingMsg
 from ..support_scripts.__init__ import check_text
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import shapefile as shp
@@ -45,10 +44,7 @@ class InsertInputToDB:
                                      schema, convert2polygon, is_shp,
                                      on_finished=self.end_method)
         wait_msg = 'Please wait while data is being prosecuted'
-        waiting_msg = WaitingMsg()
-        task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
         self.tsk_mngr.addTask(task1)
-        self.tsk_mngr.addTask(task2)
 
     def end_method(self, result, values):
         schema = self.schema
@@ -62,9 +58,6 @@ class InsertInputToDB:
             layer = self.db.addPostGISLayer(str(self.IH.file_name).lower(), 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
             self.CreateLayer.create_layer_style(layer, check_text(target_field), str(self.IH.file_name).lower(), schema)
             QgsProject.instance().addMapLayer(layer)
-        for task in self.tsk_mngr.tasks():
-            if task.description() == 'waiting':
-                task.cancel()
 
 
 class InsertData(QtCore.QObject):

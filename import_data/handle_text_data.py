@@ -14,7 +14,6 @@ from datetime import datetime
 from dateutil.parser import parse
 # Import the code for the dialog
 from ..widgets.import_text_dialog import ImportTextDialog
-from ..widgets.waiting_msg import WaitingMsg
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.__init__ import check_text, isfloat, isint
 from ..support_scripts import shapefile as shp
