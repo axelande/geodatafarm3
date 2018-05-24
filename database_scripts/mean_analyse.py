@@ -1,3 +1,4 @@
+from qgis.core import QgsTask
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
@@ -7,7 +8,6 @@ import time
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QThread
 from ..widgets.run_analyse import RunAnalyseDialog
-from ..widgets.waiting import Waiting
 from ..support_scripts.__init__ import isfloat, isint
 import copy
 __author__ = 'Axel Andersson'
@@ -26,6 +26,7 @@ class Analyze:
         """
         self.dlg = RunAnalyseDialog()
         self.db = parent_widget.DB
+        self.tsk_mngr = parent_widget.tsk_mngr
         self.harvest_tables = {}
         self.activity_tables = {}
         self.soil_tables = {}
@@ -478,11 +479,19 @@ class Analyze:
             investigating_param['values'] = "'"
         other_parameters, investigating_param = self.update_checked_field(other_parameters, investigating_param)
         min_counts = self.dlg.minNumber.text()
-        filter = sql_queary(1, investigating_param, other_parameters, self.db,
-                            min_counts)
+        self.column_investigated = column_investigated
+        self.investigating_param = investigating_param
+        task1 = QgsTask.fromFunction('running script', sql_queary,
+                                     investigating_param, other_parameters,
+                                     self.db, min_counts,
+                                     on_finished=self.end_method)
+        self.tsk_mngr.addTask(task1)
+
+    def end_method(self, result, filter):
+        print(filter)
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()
-        if investigating_param['checked']:
+        if self.investigating_param['checked']:
             xlabels = filter[1]
             x = np.arange(len(xlabels))
             ax1.plot(x, filter[0], color='green')
@@ -495,7 +504,7 @@ class Analyze:
             ax1.plot(filter[1], filter[0], color='green')
             ax2.plot(filter[1], filter[2], 'x', color='blue')
         ax1.yaxis.label.set_color('green')
-        ax1.set_xlabel(column_investigated.replace('_', ' '))
+        ax1.set_xlabel(self.column_investigated.replace('_', ' '))
         ax1.set_ylabel('mean yield (kg/ha)')
         ax2.yaxis.label.set_color('blue')
         ax2.set_ylabel('Number of harvest samples')
@@ -504,14 +513,7 @@ class Analyze:
         self.canvas = FigureCanvas(fig)
         self.dlg.mplvl.addWidget(self.canvas)
         self.canvas.draw()
-        self.finish = True
 
-    def get_filtered_data(self, investigating_param, other_paramameters, prefixes):
-        """
-        Writes the sql question
-        :param investigating_param: What parameter to put on the x-axis
-        :return: a diagram over the mean yield
-        """
 
 def sql_queary(task, investigating_param, other_parameters, db,
                min_counts):
@@ -520,6 +522,7 @@ def sql_queary(task, investigating_param, other_parameters, db,
     if investigating_param['checked']:
         values = values.split(',')
     values.sort()
+    task.setProgress(25)
     for value_nbr, value in enumerate(values):
         if investigating_param['hist'] and value_nbr == 0:
             continue
@@ -621,4 +624,5 @@ def sql_queary(task, investigating_param, other_parameters, db,
         mean_yields[0].append(mean_value)
         mean_yields[1].append(value)
         mean_yields[2].append(count_samples)
+        task.setProgress(25 + value_nbr / len(values) * 50)
     return mean_yields
