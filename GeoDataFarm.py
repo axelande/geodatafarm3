@@ -320,9 +320,15 @@ class GeoDataFarm:
             self.IH = InputTextHandler(self.iface, self)
             self.IH.run()
         elif self.dock_widget.CBFileType.currentText() == 'Databasefile (.db)':
+            QMessageBox.information(None, "Error:", self.tr(
+                'Support for databasefiles are not implemented 100% yet'))
+            return
             self.IH = DBFileHandler(self.iface, self.dock_widget)
             self.IH.start_up()
         elif self.dock_widget.CBFileType.currentText() == 'Shape file (.shp)':
+            QMessageBox.information(None, "Error:", self.tr(
+                'Support for shapefiles are not implemented 100% yet'))
+            return
             try:
                 feature = self.df.getFeatures().next()
                 polygon = feature.geometry().asPolygon()[0]
