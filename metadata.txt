@@ -11,14 +11,14 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=This is a plugin for farmers that aims to determine impact of different parameters to the harvest yield.
-version=1.0.0
+version=1.1.0
 author=Axel Andersson
 email=geodatafarm@gmail.com
 
-about=This is a plugin that aims to determine the yield impact of different parameters. It is built for any crops and any other field parameter. The program requieres an internet connection all data is going inserted will be saved locally in a shapefile and on GeoDataFarms server. This is to increase the speed of the analyses. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
+about=This is a plugin that aims to determine the yield impact of different parameters. It is built for any crops and any other field parameter. The program requieres that matplotlib is installed with osgeo4w network installation, to use the plugin requires an internet connection all data is going inserted will be saved locally in a shapefile and on GeoDataFarms server. This is to increase the speed of the analyses. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
 
-tracker=github.com
-repository=github.com
+tracker=https://github.com/axelande/geodatafarm3/issues
+repository=https://github.com/axelande/geodatafarm3
 # End of mandatory metadata
 
 # Recommended items:
