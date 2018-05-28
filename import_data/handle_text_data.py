@@ -231,7 +231,6 @@ class InputTextHandler(object):
                                                       filters)[0]
         if self.file_name_with_path == '':
             return
-        print(self.file_name_with_path)
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = self.file_name_with_path[0:self.file_name_with_path.index(self.file_name)]
