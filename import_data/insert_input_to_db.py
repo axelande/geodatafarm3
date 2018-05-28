@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from qgis.core import QgsProject, QgsTask
 import time
-from ..support_scripts.__init__ import check_text
+from ..support_scripts.__init__ import check_text, isint
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import shapefile as shp
 __author__ = 'Axel Andersson'
@@ -48,6 +48,9 @@ class InsertInputToDB:
 
     def end_method(self, result, values):
         schema = self.schema
+        tbl = self.IH.file_name.lower()
+        if isint(tbl[0]):
+            tbl = '_' + tbl
         self.dock_widget.PBAddFieldToDB.setEnabled(False)
         if not self.is_shp:
             QgsProject.instance().removeMapLayer(
@@ -55,8 +58,8 @@ class InsertInputToDB:
         for param_layer in self.IH.params_to_evaluate:
             param_layer = check_text(param_layer)
             target_field = param_layer
-            layer = self.db.addPostGISLayer(str(self.IH.file_name).lower(), 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
-            self.CreateLayer.create_layer_style(layer, check_text(target_field), str(self.IH.file_name).lower(), schema)
+            layer = self.db.addPostGISLayer(tbl, 'polygon', '{schema}'.format(schema=schema), check_text(param_layer.lower()))
+            self.CreateLayer.create_layer_style(layer, check_text(target_field), tbl, schema)
             QgsProject.instance().addMapLayer(layer)
 
 
@@ -75,6 +78,8 @@ class InsertData(QtCore.QObject):
         heading_row = self.IH.heading_row
         params_to_eval = self.IH.params_to_evaluate
         tbl_name = str(self.IH.file_name)
+        if isint(tbl_name[0]):
+            tbl_name = '_' + tbl_name
         self.longitude_col = self.IH.longitude_col
         self.latitude_col = self.IH.latitude_col
         file_name_with_path = self.IH.file_name_with_path

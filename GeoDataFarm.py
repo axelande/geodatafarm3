@@ -49,6 +49,7 @@ from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
 from .support_scripts.multiedit import MultiEdit
+from .support_scripts.__init__ import isint
 
 # TODO: Known bugs:
 # TODO: Add polygon while importing shapefiles
@@ -347,6 +348,8 @@ class GeoDataFarm:
         tbls = []
         for row in tables_in_db:
             tbls.append(str(row[0]))
+        if isint(tbl_name[0]):
+            tbl_name = '_' + tbl_name
         if tbl_name in tbls:
             qm = QMessageBox()
             ret = qm.question(None, 'Message',

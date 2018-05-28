@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from qgis.core import QgsProject, QgsTask
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import shapefile as shp
-from ..support_scripts.__init__ import check_text
+from ..support_scripts.__init__ import check_text, isint
 import time
 __author__ = 'Axel Andersson'
 
@@ -34,12 +34,15 @@ class InsertHarvestData:
         #self.tsk_mngr.addTask(task2)
 
     def create_qgis_layer(self, result, values):
-        layer = self.db.addPostGISLayer(self.IH.file_name.lower(), 'pos', 'harvest',
+        tbl = self.IH.file_name.lower()
+        if isint(tbl[0]):
+            tbl = '_' + tbl
+        layer = self.db.addPostGISLayer(tbl, 'pos', 'harvest',
                                         'harvest')
 
         self.CreateLayer.create_layer_style(layer,
                                             check_text(str(self.IH.params_to_evaluate[0])),
-                                            self.IH.file_name.lower(), 'harvest')
+                                            tbl, 'harvest')
         QgsProject.instance().addMapLayer(layer)
         QgsProject.instance().removeMapLayer(self.IH.input_layer.id())
         #for task in self.tsk_mngr.tasks():
@@ -73,6 +76,8 @@ class InsertHarvestToDB(QtCore.QObject):
         column_types = self.IH.column_types
         heading_row = self.IH.heading_row
         tbl_name = self.IH.file_name
+        if isint(tbl_name[0]):
+            tbl_name = '_' + tbl_name
         harvest_yield_col = str(self.IH.params_to_evaluate[0])
         self.longitude_col = self.IH.longitude_col
         self.latitude_col = self.IH.latitude_col
