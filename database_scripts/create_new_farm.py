@@ -71,9 +71,10 @@ class CreateFarm:
             return
         else:
             QMessageBox.information(None, self.tr("Done"), self.tr('Database created'))
-        with open(self.plugin_dir + '\connection_data.ini', 'w') as f:
+        with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
+        self.create_spec_functions()
         self.CF.done(0)
 
     def connect_to_source(self):
@@ -82,19 +83,18 @@ class CreateFarm:
         password_inp = self.CF.pass_word.text()
         farmname_inp = self.CF.farm_name.text()
         username = check_text(username_inp)
-        password = check_text(password_inp)
+        password = check_text(password_inp).encode('utf-8')
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
 
-        with open(self.plugin_dir + '\connection_data.ini', 'w') as f:
+        with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
-        self.create_spec_functions()
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.CF.done(0)
 
     def create_spec_functions(self):
         db = DB(self.dock_widget, path=self.plugin_dir)
-        connected = self.DB.get_conn()
+        connected = DB.get_conn()
         sql = """CREATE OR REPLACE FUNCTION public.makegrid_2d (
       bound_polygon public.geometry,
       width_step integer,
