@@ -94,7 +94,7 @@ class CreateFarm:
 
     def create_spec_functions(self):
         db = DB(self.dock_widget, path=self.plugin_dir)
-        connected = DB.get_conn()
+        connected = db.get_conn()
         sql = """CREATE OR REPLACE FUNCTION public.makegrid_2d (
       bound_polygon public.geometry,
       width_step integer,
