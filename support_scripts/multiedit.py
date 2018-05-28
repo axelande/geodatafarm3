@@ -24,7 +24,7 @@ class MultiEdit:
         self.MED.buttonBox.accepted.connect(self.run)
         delimchars = "#"
 
-        if (layer) and layer.type() == QgsMapLayer.VectorLayer:
+        if layer.type() == QgsMapLayer.VectorLayer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 provider = layer.dataProvider()
                 fields = provider.fields()
@@ -70,7 +70,7 @@ class MultiEdit:
                             False)
                         self.MED.QLEvalore.setEnabled(False)
                         self.MED.CBfields.setEnabled(False)
-        elif (layer) and layer.type() != QgsMapLayer.VectorLayer:
+        elif layer.type() != QgsMapLayer.VectorLayer:
             infoString = self.tr(
                 "<font color='red'> Layer <b>" + layer.name() + "</b> is not a vector layer</font>")
             self.MED.label.setText(infoString)
@@ -92,11 +92,6 @@ class MultiEdit:
     def run(self):
         delimchars = "#"
         layer = self.iface.mapCanvas().currentLayer()
-        if (layer == None):
-            infoString = self.tr(
-                "<font color='red'> <b>No layer selected... Select a layer from the layer list...</b></font>")
-            self.MED.label.setText(infoString)
-            return
         if not layer.isEditable():
             layer.startEditing()
         value = self.tr(self.MED.QLEvalore.displayText())
