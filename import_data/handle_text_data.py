@@ -185,10 +185,10 @@ class InputTextHandler(object):
                     self.combo[i].setCurrentIndex(nr)
                 else:
                     item.setCheckState(QtCore.Qt.Unchecked)
+            self.combo[i].currentTextChanged.connect(self.change_col_type)
             self.ITD.TWColumnNames.setItem(i, 0, item1)
             self.ITD.TWColumnNames.setItem(i, 1, item2)
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
-            self.combo[i].view().pressed.connect(self.change_col_type)
         self.add_to_DB_row_count = i
 
     def set_radio_but(self):
@@ -217,7 +217,12 @@ class InputTextHandler(object):
         """
         self.col_types = []
         for c_box in self.combo:
-            self.col_types.append(c_box.currentIndex())
+            if c_box.currentText() == "Integer":
+                self.col_types.append(0)
+            if c_box.currentText() == "Decimal value":
+                self.col_types.append(1)
+            if c_box.currentText() == "Character":
+                self.col_types.append(2)
 
     def open_input_file(self):
         """
@@ -264,10 +269,6 @@ class InputTextHandler(object):
         for i in range(self.add_to_DB_row_count + 1):
             columns_to_add.append(self.ITD.TWColumnNames.item(i, 0).text())
         lat_check, lon_check = False, False
-        self.ITD.ComBNorth.setEnabled(True)
-        self.ITD.ComBNorth.addItems(columns_to_add)
-        self.ITD.ComBEast.setEnabled(True)
-        self.ITD.ComBEast.addItems(columns_to_add)
         for word in columns_to_add:
             for part in word.split(' '):
                 if part in "latitude Latitude lat Lat":
@@ -288,6 +289,10 @@ class InputTextHandler(object):
         if self.ITD.LEEPSG.text() == '4326' and not lon_check:
             QMessageBox.information(None, self.tr("Error:"), self.tr('There needs to be a column called longitude (wgs84) or you need to change the EPSG system'))
             return
+        self.ITD.ComBNorth.setEnabled(True)
+        self.ITD.ComBNorth.addItems(columns_to_add)
+        self.ITD.ComBEast.setEnabled(True)
+        self.ITD.ComBEast.addItems(columns_to_add)
         self.ITD.pButInsertDataIntoDB.setEnabled(True)
         if self.dock_widget.CBDataType.currentText() == 'harvest' or \
                 (self.ITD.CombTime.currentText() == 'Yearly operations' and
@@ -348,6 +353,8 @@ class InputTextHandler(object):
         coordinates is in EPSG:4326
         :return:
         """
+        self.latitude_col = check_text(self.ITD.ComBNorth.currentText())
+        self.longitude_col = check_text(self.ITD.ComBEast.currentText())
         end_method = EndMethod()
         task1 = QgsTask.fromFunction('running script', end_method.run,
                                      self.parent_widget, self.ITD,
@@ -358,11 +365,16 @@ class InputTextHandler(object):
                                      self.input_file_path,
                                      self.encoding,
                                      on_finished=self.finish)
-        #wait_msg = self.tr('Data is being processed, please wait')
-        #waiting_msg = WaitingMsg()
-        #task2 = QgsTask.fromFunction('waiting', waiting_msg.run, wait_msg)
         self.tsk_mngr.addTask(task1)
-        #self.tsk_mngr.addTask(task2)
+        ##Debugg
+        #values = end_method.run(1, self.parent_widget, self.ITD,
+        #                        self.add_to_DB_row_count, self.sep,
+        #                        self.col_types,
+        #                        self.add_to_param_row_count,
+        #                        self.file_name_with_path,
+        #                        self.input_file_path,
+        #                        self.encoding)
+        #self.finish(1, values)
 
     def finish(self, result, values):
         [columns_to_add, column_types, heading_row, time_dict,
@@ -380,9 +392,9 @@ class InputTextHandler(object):
         self.file_name = only_char
         file_name_with_path = self.input_file_path + "shapefiles/" + self.file_name
         para = {'INPUT': self.input_file_path + "shapefiles/temp.shp",
-                'TARGET_CRS': 'EPSG: 4326',
+                'TARGET_CRS': 'EPSG:4326',
                 'OUTPUT': file_name_with_path + '.shp'}
-        processing.run('qgis:reprojectlayer', para)
+        processing.run('native:reprojectlayer', para)
         QgsProject.instance().removeMapLayer(vlayer.id())
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(4326)
@@ -411,9 +423,6 @@ class InputTextHandler(object):
         self.ITD.pButInsertDataIntoDB.clicked.disconnect()
         self.ITD.pButContinue.clicked.disconnect()
         self.ITD.done(0)
-        #for task in self.tsk_mngr.tasks():
-        #    if task.description() == 'waiting':
-        #        task.cancel()
 
 
 class EndMethod:
@@ -517,6 +526,7 @@ class EndMethod:
                 if task != 1:
                     task.setProgress(2 + row_count / len(read_all) * 45)
                 for key in columns_to_add.keys():
+                    col_data = row[heading_row.index(key)]
                     if float(row[heading_row.index(self.latitude_col)]) < 0.1 or float(row[heading_row.index(self.longitude_col)]) < 0.1:
                         break
                     if harvest:
@@ -529,40 +539,41 @@ class EndMethod:
                     elif key == 'Date':
                         if time_dict['date_only']:
                             try:
-                                format_date = datetime.strftime(parse(row[heading_row.index(key)]), '%Y-%m-%d')
+                                format_date = datetime.strftime(parse(col_data), '%Y-%m-%d')
                             except ValueError:
                                 format_date = start_date
                             columns_to_add['Date'].append(format_date)
                         elif time_dict['date_time_diff']:
                             try:
-                                format_date = datetime.strftime((parse(str(row[heading_row.index(key)]) + " " + str(row[heading_row.index(time_dict['time_'])])), '%Y-%m-%d %H:%M:%d'))
+                                format_date = datetime.strftime((parse(str(col_data) + " " + str(row[heading_row.index(time_dict['time_'])])), '%Y-%m-%d %H:%M:%d'))
                             except ValueError:
                                 format_date = start_date
                             columns_to_add['Date'].append(format_date)
                         elif time_dict['date_and_time'] and key == time_dict['text']:
                             try:
-                                format_date = datetime.strftime(parse(row[heading_row.index(key)]), '%Y-%m-%d %H:%M:%d')
+                                format_date = datetime.strftime(parse(col_data), '%Y-%m-%d %H:%M:%d')
                             except ValueError:
                                 format_date = start_date
                             columns_to_add['Date'].append(format_date)
 
                     elif column_types[heading_row.index(key)] == 0:
                         try: # Trying to add a int
-                            columns_to_add[key].append(int(float(row[heading_row.index(key)])))
+                            columns_to_add[key].append(int(float(col_data)))
                         except (ValueError, OverflowError):
                             columns_to_add[key].append(0)
                     elif column_types[heading_row.index(key)] == 1:
                         try: # Trying to add a float
-                            if math.isnan(float(row[heading_row.index(key)])):
+                            col_data = col_data.replace(',', '.')
+                            if math.isnan(float(col_data)):
                                 columns_to_add[key].append(0)
-                            elif row[heading_row.index(key)] == 'inf':
+                            elif col_data == 'inf':
                                 columns_to_add[key].append(999999)
                             else:
-                                columns_to_add[key].append(float(row[heading_row.index(key)]))
+                                columns_to_add[key].append(float(col_data))
                         except (ValueError, OverflowError):
                             columns_to_add[key].append(0)
                     else:
-                        columns_to_add[key].append(check_text(row[heading_row.index(key)]))
+                        columns_to_add[key].append(check_text(col_data))
             if some_wrong_len > 0:
                 QMessageBox.information(None, "Information:",
                                         str(some_wrong_len) + self.tr(' rows were skipped '
@@ -586,7 +597,8 @@ class EndMethod:
                     w.field(str(key)[:10], 'F', max(10, len(str(key))), 8)
                 if column_types[heading_row.index(key)] == 2:
                     w.field(str(key)[:10], 'C', 20)
-            w.field('year', 'N', 4)
+            if self.dock_widget.CBDataType.currentText() != 'soil':
+                w.field('year', 'N', 4)
             #loop through the data and write the shapefile
             for j, k in enumerate(columns_to_add[self.longitude_col]):
                 if task != 1:
@@ -597,7 +609,8 @@ class EndMethod:
                     if key in ignore_col:
                         continue
                     data_row.append(columns_to_add[key][j])
-                data_row.append(int(self.ITD.LEYearOnly.text()))
+                if self.dock_widget.CBDataType.currentText() != 'soil':
+                    data_row.append(int(self.ITD.LEYearOnly.text()))
                 w.record(*data_row) #write the attributes
             w.save(str(self.input_file_path) + "shapefiles/temp")
         del(w)
