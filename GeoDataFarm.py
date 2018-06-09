@@ -405,6 +405,10 @@ class GeoDataFarm:
         me = MultiEdit(self)
         me.show()
 
+    def import_irrigation(self):
+        irr = IrrigationHandler(self)
+        irr.run()
+
     def create_guide(self):
         guide = CreateGuideFile(self)
         guide.run()
@@ -441,7 +445,7 @@ class GeoDataFarm:
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
-            #self.dock_widget.pb_add_irrigation.clicked.connect(self.import_irrigation)
+            self.dock_widget.PBAddIrrigation.clicked.connect(self.import_irrigation)
             try:
                 self.reload_range()
             except:

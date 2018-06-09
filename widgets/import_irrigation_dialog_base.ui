@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>500</y>
+     <y>450</y>
      <width>231</width>
      <height>23</height>
     </rect>
@@ -32,19 +32,6 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="add_input_file">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>10</y>
-     <width>85</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add input file</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pButInsertDataIntoDB">
    <property name="enabled">
     <bool>false</bool>
@@ -52,7 +39,7 @@
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>500</y>
+     <y>450</y>
      <width>131</width>
      <height>23</height>
     </rect>
@@ -61,20 +48,20 @@
     <string>Add data to canvas</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pButContinue">
+  <widget class="QPushButton" name="PBAddManually">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>360</y>
+     <x>70</x>
+     <y>250</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>Continue</string>
+    <string>Add data</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="RBNoDate">
@@ -84,7 +71,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>396</y>
+     <y>346</y>
      <width>131</width>
      <height>21</height>
     </rect>
@@ -103,7 +90,7 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>390</y>
+     <y>340</y>
      <width>151</width>
      <height>31</height>
     </rect>
@@ -123,7 +110,7 @@ same date for all rows</string>
    <property name="geometry">
     <rect>
      <x>420</x>
-     <y>370</y>
+     <y>320</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -144,7 +131,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>430</y>
+     <y>380</y>
      <width>113</width>
      <height>20</height>
     </rect>
@@ -154,7 +141,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>430</y>
+     <y>380</y>
      <width>71</width>
      <height>20</height>
     </rect>
@@ -167,7 +154,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>430</y>
+     <y>380</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -180,7 +167,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>470</y>
+     <y>420</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -193,7 +180,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>532</x>
-     <y>430</y>
+     <y>380</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -209,7 +196,7 @@ different columns</string>
    <property name="geometry">
     <rect>
      <x>530</x>
-     <y>370</y>
+     <y>320</y>
      <width>101</width>
      <height>41</height>
     </rect>
@@ -227,7 +214,7 @@ the same column</string>
    <property name="geometry">
     <rect>
      <x>442</x>
-     <y>410</y>
+     <y>360</y>
      <width>31</width>
      <height>16</height>
     </rect>
@@ -240,7 +227,7 @@ the same column</string>
    <property name="geometry">
     <rect>
      <x>442</x>
-     <y>450</y>
+     <y>400</y>
      <width>31</width>
      <height>16</height>
     </rect>
@@ -253,7 +240,7 @@ the same column</string>
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>430</y>
+     <y>380</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -269,7 +256,7 @@ the same column</string>
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>376</y>
+     <y>326</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -282,222 +269,298 @@ following column</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="data_prefix">
-   <property name="geometry">
-    <rect>
-     <x>192</x>
-     <y>10</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>10</y>
-     <width>61</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Data prefix:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>10</y>
-     <width>181</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>(&quot;plant&quot;, &quot;soiltype&quot;, &quot;irrigation&quot; etc.)</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>40</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>EPGS Coordinate system:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="EPSG">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>40</y>
-     <width>61</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>4326</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>40</y>
-     <width>491</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_12">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>80</y>
+     <y>30</y>
      <width>71</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start Lat</string>
+    <string>Start Lat:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_13">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>110</y>
+     <y>60</y>
      <width>71</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start Lon</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="ComBDateOnly_2">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>80</y>
-     <width>111</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="ComBDateOnly_3">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>110</y>
-     <width>111</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
+    <string>Start Lon:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_14">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>140</y>
+     <y>90</y>
      <width>71</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>End Lat</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="ComBDateOnly_4">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>140</y>
-     <width>111</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
+    <string>End Lat:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_15">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>170</y>
+     <y>120</y>
      <width>71</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>End Lon</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="ComBDateOnly_5">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>170</y>
-     <width>111</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
+    <string>End Lon:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_16">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>200</y>
+     <y>210</y>
      <width>71</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>(YYYY-mm-dd)</string>
+    <string>Date
+(YYYY-mm-dd)</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="ComBDateOnly_6">
+  <widget class="QPushButton" name="PBAddRaindancer">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>200</y>
-     <width>111</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="editable">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="add_raindancer">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>240</y>
+     <x>250</x>
+     <y>180</y>
      <width>151</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>Add from raindancer</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLat">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>30</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLon">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>60</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEEndLat">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>90</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEEndLon">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>120</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEDate">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>210</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLat_2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>30</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLat_3">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>60</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLat_4">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>90</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_17">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>180</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Precipitation:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEPrep">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>180</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_18">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>90</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Password:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_19">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>30</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Client id:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_20">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>60</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>User name:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_21">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>0</y>
+     <width>231</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add data manually:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEStartLat_5">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>130</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_22">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>120</y>
+     <width>71</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>First date
+ (yyyy-mm-dd)</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_23">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>0</y>
+     <width>231</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Load data from your raindancer account:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_24">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>150</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Width:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="LEWidth">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>150</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
    </property>
   </widget>
  </widget>

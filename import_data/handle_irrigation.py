@@ -11,12 +11,10 @@ __author__ = 'Axel Andersson'
 
 
 class IrrigationHandler:
-    def __init__(self):#, iface, parent_widget):
+    def __init__(self, parent_widget):
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
-        #self.iface = iface
-        self.DB = DB()
-        self.DB.get_conn()
+        self.DB = parent_widget.DB
         self.col_types = None
         self.add_to_Param_row_count = 0
         self.params_to_evaluate = []
@@ -25,15 +23,16 @@ class IrrigationHandler:
         self.col_names = []
         # Create the dialog (after translation) and keep reference
         #self.ISD = ImportShpDialog()
-        self.client_id = 160003
-        self.user_name = 'axel'
-        self.password = 'axelaxel'
+        self.client_id = 'client_id'
+        self.user_name = 'username'
+        self.password = 'password'
 
     def run(self):
         self._connect()
         if not self.find_operation_table():
-            self.create_operation_table()
+            self.reset_tables()
         self.insert_operation_data()
+        #self.update_total_irrigation()
 
     def _connect(self):
         self.dancer = MyRainDancer(client=self.client_id, username=self.user_name, password=self.password)
@@ -46,13 +45,12 @@ class IrrigationHandler:
             return False
 
     def reset_tables(self):
-        #self.DB.execute_sql("drop table if exists weather.raindancer_operation; Create table weather.raindancer_operation(field_row_id SERIAL, polygon GEOMETRY, precipitation REAL)")
+        #self.DB.execute_sql("drop table if exists weather.raindancer_operation; Create table weather.raindancer_operation(field_row_id SERIAL, polygon GEOMETRY, precipitation REAL, date_irrigation TIMESTAMP )")
         self.DB.execute_sql("drop table if exists weather.raindancer_total; Create table weather.raindancer_total(row_id SERIAL, polygon GEOMETRY, precipitation REAL)")
 
     def update_total_irrigation(self):
-
-        operations = self.DB.execute_and_return("select * from weather.raindancer_operation")
-        for row_id, geom, percept in operations:
+        operations = self.DB.execute_and_return("select * from weather.raindancer_operation where date_irrigation::date>'2018-01-01'")
+        for row_id, geom, percept, dat in operations:
             print(row_id)
             sql= """select row_id, precipitation, st_intersection(polygon, st_buffer('{g}',0.000001)) as inter_geom
             from weather.raindancer_total
@@ -87,10 +85,15 @@ class IrrigationHandler:
     def insert_operation_data(self):
         operations = self.dancer.get_operation_data()
         for data in operations:
+            if data['finished'] is None:
+                continue
+            print(data)
+            break
+            finished = f"""{data['finished']['year']}-{data['finished']['month']}-{data['finished']['day']} {data['finished']['hour']}:{data['finished']['minute']}:{data['finished']['second']}"""
             line = 'LINESTRING({long1} {lat1}, {long2} {lat2})'.format(long1=data["destination"]["lng"], lat1=data["destination"]["lat"], long2=data["origin"]["lng"], lat2=data["origin"]["lat"])
-            sql="""INSERT INTO weather.raindancer_operation(polygon, precipitation) 
-            select ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),30, 'endcap=flat join=round')::geometry, {d}
-            """.format(line=line, d=data["precipitation"])
+            sql="""INSERT INTO weather.raindancer_operation(polygon, precipitation, date_irrigation) 
+            select ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),30, 'endcap=flat join=round')::geometry, {p}, '{d}'
+            """.format(line=line, p=data["precipitation"], d=finished)
             print(sql)
             self.DB.execute_sql(sql)
 
