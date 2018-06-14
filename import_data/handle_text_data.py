@@ -268,16 +268,21 @@ class InputTextHandler(object):
         columns_to_add = []
         for i in range(self.add_to_DB_row_count + 1):
             columns_to_add.append(self.ITD.TWColumnNames.item(i, 0).text())
+
+        self.ITD.ComBNorth.clear()
+        self.ITD.ComBEast.clear()
+        self.ITD.ComBNorth.addItems(columns_to_add)
+        self.ITD.ComBEast.addItems(columns_to_add)
         lat_check, lon_check = False, False
         for word in columns_to_add:
             for part in word.split(' '):
-                if part in "latitude Latitude lat Lat":
+                if part.lower() in "latitude lat y":
                     lat_check = True
                     only_char = check_text(word)
                     self.latitude_col = only_char
                     index = self.ITD.ComBNorth.findText(word)
                     self.ITD.ComBNorth.setCurrentIndex(index)
-                if part in "longitude Longitude lat Lat":
+                if part.lower() in "longitude lat x":
                     lon_check = True
                     only_char = check_text(word)
                     self.longitude_col = only_char
@@ -290,9 +295,7 @@ class InputTextHandler(object):
             QMessageBox.information(None, self.tr("Error:"), self.tr('There needs to be a column called longitude (wgs84) or you need to change the EPSG system'))
             return
         self.ITD.ComBNorth.setEnabled(True)
-        self.ITD.ComBNorth.addItems(columns_to_add)
         self.ITD.ComBEast.setEnabled(True)
-        self.ITD.ComBEast.addItems(columns_to_add)
         self.ITD.pButInsertDataIntoDB.setEnabled(True)
         if self.dock_widget.CBDataType.currentText() == 'harvest' or \
                 (self.ITD.CombTime.currentText() == 'Yearly operations' and
@@ -409,9 +412,10 @@ class InputTextHandler(object):
         os.remove(self.input_file_path + "shapefiles/temp.prj")
         self.input_layer = self.point_layer
         self.file_name_with_path = file_name_with_path
-        columns_to_add['year'] = 0
-        column_types.append(0)
-        heading_row.append('year')
+        if self.dock_widget.CBDataType.currentText() != 'soil':
+            columns_to_add['year'] = 0
+            column_types.append(0)
+            heading_row.append('year')
         self.columns_to_add = columns_to_add
         self.column_types = column_types
         self.heading_row = heading_row
