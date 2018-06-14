@@ -122,10 +122,16 @@ class Analyze:
                     overlaps = self.db.execute_and_return(sql)[0][0]
                     if overlaps:
                         overlapping += 1
-                        self.overlapping_tables[overlapping]['ha'] = \
-                        self.harvest_tables[ha]
-                        self.overlapping_tables[overlapping]['so'] = \
-                        self.soil_tables[so]
+                        self.overlapping_tables[overlapping] = {}
+                        for ha_key in self.harvest_tables[ha].keys():
+                            if 'pkey' in self.harvest_tables[ha][ha_key]['index_name']:
+                                continue
+                            self.overlapping_tables[overlapping]['ha'] = self.harvest_tables[ha][ha_key]
+                        self.overlapping_tables[overlapping]['so'] = []
+                        for so_key in self.soil_tables[so].keys():
+                            if 'pkey' in self.soil_tables[so][so_key]['index_name']:
+                                continue
+                            self.overlapping_tables[overlapping]['so'].append(self.soil_tables[so][so_key])
 
     def fill_dict_tables(self):
         """Filles the three dict tables"""
@@ -488,7 +494,6 @@ class Analyze:
         self.tsk_mngr.addTask(task1)
 
     def end_method(self, result, filter):
-        print(filter)
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()
         if self.investigating_param['checked']:
@@ -613,7 +618,7 @@ def sql_queary(task, investigating_param, other_parameters, db,
                 continue
             sql += f'{ha}, '
         sql = sql[:-2]
-        print(sql)
+        #print(sql)
         result = db.execute_and_return(sql)[0]
         mean_value = result[0]
         count_samples = result[1]
