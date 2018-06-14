@@ -1,12 +1,8 @@
-#from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-#from PyQt4.QtGui import QMessageBox
-import os
+from PyQt5.QtWidgets import QMessageBox
 # Import the code for the dialog
-#from widgets.import_shp_dialog import ImportShpDialog
+from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
-#from test.test_db_con import DB
-#from database_scripts.db import DB
-#from support_scripts.create_layer import CreateLayer
+
 __author__ = 'Axel Andersson'
 
 
@@ -15,6 +11,7 @@ class IrrigationHandler:
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
         self.DB = parent_widget.DB
+        self.tr = parent_widget.tr
         self.col_types = None
         self.add_to_Param_row_count = 0
         self.params_to_evaluate = []
@@ -23,21 +20,38 @@ class IrrigationHandler:
         self.col_names = []
         # Create the dialog (after translation) and keep reference
         #self.ISD = ImportShpDialog()
-        self.client_id = 'client_id'
-        self.user_name = 'username'
-        self.password = 'password'
+        self.client_id = 0
+        self.user_name = ''
+        self.password = ''
+        self.IIR = ImportIrrigationDialog()
 
     def run(self):
-        self._connect()
+        self.IIR.show()
+        self.IIR.PBAddRaindancer.clicked.connect(self.insert_data_from_raindancer)
+        self.IIR.exec_()
+
+    def insert_data_from_raindancer(self):
+        try:
+            self.client_id = int(self.IIR.LEClientId.text())
+        except ValueError:
+            QMessageBox.information(None, "Error:",
+                                    self.tr("ClintID must be a number"))
+            return
+        self.user_name = self.IIR.LEUserName.text()
+        self.password = self.IIR.LEPassword.text()
         if not self.find_operation_table():
             self.reset_tables()
         self.insert_operation_data()
         #self.update_total_irrigation()
 
     def _connect(self):
-        self.dancer = MyRainDancer(client=self.client_id, username=self.user_name, password=self.password)
+        self.dancer = MyRainDancer(client=self.client_id,
+                                   username=self.user_name,
+                                   password=self.password)
 
     def find_operation_table(self):
+        if not hasattr(self, 'dancer'):
+            self._connect()
         try:
             test_data = self.DB.execute_and_return(sql="select * from weather.raindancer_operation limit 1")
             return True
@@ -45,8 +59,8 @@ class IrrigationHandler:
             return False
 
     def reset_tables(self):
-        #self.DB.execute_sql("drop table if exists weather.raindancer_operation; Create table weather.raindancer_operation(field_row_id SERIAL, polygon GEOMETRY, precipitation REAL, date_irrigation TIMESTAMP )")
-        self.DB.execute_sql("drop table if exists weather.raindancer_total; Create table weather.raindancer_total(row_id SERIAL, polygon GEOMETRY, precipitation REAL)")
+        self.DB.execute_sql("drop table if exists weather.raindancer_operation; Create table weather.raindancer_operation(field_row_id SERIAL, polygon GEOMETRY, precipitation REAL, date_irrigation TIMESTAMP )")
+        #self.DB.execute_sql("drop table if exists weather.raindancer_total; Create table weather.raindancer_total(row_id SERIAL, polygon GEOMETRY, precipitation REAL)")
 
     def update_total_irrigation(self):
         operations = self.DB.execute_and_return("select * from weather.raindancer_operation where date_irrigation::date>'2018-01-01'")
@@ -83,22 +97,19 @@ class IrrigationHandler:
                 a=1
 
     def insert_operation_data(self):
+        if not hasattr(self, 'dancer'):
+            self._connect()
         operations = self.dancer.get_operation_data()
+        if operations == 'Failed':
+            QMessageBox.information(None, "Error:",
+                                    self.tr("Wasn't able to fetch data from raindancer.\nAre you sure that id, username and password was correct?"))
+            return
         for data in operations:
             if data['finished'] is None:
                 continue
-            print(data)
-            break
             finished = f"""{data['finished']['year']}-{data['finished']['month']}-{data['finished']['day']} {data['finished']['hour']}:{data['finished']['minute']}:{data['finished']['second']}"""
             line = 'LINESTRING({long1} {lat1}, {long2} {lat2})'.format(long1=data["destination"]["lng"], lat1=data["destination"]["lat"], long2=data["origin"]["lng"], lat2=data["origin"]["lat"])
             sql="""INSERT INTO weather.raindancer_operation(polygon, precipitation, date_irrigation) 
             select ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),30, 'endcap=flat join=round')::geometry, {p}, '{d}'
             """.format(line=line, p=data["precipitation"], d=finished)
-            print(sql)
             self.DB.execute_sql(sql)
-
-if __name__ == "__main__":
-    r = IrrigationHandler()
-    r.reset_tables()
-    #r.insert_operation_data()
-    r.update_total_irrigation()

@@ -544,6 +544,24 @@ of colors:</string>
       </layout>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Irrigation</string>
+     </attribute>
+     <widget class="QPushButton" name="PBAddIrrigation">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>171</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Import Raindancer data</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
  </widget>
