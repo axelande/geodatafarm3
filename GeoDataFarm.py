@@ -317,7 +317,7 @@ class GeoDataFarm:
     def clicked_input(self):
         """Connects the docked widget with the correct InputHandler script and 
         starts the input widget"""
-        if self.dock_widget.CBFileType.currentText() == 'Text file (.csv; .txt)':
+        if self.dock_widget.CBFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             self.IH = InputTextHandler(self.iface, self)
             self.IH.run()
         elif self.dock_widget.CBFileType.currentText() == 'Databasefile (.db)':
@@ -381,7 +381,7 @@ class GeoDataFarm:
                 QgsProject.instance().removeMapLayer(self.df)
             except:
                 pass
-            if schema == 'harvest':
+            if schema == self.tr('harvest'):
                 obj = InsertHarvestData(self.IH, self.iface, self.dock_widget,
                                   polygon, self.DB, self.tr, self.tsk_mngr)
                 obj.run()

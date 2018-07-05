@@ -36,73 +36,51 @@
     </message>
 </context>
 <context>
-    <name>CreateFarmBase</name>
+    <name>CreateGuideFile</name>
     <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="14"/>
-        <source>Create farm</source>
-        <translation type="obsolete">Skapa en gård</translation>
+        <location filename="../support_scripts/create_guiding_file.py" line="62"/>
+        <source>No farm is created, please create a farm to continue</source>
+        <translation>Ingen gård är skapad, var god god och gör det innan du fortsätter</translation>
     </message>
     <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="48"/>
-        <source>Create a new 
-database</source>
-        <translation type="obsolete">Skapa en ny databas</translation>
+        <location filename="../support_scripts/create_guiding_file.py" line="126"/>
+        <source>No row selected!</source>
+        <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="62"/>
-        <source>farmname</source>
-        <translation type="obsolete">Gårdsnamn</translation>
+        <location filename="../support_scripts/create_guiding_file.py" line="151"/>
+        <source>The selected data must be integers or floats!</source>
+        <translation>Den valda datan måste vara heltal eller decimaltal!</translation>
     </message>
     <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="75"/>
-        <source>Farm name:</source>
-        <translation type="obsolete">Gårdsnamn:</translation>
+        <location filename="../support_scripts/create_guiding_file.py" line="247"/>
+        <source>Help:</source>
+        <translation>Hjälp:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="88"/>
-        <source>User name:</source>
-        <translation type="obsolete">Användarnamn:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="101"/>
-        <source>name</source>
-        <translation type="obsolete">Namn</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="114"/>
-        <source>choose password</source>
-        <translation type="obsolete">Välj lösenord</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="127"/>
-        <source>Password:</source>
-        <translation type="obsolete">Lösenord:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="140"/>
-        <source>your@email.com</source>
-        <translation type="obsolete">din@epostadress</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="153"/>
-        <source>e-mail</source>
-        <translation type="obsolete">E-mail</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="166"/>
-        <source>(e-mail is only used to recover database)</source>
-        <translation type="obsolete">(e-post adressen är enbart tänkt att användas för att återskapa databasen)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="179"/>
-        <source>Create a new farm database</source>
-        <translation type="obsolete">Skapa en ny Gård</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_farm_popup_base.ui" line="195"/>
-        <source>Connect to 
-excisting database</source>
-        <translation type="obsolete">Anslut till en redan exiceterande databas</translation>
+        <location filename="../support_scripts/create_guiding_file.py" line="247"/>
+        <source>Here you create a guide file.
+1. Start with select which data you want to base the guide file on in the top left corner.
+2. Select which of the attributes you want to use as base of calculation.
+3. When this is done you will have one or a few attributes in the right list with the name, [number].
+4. Now, change the equation to the right (default 100 + [0] * 2) to fit your idea and press update.
+5. When you press update the max and min value should be updated.
+6. Depending on your machine (that you want to feed with the guide file) you might want to use integers or float values.
+7. The attribute name and File name is for you, the output path is where the guide file will be stored.
+8. Cell size, how big grid you want for the guide file, EPSG let it be 4326 unless your machine require it!
+9. There is also an option for you if you want to rotate your grid.
+10. Finally press Create guide file and you are all set to go!</source>
+        <translation>Här skapar du en styrfil.
+1. Starta med att välj vilken data du ska bygga din styrfil på.
+2. Välj vilka(et) attribut som ska du ska använda för att räkna ut givan.
+3. När detta är gjort ska du ha en eller ett par attribut i den högra listan med namn och [nummer].
+4. Nu, ända ekvationen till höger (default 100 +[0] *2, där [0] syftar till attributet i listan intil),
+5. Tryck på uppdatera för att se hur max och min värdena ändras, ändra ekvationen tills du är nöjd.
+6. Beroende på din maskin (som du ska använda styrfilen till) ska du ändra mellan heltal ocf decimaltal.
+7. Välj attributnamn, filnamn och var filen ska sparas.
+8. Cell storleken, är hur stora celler som du vill att styrfilen ska ha, EPSG är vilket koordinat system, låt det vara 4326 om du är osäker!
+9. Vill du kan du även välja att rotera griddet
+10. Till sist är det bara att trycka &apos;Skapa styrfil&apos;.</translation>
     </message>
 </context>
 <context>
@@ -215,85 +193,120 @@ benämn ditt attribut som [0], [1] etc.:</translation>
         <translation>Nytt attributnamn:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="334"/>
+        <location filename="../widgets/create_guide_file_base.ui" line="337"/>
         <source>Select Outputpath</source>
         <translation>Välj plats att spara filen på</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="350"/>
+        <location filename="../widgets/create_guide_file_base.ui" line="353"/>
         <source>Create Guide File</source>
         <translation>Skapa styrfil</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="363"/>
+        <location filename="../widgets/create_guide_file_base.ui" line="366"/>
         <source>Path not selected</source>
         <translation>Plats att spara på är ej definerad</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="376"/>
+        <location filename="../widgets/create_guide_file_base.ui" line="379"/>
         <source>File name</source>
         <translation>Fil namn</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="389"/>
+        <location filename="../widgets/create_guide_file_base.ui" line="392"/>
         <source>guide_file</source>
         <translation>styrfil</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="405"/>
+        <source>Rotation: (deg):</source>
+        <translation>Rotatation (grad):</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="418"/>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="431"/>
+        <source>Help</source>
+        <translation>Hjälp</translation>
     </message>
 </context>
 <context>
     <name>EndMethod</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="495"/>
+        <location filename="../import_data/handle_text_data.py" line="506"/>
         <source>Min value is greater than the maximum value</source>
         <translation>Det minsta värdet är större än det största värdet</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="569"/>
+        <location filename="../import_data/handle_text_data.py" line="582"/>
         <source> rows were skipped since the row did not match the heading.</source>
         <translation>rader hoppades över då antalet columner inte matachade den översta radens antal.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="470"/>
+        <source>Yearly operations</source>
+        <translation>Årlig operation</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="502"/>
+        <source>harvest</source>
+        <translation>Skörd data</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="616"/>
+        <source>soil</source>
+        <translation>Jord data</translation>
     </message>
 </context>
 <context>
     <name>GeoDataFarm</name>
     <message>
-        <location filename="../GeoDataFarm.py" line="209"/>
+        <location filename="../GeoDataFarm.py" line="210"/>
         <source>&amp;GeoFarm</source>
         <translation>&amp;GeoFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="190"/>
+        <location filename="../GeoDataFarm.py" line="191"/>
         <source>GeoDataFarm</source>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="251"/>
+        <location filename="../GeoDataFarm.py" line="252"/>
         <source>No farm is created, please create a farm to continue</source>
         <translation>Ingen gård är skapad, var god god och gör det innan du fortsätter</translation>
     </message>
     <message>
-        <location filename="../geodatafarm.py" line="305"/>
-        <source>You need to have at least one input and one harvest data set selected.</source>
-        <translation type="obsolete">Du måste välja åtminstånde en indata fil och en skördefil för att se någon korrelation.</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm.py" line="352"/>
+        <location filename="../GeoDataFarm.py" line="355"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Namnet finns redan, vill du ersätta den datan?</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="314"/>
+        <location filename="../GeoDataFarm.py" line="315"/>
         <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
         <translation>Du måste välja åtminstånde en aktivitet eller jorddata och en skörde data.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="323"/>
+        <location filename="../GeoDataFarm.py" line="324"/>
         <source>Support for databasefiles are not implemented 100% yet</source>
         <translation>Stöd för databas filer är inte implemeterat till 100% än</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="329"/>
+        <location filename="../GeoDataFarm.py" line="330"/>
         <source>Support for shapefiles are not implemented 100% yet</source>
         <translation>Stöd för shapefiler filer är inte implemeterat till 100% än</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="384"/>
+        <source>harvest</source>
+        <translation>Skörd data</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="320"/>
+        <source>Text file (.csv; .txt)</source>
+        <translation>Text fil (.csv; .txt)</translation>
     </message>
 </context>
 <context>
@@ -352,27 +365,12 @@ benämn ditt attribut som [0], [1] etc.:</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="103"/>
         <source>Open the input and load it to the canvas</source>
-        <translation>Öppna import funktionen och ladda den till kartan</translation>
+        <translation>Öppna och ladda den till kartan</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="113"/>
         <source>Define field</source>
         <translation>Definera fält</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="123"/>
-        <source>Insert an shapefile into the database</source>
-        <translation type="obsolete">Importera en shapefil direkt till databasen</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="136"/>
-        <source>Input -&gt; surface and insert to database</source>
-        <translation type="obsolete">Spara fältet</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="148"/>
-        <source>Choose your layer:</source>
-        <translation type="obsolete">Välj ditt lager:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="279"/>
@@ -428,7 +426,7 @@ of colors:</source>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="335"/>
         <source>Edit datasets</source>
-        <translation>Gör analys förändringar</translation>
+        <translation>Ändra i listorna</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="375"/>
@@ -468,7 +466,7 @@ of colors:</source>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="126"/>
         <source>Recolor the input and load it to storage</source>
-        <translation>Färglägg datan och spara undan den för analys</translation>
+        <translation>Färglägg och spara för analys</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="154"/>
@@ -484,6 +482,16 @@ of colors:</source>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="351"/>
         <source>Create guide file</source>
         <translation>Skapa styrfil</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="549"/>
+        <source>Irrigation</source>
+        <translation>Bevattning</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="561"/>
+        <source>Import Raindancer data</source>
+        <translation>Hämta Raindancer data</translation>
     </message>
 </context>
 <context>
@@ -934,39 +942,68 @@ following column</source>
 <context>
     <name>InputTextHandler</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="120"/>
+        <location filename="../import_data/handle_text_data.py" line="119"/>
         <source>No row selected!</source>
         <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="245"/>
+        <location filename="../import_data/handle_text_data.py" line="248"/>
         <source>The shape file already exist on your computer, would you like to replace it?</source>
         <translation>Det finns redan en fil med samma namn på din dator, vill du spara över den?</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="291"/>
+        <location filename="../import_data/handle_text_data.py" line="295"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="288"/>
+        <location filename="../import_data/handle_text_data.py" line="292"/>
         <source>There needs to be a column called latitude (wgs84) or you need to change the EPSG system</source>
         <translation>Det måste finnas en kolumn som är döpt till latitude eller så måste du ändra koordinatssystem</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="291"/>
+        <location filename="../import_data/handle_text_data.py" line="295"/>
         <source>There needs to be a column called longitude (wgs84) or you need to change the EPSG system</source>
         <translation>Det måste finnas en kolumn som är döpt till longiitud eller så måste du ändra koordinatssystem</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="339"/>
-        <source>Data is being processed, please wait</source>
-        <translation type="obsolete">Data håller på att analyseras, var god vänta</translation>
-    </message>
-    <message>
-        <location filename="../import_data/handle_text_data.py" line="101"/>
+        <location filename="../import_data/handle_text_data.py" line="100"/>
         <source>You can only select one yield column!</source>
         <translation>Du kan endast välja en kolumn med skörd resultat!</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="300"/>
+        <source>harvest</source>
+        <translation>Skörd data</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="415"/>
+        <source>soil</source>
+        <translation>Jord data</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="301"/>
+        <source>Yearly operations</source>
+        <translation>Årlig operation</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_text_data.py" line="304"/>
+        <source>Time influenced operation</source>
+        <translation>Tidsberoende operation</translation>
+    </message>
+</context>
+<context>
+    <name>IrrigationHandler</name>
+    <message>
+        <location filename="../import_data/handle_irrigation.py" line="39"/>
+        <source>ClintID must be a number</source>
+        <translation>Klient id måste vara siffror</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_irrigation.py" line="106"/>
+        <source>Wasn&apos;t able to fetch data from raindancer.
+Are you sure that id, username and password was correct?</source>
+        <translation>Kunde inte hämta data från Raindancer, är du säker på att du angav rätt användarnamn och lösenord?</translation>
     </message>
 </context>
 <context>

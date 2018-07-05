@@ -74,13 +74,13 @@ class InputTextHandler(object):
         self.ITD.RBSemi.clicked.connect(self.get_sep)
         self.ITD.RBTab.clicked.connect(self.get_sep)
         self.ITD.RBOwnSep.clicked.connect(self.get_sep)
-        if self.dock_widget.CBDataType.currentText() == 'harvest':
+        if self.dock_widget.CBDataType.currentText() == self.tr('harvest'):
             self.ITD.LParams.setText('Harvest Column')
             self.ITD.LMaxYield.setEnabled(True)
             self.ITD.LMinYield.setEnabled(True)
             self.ITD.LEMaximumYield.setEnabled(True)
             self.ITD.LEMinimumYield.setEnabled(True)
-        if self.dock_widget.CBDataType.currentText() == 'soil':
+        if self.dock_widget.CBDataType.currentText() == self.tr('soil'):
             self.ITD.CombTime.setEnabled(False)
         self.ITD.exec_()
 
@@ -96,7 +96,7 @@ class InputTextHandler(object):
             for i in range(row_count):
                 existing_values.append(self.ITD.TWtoParam.item(i, 0).text())
         for i, item in enumerate(self.ITD.TWColumnNames.selectedItems()):
-            if self.dock_widget.CBDataType.currentText() == 'harvest' and len(existing_values) > 0:
+            if self.dock_widget.CBDataType.currentText() == self.tr('harvest') and len(existing_values) > 0:
                 QMessageBox.information(None, self.tr("Error:"),
                                         self.tr('You can only select one yield column!'))
                 return
@@ -297,11 +297,11 @@ class InputTextHandler(object):
         self.ITD.ComBNorth.setEnabled(True)
         self.ITD.ComBEast.setEnabled(True)
         self.ITD.pButInsertDataIntoDB.setEnabled(True)
-        if self.dock_widget.CBDataType.currentText() == 'harvest' or \
-                (self.ITD.CombTime.currentText() == 'Yearly operations' and
-                         self.dock_widget.CBDataType.currentText() !='soil'):
+        if self.dock_widget.CBDataType.currentText() == self.tr('harvest') or \
+                (self.ITD.CombTime.currentText() == self.tr('Yearly operations') and
+                         self.dock_widget.CBDataType.currentText() != self.tr('soil')):
             self.ITD.LEYearOnly.setEnabled(True)
-        if self.ITD.CombTime.currentText() == 'Time influenced operation':
+        if self.ITD.CombTime.currentText() == self.tr('Time influenced operation'):
             self.ITD.RBDateOnly.setEnabled(True)
             self.ITD.RBDateDiffTime.setEnabled(True)
             self.ITD.RBDateAndTime.setEnabled(True)
@@ -412,7 +412,7 @@ class InputTextHandler(object):
         os.remove(self.input_file_path + "shapefiles/temp.prj")
         self.input_layer = self.point_layer
         self.file_name_with_path = file_name_with_path
-        if self.dock_widget.CBDataType.currentText() != 'soil':
+        if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
             columns_to_add['year'] = 0
             column_types.append(0)
             heading_row.append('year')
@@ -467,7 +467,7 @@ class EndMethod:
         time_dict['date_time_diff'] = False
         time_dict['time_'] = "Not correct column name"
         time_dict['Year'] = "Not correct column name"
-        if self.dock_widget.CBDataType == 'Input (Yearly) like planting data':
+        if self.dock_widget.CBDataType == self.tr('Yearly operations'):
             time_dict['no_time'] = False
             time_dict['Year'] = str(self.ITD.LEYearOnly.text())
             time_dict['year_only'] = True
@@ -499,7 +499,7 @@ class EndMethod:
         for i in range(self.add_to_param_row_count):
             self.params_to_evaluate.append(self.ITD.TWtoParam.item(i, 0).text())
         start_date = datetime.strptime("2015-04-01", "%Y-%m-%d")
-        if self.dock_widget.CBDataType.currentText() == 'harvest':
+        if self.dock_widget.CBDataType.currentText() == self.tr('harvest'):
             min_yield = float(self.ITD.LEMinimumYield.text())
             max_yield = float(self.ITD.LEMaximumYield.text())
             if min_yield > max_yield:
@@ -601,7 +601,7 @@ class EndMethod:
                     w.field(str(key)[:10], 'F', max(10, len(str(key))), 8)
                 if column_types[heading_row.index(key)] == 2:
                     w.field(str(key)[:10], 'C', 20)
-            if self.dock_widget.CBDataType.currentText() != 'soil':
+            if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
                 w.field('year', 'N', 4)
             #loop through the data and write the shapefile
             for j, k in enumerate(columns_to_add[self.longitude_col]):
@@ -613,7 +613,7 @@ class EndMethod:
                     if key in ignore_col:
                         continue
                     data_row.append(columns_to_add[key][j])
-                if self.dock_widget.CBDataType.currentText() != 'soil':
+                if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
                     data_row.append(int(self.ITD.LEYearOnly.text()))
                 w.record(*data_row) #write the attributes
             w.save(str(self.input_file_path) + "shapefiles/temp")
