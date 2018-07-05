@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
-    <height>555</height>
+    <width>312</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>281</width>
-      <height>531</height>
+      <width>301</width>
+      <height>581</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -35,8 +35,8 @@
        <rect>
         <x>10</x>
         <y>0</y>
-        <width>251</width>
-        <height>451</height>
+        <width>279</width>
+        <height>484</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -295,7 +295,7 @@ of colors:</string>
         <x>0</x>
         <y>0</y>
         <width>271</width>
-        <height>513</height>
+        <height>518</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -495,6 +495,12 @@ of colors:</string>
        </item>
        <item>
         <widget class="QPushButton" name="PBRunAnalyses">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="locale">
           <locale language="English" country="UnitedKingdom"/>
          </property>

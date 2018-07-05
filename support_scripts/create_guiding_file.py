@@ -21,12 +21,14 @@ class CreateGuideFile:
         self.plugin_dir = parent_widget.plugin_dir
         self.CGF = CreateGuideFileDialog()
         self.grid_layer = None
+        self.tr = parent_widget.tr
         self.dock_widget = parent_widget.dock_widget
         self.tables_in_tw_cb = 0
         self.nbr_selected_attr = 0
         self.select_table = ''
         self.eq_text2 = ''
         self.save_folder = ''
+        self.rotation = 0
         self.db = None
 
     def run(self):
@@ -38,14 +40,17 @@ class CreateGuideFile:
         self.CGF.PBUpdate.clicked.connect(self.update_max_min)
         self.CGF.PBSelectOutput.clicked.connect(self.set_output_path)
         self.CGF.PBCreateFile.clicked.connect(self.create_file)
+        self.CGF.PBHelp.clicked.connect(self.help)
         self.update_names()
         self.CGF.exec()
 
     def set_output_path(self):
+        """Sets the path where the guide file should be saved."""
         dialog = QFileDialog()
         folder_path = dialog.getExistingDirectory(None, "Select Folder")
         self.CGF.LOutputPath.setText(str(folder_path))
         self.save_folder = folder_path
+        self.CGF.PBCreateFile.setEnabled(True)
 
     def update_names(self):
         self.db = DB(self.dock_widget, path=self.plugin_dir)
@@ -123,6 +128,7 @@ class CreateGuideFile:
         self.nbr_selected_attr = row_count
 
     def update_max_min(self):
+        """Update the text min, max text and set the equation for the guide file."""
         eq_text = self.CGF.TEEquation.toPlainText()
         row_count = self.nbr_selected_attr
         existing_values = []
@@ -146,29 +152,56 @@ class CreateGuideFile:
         self.CGF.LMaxVal.setText('Max value: {val}'.format(val=data[0][0]))
         self.CGF.LMinVal.setText('Min value: {val}'.format(val=data[0][1]))
         self.eq_text2 = eq_text2
-        self.CGF.PBCreateFile.setEnabled(True)
+        self.CGF.PBSelectOutput.setEnabled(True)
 
     def create_file(self):
-        """Creates an empty polygon that's define a field"""
+        """Creates the guide file with the information from the user."""
         cell_size = self.CGF.LECellSize.text()
         attr_name = self.CGF.LEAttrName.text()
         EPSG = self.CGF.LEEPSG.text()
         file_name = self.CGF.LEFileName.text()
+        rotation = self.CGF.LERotation.text()
         float_type = False
         if self.CGF.CBDataType.currentText() == 'Float (1.234)':
             float_type = True
-        save_path =''
-        sql = """with fishnet as(
-SELECT cell FROM (
-  SELECT (ST_Dump(makegrid_2d(ST_SetSRID(ST_Extent(pos),4326),{c_size},{c_size}))
-         ).geom as cell  from {tbl}
-  )q
-)
-select st_astext(ST_Transform(cell, {EPSG})), {eq}
-from fishnet
-left join {tbl} on st_intersects(cell, pos)
-group by cell""".format(c_size=cell_size, eq=self.eq_text2,
-                        tbl=self.selected_table, EPSG=EPSG)
+        save_path = ''
+
+        sql = """WITH grid AS (
+      SELECT 
+        ROW_NUMBER() OVER () AS grid_id,
+        m.geom 
+      FROM (
+        SELECT (
+          ST_Dump(
+            MAKEGRID_2D(
+              ST_SetSRID(st_buffer(ST_Extent(pos),
+                                   GREATEST(((select max(st_x(pos)) from schema.table) - 
+                                        (select min(st_x(pos)) from schema.table)),
+                                       ((select max(st_y(pos)) from schema.table) - 
+                                        (select min(st_y(pos)) from schema.table)))/4
+                                  ),4326),{c_size},{c_size}))
+             ).geom  from {tbl}
+      ) m
+    ),
+    --Defines the centroid of the whole grid
+    centroid AS (
+      SELECT ST_Centroid(ST_Collect(grid.geom)) AS geometry FROM grid
+    ), 
+    --Rotates around the defined centroid
+    rotated as(SELECT ST_Rotate(grid.geom,radians({rot}),(SELECT geometry FROM centroid)) as polys 
+               FROM grid1
+              ),
+    --Selectes the polygons that are intersecting the orignal data
+    select_data as (select polys
+                   from rotated
+                   where st_intersects(ST_SetSRID((select ST_Extent(pos) from schema.table), 4326),
+                                       polys))
+    --Do the final selections and joining in some average data
+    select st_astext(ST_Transform(polys, {EPSG})), {eq} 
+    from select_data
+    left join {tbl} on st_intersects(polys, pos)
+    group by polys;""".format(c_size=cell_size, eq=self.eq_text2,
+                              tbl=self.selected_table, EPSG=EPSG, rot=rotation)
         data = self.db.execute_and_return(sql)
         attribute_values = []
         with shp.Writer(shp.POLYGON) as w:
@@ -205,3 +238,18 @@ group by cell""".format(c_size=cell_size, eq=self.eq_text2,
                                    field=attr_name[:10], steps=15)
             QgsProject.instance().addMapLayer(layer)
             self.CGF.done(0)
+
+    def help(self):
+        QMessageBox.information(None, self.tr("Help:"), self.tr(
+            'Here you create a guide file.\n'
+            '1. Start with select which data you want to base the guide file on in the top left corner.\n'
+            '2. Select which of the attributes you want to use as base of calculation.\n'
+            '3. When this is done you will have one or a few attributes in the right list with the name, [number].\n'
+            '4. Now, change the equation to the right (default 100 + [0] * 2) to fit your idea and press update.\n'
+            '5. When you press update the max and min value should be updated.\n'
+            '6. Depending on your machine (that you want to feed with the guide file) you might want to use integers or float values.\n'
+            '7. The attribute name and File name is for you, the output path is where the guide file will be stored.\n'
+            '8. Cell size, how big grid you want for the guide file, EPSG let it be 4326 unless your machine require it!\n'
+            '9. There is also an option for you if you want to rotate your grid.\n'
+            '10. Finally press Create guide file and you are all set to go!'))
+        return
