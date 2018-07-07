@@ -24,9 +24,7 @@
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
-import os
 import os.path
-import sys
 from . import resources
 from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
 from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
@@ -34,6 +32,27 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from PyQt5.QtGui import QIcon
+import os
+import sys
+plugin_dir = os.path.dirname(__file__)
+try:
+    import pip
+except:
+    execfile(os.path.join(plugin_dir, get_pip.py))
+    import pip
+    # just in case the included version is old
+    pip.main(['install','--upgrade','pip'])
+    print('installed pip')
+
+try:
+    import matplotlib
+except:
+    import subprocess
+    print('installing matplotlib')
+    subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'matplotlib'])
+    import matplotlib
+    print('installation completed')
+
 # Initialize Qt resources from file resources.py
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.db import DB
