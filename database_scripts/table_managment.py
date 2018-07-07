@@ -38,7 +38,7 @@ class TableManagement:
         if new_name == '':
             QMessageBox.information(None, self.tr("Error:"), self.tr('You need to fill in a new name'))
             return
-        if new_schema == '-Select data type -':
+        if new_schema == self.tr('-Select data type -'):
             QMessageBox.information(None, self.tr("Error:"), self.tr('You have to decide what type of data it is'))
             return
         if new_name in self.DB.get_tables_in_db():

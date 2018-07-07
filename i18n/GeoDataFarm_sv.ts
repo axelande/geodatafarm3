@@ -264,49 +264,60 @@ benämn ditt attribut som [0], [1] etc.:</translation>
 <context>
     <name>GeoDataFarm</name>
     <message>
-        <location filename="../GeoDataFarm.py" line="210"/>
+        <location filename="../GeoDataFarm.py" line="229"/>
         <source>&amp;GeoFarm</source>
         <translation>&amp;GeoFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="191"/>
+        <location filename="../GeoDataFarm.py" line="210"/>
         <source>GeoDataFarm</source>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="252"/>
+        <location filename="../GeoDataFarm.py" line="271"/>
         <source>No farm is created, please create a farm to continue</source>
         <translation>Ingen gård är skapad, var god god och gör det innan du fortsätter</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="355"/>
+        <location filename="../GeoDataFarm.py" line="374"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Namnet finns redan, vill du ersätta den datan?</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="315"/>
+        <location filename="../GeoDataFarm.py" line="334"/>
         <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
         <translation>Du måste välja åtminstånde en aktivitet eller jorddata och en skörde data.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="324"/>
+        <location filename="../GeoDataFarm.py" line="343"/>
         <source>Support for databasefiles are not implemented 100% yet</source>
         <translation>Stöd för databas filer är inte implemeterat till 100% än</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="330"/>
+        <location filename="../GeoDataFarm.py" line="349"/>
         <source>Support for shapefiles are not implemented 100% yet</source>
         <translation>Stöd för shapefiler filer är inte implemeterat till 100% än</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="384"/>
+        <location filename="../GeoDataFarm.py" line="403"/>
         <source>harvest</source>
         <translation>Skörd data</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="320"/>
+        <location filename="../GeoDataFarm.py" line="339"/>
         <source>Text file (.csv; .txt)</source>
         <translation>Text fil (.csv; .txt)</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="342"/>
+        <source>Databasefile (.db)</source>
+        <translation>Databas fil (.db)
+</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm.py" line="348"/>
+        <source>Shape file (.shp)</source>
+        <translation>Shape fil (.shp)</translation>
     </message>
 </context>
 <context>
@@ -414,52 +425,47 @@ of colors:</source>
         <translation>Lika stora interval</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="290"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="304"/>
         <source>Data Management</source>
         <translation>Data Management</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="317"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="331"/>
         <source>Update lists</source>
         <translation>Updatera listorna</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="335"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="349"/>
         <source>Edit datasets</source>
         <translation>Ändra i listorna</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="375"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="389"/>
         <source>Activity data sets:</source>
         <translation>Aktivitets listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="416"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="430"/>
         <source>Harvest data sets:</source>
         <translation>Skörde data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="457"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="471"/>
         <source>Soil data sets:</source>
         <translation>Jorddata listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="492"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="506"/>
         <source>Add selected tables to the canvas</source>
         <translation>Lägg till data till kartan</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="502"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="522"/>
         <source>Run the analyse</source>
         <translation>Kör analys</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="518"/>
-        <source>Create new farm database</source>
-        <translation>Skapa ny gård</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="540"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="560"/>
         <source>No farm database created</source>
         <translation>Ingen gård är skapad</translation>
     </message>
@@ -479,19 +485,31 @@ of colors:</source>
         <translation>Ändra presentationen av följande läger i kartvyn:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="351"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="365"/>
         <source>Create guide file</source>
         <translation>Skapa styrfil</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="549"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="569"/>
         <source>Irrigation</source>
         <translation>Bevattning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="561"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="581"/>
         <source>Import Raindancer data</source>
         <translation>Hämta Raindancer data</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="297"/>
+        <source>How to use the plugin is explained at:
+www.geodatafarm.com</source>
+        <translation type="unfinished">Instruktioner för hur pluginet fungerar finner
+du på www.geodatafarm.com</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="538"/>
+        <source>Create new/connect to farm database</source>
+        <translation>Skapa ny/anslut till tidigare databas</translation>
     </message>
 </context>
 <context>
@@ -1080,6 +1098,11 @@ Are you sure that id, username and password was correct?</source>
         <location filename="../database_scripts/table_managment.py" line="195"/>
         <source>No</source>
         <translation>Nej</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="41"/>
+        <source>-Select data type -</source>
+        <translation>-Välj data typ</translation>
     </message>
 </context>
 <context>
