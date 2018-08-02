@@ -48,8 +48,12 @@ try:
     import matplotlib
 except:
     import subprocess
+    import platform
     print('installing matplotlib')
-    subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'matplotlib'])
+    if platform.system() == 'Windows':
+        subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'matplotlib'])
+    else:
+        subprocess.call(['pip3', 'install', 'matplotlib'])
     import matplotlib
     print('installation completed')
 
