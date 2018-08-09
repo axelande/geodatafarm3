@@ -39,6 +39,7 @@ class CreateFarm:
         self.tr = parent_widget.tr
         self.plugin_dir = parent_widget.plugin_dir
         self.dock_widget = parent_widget.dock_widget
+        self.db = None
 
     def run(self):
         """Presents the sub widget CreateFarm"""
@@ -75,6 +76,7 @@ class CreateFarm:
             f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.create_spec_functions()
+        self.add_schemas()
         self.CF.done(0)
 
     def connect_to_source(self):
@@ -92,9 +94,14 @@ class CreateFarm:
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.CF.done(0)
 
+    def _connect_to_db(self):
+        """Simple function to connect to the new database"""
+        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        connected = self.db.get_conn()
+
     def create_spec_functions(self):
-        db = DB(self.dock_widget, path=self.plugin_dir)
-        connected = db.get_conn()
+        if self.db is None:
+            self._connect_to_db()
         sql = """CREATE OR REPLACE FUNCTION public.makegrid_2d (
       bound_polygon public.geometry,
       width_step integer,
@@ -153,4 +160,24 @@ class CreateFarm:
     END;
     $body$
     LANGUAGE 'plpgsql';"""
-        db.execute_sql(sql)
+        self.db.execute_sql(sql)
+
+    def add_tables(self):
+        """Add tables to the database"""
+        if self.db is None:
+            self._connect_to_db()
+        sql = "CREATE table fields(row_id serial, field_name text, polygon geometry(polygon, 4326))"
+        self.db.execute_sql(sql)
+
+    def add_schemas(self):
+        """Adds schemas to the new database"""
+        if self.db is None:
+            self._connect_to_db()
+        sql = """create schema plant;
+        create schema harvest;
+        create schema activity;
+        create schema soil;
+        create schema weather;
+        create schema spray;
+        create schema ferti;"""
+        self.db.execute_sql(sql)
