@@ -32,18 +32,10 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from PyQt5.QtGui import QIcon
+from psycopg2 import IntegrityError
 import os
 import sys
 plugin_dir = os.path.dirname(__file__)
-try:
-    import pip
-except:
-    execfile(os.path.join(plugin_dir, get_pip.py))
-    import pip
-    # just in case the included version is old
-    pip.main(['install','--upgrade','pip'])
-    print('installed pip')
-
 try:
     import matplotlib
 except:
@@ -58,6 +50,7 @@ except:
     print('installation completed')
 
 # Initialize Qt resources from file resources.py
+from .resources import *
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.db import DB
 from .database_scripts.mean_analyse import Analyze
@@ -71,14 +64,12 @@ from .import_data.handle_irrigation import IrrigationHandler
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
+from .support_scripts.add_field import AddField
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint
+from .support_scripts.populate_lists import Populate
 
-# TODO: Known bugs:
-# TODO: Add polygon while importing shapefiles
-# TODO: Data till g?dning
-# TODO: Different yields map, per crop, normalised over years.
-# TODO: "planet labs" for satelite data
+
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
 
@@ -117,14 +108,14 @@ class GeoDataFarm:
         self.toolbar.setObjectName(u'GeoDataFarm')
 
         #print "** INITIALIZING GeoDataFarm"
-
+        self.items_in_table = None
         self.pluginIsActive = False
         self.dock_widget = None
-        self.items_in_table = [[None, ''], [None, ''], [None, '']]
-        self.tables_in_db = [0, 0, 0]
-        self.DB = None
+        self.populate = None
+        self.db = None
         self.IH = None
         self.df = None
+        self.db = None
         self.tsk_mngr = QgsApplication.taskManager()
 
     # noinspection PyMethodMayBeStatic
@@ -224,7 +215,6 @@ class GeoDataFarm:
         self.dock_widget.closingPlugin.disconnect(self.onClosePlugin)
         self.pluginIsActive = False
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         #print "** UNLOAD GeoDataFarm"
@@ -241,62 +231,32 @@ class GeoDataFarm:
     def add_selected_tables(self):
         """Adds a layer for each "parameter" of all selected tables
         """
+        self.items_in_table = self.populate.get_items_in_table()
         tables = []
         for list_widget, schema in self.items_in_table:
             for item in list_widget:
                 if item.checkState() == 2:
                     tables.append(str(item.text()))
-            parameters = self.DB.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], schema)
+            parameters = self.db.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], schema)
             for nr in range(len(parameters)):
                 target_field = parameters[nr]['index_col']
                 tbl_name = parameters[nr]['tbl_name']
                 if 'field_row_id' in target_field:
                     continue
                 if parameters[nr]['schema'] == 'harvest':
-                    layer = self.DB.addPostGISLayer(tbl_name.lower(),
+                    layer = self.db.addPostGISLayer(tbl_name.lower(),
                                                     'pos', 'harvest',
                                                     'harvest')
-                    #layer = self.DB.addPostGISLayer(tbl_name.lower(), 'pos', parameters[nr]['schema'], 'harvest')
+                    #layer = self.db.addPostGISLayer(tbl_name.lower(), 'pos', parameters[nr]['schema'], 'harvest')
                 else:
-                    layer = self.DB.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
-                create_layer = CreateLayer(self.DB)
+                    layer = self.db.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
+                create_layer = CreateLayer(self.db)
                 create_layer.create_layer_style(layer, target_field, tbl_name.lower(), parameters[nr]['schema'])
                 QgsProject.instance().addMapLayer(layer)
 
     def reload_layer(self):
-        create_layer = CreateLayer(self.DB, self.dock_widget)
+        create_layer = CreateLayer(self.db, self.dock_widget)
         create_layer.repaint_layer()
-
-    def update_table_list(self):
-        """Update the list of tables in the docket widget"""
-        self.DB = DB(self.dock_widget, path=self.plugin_dir)
-        connected = self.DB.get_conn()
-        if not connected:
-            QMessageBox.information(None, "Error:", self.tr('No farm is created, please create a farm to continue'))
-            return
-        lw_list = [[self.dock_widget.LWActivityTable, 'activity'],
-                   [self.dock_widget.LWHarvestTable, 'harvest'],
-                   [self.dock_widget.LWSoilTable, 'soil']]
-        for i, (lw, schema) in enumerate(lw_list):
-            table_names = self.DB.get_tables_in_db(schema)
-            if self.tables_in_db[i] != 0:
-                model = lw.model()
-                for item in self.items_in_table[i][0]:
-                    q_index = lw.indexFromItem(item)
-                    model.removeRow(q_index.row())
-            self.tables_in_db[i] = 0
-            for name in table_names:
-                if name[0] in ["spatial_ref_sys", "pointcloud_formats",
-                               "temp_polygon"]:
-                    continue
-                item_name = str(name[0])
-                _name = QApplication.translate("qadashboard", item_name, None)
-                item = QListWidgetItem(_name, lw)
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                item.setCheckState(QtCore.Qt.Unchecked)
-                self.tables_in_db[i] += 1
-            self.items_in_table[i][0] = lw.findItems('', QtCore.Qt.MatchContains)
-            self.items_in_table[i][1] = schema
 
     def reload_range(self):
         cb = self.dock_widget.mMapLayerComboBox
@@ -318,6 +278,7 @@ class GeoDataFarm:
         schemas = []
         harvest_file = False
         input_file = False
+        self.items_in_table = self.populate.get_items_in_table()
         lw_list = [[self.dock_widget.LWActivityTable, 'activity'],
                    [self.dock_widget.LWHarvestTable, 'harvest'],
                    [self.dock_widget.LWSoilTable, 'soil']]
@@ -347,7 +308,7 @@ class GeoDataFarm:
             QMessageBox.information(None, "Error:", self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
-            self.IH = DBFileHandler(self.iface, self.dock_widget)
+            self.IH = dbFileHandler(self.iface, self.dock_widget)
             self.IH.start_up()
         elif self.dock_widget.CBFileType.currentText() == self.tr('Shape file (.shp)'):
             QMessageBox.information(None, "Error:", self.tr(
@@ -363,7 +324,7 @@ class GeoDataFarm:
 
     def _q_replace_db_data(self, tbl=None):
         schema = self.dock_widget.CBDataType.currentText()
-        tables_in_db = self.DB.get_tables_in_db(schema=schema)
+        tables_in_db = self.db.get_tables_in_db(schema=schema)
         if tbl is not None:
             tbl_name = tbl
         else:
@@ -381,7 +342,7 @@ class GeoDataFarm:
             if ret == qm.No:
                 return False
             else:
-                self.DB.execute_sql(
+                self.db.execute_sql(
                     "DROP TABLE {schema}.{tbl}".format(schema=schema,
                                                        tbl=tbl_name))
                 return True
@@ -406,7 +367,7 @@ class GeoDataFarm:
                 pass
             if schema == self.tr('harvest'):
                 obj = InsertHarvestData(self.IH, self.iface, self.dock_widget,
-                                  polygon, self.DB, self.tr, self.tsk_mngr)
+                                  polygon, self.db, self.tr, self.tsk_mngr)
                 obj.run()
             else:
                 iitdb = InsertInputToDB(self.IH, self.iface, self.dock_widget, polygon, self.tsk_mngr, self.DB)
@@ -436,6 +397,39 @@ class GeoDataFarm:
         guide = CreateGuideFile(self)
         guide.run()
 
+    def add_field(self):
+        add_f = AddField(self)
+        add_f.run()
+        self.populate.reload_fields()
+
+    def get_database_connection(self):
+        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        connected = self.db.get_conn()
+        if not connected:
+            QMessageBox.information(None, "Error:", self.tr('No farm is created, please create a farm to continue'))
+            return False
+        return True
+
+    def add_crop(self):
+        crop_name = self.dock_widget.LECropName.text()
+        if len(crop_name) == 0:
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('Crop name must be filled in.'))
+            return
+        sql = """Insert into crops (crop_name) 
+                VALUES ('{name}')""".format(name=crop_name)
+        try:
+            self.db.execute_sql(sql)
+        except IntegrityError:
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('Crop name all ready exist, please select a new name'))
+            return
+        _name = QApplication.translate("qadashboard", crop_name, None)
+        item = QListWidgetItem(_name, self.dock_widget.LWCrops)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+        item.setCheckState(QtCore.Qt.Unchecked)
+        self.populate.reload_crops()
+
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
@@ -456,19 +450,21 @@ class GeoDataFarm:
             if self.dock_widget is None:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
-            self.update_table_list()
-            self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
-            self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)
+            if self.get_database_connection():
+                self.populate = Populate(self)
+                self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
+
+            self.dock_widget.PBAddField.clicked.connect(self.add_field)
+            self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
+            #self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
+            #self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBAddNewFarm.clicked.connect(self.clicked_create_farm)
-            self.dock_widget.PBDefineField.clicked.connect(self.clicked_define_field)
-            self.dock_widget.PBUpdateLists.clicked.connect(self.update_table_list)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
-            self.dock_widget.PBAddIrrigation.clicked.connect(self.import_irrigation)
             try:
                 self.reload_range()
             except:
@@ -477,5 +473,5 @@ class GeoDataFarm:
             # show the dock_widget
             # connect to provide cleanup on closing of dock_widget
             self.dock_widget.closingPlugin.connect(self.onClosePlugin)
-            self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_widget)
+            #self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_widget)
             self.dock_widget.show()
