@@ -19,7 +19,7 @@ def histedges_equalN(x, nbin):
 class CreateLayer:
     def __init__(self, db, dock_widget=None):
         """Creates a layer with color coded attributes"""
-        self.DB = db
+        self.db = db
         self.dock_widget = dock_widget
 
     def _apply_symbology_fixed_divisions(self, layer, field, tbl_name, schema,
@@ -29,7 +29,7 @@ class CreateLayer:
         if min_v is not None and max_v is not None:
             distinct_values = list(np.arange(min_v, max_v, steps))
         else:
-            distinct = self.DB.get_distinct(tbl_name, field, schema)
+            distinct = self.db.get_distinct(tbl_name, field, schema)
             distinct_values = []
             distinct_count = []
             for value, count in distinct:

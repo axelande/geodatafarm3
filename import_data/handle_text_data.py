@@ -45,7 +45,7 @@ class InputTextHandler(object):
         self.file_name = None
         self.input_file_path = None
         self.add_to_param_row_count = 0
-        self.add_to_DB_row_count = 0
+        self.add_to_db_row_count = 0
         # Create the dialog (after translation) and keep reference
         self.ITD = ImportTextDialog()
         self.dock_widget = parent_widget.dock_widget
@@ -54,7 +54,7 @@ class InputTextHandler(object):
         self.parent_widget = parent_widget
         self.tsk_mngr = parent_widget.tsk_mngr
         self.rb_pressed = False
-        self.fields_to_DB = False
+        self.fields_to_db = False
         self.combo = None
         self.sep = None
         self.encoding = 'utf-8'
@@ -189,7 +189,7 @@ class InputTextHandler(object):
             self.ITD.TWColumnNames.setItem(i, 0, item1)
             self.ITD.TWColumnNames.setItem(i, 1, item2)
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
-        self.add_to_DB_row_count = i
+        self.add_to_db_row_count = i
 
     def set_radio_but(self):
         if self.sep == ',':
@@ -266,7 +266,7 @@ class InputTextHandler(object):
         """A function that prepares the last parts of the widget with the data
         to be inserted into the shapefile, determining date and time columns """
         columns_to_add = []
-        for i in range(self.add_to_DB_row_count + 1):
+        for i in range(self.add_to_db_row_count + 1):
             columns_to_add.append(self.ITD.TWColumnNames.item(i, 0).text())
 
         self.ITD.ComBNorth.clear()
@@ -361,7 +361,7 @@ class InputTextHandler(object):
         end_method = EndMethod()
         task1 = QgsTask.fromFunction('running script', end_method.run,
                                      self.parent_widget, self.ITD,
-                                     self.add_to_DB_row_count, self.sep,
+                                     self.add_to_db_row_count, self.sep,
                                      self.col_types,
                                      self.add_to_param_row_count,
                                      self.file_name_with_path,
@@ -371,7 +371,7 @@ class InputTextHandler(object):
         self.tsk_mngr.addTask(task1)
         ##Debugg
         #values = end_method.run(1, self.parent_widget, self.ITD,
-        #                        self.add_to_DB_row_count, self.sep,
+        #                        self.add_to_db_row_count, self.sep,
         #                        self.col_types,
         #                        self.add_to_param_row_count,
         #                        self.file_name_with_path,
@@ -433,7 +433,7 @@ class EndMethod:
     def __init__(self):
         self = self
 
-    def run(self, task, parent_widget, ITD, add_to_DB_row_count, sep,
+    def run(self, task, parent_widget, ITD, add_to_db_row_count, sep,
             col_types, add_to_param_row_count, file_name_with_path,
             input_file_path, encoding):
         super(EndMethod, self).__init__()
@@ -442,7 +442,7 @@ class EndMethod:
         self.ITD = ITD
         self.sep = sep
         self.col_types = col_types
-        self.add_to_DB_row_count = add_to_DB_row_count
+        self.add_to_db_row_count = add_to_db_row_count
         self.add_to_param_row_count = add_to_param_row_count
         self.file_name_with_path = file_name_with_path
         self.input_file_path = input_file_path
@@ -452,7 +452,7 @@ class EndMethod:
         only_char = check_text(self.ITD.ComBEast.currentText())
         self.longitude_col = only_char
         columns_to_add = {}
-        for i in range(self.add_to_DB_row_count + 1):
+        for i in range(self.add_to_db_row_count + 1):
             text = self.ITD.TWColumnNames.item(i, 0).text()
             only_char = check_text(text)
             columns_to_add[only_char] = []

@@ -4,6 +4,7 @@ import os
 import requests
 import hashlib
 from ..widgets.create_farm_popup import CreateFarmPopup
+from ..support_scripts.populate_lists import Populate
 from ..support_scripts.__init__ import check_text
 from .db import DB
 __author__ = 'Axel Andersson'
@@ -77,6 +78,8 @@ class CreateFarm:
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.create_spec_functions()
         self.add_schemas()
+        self.dock_widget.populate = Populate(self)
+        self.dock_widget.PBUpdateLists.clicked.connect(self.dock_widget.populate.update_table_list)
         self.CF.done(0)
 
     def connect_to_source(self):
@@ -166,7 +169,17 @@ class CreateFarm:
         """Add tables to the database"""
         if self.db is None:
             self._connect_to_db()
-        sql = "CREATE table fields(row_id serial, field_name text, polygon geometry(polygon, 4326))"
+        sql = """CREATE table fields(row_id integer NOT NULL DEFAULT nextval('fields_row_id_seq'::regclass),
+            field_name text COLLATE pg_catalog."default" NOT NULL,
+            years text,
+            polygon geometry(Polygon,4326),
+            CONSTRAINT p_key_field PRIMARY KEY (row_id),
+            CONSTRAINT field_name UNIQUE (field_name))"""
+        self.db.execute_sql(sql)
+        sql = """CREATE table crops(row_id integer NOT NULL DEFAULT nextval('fields_crop_id_seq'::regclass),
+            crop_name text COLLATE pg_catalog."default" NOT NULL,
+            CONSTRAINT p_key_crop PRIMARY KEY (row_id),
+            CONSTRAINT crop_name UNIQUE (crop_name))"""
         self.db.execute_sql(sql)
 
     def add_schemas(self):
@@ -175,7 +188,7 @@ class CreateFarm:
             self._connect_to_db()
         sql = """create schema plant;
         create schema harvest;
-        create schema activity;
+        create schema other;
         create schema soil;
         create schema weather;
         create schema spray;

@@ -25,7 +25,7 @@ class Analyze:
         :return:
         """
         self.dlg = RunAnalyseDialog()
-        self.db = parent_widget.DB
+        self.db = parent_widget.db
         self.tsk_mngr = parent_widget.tsk_mngr
         self.harvest_tables = {}
         self.activity_tables = {}

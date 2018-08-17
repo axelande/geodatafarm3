@@ -28,13 +28,13 @@ class InputShpHandler:
         self.col_names = []
         # Create the dialog (after translation) and keep reference
         self.ISD = ImportShpDialog()
-        self.DB = parent_widget.DB
+        self.db = parent_widget.db
         self.tr = parent_widget.tr
         self.dock_widget = parent_widget.dock_widget
-        self.CreateLayer = CreateLayer(self.DB)
+        self.CreateLayer = CreateLayer(self.db)
         self._q_replace_db_data = parent_widget._q_replace_db_data
         self.defined_field = defined_field
-        self.fields_to_DB = False
+        self.fields_to_db = False
 
     def add_input(self):
         """Presents the sub widget HandleInput and connects the different
@@ -129,7 +129,7 @@ class InputShpHandler:
             self.ISD.TWColumnNames.setItem(i, 0, item1)
             self.ISD.TWColumnNames.setItem(i, 1, item2)
             self.ISD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
-        self.add_to_DB_row_count = i
+        self.add_to_db_row_count = i
 
     def open_input_file(self):
         """
@@ -162,7 +162,7 @@ class InputShpHandler:
         """A function that prepares the last parts of the widget with the data
         to be inserted into the shapefile, determining date and time columns """
         columns_to_add = []
-        for i in range(self.add_to_DB_row_count + 1):
+        for i in range(self.add_to_db_row_count + 1):
             columns_to_add.append(self.ISD.TWColumnNames.item(i, 0).text())
         shp_file = shp.Reader(self.file_name_with_path + '.shp')
         no_prj = self._find_prj()
@@ -193,7 +193,7 @@ class InputShpHandler:
         :return:
         """
         columns_to_add = {}
-        for i in range(self.add_to_DB_row_count + 1):
+        for i in range(self.add_to_db_row_count + 1):
             text = self.ISD.TWColumnNames.item(i,0).text()
             only_char = check_text(text)
             columns_to_add[only_char] = []
@@ -253,7 +253,7 @@ class InputShpHandler:
         self.column_types = column_types
         schema = self.dock_widget.CBDataType.currentText()
         if schema != 'harvest':
-            iitdb = InsertInputToDB(self, self.iface, dock_widget=self.dock_widget, defined_field=self.defined_field, db=self.DB)
+            iitdb = InsertInputToDB(self, self.iface, dock_widget=self.dock_widget, defined_field=self.defined_field, db=self.db)
             iitdb.import_data_to_db(schema=schema, convert2polygon=self.isPolyon, is_shp=True)
         self.reset_input_handler_widget()
 

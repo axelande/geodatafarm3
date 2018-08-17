@@ -53,7 +53,7 @@ class InsertHarvestData:
 class InsertHarvestToDB(QtCore.QObject):
     def __init__(self):
         self.IH = None
-        self.DB = None
+        self.db = None
         self.defined_field = None
         self.iface = None
 
@@ -68,7 +68,7 @@ class InsertHarvestToDB(QtCore.QObject):
         :param db: the database connection
         :return:
         """
-        self.DB = db
+        self.db = db
         self.iface = iface
         self.IH = IH
         self.defined_field = polygon
@@ -104,9 +104,9 @@ class InsertHarvestToDB(QtCore.QObject):
         sql = sql[:-2]
         sql += ")"
         if self.defined_field is None:
-            self.DB.create_table(sql, 'harvest.' + tbl_name)
+            self.db.create_table(sql, 'harvest.' + tbl_name)
         else:
-            self.DB.create_table(sql, 'harvest.temp_table')
+            self.db.create_table(sql, 'harvest.temp_table')
         if task != 1:
             task.setProgress(2)
         with shp.Reader(self.IH.input_file_path + "shapefiles/" + self.IH.file_name + '.shp') as shpfile:
@@ -157,9 +157,9 @@ class InsertHarvestToDB(QtCore.QObject):
                     sql_raw += "({vals_str}), ".format(vals_str=", ".join(str(e) for e in value))
                 sql = sql_raw[:-2]
                 if self.defined_field is None:
-                    self.DB.execute_sql(sql)
+                    self.db.execute_sql(sql)
                 else:
-                    self.DB.execute_sql(sql)
+                    self.db.execute_sql(sql)
         if self.defined_field is not None:
             coord = str(self.defined_field)
             sql = """DROP TABLE IF EXISTS harvest.{tbl};
@@ -168,7 +168,7 @@ FROM harvest.temp_table
 WHERE st_intersects(pos, ST_GeomFromText('{coord}',4326))""".format(
                 tbl=tbl_name, coord=coord)
             time.sleep(0.1)
-            self.DB.execute_sql(sql)
-            self.DB.execute_sql("DROP TABLE harvest.temp_table")
-        self.DB.create_indexes(tbl_name.lower(), params_to_eval=[check_text(harvest_yield_col)], schema='harvest')
+            self.db.execute_sql(sql)
+            self.db.execute_sql("DROP TABLE harvest.temp_table")
+        self.db.create_indexes(tbl_name.lower(), params_to_eval=[check_text(harvest_yield_col)], schema='harvest')
         return 1

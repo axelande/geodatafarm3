@@ -10,7 +10,7 @@ class TableManagement:
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
         self.add_to_Param_row_count = 0
-        self.DB = parent.DB
+        self.db = parent.db
         self.dock_widget = parent.dock_widget
         self.tr = parent.tr
         # Create the dialog (after translation) and keep reference
@@ -21,7 +21,7 @@ class TableManagement:
         self.current_schema = None
 
     def run(self):
-        self.TMD.pButRemove.clicked.connect(self.remove_table_from_DB)
+        self.TMD.pButRemove.clicked.connect(self.remove_table_from_db)
         self.TMD.pButCombine.clicked.connect(self.merge_tbls)
         self.TMD.pButChangeTbl.clicked.connect(self.edit_tbl_name)
         self.TMD.pButChangeParam.clicked.connect(self.edit_param_name)
@@ -41,7 +41,7 @@ class TableManagement:
         if new_schema == self.tr('-Select data type -'):
             QMessageBox.information(None, self.tr("Error:"), self.tr('You have to decide what type of data it is'))
             return
-        if new_name in self.DB.get_tables_in_db():
+        if new_name in self.db.get_tables_in_db():
             QMessageBox.information(None, self.tr("Error:"), self.tr('You need a new name'))
             return
         c = 0
@@ -57,9 +57,9 @@ class TableManagement:
             sql += "select * from {tbl} UNION ".format(tbl=table)
         sql = sql[:-7]
         sql += ")"
-        self.DB.execute_sql(sql)
-        self.DB.update_row_id(new_schema, new_name)
-        self.DB.create_indexes(new_name, [], new_schema)
+        self.db.execute_sql(sql)
+        self.db.update_row_id(new_schema, new_name)
+        self.db.create_indexes(new_name, [], new_schema)
         self.TMD.LEName.setText('')
         self.TMD.CBDataType.setCurrentIndex(0)
         self.update_table_list()
@@ -83,10 +83,10 @@ class TableManagement:
         checked_params = []
         table = self.current_table
         schema = self.current_schema
-        indexes = self.DB.get_indexes(table, schema)
+        indexes = self.db.get_indexes(table, schema)
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
-        columns = self.DB.get_all_columns(table, schema)
+        columns = self.db.get_all_columns(table, schema)
         for param_name in columns:
             if param_name[0] in ['cmin', 'xmin', 'xmax', 'cmax', 'ctid', 'pos',
                                  'polygon', 'tableoid', '_', 'field_row_id']:
@@ -108,7 +108,7 @@ class TableManagement:
         checked_params = []
         table = self.current_table
         schema = self.current_schema
-        indexes = self.DB.get_indexes(table, schema)
+        indexes = self.db.get_indexes(table, schema)
         create_index_for = []
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
@@ -120,16 +120,16 @@ class TableManagement:
             if item.checkState() == 2:
                 create_index_for.append(item.text())
         for index in create_index_for:
-            self.DB.execute_sql("""create index {index}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
+            self.db.execute_sql("""create index {index}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
         for del_index in checked_params:
-            self.DB.execute_sql("DROP INDEX IF EXISTS {schema}.{old_index}_{tbl}".format(old_index=del_index, tbl=table, schema=schema))
+            self.db.execute_sql("DROP INDEX IF EXISTS {schema}.{old_index}_{tbl}".format(old_index=del_index, tbl=table, schema=schema))
         try:
-            self.DB.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
+            self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(polygon) """.format(tbl=table, schema=schema))
         except:
             pass
         try:
-            self.DB.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
+            self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, schema=schema))
         except:
             pass
@@ -147,7 +147,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                                                        'rename ' + tbl + ' to?')
                 if y_n:
                     sql = "ALTER TABLE {schema}.{old} RENAME TO {new}".format(schema=schema, old=tbl, new=text)
-                    self.DB.execute_sql(sql)
+                    self.db.execute_sql(sql)
                     #sql = "ALTER TABLE public." + tbl_name + " RENAME " + item.text() + " TO " + text
         self.update_table_list()
 
@@ -158,7 +158,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                                                        'rename ' + item.text() + ' to?')
                 if y_n:
                     sql = "ALTER TABLE {tbl} RENAME {new_name} TO {text}".format(tbl=self.current_table, new_name=item.text(), text=text)
-                    self.DB.execute_sql(sql)
+                    self.db.execute_sql(sql)
 
         self.retrieve_params()
 
@@ -174,7 +174,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 model.removeRow(qIndex.row())
         self.tables_in_db = 0
         for lw, schema in lw_list:
-            table_names = self.DB.get_tables_in_db(schema)
+            table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
                 if name[0] in ["spatial_ref_sys", "pointcloud_formats", "temp_polygon"]:
                     continue
@@ -187,7 +187,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
 
 
-    def remove_table_from_DB(self):
+    def remove_table_from_db(self):
         """Removes the selected tables from the database"""
         msgBox = QMessageBox()
         msgBox.setText(self.tr('Do you really want to remove the selected tables from the database?'))
@@ -199,7 +199,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         model = self.TMD.SATables.model()
         for item in self.items_in_table:
             if item.checkState() == 2:
-                self.DB.remove_table(item.text())
+                self.db.remove_table(item.text())
                 qIndex = self.TMD.SATables.indexFromItem(item)
                 model.removeRow(qIndex.row())
                 self.tables_in_db -= 1
