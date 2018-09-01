@@ -59,7 +59,7 @@ class CreateGuideFile:
             QMessageBox.information(None, "Error:", self.tr(
                 'No farm is created, please create a farm to continue'))
             return
-        lw_list = ['activity', 'harvest', 'soil']
+        lw_list = ['plant', 'other' 'harvest', 'soil']
         self.CGF.CBDataSource.clear()
         names = []
         for schema in lw_list:

@@ -1,4 +1,4 @@
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Hörteborn'
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtGui import QStandardItemModel

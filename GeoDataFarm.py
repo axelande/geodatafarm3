@@ -38,15 +38,19 @@ import sys
 plugin_dir = os.path.dirname(__file__)
 try:
     import matplotlib
+    import reportlab
 except:
     import subprocess
     import platform
-    print('installing matplotlib')
+    print('installing matplotlib and reportlab')
     if platform.system() == 'Windows':
         subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'matplotlib'])
+        subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'reportlab'])
     else:
         subprocess.call(['pip3', 'install', 'matplotlib'])
+        subprocess.call(['pip3', 'install', 'reportlab'])
     import matplotlib
+    import reportlab
     print('installation completed')
 
 # Initialize Qt resources from file resources.py
@@ -61,9 +65,11 @@ from .import_data.handle_input_shp_data import InputShpHandler
 from .import_data.handle_db_file_data import DBFileHandler
 from .import_data.insert_harvest_to_db import InsertHarvestData
 from .import_data.handle_irrigation import IrrigationHandler
+from .import_data.save_planting_data import SavePlanting
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
+from .support_scripts.generate_reports import RepportGen
 from .support_scripts.add_field import AddField
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint
@@ -116,6 +122,8 @@ class GeoDataFarm:
         self.IH = None
         self.df = None
         self.db = None
+        self.save_planting = None
+        self.report_generator = None
         self.tsk_mngr = QgsApplication.taskManager()
 
     # noinspection PyMethodMayBeStatic
@@ -397,11 +405,6 @@ class GeoDataFarm:
         guide = CreateGuideFile(self)
         guide.run()
 
-    def add_field(self):
-        add_f = AddField(self)
-        add_f.run()
-        self.populate.reload_fields()
-
     def get_database_connection(self):
         self.db = DB(self.dock_widget, path=self.plugin_dir)
         connected = self.db.get_conn()
@@ -454,7 +457,6 @@ class GeoDataFarm:
                 self.populate = Populate(self)
                 self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
 
-            self.dock_widget.PBAddField.clicked.connect(self.add_field)
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
             #self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
             #self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)
@@ -465,6 +467,12 @@ class GeoDataFarm:
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
+            self.save_planting = SavePlanting(self)
+            self.save_planting.set_widget_connections()
+            self.report_generator = RepportGen(self)
+            self.report_generator.set_widget_connections()
+            self.add_field = AddField(self)
+            self.add_field.set_widget_connections()
             try:
                 self.reload_range()
             except:

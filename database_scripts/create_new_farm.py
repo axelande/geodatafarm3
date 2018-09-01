@@ -169,17 +169,27 @@ class CreateFarm:
         """Add tables to the database"""
         if self.db is None:
             self._connect_to_db()
-        sql = """CREATE table fields(row_id integer NOT NULL DEFAULT nextval('fields_row_id_seq'::regclass),
+        sql = """CREATE table fields(field_row_id serial,
             field_name text COLLATE pg_catalog."default" NOT NULL,
             years text,
             polygon geometry(Polygon,4326),
             CONSTRAINT p_key_field PRIMARY KEY (row_id),
             CONSTRAINT field_name UNIQUE (field_name))"""
         self.db.execute_sql(sql)
-        sql = """CREATE table crops(row_id integer NOT NULL DEFAULT nextval('fields_crop_id_seq'::regclass),
+        sql = """CREATE table crops(row_id serial,
             crop_name text COLLATE pg_catalog."default" NOT NULL,
             CONSTRAINT p_key_crop PRIMARY KEY (row_id),
             CONSTRAINT crop_name UNIQUE (crop_name))"""
+        self.db.execute_sql(sql)
+        sql = """CREATE table plant.manual(field text, 
+            crop text, 
+            date_ text, 
+            variety text, 
+            spacing text, 
+            seed_rate text, 
+            saw_depth text, 
+            other text, 
+            table_ text)"""
         self.db.execute_sql(sql)
 
     def add_schemas(self):

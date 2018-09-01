@@ -503,7 +503,7 @@ of colors:</source>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="297"/>
         <source>How to use the plugin is explained at:
 www.geodatafarm.com</source>
-        <translation type="unfinished">Instruktioner för hur pluginet fungerar finner
+        <translation>Instruktioner för hur pluginet fungerar finner
 du på www.geodatafarm.com</translation>
     </message>
     <message>

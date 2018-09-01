@@ -26,21 +26,24 @@ class Populate:
         self.reload_fields()
         self.reload_crops()
 
-    def reload_fields(self):
-        cmdboxes = [[self.dw.CBPField, 'planting'],
-                    [self.dw.CBFField, 'fertilising'],
-                    [self.dw.CBSpField, 'spraying'],
-                    [self.dw.CBCField, 'cultivating'],
-                    [self.dw.CBHvField, 'harvest'],
-                    [self.dw.CBPloField, 'plowing'],
-                    [self.dw.CBHwField, 'harrowing'],
-                    [self.dw.CBIField, 'irrigation'],
-                    [self.dw.CBSoField, 'soil']]
+    def reload_fields(self, cmd_box=None):
+        if cmd_box is None:
+            cmd_box = [self.dw.CBPField,
+                       self.dw.CBFField,
+                       self.dw.CBSpField,
+                       self.dw.CBOField,
+                       self.dw.CBHvField,
+                       self.dw.CBPloField,
+                       self.dw.CBHwField,
+                       self.dw.CBIField,
+                       self.dw.CBSoField]
+        else:
+            cmd_box = [cmd_box]
         fields_ = self.db.execute_and_return("select field_name from fields order by field_name")
         fields = []
         for field in fields_:
             fields.append(field[0])
-        for i, (lw, name_type) in enumerate(cmdboxes):
+        for i, lw in enumerate(cmd_box):
             if len(self.fields) > 1:
                 lw.clear()
             for name in fields:
@@ -48,17 +51,20 @@ class Populate:
         self.fields = ['--- Select field ---']
         self.fields.extend(fields)
 
-    def reload_crops(self):
-        cmdboxes = [[self.dw.CBPCrop, 'planting'],
-                    [self.dw.CBFCrop, 'fertilising'],
-                    [self.dw.CBSpCrop, 'spraying'],
-                    [self.dw.CBCCrop, 'cultivating'],
-                    [self.dw.CBHvCrop, 'harvest']]
+    def reload_crops(self, cmd_box=None):
+        if cmd_box is None:
+            cmd_box = [self.dw.CBPCrop,
+                       self.dw.CBFCrop,
+                       self.dw.CBSpCrop,
+                       self.dw.CBOCrop,
+                       self.dw.CBHvCrop]
+        else:
+            cmd_box = [cmd_box]
         crops_ = self.db.execute_and_return("select crop_name from crops order by crop_name")
         crops = []
         for crop in crops_:
             crops.append(crop[0])
-        for i, (lw, name) in enumerate(cmdboxes):
+        for i, lw in enumerate(cmd_box):
             if len(self.crops) > 1:
                 lw.clear()
             for name in crops:
@@ -96,11 +102,12 @@ class Populate:
             self.items_in_table[i][0] = lw.findItems('', QtCore.Qt.MatchContains)
             self.items_in_table[i][1] = schema
         lw = self.dw.LWCrops
-        model = lw.model()
-        counted = lw.count()
-        for item in range(counted):
-            q_index = lw.indexFromItem(item)
-            model.removeRow(q_index.row())
+        lw.clear()
+        #model = lw.model()
+        #counted = lw.count()
+        #for item in range(counted):
+        #    q_index = lw.indexFromItem(item)
+        #    model.removeRow(q_index.row())
         crops = self.db.get_distinct('crops', 'crop_name', 'public')
         for crop_name in crops:
             _name = QApplication.translate("qadashboard", crop_name[0], None)

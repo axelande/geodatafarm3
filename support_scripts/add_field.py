@@ -1,8 +1,9 @@
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, QgsRasterLayer, QgsRectangle, QgsCoordinateReferenceSystem, \
+    QgsMapSettings
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from operator import xor
-from psycopg2 import ProgrammingError, IntegrityError
+from psycopg2 import ProgrammingError, IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
@@ -16,6 +17,7 @@ class AddField:
         self.db = parent_widget.db
         self.tr = parent_widget.tr
         self.dock_widget = parent_widget.dock_widget
+        self.parent = parent_widget
         self.AFD = AddFieldFileDialog()
         self._enable_years()
         self.field = None
@@ -38,30 +40,113 @@ class AddField:
         self.AFD.PBHelp.clicked.connect(self.help)
         self.AFD.PBQuit.clicked.connect(self.quit)
         self.AFD.exec()
+        self.parent.populate.reload_fields()
+
+    def set_widget_connections(self):
+        self.parent.dock_widget.PBAddField.clicked.connect(self.run)
+        self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
+        self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
+
+    def remove_field(self):
+        """Removes a field that the user wants, a check that there are no
+        data that is depended on is made."""
+        for i in range(self.parent.dock_widget.LWFields.count()):
+            item = self.parent.dock_widget.LWFields.item(i)
+            if item.checkState() == 2:
+                field_name = item.text()
+                qm = QMessageBox()
+                res = qm.question(None, self.tr('Question'),
+                                  self.tr("Do you want to delete ") + str(field_name),
+                                  qm.Yes, qm.No)
+                if res == qm.No:
+                    continue
+                # TODO: Check more than planting manuel
+                planting = self.db.execute_and_return("select field_name from plant.manual")
+                stop_removing = False
+                for row in planting:
+                    if row[0] == field_name:
+                        QMessageBox.information(None, self.tr('Error'),
+                                                self.tr('There are planting data that are dependent on this field, '
+                                                        'it cant be removed.'))
+                        stop_removing = True
+                if stop_removing:
+                    continue
+                sql = "delete from fields where field_name='{f}'".format(f=field_name)
+                self.db.execute_sql(sql)
+                self.parent.dock_widget.LWFields.takeItem(i)
+
+    def view_fields(self):
+        """Add all fields that aren't displayed on the canvas, if no background map is loaded Google maps are loaded."""
+        sources = [layer.source() for layer in QgsProject.instance().mapLayers().values()]
+        source_found = False
+        zoom_extent = QgsRectangle()
+        for layer in QgsProject.instance().mapLayers().values():
+            if 'xyz&url' in layer.source():
+                source_found = True
+            else:
+                zoom_extent.combineExtentWith(layer.extent())
+        if not source_found:
+            url_with_params = 'type=xyz&url=https://mt1.google.com/vt/lyrs%3Ds%26x%3D%7Bx%7D%26y%3D%7By%7D%26z%3D%7Bz%7D&zmax=19&zmin=0'
+            rlayer = QgsRasterLayer(url_with_params, 'Google satellite', 'wms')
+            rlayer.isValid()
+            QgsProject.instance().addMapLayer(rlayer)
+        fields_db = self.db.execute_and_return("select field_name from fields")
+        for field in fields_db:
+            field = field[0]
+            found = False
+            for source in sources:
+                if str(field).lower() in source.lower():
+                    found = True
+            if found:
+                continue
+            layer = self.db.addPostGISLayer('fields', 'polygon', 'public',
+                                            extra_name=field + '_',
+                                            filter_text="field_name='{f}'".format(f=field))
+            QgsProject.instance().addMapLayer(layer)
+        for layer in QgsProject.instance().mapLayers().values():
+            if 'xyz&url' not in layer.source():
+                zoom_extent.combineExtentWith(layer.extent())
+        print(zoom_extent.center().x())
+        if zoom_extent.center().x() != 0.0:
+            wgsCRS = QgsCoordinateReferenceSystem(4326)
+            QgsProject.instance().setCrs(wgsCRS)
+            zoom_extent.scale(1.1)  # Increase a bit the extent to make sure all geometries lie inside
+            self.parent.iface.mapCanvas().setExtent(zoom_extent)
+            self.parent.iface.mapCanvas().refresh()
+            wgsCRS = QgsCoordinateReferenceSystem(3857)
+            QgsProject.instance().setCrs(wgsCRS)
 
     def clicked_define_field(self):
         """Creates an empty polygon that's define a field"""
-        self.field = QgsVectorLayer("Polygon?crs=epsg:4326", "temporary_points", "memory")
-        sources = [layer.source() for layer in QgsProject.instance().mapLayers().values()]
-        print(sources)
+        name = self.AFD.LEFieldName.text()
+        if len(name) == 0:
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('Field name must be filled in.'))
+            return
+        self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
         source_found = False
-        for source in sources:
-            if 'xyz&url' in source:
+        zoom_extent = QgsRectangle()
+        for layer in QgsProject.instance().mapLayers().values():
+            if 'xyz&url' in layer.source():
                 source_found = True
-                print('found')
+            else:
+                zoom_extent.combineExtentWith(layer.extent())
         if not source_found:
-            print('adding')
-            open_street_map = ["connections-xyz","OpenStreetMap Standard", "", "",
-                               "OpenStreetMap contributors, CC-BY-SA",
-                               "http://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png",
-                               "", "19", "0"]
-            urlWithParams = 'type=xyz&url=http://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0'
-            rlayer = QgsVectorLayer(urlWithParams, 'Open street map', 'wms')
+            url_with_params = 'type=xyz&url=https://mt1.google.com/vt/lyrs%3Ds%26x%3D%7Bx%7D%26y%3D%7By%7D%26z%3D%7Bz%7D&zmax=19&zmin=0'
+            rlayer = QgsRasterLayer(url_with_params, 'Google satellite', 'wms')
             rlayer.isValid()
             QgsProject.instance().addMapLayer(rlayer)
         self.field.startEditing()
         self.iface.actionAddFeature().trigger()
         QgsProject.instance().addMapLayer(self.field)
+        if zoom_extent.center().x() != 0.0:
+            wgsCRS = QgsCoordinateReferenceSystem(4326)
+            QgsProject.instance().setCrs(wgsCRS)
+            zoom_extent.scale(2)
+            self.parent.iface.mapCanvas().setExtent(zoom_extent)
+            self.parent.iface.mapCanvas().refresh()
+            wgsCRS = QgsCoordinateReferenceSystem(3857)
+            QgsProject.instance().setCrs(wgsCRS)
 
     def quit(self):
         """Closes the widget."""
@@ -96,6 +181,10 @@ class AddField:
         except IntegrityError:
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('Field name all ready exist, please select a new name'))
+            return
+        except InternalError as e:
+            QMessageBox.information(None, self.tr('Error:'),
+                                    str(e))
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWFields)

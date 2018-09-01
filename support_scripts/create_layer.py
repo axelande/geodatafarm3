@@ -30,6 +30,8 @@ class CreateLayer:
             distinct_values = list(np.arange(min_v, max_v, steps))
         else:
             distinct = self.db.get_distinct(tbl_name, field, schema)
+            if len(distinct) == 1:
+                return
             distinct_values = []
             distinct_count = []
             for value, count in distinct:

@@ -1,45 +1,33 @@
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 import processing
+import traceback
 from PyQt5 import QtCore
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
-    QMessageBox
+    QMessageBox, QLabel, QLineEdit, QComboBox, QCheckBox
 from osgeo import osr
 import os
 import re
 import math
 import time
+
 from operator import xor, itemgetter
 from datetime import datetime
 from dateutil.parser import parse
 # Import the code for the dialog
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
+from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, isfloat, isint
-from ..support_scripts import shapefile as shp
 __author__ = 'Axel Andersson'
 
 
 class InputTextHandler(object):
-    def __init__(self, iface, parent_widget):
+    def __init__(self, parent_widget, data_type, columns=None):
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
         # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'GeoDataFarm_{}.qm'.format(locale))
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
+        self.data_type = data_type
 
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
-
-        #print "** INITIALIZING GeoDataFarm"
         self.col_types = None
         self.file_name_with_path = None
         self.file_name = None
@@ -50,9 +38,14 @@ class InputTextHandler(object):
         self.ITD = ImportTextDialog()
         self.dock_widget = parent_widget.dock_widget
         self.tr = parent_widget.tr
+        self.plugin_dir = parent_widget.plugin_dir
         self.iface = parent_widget.iface
+        self.populate = parent_widget.populate
+        self.db = parent_widget.db
         self.parent_widget = parent_widget
         self.tsk_mngr = parent_widget.tsk_mngr
+        self.type_specific_cols = columns
+        self.manual_values = {}
         self.rb_pressed = False
         self.fields_to_db = False
         self.combo = None
@@ -66,22 +59,23 @@ class InputTextHandler(object):
         buttons to their function"""
         self.ITD.show()
         self.ITD.PBAddInputFile.clicked.connect(self.open_input_file)
-        self.ITD.pButAdd_Param.clicked.connect(self.add_to_param_list)
-        self.ITD.pButRem_Param.clicked.connect(self.remove_from_param_list)
-        self.ITD.pButInsertDataIntoDB.clicked.connect(self.insert_input_data_into_shp_file)
-        self.ITD.pButContinue.clicked.connect(self.prepare_data_to_be_inserted)
+        self.ITD.PBAddParam.clicked.connect(self.add_to_param_list)
+        self.ITD.PBRemParam.clicked.connect(self.remove_from_param_list)
+        self.ITD.PBInsertDataIntoDB.clicked.connect(self.trigger_insection)
+        self.ITD.PBContinue.clicked.connect(self.prepare_last_choices)
         self.ITD.RBComma.clicked.connect(self.get_sep)
         self.ITD.RBSemi.clicked.connect(self.get_sep)
         self.ITD.RBTab.clicked.connect(self.get_sep)
         self.ITD.RBOwnSep.clicked.connect(self.get_sep)
-        if self.dock_widget.CBDataType.currentText() == self.tr('harvest'):
+        self.populate.reload_fields(self.ITD.CBField)
+        self.populate.reload_crops(self.ITD.CBCrop)
+        if self.data_type == 'harvest':
             self.ITD.LParams.setText('Harvest Column')
             self.ITD.LMaxYield.setEnabled(True)
             self.ITD.LMinYield.setEnabled(True)
             self.ITD.LEMaximumYield.setEnabled(True)
             self.ITD.LEMinimumYield.setEnabled(True)
-        if self.dock_widget.CBDataType.currentText() == self.tr('soil'):
-            self.ITD.CombTime.setEnabled(False)
+        self.add_specific_columns()
         self.ITD.exec_()
 
     def add_to_param_list(self):
@@ -96,7 +90,7 @@ class InputTextHandler(object):
             for i in range(row_count):
                 existing_values.append(self.ITD.TWtoParam.item(i, 0).text())
         for i, item in enumerate(self.ITD.TWColumnNames.selectedItems()):
-            if self.dock_widget.CBDataType.currentText() == self.tr('harvest') and len(existing_values) > 0:
+            if self.data_type == self.tr('harvest') and len(existing_values) > 0:
                 QMessageBox.information(None, self.tr("Error:"),
                                         self.tr('You can only select one yield column!'))
                 return
@@ -109,14 +103,14 @@ class InputTextHandler(object):
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
             self.ITD.TWtoParam.setItem(i, 0, item1)
         self.add_to_param_row_count = row_count
-        self.ITD.pButContinue.setEnabled(True)
+        self.ITD.PBContinue.setEnabled(True)
 
     def remove_from_param_list(self):
         """Removes the selected columns from the list of fields that should be
         treated as "special" in the database"""
         row_count = self.add_to_param_row_count
         if self.ITD.TWtoParam.selectedItems() is None:
-            QMessageBox.information(None, "Error:", message=self.tr('No row selected!'))
+            QMessageBox.information(None, self.tr("Error:"), self.tr('No row selected!'))
             return
         for item in self.ITD.TWtoParam.selectedItems():
             self.ITD.TWtoParam.removeRow(item.row())
@@ -191,6 +185,28 @@ class InputTextHandler(object):
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
         self.add_to_db_row_count = i
 
+    def add_specific_columns(self):
+        self.manual_values = {}
+        for i, column in enumerate(self.type_specific_cols):
+            self.manual_values[i] = {}
+            label = QLabel(column)
+            self.ITD.GLSpecific.addWidget(label, i, 0)
+            combo = QComboBox()
+            combo.setEnabled(False)
+            combo.setFixedWidth(220)
+            self.manual_values[i]['Combo'] = combo
+            self.ITD.GLSpecific.addWidget(combo, i, 1)
+            line = QLineEdit()
+            line.setEnabled(False)
+            line.setFixedWidth(110)
+            self.manual_values[i]['line_edit'] = line
+            self.ITD.GLSpecific.addWidget(line, i, 2)
+            check = QCheckBox(text=self.tr('Not Applicable'))
+            check.setEnabled(False)
+            check.setFixedWidth(110)
+            self.manual_values[i]['checkbox'] = check
+            self.ITD.GLSpecific.addWidget(check, i, 3)
+
     def set_radio_but(self):
         if self.sep == ',':
             self.ITD.RBComma.setChecked(True)
@@ -262,7 +278,7 @@ class InputTextHandler(object):
         self.set_radio_but()
         self.get_columns_names()
 
-    def prepare_data_to_be_inserted(self):
+    def prepare_last_choices(self):
         """A function that prepares the last parts of the widget with the data
         to be inserted into the shapefile, determining date and time columns """
         columns_to_add = []
@@ -296,23 +312,15 @@ class InputTextHandler(object):
             return
         self.ITD.ComBNorth.setEnabled(True)
         self.ITD.ComBEast.setEnabled(True)
-        self.ITD.pButInsertDataIntoDB.setEnabled(True)
-        if self.dock_widget.CBDataType.currentText() == self.tr('harvest') or \
-                (self.ITD.CombTime.currentText() == self.tr('Yearly operations') and
-                         self.dock_widget.CBDataType.currentText() != self.tr('soil')):
-            self.ITD.LEYearOnly.setEnabled(True)
-        if self.ITD.CombTime.currentText() == self.tr('Time influenced operation'):
-            self.ITD.RBDateOnly.setEnabled(True)
-            self.ITD.RBDateDiffTime.setEnabled(True)
-            self.ITD.RBDateAndTime.setEnabled(True)
-            self.ITD.ComBDateOnly.setEnabled(True)
-            self.ITD.ComBDateOnly.addItems(columns_to_add)
-            self.ITD.ComBDate.setEnabled(True)
-            self.ITD.ComBDate.addItems(columns_to_add)
-            self.ITD.ComBTime.setEnabled(True)
-            self.ITD.ComBTime.addItems(columns_to_add)
-            self.ITD.ComBDateTime.setEnabled(True)
-            self.ITD.ComBDateTime.addItems(columns_to_add)
+        self.ITD.ComBDate.setEnabled(True)
+        self.ITD.ComBDate.addItems(columns_to_add)
+        self.ITD.PBInsertDataIntoDB.setEnabled(True)
+
+        for i, column in enumerate(self.type_specific_cols):
+            self.manual_values[i]['Combo'].setEnabled(True)
+            self.manual_values[i]['Combo'].addItems(columns_to_add)
+            self.manual_values[i]['line_edit'].setEnabled(True)
+            self.manual_values[i]['checkbox'].setEnabled(True)
 
     def determine_column_type(self):
         """
@@ -329,9 +337,9 @@ class InputTextHandler(object):
             for row in read_all[:max_rows]:
                 row = re.split((self.sep + ' |' + self.sep), row)
                 if first_row:
-                    heading_row = row
+                    self.heading_row = row
                     first_row = False
-                    for col in heading_row:
+                    for col in self.heading_row:
                         row_types.append(0)
                     continue
                 else:
@@ -349,174 +357,164 @@ class InputTextHandler(object):
             row_type_return.append(int(col_value/(max_rows*0.7)))
         return row_type_return
 
-    def insert_input_data_into_shp_file(self):
+    def insert_manual_data(self, date_):
+        field = self.ITD.CBField.currentText()
+        table = self.file_name
+        if self.data_type != 'soil':
+            crop = self.ITD.CBCrop.currentText()
+        if self.data_type == 'plant':
+            sql = """insert into plant.manual(field, crop, date_, table_, variety) VALUES ('{f}', '{c}', '{d}', '{t}', 
+            """.format(f=field, c=crop, d=date_, t=table)
+            if self.manual_values[0]['checkbox'].isChecked():
+                sql += "'None')"
+            elif self.manual_values[0]['Combo'].currentText() != '':
+                sql += "'{t}')".format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            else:
+                sql += "'c_{t}')".format(t=self.manual_values[0]['line_edit'].text())
+        self.db.execute_sql(sql)
+
+    def trigger_insection(self):
         """
         Preparing the data, by setting the correct type (including the date and
         time format), creating a shp file and finally ensure that the
         coordinates is in EPSG:4326
         :return:
         """
-        self.latitude_col = check_text(self.ITD.ComBNorth.currentText())
-        self.longitude_col = check_text(self.ITD.ComBEast.currentText())
-        end_method = EndMethod()
-        task1 = QgsTask.fromFunction('running script', end_method.run,
-                                     self.parent_widget, self.ITD,
-                                     self.add_to_db_row_count, self.sep,
-                                     self.col_types,
-                                     self.add_to_param_row_count,
-                                     self.file_name_with_path,
-                                     self.input_file_path,
-                                     self.encoding,
-                                     on_finished=self.finish)
-        self.tsk_mngr.addTask(task1)
-        ##Debugg
-        #values = end_method.run(1, self.parent_widget, self.ITD,
-        #                        self.add_to_db_row_count, self.sep,
-        #                        self.col_types,
-        #                        self.add_to_param_row_count,
-        #                        self.file_name_with_path,
-        #                        self.input_file_path,
-        #                        self.encoding)
-        #self.finish(1, values)
+        params = {}
+        params['schema'] = self.data_type
+        params['tbl_name'] = self.file_name
+        params['column_types'] = self.col_types
+        params['heading_row'] = []
+        for col in self.heading_row:
+            params['heading_row'].append(check_text(col))
+        params['encoding'] = self.encoding
+        params['file_name_with_path'] = self.file_name_with_path
+        params['field'] = self.ITD.CBField.currentText()
+        params['longitude_col'] = self.longitude_col
+        params['latitude_col'] = self.latitude_col
+        params['focus_col'] = []
+        for i in range(self.add_to_param_row_count):
+            params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
+        self.focus_cols = params['focus_col']
+        if params['schema'] == 'harvest':
+            params['yield_row'] = params['focus_col'][0]
+            params['max_yield'] = float(self.ITD.LEMaximumYield.text())
+            params['min_yield'] = float(self.ITD.LEMinimumYield.text())
+        if self.ITD.RBDateOnly.isChecked():
+            params['date_row'] = check_text(self.ITD.ComBDate.currentText())
+            params['all_same_date'] = ''
+            self.insert_manual_data(check_text(self.ITD.ComBDate.currentText()))
+        else:
+            params['all_same_date'] = self.ITD.DE.text()
+            self.insert_manual_data('c_' + self.ITD.DE.text())
+            params['date_row'] = ''
+        params['sep'] = self.sep
+        params['tr'] = self.tr
+        params['epsg'] = self.ITD.LEEPSG.text()
+        if self.db.check_table_exists(self.file_name, self.data_type):
+            qm = QMessageBox()
+            res = qm.question(None, self.tr('Message'),
+                              self.tr("The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                              qm.Yes, qm.No)
+            if res == qm.No:
+                return
+            else:
+                self.db.execute_sql(
+                    "DROP TABLE {schema}.{tbl}".format(schema=self.data_type,
+                                                       tbl=self.file_name))
+        #insert_data_to_database('debug', self.db, params)
+        task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
+                                    on_finished=self.finish)
+        self.tsk_mngr.addTask(task)
 
     def finish(self, result, values):
-        [columns_to_add, column_types, heading_row, time_dict,
-         params] = values
-        self.params_to_evaluate = params
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG(int(self.ITD.LEEPSG.text()))
-        esri_output = srs.ExportToWkt()
-        with open(self.input_file_path + 'shapefiles/temp.prj', 'a') as prj_file:
-            prj_file.write(esri_output)
-        vlayer = QgsVectorLayer(self.input_file_path + 'shapefiles/temp.shp','temp', "ogr")
-        QgsProject.instance().addMapLayer(vlayer)
-        text = self.file_name
-        only_char = check_text(text)
-        self.file_name = only_char
-        file_name_with_path = self.input_file_path + "shapefiles/" + self.file_name
-        para = {'INPUT': self.input_file_path + "shapefiles/temp.shp",
-                'TARGET_CRS': 'EPSG:4326',
-                'OUTPUT': file_name_with_path + '.shp'}
-        processing.run('native:reprojectlayer', para)
-        QgsProject.instance().removeMapLayer(vlayer.id())
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG(4326)
-        esri_output = srs.ExportToWkt()
-        with open(file_name_with_path + '.prj', 'a') as prj_file:
-            prj_file.write(esri_output)
-        self.point_layer = QgsVectorLayer(file_name_with_path + ".shp", self.file_name, "ogr")
-        QgsProject.instance().addMapLayer(self.point_layer)
-        os.remove(self.input_file_path + "shapefiles/temp.shp")
-        os.remove(self.input_file_path + "shapefiles/temp.shx")
-        os.remove(self.input_file_path + "shapefiles/temp.dbf")
-        os.remove(self.input_file_path + "shapefiles/temp.prj")
-        self.input_layer = self.point_layer
-        self.file_name_with_path = file_name_with_path
-        if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
-            columns_to_add['year'] = 0
-            column_types.append(0)
-            heading_row.append('year')
-        self.columns_to_add = columns_to_add
-        self.column_types = column_types
-        self.heading_row = heading_row
-        self.time_dict = time_dict
-        self.dock_widget.PBAddFieldToDB.setEnabled(True)
+        if values[0] is False:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+                                                                                                      t=values[2])))
+            return
+        schema = self.data_type
+        tbl = self.file_name
+        if isint(tbl[0]):
+            tbl = '_' + tbl
+        create_layer = CreateLayer(self.db)
+        for param_layer in self.focus_cols:
+            param_layer = check_text(param_layer)
+            target_field = param_layer
+            layer = self.db.addPostGISLayer(tbl, 'polygon', '{schema}'.format(schema=schema),
+                                            check_text(param_layer.lower()))
+            create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
+
         self.ITD.PBAddInputFile.clicked.disconnect()
-        self.ITD.pButAdd_Param.clicked.disconnect()
-        self.ITD.pButRem_Param.clicked.disconnect()
-        self.ITD.pButInsertDataIntoDB.clicked.disconnect()
-        self.ITD.pButContinue.clicked.disconnect()
+        self.ITD.PBAddParam.clicked.disconnect()
+        self.ITD.PBRemParam.clicked.disconnect()
+        self.ITD.PBInsertDataIntoDB.clicked.disconnect()
+        self.ITD.PBContinue.clicked.disconnect()
         self.ITD.done(0)
 
 
-class EndMethod:
-    def __init__(self):
-        self = self
-
-    def run(self, task, parent_widget, ITD, add_to_db_row_count, sep,
-            col_types, add_to_param_row_count, file_name_with_path,
-            input_file_path, encoding):
-        super(EndMethod, self).__init__()
-        self.iface = parent_widget.iface
-        self.dock_widget = parent_widget.dock_widget
-        self.ITD = ITD
-        self.sep = sep
-        self.col_types = col_types
-        self.add_to_db_row_count = add_to_db_row_count
-        self.add_to_param_row_count = add_to_param_row_count
-        self.file_name_with_path = file_name_with_path
-        self.input_file_path = input_file_path
-        self.encoding = encoding
-        only_char = check_text(self.ITD.ComBNorth.currentText())
-        self.latitude_col = only_char
-        only_char = check_text(self.ITD.ComBEast.currentText())
-        self.longitude_col = only_char
-        columns_to_add = {}
-        for i in range(self.add_to_db_row_count + 1):
-            text = self.ITD.TWColumnNames.item(i, 0).text()
-            only_char = check_text(text)
-            columns_to_add[only_char] = []
-        column_types = self.col_types
-        self.params_to_evaluate = []
-        ignore_col = []
-        time_dict = {}
-        time_dict['no_time'] = True
-        time_dict['date_and_time'] = False
-        time_dict['year_only'] = False
-        time_dict['date_only'] = False
-        time_dict['date_time_diff'] = False
-        time_dict['time_'] = "Not correct column name"
-        time_dict['Year'] = "Not correct column name"
-        if self.dock_widget.CBDataType == self.tr('Yearly operations'):
-            time_dict['no_time'] = False
-            time_dict['Year'] = str(self.ITD.LEYearOnly.text())
-            time_dict['year_only'] = True
-            columns_to_add[u'Year'] = []
-            column_types.append(0)
-        if self.ITD.RBDateOnly.isChecked():
-            time_dict['no_time'] = False
-            ignore_col.append(str(self.ITD.ComBDateOnly.currentText()))
-            time_dict['date'] = str(self.ITD.ComBDateOnly.currentText())
-            time_dict['date_only'] = True
-            columns_to_add[u'Date'] = []
-            column_types.append(2)
-        if self.ITD.RBDateDiffTime.isChecked():
-            time_dict['no_time'] = False
-            time_dict['date'] = str(self.ITD.ComBDate.currentText())
-            time_dict['time_'] = str(self.ITD.ComBTime.currentText())
-            time_dict['date_time_diff'] = True
-            columns_to_add[u'Date'] = []
-            ignore_col.append(str(self.ITD.ComBDate.currentText()))
-            ignore_col.append(str(self.ITD.ComBTime.currentText()))
-            column_types.append(2)
-        if self.ITD.RBDateAndTime.isChecked():
-            time_dict['no_time'] = False
-            ignore_col.append(str(self.ITD.ComBDateTime.currentText()))
-            time_dict['text'] = str(self.ITD.ComBDateTime.currentText())
-            time_dict['date_and_time'] = True
-            columns_to_add[u'Date'] = []
-            column_types.append(2)
-        for i in range(self.add_to_param_row_count):
-            self.params_to_evaluate.append(self.ITD.TWtoParam.item(i, 0).text())
-        start_date = datetime.strptime("2015-04-01", "%Y-%m-%d")
-        if self.dock_widget.CBDataType.currentText() == self.tr('harvest'):
-            min_yield = float(self.ITD.LEMinimumYield.text())
-            max_yield = float(self.ITD.LEMaximumYield.text())
-            if min_yield > max_yield:
-                QMessageBox.information(None, "Error:",
-                                        self.tr('Min value is greater than the '
-                                                'maximum value'))
-                return
-            yield_row = check_text(self.params_to_evaluate[0])
-            harvest = True
-        else:
-            harvest = False
-        with open(self.file_name_with_path, encoding=self.encoding) as f:
+def insert_data_to_database(task, db, params):
+    try:
+        schema = params['schema']
+        tbl_name = params['tbl_name']
+        column_types = params['column_types']
+        heading_row = params['heading_row']
+        encoding = params['encoding']
+        file_name_with_path = params['file_name_with_path']
+        field = params['field']
+        longitude_col = params['longitude_col']
+        latitude_col = params['latitude_col']
+        if schema == 'harvest':
+            yield_row = params['yield_row']
+            max_yield = params['max_yield']
+            min_yield = params['min_yield']
+        date_row = params['date_row']
+        all_same_date = params['all_same_date']
+        sep = params['sep']
+        tr = params['tr']
+        epsg = params['epsg']
+        focus_col = params['focus_col']
+        if isint(tbl_name[0]):
+            tbl_name = '_' + tbl_name
+        inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
+        sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(schema=schema)
+        lat_lon_inserted = False
+        for i, col_name in enumerate(heading_row):
+            if not lat_lon_inserted and (
+                    col_name == longitude_col or col_name == latitude_col):
+                sql += "pos geometry(POINT, 4326), polygon geometry(POLYGON, 4326), "
+                inserting_text += 'pos, '
+                lat_lon_inserted = True
+            if lat_lon_inserted and (
+                    col_name == longitude_col or col_name == latitude_col):
+                continue
+            if col_name == "Date_":
+                sql += "Date_ TIMESTAMP, "
+                inserting_text += 'Date_, '
+                continue
+            if column_types[i] == 0:
+                sql += str(col_name) + " INT, "
+            elif column_types[i] == 1:
+                sql += str(col_name) + " REAL, "
+            elif column_types[i] == 2:
+                sql += str(col_name) + " CHARACTER VARYING(20), "
+            inserting_text += str(col_name) + ', '
+        sql = sql[:-2]
+        sql += ")"
+        inserting_text = inserting_text[:-2] + ') VALUES '
+        insert_org_sql = inserting_text
+        db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+        if task != 'debug':
+            task.setProgress(5)
+        count_db_insert = 0
+        with open(file_name_with_path, encoding=encoding) as f:
             read_all = f.readlines()
             first_row = True
             some_wrong_len = 0
             for row_count, row in enumerate(read_all):
-                row = re.split((self.sep + ' |' + self.sep), row)
+                row_value = '('
+                row = re.split((sep + ' |' + sep), row)
+                lat_lon_inserted = False
                 if first_row:
                     heading_row = []
                     for col in row:
@@ -527,96 +525,99 @@ class EndMethod:
                 elif len(row) != len(heading_row) and len(row) < 3:
                     some_wrong_len += 1
                     continue
-                if task != 1:
-                    task.setProgress(2 + row_count / len(read_all) * 45)
-                for key in columns_to_add.keys():
-                    col_data = row[heading_row.index(key)]
-                    if float(row[heading_row.index(self.latitude_col)]) < 0.1 or float(row[heading_row.index(self.longitude_col)]) < 0.1:
+                if float(row[heading_row.index(latitude_col)]) < 0.1 or float(
+                        row[heading_row.index(longitude_col)]) < 0.1:
+                    break
+                if schema == 'harvest':
+                    if float(row[heading_row.index(yield_row)]) > max_yield:
                         break
-                    if harvest:
-                        if float(row[heading_row.index(yield_row)]) > max_yield:
-                            break
-                        if float(row[heading_row.index(yield_row)]) < min_yield:
-                            break
-                    if key == 'Year':
-                        columns_to_add['Year'].append(time_dict['Year'])
-                    elif key == 'Date':
-                        if time_dict['date_only']:
-                            try:
-                                format_date = datetime.strftime(parse(col_data), '%Y-%m-%d')
-                            except ValueError:
-                                format_date = start_date
-                            columns_to_add['Date'].append(format_date)
-                        elif time_dict['date_time_diff']:
-                            try:
-                                format_date = datetime.strftime((parse(str(col_data) + " " + str(row[heading_row.index(time_dict['time_'])])), '%Y-%m-%d %H:%M:%d'))
-                            except ValueError:
-                                format_date = start_date
-                            columns_to_add['Date'].append(format_date)
-                        elif time_dict['date_and_time'] and key == time_dict['text']:
-                            try:
-                                format_date = datetime.strftime(parse(col_data), '%Y-%m-%d %H:%M:%d')
-                            except ValueError:
-                                format_date = start_date
-                            columns_to_add['Date'].append(format_date)
-
+                    elif float(row[heading_row.index(yield_row)]) < min_yield:
+                        break
+                if task != 'debug':
+                    task.setProgress(2 + row_count / len(read_all) * 45)
+                for key in heading_row:
+                    col_data = row[heading_row.index(key)]
+                    if len(str(col_data)) == 0:
+                        row_value += 'Null, '
+                        continue
+                    if not lat_lon_inserted and (
+                            key == longitude_col or key == latitude_col):
+                        row_value += "ST_Transform(ST_PointFromText('POINT({p1} {p2})',{epsg}), 4326), ".format(
+                            p1=row[heading_row.index(longitude_col)],
+                            p2=row[heading_row.index(latitude_col)],
+                            epsg=epsg)
+                        lat_lon_inserted = True
+                    if lat_lon_inserted and (
+                            key == longitude_col or key == latitude_col):
+                        continue
+                    if key == 'Date_':
+                        if all_same_date:
+                            row_value += '{s}, '.format(s=all_same_date)
+                        else:
+                            row_value += '{s}, '.format(s=row[heading_row.index(date_row)])
                     elif column_types[heading_row.index(key)] == 0:
-                        try: # Trying to add a int
-                            columns_to_add[key].append(int(float(col_data)))
+                        try:  # Trying to add a int
+                            row_value += '{s}, '.format(s=int(float(col_data)))
                         except (ValueError, OverflowError):
-                            columns_to_add[key].append(0)
+                            row_value += '{s}, '.format(s=0)
                     elif column_types[heading_row.index(key)] == 1:
-                        try: # Trying to add a float
+                        try:  # Trying to add a float
                             col_data = col_data.replace(',', '.')
                             if math.isnan(float(col_data)):
-                                columns_to_add[key].append(0)
+                                row_value += '{s}, '.format(s=0)
                             elif col_data == 'inf':
-                                columns_to_add[key].append(999999)
+                                row_value += '{s}, '.format(s=999999)
                             else:
-                                columns_to_add[key].append(float(col_data))
+                                row_value += '{s}, '.format(s=float(col_data))
                         except (ValueError, OverflowError):
-                            columns_to_add[key].append(0)
+                            row_value += '{s}, '.format(s=0)
                     else:
-                        columns_to_add[key].append(check_text(col_data))
+                        row_value += "'{s}', ".format(s=check_text(col_data))
+                inserting_text += row_value[:-2] + '),'
+                if count_db_insert > 10000:
+                    db.execute_sql(inserting_text[:-1])
+                    inserting_text = insert_org_sql
+                    count_db_insert = 0
+                else:
+                    count_db_insert += 1
+            db.execute_sql(inserting_text[:-1])
             if some_wrong_len > 0:
-                QMessageBox.information(None, "Information:",
-                                        str(some_wrong_len) + self.tr(' rows were skipped '
-                                                              'since the row'
-                                                              ' did not match '
-                                                              'the heading.'))
-        if time_dict['year_only']:
-            heading_row.append('Year')
-        elif not time_dict['no_time']:
-            heading_row.append('Date')
-        ignore_col.append(self.longitude_col)
-        ignore_col.append(self.latitude_col)
-        with shp.Writer(shp.POINT) as w:
-            w.autoBalance = 1 #ensures gemoetry and attributes match
-            for i, key in enumerate(columns_to_add.keys()):
-                if key in ignore_col:
-                    continue
-                if column_types[heading_row.index(key)] == 0:
-                    w.field(str(key)[:10], 'N', max(10, len(str(key))), 0)
-                if column_types[heading_row.index(key)] == 1:
-                    w.field(str(key)[:10], 'F', max(10, len(str(key))), 8)
-                if column_types[heading_row.index(key)] == 2:
-                    w.field(str(key)[:10], 'C', 20)
-            if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
-                w.field('year', 'N', 4)
-            #loop through the data and write the shapefile
-            for j, k in enumerate(columns_to_add[self.longitude_col]):
-                if task != 1:
-                    task.setProgress(50 + j/len(columns_to_add[self.longitude_col])*40)
-                w.point(k, columns_to_add[self.latitude_col][j])
-                data_row = []
-                for key in columns_to_add.keys():
-                    if key in ignore_col:
-                        continue
-                    data_row.append(columns_to_add[key][j])
-                if self.dock_widget.CBDataType.currentText() != self.tr('soil'):
-                    data_row.append(int(self.ITD.LEYearOnly.text()))
-                w.record(*data_row) #write the attributes
-            w.save(str(self.input_file_path) + "shapefiles/temp")
-        del(w)
-        return [columns_to_add, column_types, heading_row, time_dict,
-                    self.params_to_evaluate]
+                QMessageBox.information(None, tr("Information:"),
+                                        str(some_wrong_len) + tr(' rows were skipped '
+                                                                      'since the row'
+                                                                      ' did not match '
+                                                                      'the heading.'))
+
+        sql = """SELECT * INTO {schema}.{tbl} 
+        from {schema}.temp_table
+        where st_intersects(pos, (select polygon 
+        from fields where field_name = '{field}'))
+        """.format(schema=schema, tbl=tbl_name,field=field)
+        time.sleep(0.1)
+        if task != 'debug':
+            task.setProgress(50)
+        db.execute_sql(sql)
+        db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
+        if task != 'debug':
+            task.setProgress(70)
+        sql = """drop table if exists {schema}.temp_tbl2;
+    WITH voronoi_temp2 AS (
+    SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
+    FROM {schema}.{tbl})
+    SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
+    FROM voronoi_temp2;
+    create index temp_index on {schema}.temp_tbl2 Using gist(geom);
+    update {schema}.{tbl}
+    SET polygon = ST_Intersection(geom, (select polygon 
+        from fields where field_name = '{field}'))
+    FROM {schema}.temp_tbl2
+    WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
+        db.execute_sql(sql)
+        db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
+
+        if task != 'debug':
+            task.setProgress(90)
+        db.create_indexes(tbl_name, focus_col, schema)
+        return [True]
+    except Exception as e:
+        return [False, e, traceback.format_exc()]

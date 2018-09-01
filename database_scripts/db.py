@@ -71,13 +71,14 @@ class DB:
             self.conn.close()
             self.conn = None
 
-    def addPostGISLayer(self, table, geom_col, schema, extra_name=''):
+    def addPostGISLayer(self, table, geom_col, schema, extra_name='', filter_text=''):
         """
         Creates a qgis layer from a postgres database table.
         :param table: The table that should be added
         :param geom_col: the geometry column in that table
         :param schema: text string
         :param extra_name: text string for a "prename" in front of the table
+        :param filter_text: text string
         :return:
         """
         host = self.dbhost
@@ -89,7 +90,7 @@ class DB:
         ## Adds a PostGIS table to the map
         uri = QgsDataSourceUri()
         uri.setConnection(str(host), str(port), str(dbname), str(username), str(password))
-        uri.setDataSource(str(schema), str(table), str(geom_col), '', 'field_row_id')
+        uri.setDataSource(str(schema), str(table), str(geom_col), filter_text, 'field_row_id')
         uri.setKeyColumn('field_row_id')
         uri.setSrid('4326')
         vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table), 'postgres')
@@ -97,18 +98,22 @@ class DB:
             QMessageBox.information(None, 'Error', 'Layer not loaded correctly, Connection:\n' + str(uri.uri()))
         return vlayer
 
-    def check_table_exists(self, tablename):
+    def check_table_exists(self, tablename, schema=None):
         """
         :param tablename: text string
+        :param schema: text string
         :return: True or False
         """
         self._connect()
         dbcur = self.conn.cursor()
-        dbcur.execute("""
+        sql = """
             SELECT COUNT(*)
             FROM information_schema.tables
             WHERE table_name = '{tbl}'
-            """.format(tbl=tablename.replace('\'', '\'\'')))
+            """.format(tbl=tablename.replace('\'', '\'\''))
+        if schema is not None:
+            sql += "\nAnd table_schema='{s}'".format(s=schema)
+        dbcur.execute(sql)
         if dbcur.fetchone()[0] == 1:
             self._close()
             return True

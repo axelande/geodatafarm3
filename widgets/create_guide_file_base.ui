@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add indata to the model</string>
+   <string>Create guide file</string>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>
