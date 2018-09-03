@@ -1,11 +1,41 @@
 from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsLineSymbol, QgsFillSymbol, QgsGraduatedSymbolRenderer, \
-    QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer
-from PyQt5.QtGui import QColor
+    QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer, \
+    QgsTextFormat, QgsPalLayerSettings, QgsTextBufferSettings, QgsVectorLayerSimpleLabeling
+from PyQt5.QtGui import QColor, QFont
 import numpy as np
 import matplotlib.pyplot as plt
 from ..support_scripts.RG import rg
 __author__ = 'Axel'
+
+
+def set_label(layer, field_label):
+    """Function that sets the label to a field value. Inspiration found at:
+    https://gis.stackexchange.com/questions/277106/loading-labels-from-python-script-in-qgis
+    :param layer valid qgis layer.
+    :param field_label str with the field """
+    layer_settings = QgsPalLayerSettings()
+    text_format = QgsTextFormat()
+
+    text_format.setFont(QFont("Arial", 12))
+    text_format.setSize(12)
+
+    buffer_settings = QgsTextBufferSettings()
+    buffer_settings.setEnabled(True)
+    buffer_settings.setSize(0.10)
+    buffer_settings.setColor(QColor("black"))
+
+    text_format.setBuffer(buffer_settings)
+    layer_settings.setFormat(text_format)
+    layer_settings.fieldName = field_label
+    layer_settings.placement = 4
+
+    layer_settings.enabled = True
+
+    layer_settings = QgsVectorLayerSimpleLabeling(layer_settings)
+    layer.setLabelsEnabled(True)
+    layer.setLabeling(layer_settings)
+    layer.triggerRepaint()
 
 
 def histedges_equalN(x, nbin):

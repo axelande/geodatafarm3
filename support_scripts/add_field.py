@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from operator import xor
 from psycopg2 import ProgrammingError, IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
+from ..support_scripts.create_layer import set_label
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
@@ -102,11 +103,11 @@ class AddField:
             layer = self.db.addPostGISLayer('fields', 'polygon', 'public',
                                             extra_name=field + '_',
                                             filter_text="field_name='{f}'".format(f=field))
+            set_label(layer, 'field_name')
             QgsProject.instance().addMapLayer(layer)
         for layer in QgsProject.instance().mapLayers().values():
             if 'xyz&url' not in layer.source():
                 zoom_extent.combineExtentWith(layer.extent())
-        print(zoom_extent.center().x())
         if zoom_extent.center().x() != 0.0:
             wgsCRS = QgsCoordinateReferenceSystem(4326)
             QgsProject.instance().setCrs(wgsCRS)
