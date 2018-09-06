@@ -20,17 +20,7 @@ class AddField:
         self.dock_widget = parent_widget.dock_widget
         self.parent = parent_widget
         self.AFD = AddFieldFileDialog()
-        self._enable_years()
         self.field = None
-
-    def _enable_years(self):
-        for nr, y in enumerate(range(2000, 2030)):
-            self.AFD.CBYear.addItem(str(y))
-            item = self.AFD.CBYear.model().item(nr, 0)
-            item.setCheckState(QtCore.Qt.Checked)
-            item.setFlags(xor(item.flags(), QtCore.Qt.ItemIsEditable))
-            item.setFlags(xor(item.flags(), QtCore.Qt.ItemIsUserCheckable))
-            item.setFlags(xor(item.flags(), QtCore.Qt.ItemIsSelectable))
 
     def run(self):
         """Presents the sub widget HandleInput and connects the different
@@ -169,14 +159,8 @@ class AddField:
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('Field name must be filled in.'))
             return
-        year_str = ''
-        for nr, y in enumerate(range(2000, 2030)):
-            item = self.AFD.CBYear.model().item(nr, 0)
-            if item.checkState():
-                year_str += str(y) + ','
-        year_str =year_str[:-1]
-        sql = """Insert into fields (field_name, years, polygon) 
-        VALUES ('{name}', '{year}', st_geomfromtext('{poly}', 4326))""".format(name=name, year=year_str, poly=polygon)
+        sql = """Insert into fields (field_name, polygon) 
+        VALUES ('{name}', st_geomfromtext('{poly}', 4326))""".format(name=name, poly=polygon)
         try:
             self.db.execute_sql(sql)
         except IntegrityError:

@@ -64,6 +64,11 @@ class CreateFarm:
         password_inp = self.CF.pass_word.text()
         farmname_inp = self.CF.farm_name.text()
         email_inp = self.CF.email_field.text()
+        first_year = int(self.CF.DEFirstYear.text())
+        if first_year > 2029:
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The first year must be less than 2030'))
+            return
         username = check_text(username_inp)
         password = check_text(password_inp).encode('utf-8')
         farmname = check_text(farmname_inp)
@@ -86,6 +91,7 @@ class CreateFarm:
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self.create_spec_functions()
         self.add_schemas()
+        self.add_tables(first_year)
         self.dock_widget.populate = Populate(self)
         self.dock_widget.PBUpdateLists.clicked.connect(self.dock_widget.populate.update_table_list)
         self.CF.done(0)
@@ -173,15 +179,18 @@ class CreateFarm:
     LANGUAGE 'plpgsql';"""
         self.db.execute_sql(sql)
 
-    def add_tables(self):
+    def add_tables(self, first_year):
         """Add tables to the database"""
         if self.db is None:
             self._connect_to_db()
         sql = """CREATE table fields(field_row_id serial,
             field_name text COLLATE pg_catalog."default" NOT NULL,
             years text,
-            polygon geometry(Polygon,4326),
-            CONSTRAINT p_key_field PRIMARY KEY (row_id),
+            polygon geometry(Polygon,4326),"""
+        for year in range(first_year, 2031):
+            sql += """_{y} text,
+            """.format(y=year)
+        sql += """CONSTRAINT p_key_field PRIMARY KEY (row_id),
             CONSTRAINT field_name UNIQUE (field_name))"""
         self.db.execute_sql(sql)
         sql = """CREATE table crops(row_id serial,
