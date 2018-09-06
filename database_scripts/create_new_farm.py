@@ -11,9 +11,12 @@ __author__ = 'Axel Andersson'
 
 
 class CreateFarm:
-    def __init__(self, iface, parent_widget):
-        """Sends a request to create a database for the farm"""
-        self.iface = iface
+    def __init__(self, parent_widget, new_farm):
+        """Sends a request to create a database for the farm
+
+        :param parent_widget the GeoDataFarm class
+        :param new_farm bool, True if the user creates new farm,
+                              False if user connects to a farm"""
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
 
@@ -33,9 +36,14 @@ class CreateFarm:
 
         #print "** INITIALIZING GeoDataFarm"
         # Create the dialog (after translation) and keep reference
-        self.CF = CreateFarmPopup()
-        self.CF.PBCreateDatabase.clicked.connect(self.create_new_farm)
-        self.CF.PBConnectExisting.clicked.connect(self.connect_to_source)
+        if new_farm:
+            from ..widgets.create_farm_popup import CreateFarmPopup
+            self.CF = CreateFarmPopup()
+            self.CF.PBCreateDatabase.clicked.connect(self.create_new_farm)
+        else:
+            from ..widgets.connect_to_farm import ConnectFarmPopup
+            self.CF = ConnectFarmPopup()
+            self.CF.PBConnectExisting.clicked.connect(self.connect_to_source)
         self.parent_widget = parent_widget
         self.tr = parent_widget.tr
         self.plugin_dir = parent_widget.plugin_dir

@@ -436,7 +436,11 @@ class GeoDataFarm:
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
-        create_farm = CreateFarm(self.iface, self)
+        create_farm = CreateFarm(self, True)
+        create_farm.run()
+
+    def connect_to_farm(self):
+        create_farm = CreateFarm(self, False)
         create_farm.run()
 
     def run(self):
