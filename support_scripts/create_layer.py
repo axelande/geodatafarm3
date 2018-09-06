@@ -1,7 +1,9 @@
 from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsLineSymbol, QgsFillSymbol, QgsGraduatedSymbolRenderer, \
     QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer, \
-    QgsTextFormat, QgsPalLayerSettings, QgsTextBufferSettings, QgsVectorLayerSimpleLabeling
+    QgsTextFormat, QgsPalLayerSettings, QgsTextBufferSettings, \
+    QgsVectorLayerSimpleLabeling, QgsRasterLayer, QgsCoordinateReferenceSystem, \
+    QgsRectangle
 from PyQt5.QtGui import QColor, QFont
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,6 +38,33 @@ def set_label(layer, field_label):
     layer.setLabelsEnabled(True)
     layer.setLabeling(layer_settings)
     layer.triggerRepaint()
+
+
+def set_zoom(iface, extra_extent):
+    zoom_extent = QgsRectangle()
+    for layer in QgsProject.instance().mapLayers().values():
+        if 'xyz&url' not in layer.source():
+            zoom_extent.combineExtentWith(layer.extent())
+    if zoom_extent.center().x() != 0.0:
+        wgsCRS = QgsCoordinateReferenceSystem(4326)
+        QgsProject.instance().setCrs(wgsCRS)
+        zoom_extent.scale(extra_extent)
+        iface.mapCanvas().setExtent(zoom_extent)
+        iface.mapCanvas().refresh()
+        wgsCRS = QgsCoordinateReferenceSystem(3857)
+        QgsProject.instance().setCrs(wgsCRS)
+
+
+def add_background():
+    source_found = False
+    for layer in QgsProject.instance().mapLayers().values():
+        if 'xyz&url' in layer.source():
+            source_found = True
+    if not source_found:
+        url_with_params = 'type=xyz&url=https://mt1.google.com/vt/lyrs%3Ds%26x%3D%7Bx%7D%26y%3D%7By%7D%26z%3D%7Bz%7D&zmax=19&zmin=0'
+        rlayer = QgsRasterLayer(url_with_params, 'Google satellite', 'wms')
+        rlayer.isValid()
+        QgsProject.instance().addMapLayer(rlayer)
 
 
 def histedges_equalN(x, nbin):

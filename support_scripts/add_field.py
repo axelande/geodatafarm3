@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from operator import xor
 from psycopg2 import ProgrammingError, IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
-from ..support_scripts.create_layer import set_label
+from ..support_scripts.create_layer import set_label, add_background, set_zoom
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
@@ -68,19 +68,8 @@ class AddField:
 
     def view_fields(self):
         """Add all fields that aren't displayed on the canvas, if no background map is loaded Google maps are loaded."""
+        add_background()
         sources = [layer.source() for layer in QgsProject.instance().mapLayers().values()]
-        source_found = False
-        zoom_extent = QgsRectangle()
-        for layer in QgsProject.instance().mapLayers().values():
-            if 'xyz&url' in layer.source():
-                source_found = True
-            else:
-                zoom_extent.combineExtentWith(layer.extent())
-        if not source_found:
-            url_with_params = 'type=xyz&url=https://mt1.google.com/vt/lyrs%3Ds%26x%3D%7Bx%7D%26y%3D%7By%7D%26z%3D%7Bz%7D&zmax=19&zmin=0'
-            rlayer = QgsRasterLayer(url_with_params, 'Google satellite', 'wms')
-            rlayer.isValid()
-            QgsProject.instance().addMapLayer(rlayer)
         fields_db = self.db.execute_and_return("select field_name from fields")
         for field in fields_db:
             field = field[0]
@@ -95,17 +84,7 @@ class AddField:
                                             filter_text="field_name='{f}'".format(f=field))
             set_label(layer, 'field_name')
             QgsProject.instance().addMapLayer(layer)
-        for layer in QgsProject.instance().mapLayers().values():
-            if 'xyz&url' not in layer.source():
-                zoom_extent.combineExtentWith(layer.extent())
-        if zoom_extent.center().x() != 0.0:
-            wgsCRS = QgsCoordinateReferenceSystem(4326)
-            QgsProject.instance().setCrs(wgsCRS)
-            zoom_extent.scale(1.1)  # Increase a bit the extent to make sure all geometries lie inside
-            self.parent.iface.mapCanvas().setExtent(zoom_extent)
-            self.parent.iface.mapCanvas().refresh()
-            wgsCRS = QgsCoordinateReferenceSystem(3857)
-            QgsProject.instance().setCrs(wgsCRS)
+        set_zoom(self.parent.iface, 1.1)
 
     def clicked_define_field(self):
         """Creates an empty polygon that's define a field"""
@@ -115,29 +94,11 @@ class AddField:
                                     self.tr('Field name must be filled in.'))
             return
         self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
-        source_found = False
-        zoom_extent = QgsRectangle()
-        for layer in QgsProject.instance().mapLayers().values():
-            if 'xyz&url' in layer.source():
-                source_found = True
-            else:
-                zoom_extent.combineExtentWith(layer.extent())
-        if not source_found:
-            url_with_params = 'type=xyz&url=https://mt1.google.com/vt/lyrs%3Ds%26x%3D%7Bx%7D%26y%3D%7By%7D%26z%3D%7Bz%7D&zmax=19&zmin=0'
-            rlayer = QgsRasterLayer(url_with_params, 'Google satellite', 'wms')
-            rlayer.isValid()
-            QgsProject.instance().addMapLayer(rlayer)
+        add_background()
+        set_zoom(self.parent.iface, 2)
         self.field.startEditing()
         self.iface.actionAddFeature().trigger()
         QgsProject.instance().addMapLayer(self.field)
-        if zoom_extent.center().x() != 0.0:
-            wgsCRS = QgsCoordinateReferenceSystem(4326)
-            QgsProject.instance().setCrs(wgsCRS)
-            zoom_extent.scale(2)
-            self.parent.iface.mapCanvas().setExtent(zoom_extent)
-            self.parent.iface.mapCanvas().refresh()
-            wgsCRS = QgsCoordinateReferenceSystem(3857)
-            QgsProject.instance().setCrs(wgsCRS)
 
     def quit(self):
         """Closes the widget."""
