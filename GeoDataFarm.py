@@ -58,6 +58,7 @@ from .resources import *
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.db import DB
 from .database_scripts.mean_analyse import Analyze
+from .database_scripts.plan_ahead import PlanAhead
 from .import_data.handle_text_data import InputTextHandler
 from .database_scripts.create_new_farm import CreateFarm
 from .import_data.insert_input_to_db import InsertInputToDB
@@ -112,6 +113,7 @@ class GeoDataFarm:
         self.menu = self.tr(u'&GeoFarm')
         self.toolbar = self.iface.addToolBar(u'GeoDataFarm')
         self.toolbar.setObjectName(u'GeoDataFarm')
+        self.tsk_mngr = QgsApplication.taskManager()
 
         #print "** INITIALIZING GeoDataFarm"
         self.items_in_table = None
@@ -123,8 +125,8 @@ class GeoDataFarm:
         self.df = None
         self.db = None
         self.save_planting = None
+        self.plan_ahead = None
         self.report_generator = None
-        self.tsk_mngr = QgsApplication.taskManager()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -460,8 +462,12 @@ class GeoDataFarm:
             if self.get_database_connection():
                 self.populate = Populate(self)
                 self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
-
-                from .database_scripts.plan_ahead import PlanAhead
+                self.save_planting = SavePlanting(self)
+                self.save_planting.set_widget_connections()
+                self.report_generator = RepportGen(self)
+                self.report_generator.set_widget_connections()
+                self.add_field = AddField(self)
+                self.add_field.set_widget_connections()
                 self.plan_ahead = PlanAhead(self)
                 self.plan_ahead.set_widget_connections()
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
@@ -475,12 +481,6 @@ class GeoDataFarm:
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
-            self.save_planting = SavePlanting(self)
-            self.save_planting.set_widget_connections()
-            self.report_generator = RepportGen(self)
-            self.report_generator.set_widget_connections()
-            self.add_field = AddField(self)
-            self.add_field.set_widget_connections()
             try:
                 self.reload_range()
             except:
