@@ -461,12 +461,16 @@ class GeoDataFarm:
                 self.populate = Populate(self)
                 self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
 
+                from .database_scripts.plan_ahead import PlanAhead
+                self.plan_ahead = PlanAhead(self)
+                self.plan_ahead.set_widget_connections()
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
             #self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
             #self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBAddNewFarm.clicked.connect(self.clicked_create_farm)
+            self.dock_widget.PBConnect2Farm.clicked.connect(self.connect_to_farm)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
