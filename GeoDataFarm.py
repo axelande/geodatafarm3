@@ -67,10 +67,17 @@ from .import_data.handle_db_file_data import DBFileHandler
 from .import_data.insert_harvest_to_db import InsertHarvestData
 from .import_data.handle_irrigation import IrrigationHandler
 from .import_data.save_planting_data import SavePlanting
+from .import_data.save_fertilizing_data import SaveFertilizing
+from .import_data.save_spraying_data import SaveSpraying
+from .import_data.save_other_data import SaveOther
+from .import_data.save_harvest_data import SaveHarvesting
+from .import_data.save_plowing_data import SavePlowing
+from .import_data.save_harrowing_data import SaveHarrowing
+from .import_data.save_soil_data import SaveSoil
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
-from .support_scripts.generate_reports import RepportGen
+from .support_scripts.generate_reports import RapportGen
 from .support_scripts.add_field import AddField
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint
@@ -125,6 +132,13 @@ class GeoDataFarm:
         self.df = None
         self.db = None
         self.save_planting = None
+        self.save_fertilizing = None
+        self.save_spraying = None
+        self.save_other = None
+        self.save_harvesting = None
+        self.save_plowing = None
+        self.save_harrowing = None
+        self.save_soil = None
         self.plan_ahead = None
         self.report_generator = None
 
@@ -464,12 +478,26 @@ class GeoDataFarm:
                 self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
                 self.save_planting = SavePlanting(self)
                 self.save_planting.set_widget_connections()
-                self.report_generator = RepportGen(self)
+                self.save_fertilizing = SaveFertilizing(self)
+                self.save_fertilizing.set_widget_connections()
+                self.report_generator = RapportGen(self)
                 self.report_generator.set_widget_connections()
                 self.add_field = AddField(self)
                 self.add_field.set_widget_connections()
                 self.plan_ahead = PlanAhead(self)
                 self.plan_ahead.set_widget_connections()
+                self.save_spraying = SaveSpraying(self)
+                self.save_spraying.set_widget_connections()
+                self.save_other = SaveOther(self)
+                self.save_other.set_widget_connections()
+                self.save_harvesting = SaveHarvesting(self)
+                self.save_harvesting.set_widget_connections()
+                self.save_plowing = SavePlowing(self)
+                self.save_plowing.set_widget_connections()
+                self.save_harrowing = SaveHarrowing(self)
+                self.save_harrowing.set_widget_connections()
+                self.save_soil = SaveSoil(self)
+                self.save_soil.set_widget_connections()
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
             #self.dock_widget.PBAddFile.clicked.connect(self.clicked_input)
             #self.dock_widget.PBAddFieldToDB.clicked.connect(self.clicked_input2)

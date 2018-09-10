@@ -797,7 +797,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Saw depth:</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBFAddFieldToDB">
+       <widget class="QPushButton" name="PBFSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -877,7 +877,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </property>
         </item>
        </widget>
-       <widget class="QLineEdit" name="LEPVarerity_2">
+       <widget class="QLineEdit" name="LEFVarerity">
         <property name="geometry">
          <rect>
           <x>440</x>
@@ -1093,7 +1093,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Wind speed:</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBSpAddFieldToDB">
+       <widget class="QPushButton" name="PBSpSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1232,7 +1232,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </property>
         </item>
        </widget>
-       <widget class="QPlainTextEdit" name="LECOther">
+       <widget class="QPlainTextEdit" name="LEOOther">
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -1296,7 +1296,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Value</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBCAddFieldToDB">
+       <widget class="QPushButton" name="PBSaveOther">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1338,7 +1338,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Operation name:</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="LEPSawDepth_5">
+       <widget class="QLineEdit" name="LEOtherName">
         <property name="geometry">
          <rect>
           <x>140</x>
@@ -1683,7 +1683,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Total yield</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBHvAddFieldToDB">
+       <widget class="QPushButton" name="PBHvSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1835,7 +1835,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Depth:</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBPloAddFieldToDB">
+       <widget class="QPushButton" name="PBPloSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1925,7 +1925,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBHwAddFieldToDB">
+       <widget class="QPushButton" name="PBHwSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1977,7 +1977,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
         <property name="text">
-         <string>Saw depth:</string>
+         <string>Depth:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_76">
@@ -1999,6 +1999,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         <string>Irrigation</string>
        </attribute>
        <widget class="QPlainTextEdit" name="LEPOther_8">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -2009,6 +2012,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBIField">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -2027,6 +2033,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </item>
        </widget>
        <widget class="QDateEdit" name="DEIrrigation">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>110</x>
@@ -2038,7 +2047,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        </widget>
        <widget class="QPushButton" name="PBAddFieldToDB_9">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="geometry">
          <rect>
@@ -2056,6 +2065,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_82">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -2069,6 +2081,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_83">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>30</x>
@@ -2088,6 +2103,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_84">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>200</x>
@@ -2101,6 +2119,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_87">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -2114,6 +2135,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEPSpacing_8">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -2124,6 +2148,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEEndLon">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2150,6 +2177,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_27">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>250</x>
@@ -2163,6 +2193,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBAddRaindancer">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>510</x>
@@ -2176,6 +2209,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_21">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2189,6 +2225,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_31">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2202,6 +2241,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEPrep">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2212,6 +2254,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEWidth">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2222,6 +2267,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_40">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2235,6 +2283,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEPassword">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>570</x>
@@ -2245,6 +2296,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_41">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2259,6 +2313,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_47">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2288,6 +2345,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEDate">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2298,6 +2358,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEEndLat">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2308,6 +2371,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_49">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2321,6 +2387,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_53">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2334,6 +2403,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEUserName">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>570</x>
@@ -2344,6 +2416,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QTableWidget" name="tableWidget">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>720</x>
@@ -2354,6 +2429,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEStartLon">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2364,6 +2442,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_58">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2377,6 +2458,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEClientId">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>570</x>
@@ -2387,6 +2471,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_60">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2400,6 +2487,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEDate_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2410,6 +2500,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_61">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2429,6 +2522,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_64">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2442,6 +2538,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEStartLat">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -2452,6 +2551,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_67">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -2481,6 +2583,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_85">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>270</x>
@@ -2500,6 +2605,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QDateEdit" name="DEIrrigation_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>570</x>
@@ -2510,6 +2618,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_69">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -2523,6 +2634,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
        </widget>
        <widget class="QDateEdit" name="DEIrrigation_3">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>570</x>
@@ -2537,6 +2651,25 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
           <month>1</month>
           <day>1</day>
          </date>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_74">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>401</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <underline>true</underline>
+         </font>
+        </property>
+        <property name="text">
+         <string>Support for Irrigation data will come in the future</string>
         </property>
        </widget>
       </widget>
@@ -2572,7 +2705,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         <property name="geometry">
          <rect>
           <x>570</x>
-          <y>310</y>
+          <y>330</y>
           <width>211</width>
           <height>51</height>
          </rect>
@@ -2655,14 +2788,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Open the input and load it to the canvas</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="PBSoAddFieldToDB">
+       <widget class="QPushButton" name="PBSoSaveManual">
         <property name="enabled">
          <bool>true</bool>
         </property>
         <property name="geometry">
          <rect>
           <x>570</x>
-          <y>380</y>
+          <y>390</y>
           <width>277</width>
           <height>28</height>
          </rect>
@@ -2687,7 +2820,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <string>Humus</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="LEPSawDepth_9">
+       <widget class="QLineEdit" name="LESoPh">
         <property name="geometry">
          <rect>
           <x>660</x>
@@ -2701,7 +2834,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         <property name="geometry">
          <rect>
           <x>570</x>
-          <y>290</y>
+          <y>310</y>
           <width>111</width>
           <height>16</height>
          </rect>
@@ -2751,7 +2884,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
         <property name="text">
-         <string>Saw depth:</string>
+         <string>Average pH</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_96">
@@ -2764,7 +2897,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
         <property name="text">
-         <string>cm</string>
+         <string>(0-14)</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_97">
@@ -2821,7 +2954,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
        </widget>
-       <widget class="QLineEdit" name="LEPSeedRate_9">
+       <widget class="QLineEdit" name="LESoHumus">
         <property name="geometry">
          <rect>
           <x>660</x>
@@ -2851,6 +2984,29 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="LESoRx">
+        <property name="geometry">
+         <rect>
+          <x>660</x>
+          <y>280</y>
+          <width>113</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_106">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>280</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Average rx</string>
         </property>
        </widget>
       </widget>
@@ -3635,17 +3791,17 @@ of colors:</string>
      <attribute name="title">
       <string>Reports</string>
      </attribute>
-     <widget class="QPushButton" name="PBReportListAll">
+     <widget class="QPushButton" name="PBReportPerOperation">
       <property name="geometry">
        <rect>
         <x>70</x>
         <y>210</y>
-        <width>151</width>
+        <width>241</width>
         <height>28</height>
        </rect>
       </property>
       <property name="text">
-       <string>List all operations</string>
+       <string>List all operations per operation</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="RBReportWithDetails">
@@ -3724,6 +3880,32 @@ of colors:</string>
       </property>
       <property name="text">
        <string>Select Folder</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBReportPerField">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>240</y>
+        <width>241</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>List all operations per field</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBReportPerCrop">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>270</y>
+        <width>241</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>List all operations per crop</string>
       </property>
      </widget>
     </widget>

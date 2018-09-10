@@ -187,7 +187,7 @@ class CreateFarm:
             field_name text COLLATE pg_catalog."default" NOT NULL,
             years text,
             polygon geometry(Polygon,4326),"""
-        for year in range(first_year, 2031):
+        for year in range(first_year, 2051):
             sql += """_{y} text,
             """.format(y=year)
         sql += """CONSTRAINT p_key_field PRIMARY KEY (row_id),
@@ -200,13 +200,51 @@ class CreateFarm:
         self.db.execute_sql(sql)
         sql = """CREATE table plant.manual(field text, 
             crop text, 
-            date_ text, 
+            date_ date, 
             variety text, 
             spacing text, 
             seed_rate text, 
             saw_depth text, 
             other text, 
             table_ text)"""
+        self.db.execute_sql(sql)
+        sql = """create table ferti.manual(field text, 
+            crop text, 
+            date_ date, 
+            variety text, 
+            rate text, 
+            saw_depth text, 
+            other text, 
+            table_ text)"""
+        self.db.execute_sql(sql)
+        sql = """create table spray.manual(field text, 
+                    crop text, 
+                    date_ date, 
+                    variety text, 
+                    rate text, 
+                    wind_speed text,
+                    wind_dir text, 
+                    other text, 
+                    table_ text)"""
+        self.db.execute_sql(sql)
+        sql = """create table other.plowing_manual(field text, 
+                    date_ date, 
+                    depth text, 
+                    other text)"""
+        self.db.execute_sql(sql)
+        sql = """create table other.harrowing_manual(field text, 
+                            date_ date, 
+                            depth text, 
+                            other text)"""
+        self.db.execute_sql(sql)
+        sql = """create table soil.manual(field text, 
+                            date_ date, 
+                            clay text,
+                            humus text, 
+                            ph text,
+                            rx text,
+                            other text,
+                            table_ text)"""
         self.db.execute_sql(sql)
 
     def add_schemas(self):
