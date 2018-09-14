@@ -269,25 +269,6 @@ class InputTextHandler(object):
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = self.file_name_with_path[0:self.file_name_with_path.index(self.file_name)]
-        file_name = self.file_name + '.shp'
-        if 'shapefiles' not in os.listdir(self.input_file_path):
-            os.makedirs(self.input_file_path + "shapefiles/")
-        files = os.listdir(self.input_file_path + "shapefiles/")
-        if file_name in files:
-            qm = QMessageBox()
-            ret = qm.question(None, 'Message',
-                              self.tr("The shape file already exist on your computer, would you like to replace it?"),
-                              qm.Yes, qm.No)
-            if ret == qm.No:
-                return
-            else:
-                for ending in ['shp', 'shx', 'dbf', 'prj']:
-                    try:
-                        os.remove(
-                            self.input_file_path) + "shapefiles/{f}.{e}".format(
-                                f=file_name[:-4], e=ending)
-                    except:
-                        pass
         self.get_separator()
         self.set_radio_but()
         self.get_columns_names()
