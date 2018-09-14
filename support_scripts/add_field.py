@@ -51,10 +51,17 @@ class AddField:
                                   qm.Yes, qm.No)
                 if res == qm.No:
                     continue
-                # TODO: Check more than planting manuel
-                planting = self.db.execute_and_return("select field_name from plant.manual")
+                field_names = []
+                for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
+                    field_names.extend(self.db.execute_and_return("select field_name from {type}.manual".format(type=tble_type)))
+                sql = """SELECT table_name
+               FROM   information_schema.tables 
+               WHERE  table_schema = 'other'"""
+                for tble_type in self.db.execute_and_return(sql):
+                    tbl = tble_type[0]
+                    field_names.extend(self.db.execute_and_return("select field_name from other.{tbl}".format(tbl=tbl)))
                 stop_removing = False
-                for row in planting:
+                for row in field_names:
                     if row[0] == field_name:
                         QMessageBox.information(None, self.tr('Error'),
                                                 self.tr('There are planting data that are dependent on this field, '
