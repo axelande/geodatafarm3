@@ -226,6 +226,13 @@ class CreateFarm:
                     wind_dir text, 
                     other text, 
                     table_ text)"""
+        sql = """create table harvest.manual(field text, 
+                    crop text, 
+                    date_ date, 
+                    total_yield text, 
+                    yield text, 
+                    other text, 
+                    table_ text)"""
         self.db.execute_sql(sql)
         sql = """create table other.plowing_manual(field text, 
                     date_ date, 

@@ -1,4 +1,5 @@
 from string import ascii_letters, digits as str_digits
+from datetime import datetime
 
 
 def check_text(text):
@@ -36,3 +37,21 @@ def isint(x):
     else:
         return a == b
 
+
+def check_date_format(sample, column, format_):
+    """Checks that the date format matches the selected format
+
+    :param sample, the sample of the data including a heading row
+    :param column, the column in the heading row containing the date
+    :param format_, the format of the date"""
+    try:
+        first_row = True
+        for row in sample:
+            if first_row:
+                heading_row = row
+                first_row = False
+            else:
+                datetime.strptime(row[heading_row.index(column)], format_)
+        return True
+    except ValueError:
+        return False

@@ -20,7 +20,7 @@ class SaveHarvesting:
 
     def run_file_import(self):
         """The function loads the correct import dialog for files"""
-        columns = [self.tr('Yield')]
+        columns = [self.tr('Yield'), self.tr('Total yield')]
         if self.dw.CBHvFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'harvest', columns=columns)
             add_f.run()

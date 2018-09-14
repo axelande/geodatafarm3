@@ -1,5 +1,4 @@
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
-import processing
 import traceback
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
@@ -17,7 +16,7 @@ from dateutil.parser import parse
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
-from ..support_scripts.__init__ import check_text, isfloat, isint
+from ..support_scripts.__init__ import check_text, isfloat, isint, check_date_format
 __author__ = 'Axel Andersson'
 
 
@@ -53,6 +52,8 @@ class InputTextHandler(object):
         self.encoding = 'utf-8'
         self.longitude_col = None
         self.latitude_col = None
+        self.heading_row = None
+        self.sample_data = None
 
     def run(self):
         """Presents the sub widget HandleInput and connects the different
@@ -63,6 +64,7 @@ class InputTextHandler(object):
         self.ITD.PBRemParam.clicked.connect(self.remove_from_param_list)
         self.ITD.PBInsertDataIntoDB.clicked.connect(self.trigger_insection)
         self.ITD.PBContinue.clicked.connect(self.prepare_last_choices)
+        self.ITD.PBAbbreviations.clicked.connect(self.show_abbreviations)
         self.ITD.RBComma.clicked.connect(self.get_sep)
         self.ITD.RBSemi.clicked.connect(self.get_sep)
         self.ITD.RBTab.clicked.connect(self.get_sep)
@@ -77,6 +79,18 @@ class InputTextHandler(object):
             self.ITD.LEMinimumYield.setEnabled(True)
         self.add_specific_columns()
         self.ITD.exec_()
+
+    def show_abbreviations(self):
+        QMessageBox.information(None, self.tr('Information'),
+                                '%Y = Year (2010)'
+                                '%y = Year (98)'
+                                '%m = Month'
+                                '%d = Day'
+                                '%H = Hour (24h)'
+                                '%M = Minute'
+                                '%S = Second'
+                                'If you are missing any formats please contact geodatafarm@gmail.com'
+                                )
 
     def add_to_param_list(self):
         """Adds the selected columns to the list of fields that should be
@@ -284,7 +298,6 @@ class InputTextHandler(object):
         columns_to_add = []
         for i in range(self.add_to_db_row_count + 1):
             columns_to_add.append(self.ITD.TWColumnNames.item(i, 0).text())
-
         self.ITD.ComBNorth.clear()
         self.ITD.ComBEast.clear()
         self.ITD.ComBNorth.addItems(columns_to_add)
@@ -328,6 +341,7 @@ class InputTextHandler(object):
         :return: a list with with 0=int, 1=float, 2=char
         """
         row_types = []
+        self.sample_data = []
         with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
             first_row = True
@@ -339,10 +353,14 @@ class InputTextHandler(object):
                 if first_row:
                     self.heading_row = row
                     first_row = False
+                    h_row = []
                     for col in self.heading_row:
+                        h_row.append(check_text(col))
                         row_types.append(0)
+                    self.sample_data.append(h_row)
                     continue
                 else:
+                    self.sample_data.append(row)
                     for j, col in enumerate(row):
                         if isint(col):
                             row_types[j] += 0
@@ -360,18 +378,102 @@ class InputTextHandler(object):
     def insert_manual_data(self, date_):
         field = self.ITD.CBField.currentText()
         table = self.file_name
-        if self.data_type != 'soil':
-            crop = self.ITD.CBCrop.currentText()
+        if date_ != 'Null':
+            date_ = "'{d}'".format(d=date_)
+        if self.data_type == 'soil':
+            if self.manual_values[0]['checkbox'].isChecked():
+                clay = 'None'
+            elif self.manual_values[0]['Combo'].currentText() != '':
+                clay = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            else:
+                clay = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
+            if self.manual_values[1]['checkbox'].isChecked():
+                humus = 'None'
+            elif self.manual_values[1]['Combo'].currentText() != '':
+                humus = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
+            else:
+                humus = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+            if self.manual_values[2]['checkbox'].isChecked():
+                ph = 'None'
+            elif self.manual_values[2]['Combo'].currentText() != '':
+                ph = '{t}'.format(t=check_text(self.manual_values[2]['Combo'].currentText()))
+            else:
+                ph = 'c_{t}'.format(t=self.manual_values[2]['line_edit'].text())
+            if self.manual_values[3]['checkbox'].isChecked():
+                rx = 'None'
+            elif self.manual_values[3]['Combo'].currentText() != '':
+                rx = '{t}'.format(t=check_text(self.manual_values[3]['Combo'].currentText()))
+            else:
+                rx = 'c_{t}'.format(t=self.manual_values[3]['line_edit'].text())
+            sql = """insert into soil.manual(date_, field, clay, humus, ph, rx table_) 
+                VALUES ('{d}', '{f}', '{clay}', '{humus}', '{ph}', '{rx}')""".format(f=field, d=date_, clay=clay,
+                                                                                     humus=humus, ph=ph, rx=rx)
+            self.db.execute_sql(sql)
+            return True
+        crop = self.ITD.CBCrop.currentText()
         if self.data_type == 'plant':
-            sql = """insert into plant.manual(field, crop, date_, table_, variety) VALUES ('{f}', '{c}', '{d}', '{t}', 
-            """.format(f=field, c=crop, d=date_, t=table)
+            sql = """insert into plant.manual(field, crop, date_, table_, variety) VALUES ('{f}', '{c}', {d}, '{t}', 
+                """.format(f=field, c=crop, d=date_, t=table)
             if self.manual_values[0]['checkbox'].isChecked():
                 sql += "'None')"
             elif self.manual_values[0]['Combo'].currentText() != '':
                 sql += "'{t}')".format(t=check_text(self.manual_values[0]['Combo'].currentText()))
             else:
                 sql += "'c_{t}')".format(t=self.manual_values[0]['line_edit'].text())
+        elif self.data_type == 'ferti':
+            if self.manual_values[0]['checkbox'].isChecked():
+                variety = 'None'
+            elif self.manual_values[0]['Combo'].currentText() != '':
+                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            else:
+                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
+            if self.manual_values[1]['checkbox'].isChecked():
+                rate = 'None'
+            elif self.manual_values[1]['Combo'].currentText() != '':
+                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
+            else:
+                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+            sql = """insert into ferti.manual(field, crop, table_, date_,variety, rate) 
+            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
+                                                                      v=variety, r=rate, d=date_)
+        elif self.data_type == 'spray':
+            if self.manual_values[0]['checkbox'].isChecked():
+                variety = 'None'
+            elif self.manual_values[0]['Combo'].currentText() != '':
+                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            else:
+                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
+            if self.manual_values[1]['checkbox'].isChecked():
+                rate = 'None'
+            elif self.manual_values[1]['Combo'].currentText() != '':
+                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
+            else:
+                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+            sql = """insert into spray.manual(field, crop, table_, date_, variety, rate) 
+            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
+                                                                      v=variety, r=rate, d=date_)
+        elif self.data_type == 'harvest':
+            if self.manual_values[0]['checkbox'].isChecked():
+                yield_ = 'None'
+            elif self.manual_values[0]['Combo'].currentText() != '':
+                yield_ = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            else:
+                yield_ = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
+            if self.manual_values[1]['checkbox'].isChecked():
+                total_yield = 'None'
+            elif self.manual_values[1]['Combo'].currentText() != '':
+                total_yield = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
+            else:
+                total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+            sql = """insert into harvest.manual(field, crop, table_, date_, yield, total_yield) 
+            VALUES ('{f}', '{c}', '{t}', {d}, '{y}', '{t_y}')""".format(f=field, c=crop, t=table, d=date_,
+                                                                        y=yield_, t_y=total_yield)
+        else:
+            ## Should never happen!
+            print('Unkown data source...')
+            return False
         self.db.execute_sql(sql)
+        return True
 
     def trigger_insection(self):
         """
@@ -393,6 +495,18 @@ class InputTextHandler(object):
         params['longitude_col'] = self.longitude_col
         params['latitude_col'] = self.latitude_col
         params['focus_col'] = []
+        if self.db.check_table_exists(self.file_name, self.data_type):
+            qm = QMessageBox()
+            res = qm.question(None, self.tr('Message'),
+                              self.tr(
+                                  "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                              qm.Yes, qm.No)
+            if res == qm.No:
+                return
+            else:
+                self.db.execute_sql("""DROP TABLE {schema}.{tbl};
+                                            DELETE FROM {schema}.manual
+        	                                WHERE table_ = '{tbl}';""".format(schema=self.data_type, tbl=self.file_name))
         for i in range(self.add_to_param_row_count):
             params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
         self.focus_cols = params['focus_col']
@@ -401,9 +515,14 @@ class InputTextHandler(object):
             params['max_yield'] = float(self.ITD.LEMaximumYield.text())
             params['min_yield'] = float(self.ITD.LEMinimumYield.text())
         if self.ITD.RBDateOnly.isChecked():
+            if not check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()), self.ITD.ComBDate_2.currentText()):
+                QMessageBox.information(None, self.tr('Error'),
+                                        self.tr("The date format didn't match the selected format, please change"))
+                return
             params['date_row'] = check_text(self.ITD.ComBDate.currentText())
+            params['date_format'] = self.ITD.ComBDate_2.currentText()
             params['all_same_date'] = ''
-            self.insert_manual_data(check_text(self.ITD.ComBDate.currentText()))
+            self.insert_manual_data('Null')
         else:
             params['all_same_date'] = self.ITD.DE.text()
             self.insert_manual_data('c_' + self.ITD.DE.text())
@@ -411,18 +530,7 @@ class InputTextHandler(object):
         params['sep'] = self.sep
         params['tr'] = self.tr
         params['epsg'] = self.ITD.LEEPSG.text()
-        if self.db.check_table_exists(self.file_name, self.data_type):
-            qm = QMessageBox()
-            res = qm.question(None, self.tr('Message'),
-                              self.tr("The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                              qm.Yes, qm.No)
-            if res == qm.No:
-                return
-            else:
-                self.db.execute_sql(
-                    "DROP TABLE {schema}.{tbl}".format(schema=self.data_type,
-                                                       tbl=self.file_name))
-        #insert_data_to_database('debug', self.db, params)
+        #a = insert_data_to_database('debug', self.db, params)
         task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
                                     on_finished=self.finish)
         self.tsk_mngr.addTask(task)
@@ -437,6 +545,12 @@ class InputTextHandler(object):
         tbl = self.file_name
         if isint(tbl[0]):
             tbl = '_' + tbl
+        length = self.db.execute_and_return("select field_row_id from {s}.{t} limit 2".format(s=schema, t=tbl))
+        if len(length) == 0:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('No data were found in the field, '
+                                            'are you sure that the data is in the correct field?'))
+            return
         create_layer = CreateLayer(self.db)
         for param_layer in self.focus_cols:
             param_layer = check_text(param_layer)
@@ -469,6 +583,8 @@ def insert_data_to_database(task, db, params):
             max_yield = params['max_yield']
             min_yield = params['min_yield']
         date_row = params['date_row']
+        if date_row != '':
+            date_format = params['date_format']
         all_same_date = params['all_same_date']
         sep = params['sep']
         tr = params['tr']
@@ -479,6 +595,7 @@ def insert_data_to_database(task, db, params):
         inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
         sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(schema=schema)
         lat_lon_inserted = False
+        date_inserted = False
         for i, col_name in enumerate(heading_row):
             if not lat_lon_inserted and (
                     col_name == longitude_col or col_name == latitude_col):
@@ -488,9 +605,14 @@ def insert_data_to_database(task, db, params):
             if lat_lon_inserted and (
                     col_name == longitude_col or col_name == latitude_col):
                 continue
-            if col_name == "Date_":
+            if col_name == date_row:
                 sql += "Date_ TIMESTAMP, "
                 inserting_text += 'Date_, '
+                continue
+            elif all_same_date and not date_inserted:
+                sql += "Date_ TIMESTAMP, "
+                inserting_text += 'Date_, '
+                date_inserted = True
                 continue
             if column_types[i] == 0:
                 sql += str(col_name) + " INT, "
@@ -535,6 +657,7 @@ def insert_data_to_database(task, db, params):
                         break
                 if task != 'debug':
                     task.setProgress(2 + row_count / len(read_all) * 45)
+                date_inserted = False
                 for key in heading_row:
                     col_data = row[heading_row.index(key)]
                     if len(str(col_data)) == 0:
@@ -550,11 +673,13 @@ def insert_data_to_database(task, db, params):
                     if lat_lon_inserted and (
                             key == longitude_col or key == latitude_col):
                         continue
-                    if key == 'Date_':
-                        if all_same_date:
-                            row_value += '{s}, '.format(s=all_same_date)
-                        else:
-                            row_value += '{s}, '.format(s=row[heading_row.index(date_row)])
+                    if key == date_row:
+                        in_date = datetime.strptime(row[heading_row.index(date_row)], date_format)
+                        out_date = datetime.strftime(in_date, '%Y-%m-%d %H:%M:%S')
+                        row_value += "'{s}', ".format(s=out_date)
+                    elif all_same_date and not date_inserted:
+                        row_value += "'{s}', ".format(s=all_same_date)
+                        date_inserted = True
                     elif column_types[heading_row.index(key)] == 0:
                         try:  # Trying to add a int
                             row_value += '{s}, '.format(s=int(float(col_data)))

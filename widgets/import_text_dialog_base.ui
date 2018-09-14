@@ -616,47 +616,47 @@ following column</string>
    </property>
    <item>
     <property name="text">
-     <string>YYYY-MM-DD hh:mm:ss</string>
+     <string>%Y-%m-%d %H:%M:%S</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YYYY-MM-DD</string>
+     <string>%Y-%m-%d %H:%M</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YY-MM-DD hh-mm</string>
+     <string>%Y-%m-%d</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YYMMDD</string>
+     <string>%y%m%d</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YY-MM</string>
+     <string>%Y-%m</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>MM/DD/YYYY hh:mm:ss</string>
+     <string>%m/%d/%Y %H:%M:%S</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>MM/DD/YYYY</string>
+     <string>%m/%d/%y</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YYYY/MM/DD hh:mm:ss</string>
+     <string>%Y/%m/%d %H:%M:%S</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>YYYY/MM/DD</string>
+     <string>%y/%m/%d</string>
     </property>
    </item>
   </widget>
@@ -685,6 +685,25 @@ following column</string>
    </property>
    <property name="text">
     <string>Either select a column, fill in a static value or leave it</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="PBAbbreviations">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>640</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="UnitedKingdom"/>
+   </property>
+   <property name="text">
+    <string>Abbreviations</string>
    </property>
   </widget>
  </widget>

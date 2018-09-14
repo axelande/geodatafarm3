@@ -1,8 +1,13 @@
 from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.units import cm
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import Table, TableStyle, Paragraph
+from reportlab.platypus.frames import Frame
+from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from datetime import date
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from functools import partial
 width, height = A4
 
 
@@ -11,17 +16,44 @@ def coord(x, y, unit=1):
     return x, y
 
 
-class RepportGen:
+class MyDocTemplate(BaseDocTemplate):
+    def __init__(self, filename, tr, plugin_dir, growing_year, cur_date, **kw):
+        self.allowSplitting = 0
+        BaseDocTemplate.__init__(self, filename, **kw)
+        self.tr = tr
+        self.plugin_dir = plugin_dir
+        frame = Frame(self.leftMargin, self.bottomMargin, self.width, self.height - 2 * cm, id='normal')
+        template = PageTemplate(id='test', frames=frame, onPage=partial(self.header,
+                                                                        growing_year=growing_year,
+                                                                        cur_date=cur_date))
+        self.addPageTemplates(template)
+
+    def header(self, canvas, doc, growing_year, cur_date):
+        canvas.saveState()
+        canvas.drawString(30, 750, self.tr('Simple report from GeoDataFarm'))
+        canvas.drawString(30, 733, self.tr('For the growing season of ') + str(growing_year))
+        canvas.drawImage(self.plugin_dir + '\\img\\icon.png', 500, 765, width=50, height=50)
+        canvas.drawString(500, 750, 'Generated:')
+        canvas.drawString(500, 733, cur_date)
+        canvas.line(30, 723, 580, 723)
+        #w, h = content.wrap(doc.width, doc.topMargin)
+        #content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
+        canvas.restoreState()
+
+
+class RapportGen:
     def __init__(self, parent):
         self.tr = parent.tr
         self.db = parent.db
         self.dw = parent.dock_widget
+        self.plugin_dir = parent.plugin_dir
         self.parent = parent
         self.path = None
 
     def set_widget_connections(self):
-        """A simple function that sets the buttons on the planting tab"""
-        self.parent.dock_widget.PBReportListAll.clicked.connect(self.generate_report)
+        """A simple function that sets the buttons on the report tab"""
+        self.parent.dock_widget.PBReportPerOperation.clicked.connect(self.report_per_operation)
+        #self.parent.dock_widget.PBReportPerField.clicked.connect(self.generate_report)
         self.parent.dock_widget.PBReportSelectFolder.clicked.connect(self.select_folder)
 
     def select_folder(self):
@@ -32,71 +64,310 @@ class RepportGen:
         if folder_path:
             self.path = folder_path
 
-    def generate_report(self):
+    def report_per_operation(self):
         if self.path is None:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('A directory to save the report must be selected.'))
             return
         year = self.dw.DEReportYear.text()
         if self.dw.RBReportWithoutDetails.isChecked():
-            report_name = '{t}_{y}'.format(t=self.tr('GeoDataFarm_Limited_report'),
-                                           y=year)
-            self.compact_report(report_name, year)
+            report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
+                                                    t=self.tr('GeoDataFarm_Limited_report'),
+                                                    y=year)
         else:
-            report_name = '{t}_{y}'.format(t=self.tr('GeoDataFarm_Limited_report'),
-                                           y=year)
-
-    def compact_report(self, report_name, year):
+            report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
+                                                    t=self.tr('GeoDataFarm_Limited_report'),
+                                                    y=year)
         cur_date = date.today().isoformat()
-        can = canvas.Canvas('{p}/{r}_{d}.pdf'.format(p=self.path, r=report_name,
-                                                     d=cur_date), pagesize=A4)
-        can.setLineWidth(.3)
-        can.setFont('Helvetica', 12)
+        growing_year = self.dw.DEReportYear.text()
+        doc = MyDocTemplate(report_name, self.tr, self.plugin_dir, growing_year, cur_date)
+        operation_dict = self.collect_data()
+        print(operation_dict)
+        story = []
+        styles = getSampleStyleSheet()
+        styleH = styles['Heading1']
+        operation_found = False
+        for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
+            if operation_dict[operation]['simple']:
+                if operation == 'planting':
+                    story.append(Paragraph(self.tr('Planting data (simple input)'), styleH))
+                elif operation == 'fertilizing':
+                    story.append(Paragraph(self.tr('Fertilizing data (simple input)'), styleH))
+                elif operation == 'spraying':
+                    story.append(Paragraph(self.tr('Spraying data (simple input)'), styleH))
+                elif operation == 'harvesting':
+                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
+                elif operation == 'plowing':
+                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
+                elif operation == 'harrowing':
+                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
+                elif operation == 'soil':
+                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
 
-        can.drawString(30, 750, self.tr('Simple report from GeoDataFarm'))
-        can.drawString(30, 733, self.tr('For the growing season of ') + str(year))
-        can.drawString(500, 750, cur_date)
-        can.line(30, 723, 580, 723)
+                temp_d = [operation_dict[operation]['simple_heading']]
+                l_heading = len(temp_d[0]) - 1
+                temp_d.extend(operation_dict[operation]['simple_data'])
+                table = Table(temp_d, repeatRows=1, hAlign='LEFT')
+                table.setStyle(TableStyle([('FONTSIZE', (0, 0), (l_heading, 0), 16)]))
+                story.append(table)
+                operation_found = True
+            if operation_dict[operation]['advanced']:
+                if operation == 'planting':
+                    story.append(Paragraph(self.tr('Planting data (text input)'), styleH))
+                elif operation == 'fertilizing':
+                    story.append(Paragraph(self.tr('Fertilizing data (text input)'), styleH))
+                elif operation == 'spraying':
+                    story.append(Paragraph(self.tr('Spraying data (text input)'), styleH))
+                elif operation == 'harvesting':
+                    story.append(Paragraph(self.tr('Harvest data (text input)'), styleH))
+                elif operation == 'soil':
+                    story.append(Paragraph(self.tr('Harvest data (text input)'), styleH))
+                temp_d = [operation_dict[operation]['adv_heading']]
+                l_heading = len(temp_d[0]) - 1
+                temp_d.extend(operation_dict[operation]['advance_dat'])
+                table = Table(temp_d, repeatRows=1, hAlign='LEFT')
+                table.setStyle(TableStyle([('FONTSIZE', (0, 0), (l_heading, 0), 16)]))
+                story.append(table)
+                operation_found = True
+        if not operation_found:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('No data where found for that year'))
+            return
+        try:
+            doc.multiBuild(story)
+        except OSError:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('You must close the file in order to create it again'))
+            return
 
-        ## Body
-        sql = """select date_, field, crop, variety from plant.manual where table_ = 'None'"""
-        planting_data_simple = [[self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety')]]
-        planting_data_simple.extend(self.db.execute_and_return(sql))
-        sql = """select date_, field, crop, variety, table_ from plant.manual where table_ <> 'None'"""
+    def collect_data(self):
+        data_dict = {'planting': {'simple': False, 'advanced': False},
+                     'fertilizing': {'simple': False, 'advanced': False},
+                     'spraying': {'simple': False, 'advanced': False},
+                     'harvesting': {'simple': False, 'advanced': False},
+                     'plowing': {'simple': False, 'advanced': False},
+                     'harrowing': {'simple': False, 'advanced': False},
+                     'soil': {'simple': False, 'advanced': False}
+                     }
+        year = self.dw.DEReportYear.text()
+        # Planting
+        sql = """select date_, field, crop, variety from plant.manual 
+        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        simple_plant_data = self.db.execute_and_return(sql)
+        if len(simple_plant_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety')]
+            data_dict['planting']['simple'] = True
+            data_dict['planting']['simple_data'] = simple_plant_data
+            data_dict['planting']['simple_heading'] = simple_heading
+        sql = """select date_, field, crop, variety, table_ from plant.manual 
+        where table_ <> 'None'"""
         planting_data_advanced = self.db.execute_and_return(sql)
-        planting_space = 0
-        if len(planting_data_simple) > 0:
-            can.drawString(35, 703, self.tr('Planting data (simple input)'))
-            planting_space = len(planting_data_simple) * 10
-            table = Table(planting_data_simple, repeatRows=1)
-            w, h = table.wrap(width, height)
-            table.wrapOn(can, width, height)
-            table.drawOn(can, 35, 683 - h)
         if len(planting_data_advanced) > 0:
-            can.drawString(35, 683 - h - 18, self.tr('Planting data (text input)'))
-            planting_space2 = len(planting_data_advanced) * 10
-            adv_data = [[self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety')]]
+            adv_data = []
             for date_, field, crop, variety, table_ in planting_data_advanced:
                 if date_[:2] == 'c_':
                     _date_ = date_[2:]
                 else:
-                    sql = """ select array_agg(distinct({d})) from plant.{t}""".format(d=date_, t=table_)
+                    sql = """ select array_agg(distinct({d})) from plant.{t} where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
                     _date_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
                 if variety[:2] == 'c_':
                     _variety_ = variety[2:]
                 elif variety == '':
                     _variety_ = ''
                 else:
-                    sql = """ select array_agg(distinct({v})) from plant.{t}""".format(v=variety, t=table_)
+                    sql = """ select array_agg(distinct({v})) from plant.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
                     _variety_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
-                adv_data.extend([[_date_, field, crop, _variety_]])
-            table2 = Table(adv_data, repeatRows=1)
-            w1, h1 = table2.wrap(0, 0)
-            table2.wrapOn(can, width, height)
-            table2.drawOn(can, 35, 683 - h - 24 - h1)
-        try:
-            can.save()
-        except OSError:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('You must close the file in order to create it again'))
-            return
+                adv_data.append([_date_, field, crop, _variety_])
+            adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety')]
+            data_dict['planting']['advanced'] = True
+            data_dict['planting']['advance_dat'] = adv_data
+            data_dict['planting']['adv_heading'] = adv_heading
+        sql = """select date_, field, crop, variety, rate from ferti.manual 
+        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        # Fertilizing
+        simple_ferti_data = self.db.execute_and_return(sql)
+        if len(simple_ferti_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
+            data_dict['fertilizing']['simple'] = True
+            data_dict['fertilizing']['simple_data'] = simple_ferti_data
+            data_dict['fertilizing']['simple_heading'] = simple_heading
+        sql = """select date_, field, crop, variety, rate, table_ from ferti.manual 
+        where table_ <> 'None'"""
+        fertilizing_data_advanced = self.db.execute_and_return(sql)
+        if len(fertilizing_data_advanced) > 0:
+            adv_data = []
+            for date_, field, crop, variety, rate, table_ in fertilizing_data_advanced:
+                if date_[:2] == 'c_':
+                    _date_ = date_[2:]
+                else:
+                    sql = """ select array_agg(distinct(date_)) from ferti.{t} where extract(year from date_) = {y}""".format(t=table_, y=year)
+                    _date_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if variety[:2] == 'c_':
+                    _variety_ = variety[2:]
+                elif variety == '':
+                    _variety_ = ''
+                else:
+                    sql = """ select array_agg(distinct({v})) from ferti.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
+                    _variety_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if rate[:2] == 'c_':
+                    _rate_ = rate[2:]
+                elif rate == '':
+                    _rate_ = ''
+                else:
+                    sql = """ select array_agg(distinct({r})) from ferti.{t} where extract(year from date_) = {y}""".format(r=rate, t=table_, y=year)
+                    _rate_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                adv_data.append([_date_, field, crop, _variety_, _rate_])
+            adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
+            data_dict['fertilizing']['advanced'] = True
+            data_dict['fertilizing']['advance_dat'] = adv_data
+            data_dict['fertilizing']['adv_heading'] = adv_heading
+        # Spraying
+        sql = """select date_, field, crop, variety, rate from spray.manual 
+        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        simple_data = self.db.execute_and_return(sql)
+        if len(simple_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
+            data_dict['spraying']['simple'] = True
+            data_dict['spraying']['simple_data'] = simple_data
+            data_dict['spraying']['simple_heading'] = simple_heading
+        sql = """select date_, field, crop, variety, rate, table_ from spray.manual 
+        where table_ <> 'None'"""
+        spraying_data_advanced = self.db.execute_and_return(sql)
+        if len(spraying_data_advanced) > 0:
+            adv_data = []
+            for date_, field, crop, variety, rate, table_ in spraying_data_advanced:
+                if date_[:2] == 'c_':
+                    _date_ = date_[2:]
+                else:
+                    sql = """ select array_agg(distinct({d})) from spray.{t} where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
+                    _date_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if variety[:2] == 'c_':
+                    _variety_ = variety[2:]
+                elif variety == '':
+                    _variety_ = ''
+                else:
+                    sql = """ select array_agg(distinct({v})) from spray.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
+                    _variety_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if rate[:2] == 'c_':
+                    _rate_ = rate[2:]
+                elif rate == '':
+                    _rate_ = ''
+                else:
+                    sql = """ select array_agg(distinct({r})) from spray.{t} where extract(year from date_) = {y}""".format(r=rate, t=table_, y=year)
+                    _rate_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                adv_data.append([_date_, field, crop, _variety_, _rate_])
+            adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
+            data_dict['spraying']['advanced'] = True
+            data_dict['spraying']['advance_dat'] = adv_data
+            data_dict['spraying']['adv_heading'] = adv_heading
+        #Harvest
+        sql = """select date_, field, crop, total_yield, yield from harvest.manual 
+        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        simple_data = self.db.execute_and_return(sql)
+        if len(simple_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Total yield'), self.tr('Yield (kg/ha)')]
+            data_dict['harvesting']['simple'] = True
+            data_dict['harvesting']['simple_data'] = simple_data
+            data_dict['harvesting']['simple_heading'] = simple_heading
+        sql = """select date_, field, crop, yield, total_yield, table_ from harvest.manual 
+        where table_ <> 'None'"""
+        data_advanced = self.db.execute_and_return(sql)
+        if len(data_advanced) > 0:
+            adv_data = []
+            for date_, field, crop, yield_, total_yield, table_ in data_advanced:
+                if date_[:2] == 'c_':
+                    _date_ = date_[2:]
+                else:
+                    sql = """ select array_agg(distinct({d})) from harvest.{t} where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
+                    _date_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if yield_[:2] == 'c_':
+                    _yield_ = yield_[2:]
+                elif yield_ == '':
+                    _yield_ = ''
+                else:
+                    sql = """ select avg({v}) from harvest.{t} where extract(year from date_) = {y}""".format(v=yield_, t=table_, y=year)
+                    _yield_ = str(self.db.execute_and_return(sql)[0][0])
+                if total_yield[:2] == 'c_':
+                    _total_yield_ = total_yield[2:]
+                elif total_yield == '':
+                    _total_yield_ = ''
+                else:
+                    sql = """ select avg({v}) from harvest.{t} where extract(year from date_) = {y}""".format(v=total_yield, t=table_, y=year)
+                    _total_yield_ = str(self.db.execute_and_return(sql)[0][0])
+                adv_data.append([_date_, field, crop, _yield_, _total_yield_])
+            adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Yield (kg/ha)'), self.tr('Total Yield')]
+            data_dict['harvesting']['advanced'] = True
+            data_dict['harvesting']['advance_dat'] = adv_data
+            data_dict['harvesting']['adv_heading'] = adv_heading
+        # Plowing
+        sql = """select date_, field, depth from other.plowing_manual 
+        where extract(year from date_) = {y}""".format(y=year)
+        simple_data = self.db.execute_and_return(sql)
+        if len(simple_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Depth')]
+            data_dict['plowing']['simple'] = True
+            data_dict['plowing']['simple_data'] = simple_data
+            data_dict['plowing']['simple_heading'] = simple_heading
+        # Harrowing
+        sql = """select date_, field, depth from other.harrowing_manual 
+        where extract(year from date_) = {y}""".format(y=year)
+        simple_data = self.db.execute_and_return(sql)
+        if len(simple_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Depth')]
+            data_dict['harrowing']['simple'] = True
+            data_dict['harrowing']['simple_data'] = simple_data
+            data_dict['harrowing']['simple_heading'] = simple_heading
+        #Soil
+        sql = """select date_, field, clay, humus, ph, rx from soil.manual 
+        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        simple_data = self.db.execute_and_return(sql)
+        if len(simple_data) > 0:
+            simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
+            data_dict['soil']['simple'] = True
+            data_dict['soil']['simple_data'] = simple_data
+            data_dict['soil']['simple_heading'] = simple_heading
+        sql = """select date_, field, clay, humus, ph, rx table_ from soil.manual 
+        where table_ <> 'None'"""
+        data_advanced = self.db.execute_and_return(sql)
+        if len(data_advanced) > 0:
+            adv_data = []
+            for date_, field, clay, humus, ph, rx, table_ in data_advanced:
+                if date_[:2] == 'c_':
+                    _date_ = date_[2:]
+                else:
+                    sql = """ select array_agg(distinct({d})) from spray.{t} where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
+                    _date_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
+                if clay[:2] == 'c_':
+                    _clay_ = clay[2:]
+                elif clay == '':
+                    _clay_ = ''
+                else:
+                    sql = """ select avg({v}) from soil.{t} where extract(year from date_) = {y}""".format(v=clay, t=table_, y=year)
+                    _clay_ = str(self.db.execute_and_return(sql)[0][0])
+                if humus[:2] == 'c_':
+                    _humus_ = humus[2:]
+                elif humus == '':
+                    _humus_ = ''
+                else:
+                    sql = """ select avg({r}) from soil.{t} where extract(year from date_) = {y}""".format(r=humus, t=table_, y=year)
+                    _humus_ = str(self.db.execute_and_return(sql)[0][0])
+                if ph[:2] == 'c_':
+                    _ph_ = ph[2:]
+                elif ph == '':
+                    _ph_ = ''
+                else:
+                    sql = """ select avg({r}) from soil.{t} where extract(year from date_) = {y}""".format(r=ph, t=table_, y=year)
+                    _ph_ = str(self.db.execute_and_return(sql)[0][0])
+                if rx[:2] == 'c_':
+                    _rx_ = rx[2:]
+                elif rx == '':
+                    _rx_ = ''
+                else:
+                    sql = """ select avg({r}) from soil.{t} where extract(year from date_) = {y}""".format(r=rx, t=table_, y=year)
+                    _rx_ = str(self.db.execute_and_return(sql)[0][0])
+                adv_data.append([_date_, field, _clay_, _humus_, _ph_, _rx_])
+            adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Clay'), self.tr('Humus'), self.tr('pH'), self.tr('rx')]
+            data_dict['soil']['advanced'] = True
+            data_dict['soil']['advance_dat'] = adv_data
+            data_dict['soil']['adv_heading'] = adv_heading
+        return data_dict
