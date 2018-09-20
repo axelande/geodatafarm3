@@ -131,6 +131,7 @@ class GeoDataFarm:
         self.IH = None
         self.df = None
         self.db = None
+        self.add_field = None
         self.save_planting = None
         self.save_fertilizing = None
         self.save_spraying = None
@@ -158,8 +159,8 @@ class GeoDataFarm:
         return QCoreApplication.translate('GeoDataFarm', message)
 
     def add_action(self, icon_path, text, callback, enabled_flag=True,
-        add_to_menu=True, add_to_toolbar=True, status_tip=None,
-        whats_this=None, parent=None):
+                   add_to_menu=True, add_to_toolbar=True, status_tip=None,
+                   whats_this=None, parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -222,7 +223,6 @@ class GeoDataFarm:
 
         return action
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         icon_path = ':/plugins/GeoDataFarm/img/icon.png'
@@ -231,8 +231,6 @@ class GeoDataFarm:
             text=self.tr(u'GeoDataFarm'),
             callback=self.run,
             parent=self.iface.mainWindow())
-
-    #--------------------------------------------------------------------------
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dock_widget is closed"""
@@ -251,13 +249,13 @@ class GeoDataFarm:
         # remove the toolbar
         del self.toolbar
 
-    #--------------------------------------------------------------------------
+    # Functions create specific for GeoDataFarm-----------------------------
     def add_selected_tables(self):
         """Adds a layer for each "parameter" of all selected tables
         """
         self.items_in_table = self.populate.get_items_in_table()
         tables = []
-        for list_widget, schema in self.items_in_table:
+        for list_widget, schema, lw in self.items_in_table:
             for item in list_widget:
                 if item.checkState() == 2:
                     tables.append(str(item.text()))
@@ -269,9 +267,8 @@ class GeoDataFarm:
                     continue
                 if parameters[nr]['schema'] == 'harvest':
                     layer = self.db.addPostGISLayer(tbl_name.lower(),
-                                                    'pos', 'harvest',
-                                                    'harvest')
-                    #layer = self.db.addPostGISLayer(tbl_name.lower(), 'pos', parameters[nr]['schema'], 'harvest')
+                                                    geom_col='pos', schema='harvest',
+                                                    extra_name='harvest')
                 else:
                     layer = self.db.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
                 create_layer = CreateLayer(self.db)
@@ -303,15 +300,13 @@ class GeoDataFarm:
         harvest_file = False
         input_file = False
         self.items_in_table = self.populate.get_items_in_table()
-        lw_list = [[self.dock_widget.LWActivityTable, 'activity'],
-                   [self.dock_widget.LWHarvestTable, 'harvest'],
-                   [self.dock_widget.LWSoilTable, 'soil']]
-        for i, (lw, schema) in enumerate(lw_list):
+        self.lw_list = self.populate.get_lw_list()
+        for i, (lw, schema) in enumerate(self.lw_list):
             for item in self.items_in_table[i][0]:
                 if item.checkState() == 2:
                     if schema == 'harvest':
                         harvest_file = True
-                    if schema == 'activity' or schema == 'soil':
+                    if schema == 'activity' or schema == 'soil' or schema == 'spray' or schema == 'ferti':
                         input_file = True
                     names.append([schema, item.text()])
         if harvest_file and input_file:
@@ -320,7 +315,8 @@ class GeoDataFarm:
             analyse.default_layout()
             analyse.run()
         else:
-            QMessageBox.information(None, "Error:", self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
+            QMessageBox.information(None, self.tr("Error:"),
+                                    self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
 
     def clicked_input(self):
         """Connects the docked widget with the correct InputHandler script and 
@@ -422,7 +418,7 @@ class GeoDataFarm:
         guide.run()
 
     def get_database_connection(self):
-        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
         connected = self.db.get_conn()
         if not connected:
             QMessageBox.information(None, "Error:", self.tr('No farm is created, please create a farm to continue'))

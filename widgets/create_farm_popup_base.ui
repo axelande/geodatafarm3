@@ -38,15 +38,14 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>20</x>
      <y>190</y>
-     <width>91</width>
+     <width>211</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Create a new 
-database</string>
+    <string>Create a new database</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="farm_name">

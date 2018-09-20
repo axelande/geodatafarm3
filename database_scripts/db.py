@@ -41,7 +41,7 @@ class DB:
         self.dbname = farmname
         self.dbuser = username
         self.dbpass = password
-        self.dock_widget.LFarmName.setText(farmname + ' is\nset as your farm')
+        self.dock_widget.LFarmName.setText(farmname + self.tr(' is set as your farm'))
         return True
 
     def _connect(self):
@@ -58,10 +58,11 @@ class DB:
                     password=self.dbpass
                     )
                 self.conn.set_isolation_level(0)
+                return True
             except psycopg2.OperationalError as e:
-                raise DBException(
-                    "Error connecting to database on {host}. {e}".format(
-                        host=self.dbhost, e=str(e)))
+                QMessageBox.information(None, self.tr('Error'), self.tr("Error connecting to database on {host}. {e}".format(
+                        host=self.dbhost, e=str(e))))
+                return False
 
     def _close(self):
         """
@@ -227,7 +228,7 @@ ORDER BY table_name""".format(schema=schema)
         self._close()
         checked_values = []
         for col, count in all_distinct:
-            if col != " ":
+            if col != " " or col is None:
                 checked_values.append([col, count])
 
         return checked_values
@@ -315,7 +316,6 @@ ORDER BY table_name""".format(schema=schema)
         :return: the data requested in the statement
         """
         self._connect()
-
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(sql)
         self.conn.commit()

@@ -59,14 +59,14 @@ class CreateGuideFile:
             QMessageBox.information(None, "Error:", self.tr(
                 'No farm is created, please create a farm to continue'))
             return
-        lw_list = ['plant', 'other' 'harvest', 'soil']
+        lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil']
         self.CGF.CBDataSource.clear()
         names = []
         for schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
                 if name[0] in ["spatial_ref_sys", "pointcloud_formats",
-                               "temp_polygon"]:
+                               "temp_polygon", 'manual']:
                     continue
                 names.append(schema + '.' + str(name[0]))
         self.CGF.CBDataSource.addItems(names)
@@ -175,10 +175,10 @@ class CreateGuideFile:
           ST_Dump(
             MAKEGRID_2D(
               ST_SetSRID(st_buffer(ST_Extent(pos),
-                                   GREATEST(((select max(st_x(pos)) from schema.table) - 
-                                        (select min(st_x(pos)) from schema.table)),
-                                       ((select max(st_y(pos)) from schema.table) - 
-                                        (select min(st_y(pos)) from schema.table)))/4
+                                   GREATEST(((select max(st_x(pos)) from {tbl}) - 
+                                        (select min(st_x(pos)) from {tbl})),
+                                       ((select max(st_y(pos)) from {tbl}) - 
+                                        (select min(st_y(pos)) from {tbl})))/4
                                   ),4326),{c_size},{c_size}))
              ).geom  from {tbl}
       ) m
@@ -189,12 +189,12 @@ class CreateGuideFile:
     ), 
     --Rotates around the defined centroid
     rotated as(SELECT ST_Rotate(grid.geom,radians({rot}),(SELECT geometry FROM centroid)) as polys 
-               FROM grid1
+               FROM grid
               ),
     --Selectes the polygons that are intersecting the orignal data
     select_data as (select polys
                    from rotated
-                   where st_intersects(ST_SetSRID((select ST_Extent(pos) from schema.table), 4326),
+                   where st_intersects(ST_SetSRID((select ST_Extent(pos) from {tbl}), 4326),
                                        polys))
     --Do the final selections and joining in some average data
     select st_astext(ST_Transform(polys, {EPSG})), {eq} 

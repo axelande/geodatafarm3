@@ -64,7 +64,7 @@ class AddField:
                 for row in field_names:
                     if row[0] == field_name:
                         QMessageBox.information(None, self.tr('Error'),
-                                                self.tr('There are planting data that are dependent on this field, '
+                                                self.tr('There are data sets that are dependent on this field, '
                                                         'it cant be removed.'))
                         stop_removing = True
                 if stop_removing:
@@ -152,7 +152,6 @@ class AddField:
             '3. To mark your field, left click with the mouse in one corner of the field.\n'
             'then left click in all corners of the field then right click anywhere on the map.\n'
             '(There might be some errors while clicking the corners if the lines are crossing each other but in the end this does not matter if they does not do it in the end)\n'
-            '4. If a field is temporary or only valid since/until you can specify which years the field is valid to.\n'
-            '5. Press "Save field" to store the field.\n'
-            '6. When all fields are added press "Finished"'))
+            '4. Press "Save field" to store the field.\n'
+            '5. When all fields are added press "Finished"'))
         return

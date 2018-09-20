@@ -9,10 +9,18 @@ class Populate:
         self.plugin_dir = parent.plugin_dir
         self.dw = parent.dock_widget
         self.db = parent.db
-        self.items_in_table = [[None, ''], [None, ''], [None, ''], [None, ''], [None, ''], [None, ''], [None, '']]
+        self.items_in_table = [[None, '', None], [None, '', None], [None, '', None], [None, '', None],
+                               [None, '', None], [None, '', None], [None, '', None]]
         self.tables_in_db = [0, 0, 0, 0, 0, 0, 0]
         self.fields = ['--- Select field ---']
         self.crops = ['--- Select crop ---']
+        self.lw_list = [[self.dw.LWPlantingTable, 'plant'],
+                   [self.dw.LWHarvestTable, 'harvest'],
+                   [self.dw.LWSprayingTable, 'spray'],
+                   [self.dw.LWFertiTable, 'ferti'],
+                   [self.dw.LWSoilTable, 'soil'],
+                   [self.dw.LWOtherTable, 'other'],
+                   [self.dw.LWWeatherTable, 'weather']]
         self.reload_all()
         self.update_table_list()
 
@@ -21,6 +29,9 @@ class Populate:
 
     def get_items_in_table(self):
         return self.items_in_table
+
+    def get_lw_list(self):
+        return self.lw_list
 
     def reload_all(self):
         self.reload_fields()
@@ -81,7 +92,7 @@ class Populate:
                    [self.dw.LWFertiTable, 'ferti'],
                    [self.dw.LWOtherTable, 'other'],
                    [self.dw.LWWeatherTable, 'weather']]
-        for i, (lw, schema) in enumerate(lw_list):
+        for i, (lw, schema) in enumerate(self.lw_list):
             table_names = self.db.get_tables_in_db(schema)
             if self.tables_in_db[i] != 0:
                 model = lw.model()
@@ -91,7 +102,7 @@ class Populate:
             self.tables_in_db[i] = 0
             for name in table_names:
                 if name[0] in ["spatial_ref_sys", "pointcloud_formats",
-                               "temp_polygon"]:
+                               "temp_polygon", "manual", "plowing_manual", "harrowing_manual"]:
                     continue
                 item_name = str(name[0])
                 _name = QApplication.translate("qadashboard", item_name, None)
@@ -101,6 +112,7 @@ class Populate:
                 self.tables_in_db[i] += 1
             self.items_in_table[i][0] = lw.findItems('', QtCore.Qt.MatchContains)
             self.items_in_table[i][1] = schema
+            self.items_in_table[i][2] = lw
         lw = self.dw.LWCrops
         lw.clear()
         #model = lw.model()

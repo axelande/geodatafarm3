@@ -1,4 +1,4 @@
-date (yymmdd);time (hh:mm:ss);parcel name;comment;latitude (wgs84);longitude (wgs84);altitude (m);course;speed (km/h);fix;row;#;on/off;set planting distance (mm);actual planting distance(mm);set granules %;set Ferti-Flow %;Worker;Potato variety; Potato square measurement; Cut potatoes; Granules application; Ferti-Flow application
+date (YYYY-mm-dd);time (hh:mm:ss);parcel name;comment;latitude (wgs84);longitude (wgs84);altitude (m);course;speed (km/h);fix;row;#;on/off;set planting distance (mm);actual planting distance(mm);set granules %;set Ferti-Flow %;Worker;Potato variety; Potato square measurement; Cut potatoes; Granules application; Ferti-Flow application
 2018-05-15;11:34:37;Horte norr;;55.39571705;13.55259726;17.63;95.10;0.04;4;1;0;1;310;nan;0;120;;Inova;35-55;0;;NPK 11 5 18
 2018-05-15;11:34:37;Horte norr;;55.39570989;13.55259613;17.63;95.10;0.04;4;2;0;1;310;nan;0;120;;Inova;35-55;0;;NPK 11 5 18
 2018-05-15;11:34:37;Horte norr;;55.39570272;13.55259501;17.63;95.10;0.04;4;3;0;1;310;nan;0;120;;Inova;35-55;0;;NPK 11 5 18

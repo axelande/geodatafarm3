@@ -82,15 +82,15 @@ class InputTextHandler(object):
 
     def show_abbreviations(self):
         QMessageBox.information(None, self.tr('Information'),
-                                '%Y = Year (2010)'
-                                '%y = Year (98)'
-                                '%m = Month'
-                                '%d = Day'
-                                '%H = Hour (24h)'
-                                '%M = Minute'
-                                '%S = Second'
-                                'If you are missing any formats please contact geodatafarm@gmail.com'
-                                )
+                                self.tr('%Y = Year (2010)'
+                                        '%y = Year (98)'
+                                        '%m = Month'
+                                        '%d = Day'
+                                        '%H = Hour (24h)'
+                                        '%M = Minute'
+                                        '%S = Second'
+                                        'If you are missing any formats please contact geodatafarm@gmail.com'
+                                        ))
 
     def add_to_param_list(self):
         """Adds the selected columns to the list of fields that should be
@@ -359,8 +359,7 @@ class InputTextHandler(object):
     def insert_manual_data(self, date_):
         field = self.ITD.CBField.currentText()
         table = self.file_name
-        if date_ != 'Null':
-            date_ = "'{d}'".format(d=date_)
+        date_ = "'{d}'".format(d=date_)
         if self.data_type == 'soil':
             if self.manual_values[0]['checkbox'].isChecked():
                 clay = 'None'
@@ -537,8 +536,13 @@ class InputTextHandler(object):
         for param_layer in self.focus_cols:
             param_layer = check_text(param_layer)
             target_field = param_layer
-            layer = self.db.addPostGISLayer(tbl, 'polygon', '{schema}'.format(schema=schema),
-                                            check_text(param_layer.lower()))
+            if self.data_type == 'harvest':
+                layer = self.db.addPostGISLayer(tbl, 'pos', '{schema}'.format(schema=schema),
+                                                check_text(param_layer.lower()))
+            else:
+                layer = self.db.addPostGISLayer(tbl, 'polygon', '{schema}'.format(schema=schema),
+                                                check_text(param_layer.lower()))
+
             create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
 
         self.ITD.PBAddInputFile.clicked.disconnect()
@@ -581,7 +585,9 @@ def insert_data_to_database(task, db, params):
         for i, col_name in enumerate(heading_row):
             if not lat_lon_inserted and (
                     col_name == longitude_col or col_name == latitude_col):
-                sql += "pos geometry(POINT, 4326), polygon geometry(POLYGON, 4326), "
+                sql += "pos geometry(POINT, 4326),"
+                if schema != 'harvest':
+                    sql += " polygon geometry(POLYGON, 4326), "
                 inserting_text += 'pos, '
                 lat_lon_inserted = True
             if lat_lon_inserted and (
@@ -707,20 +713,22 @@ def insert_data_to_database(task, db, params):
         db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
         if task != 'debug':
             task.setProgress(70)
-        sql = """drop table if exists {schema}.temp_tbl2;
-    WITH voronoi_temp2 AS (
-    SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
-    FROM {schema}.{tbl})
-    SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
-    FROM voronoi_temp2;
-    create index temp_index on {schema}.temp_tbl2 Using gist(geom);
-    update {schema}.{tbl}
-    SET polygon = ST_Intersection(geom, (select polygon 
-        from fields where field_name = '{field}'))
-    FROM {schema}.temp_tbl2
-    WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
-        db.execute_sql(sql)
-        db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
+        ## TODO: Remove if data_type = harvest?
+        if schema != 'harvest':
+            sql = """drop table if exists {schema}.temp_tbl2;
+        WITH voronoi_temp2 AS (
+        SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
+        FROM {schema}.{tbl})
+        SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
+        FROM voronoi_temp2;
+        create index temp_index on {schema}.temp_tbl2 Using gist(geom);
+        update {schema}.{tbl}
+        SET polygon = ST_Intersection(geom, (select polygon 
+            from fields where field_name = '{field}'))
+        FROM {schema}.temp_tbl2
+        WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
+            db.execute_sql(sql)
+            db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
 
         if task != 'debug':
             task.setProgress(90)
