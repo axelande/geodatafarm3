@@ -197,7 +197,7 @@ class CreateFarm:
         for year in range(first_year, 2051):
             sql += """_{y} text,
             """.format(y=year)
-        sql += """CONSTRAINT p_key_field PRIMARY KEY (row_id),
+        sql += """CONSTRAINT p_key_field PRIMARY KEY (field_row_id),
             CONSTRAINT field_name UNIQUE (field_name))"""
         self.db.execute_sql(sql)
         sql = """CREATE table crops(row_id serial,
@@ -208,6 +208,7 @@ class CreateFarm:
         sql = """CREATE table plant.manual(field text, 
             crop text, 
             date_ date, 
+            date_text text,
             variety text, 
             spacing text, 
             seed_rate text, 
@@ -218,6 +219,7 @@ class CreateFarm:
         sql = """create table ferti.manual(field text, 
             crop text, 
             date_ date, 
+            date_text text,
             variety text, 
             rate text, 
             saw_depth text, 
@@ -227,15 +229,18 @@ class CreateFarm:
         sql = """create table spray.manual(field text, 
                     crop text, 
                     date_ date, 
+                    date_text text,
                     variety text, 
                     rate text, 
                     wind_speed text,
                     wind_dir text, 
                     other text, 
                     table_ text)"""
+        self.db.execute_sql(sql)
         sql = """create table harvest.manual(field text, 
                     crop text, 
-                    date_ date, 
+                    date_ date,
+                    date_text text, 
                     total_yield text, 
                     yield text, 
                     other text, 
@@ -252,7 +257,8 @@ class CreateFarm:
                             other text)"""
         self.db.execute_sql(sql)
         sql = """create table soil.manual(field text, 
-                            date_ date, 
+                            date_ date,
+                            date_text text, 
                             clay text,
                             humus text, 
                             ph text,

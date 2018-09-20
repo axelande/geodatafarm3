@@ -386,14 +386,15 @@ class InputTextHandler(object):
                 rx = '{t}'.format(t=check_text(self.manual_values[3]['Combo'].currentText()))
             else:
                 rx = 'c_{t}'.format(t=self.manual_values[3]['line_edit'].text())
-            sql = """insert into soil.manual(date_, field, clay, humus, ph, rx table_) 
-                VALUES ('{d}', '{f}', '{clay}', '{humus}', '{ph}', '{rx}')""".format(f=field, d=date_, clay=clay,
-                                                                                     humus=humus, ph=ph, rx=rx)
+            sql = """insert into soil.manual(date_text, field, clay, humus, ph, rx, table_) 
+                VALUES ({d}, '{f}', '{clay}', '{humus}', '{ph}', '{rx}', '{tbl}')""".format(f=field, d=date_,
+                                                                                               clay=clay, humus=humus,
+                                                                                               ph=ph, rx=rx, tbl=table)
             self.db.execute_sql(sql)
             return True
         crop = self.ITD.CBCrop.currentText()
         if self.data_type == 'plant':
-            sql = """insert into plant.manual(field, crop, date_, table_, variety) VALUES ('{f}', '{c}', {d}, '{t}', 
+            sql = """insert into plant.manual(field, crop, date_text, table_, variety) VALUES ('{f}', '{c}', {d}, '{t}', 
                 """.format(f=field, c=crop, d=date_, t=table)
             if self.manual_values[0]['checkbox'].isChecked():
                 sql += "'None')"
@@ -414,7 +415,7 @@ class InputTextHandler(object):
                 rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
             else:
                 rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into ferti.manual(field, crop, table_, date_,variety, rate) 
+            sql = """insert into ferti.manual(field, crop, table_, date_text,variety, rate) 
             VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
                                                                       v=variety, r=rate, d=date_)
         elif self.data_type == 'spray':
@@ -430,7 +431,7 @@ class InputTextHandler(object):
                 rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
             else:
                 rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into spray.manual(field, crop, table_, date_, variety, rate) 
+            sql = """insert into spray.manual(field, crop, table_, date_text, variety, rate) 
             VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
                                                                       v=variety, r=rate, d=date_)
         elif self.data_type == 'harvest':
@@ -446,7 +447,7 @@ class InputTextHandler(object):
                 total_yield = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
             else:
                 total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into harvest.manual(field, crop, table_, date_, yield, total_yield) 
+            sql = """insert into harvest.manual(field, crop, table_, date_text, yield, total_yield) 
             VALUES ('{f}', '{c}', '{t}', {d}, '{y}', '{t_y}')""".format(f=field, c=crop, t=table, d=date_,
                                                                         y=yield_, t_y=total_yield)
         else:
@@ -503,7 +504,7 @@ class InputTextHandler(object):
             params['date_row'] = check_text(self.ITD.ComBDate.currentText())
             params['date_format'] = self.ITD.ComBDate_2.currentText()
             params['all_same_date'] = ''
-            self.insert_manual_data('Null')
+            self.insert_manual_data('date_')
         else:
             params['all_same_date'] = self.ITD.DE.text()
             self.insert_manual_data('c_' + self.ITD.DE.text())
