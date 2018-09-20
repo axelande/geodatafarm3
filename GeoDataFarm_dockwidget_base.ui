@@ -360,7 +360,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the input and load it to the canvas</string>
+         <string>Open the text file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBPFileType">
@@ -668,7 +668,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the input and load it to the canvas</string>
+         <string>Open the text file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBFCrop">
@@ -941,7 +941,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the input and load it to the canvas</string>
+         <string>Open the text file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBSpCrop">
@@ -1556,7 +1556,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the input and load it to the canvas</string>
+         <string>Open the text file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBHvCrop">
@@ -2785,7 +2785,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the input and load it to the canvas</string>
+         <string>Open the text file and save it</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBSoSaveManual">
@@ -3516,6 +3516,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        </property>
       </widget>
       <widget class="QRadioButton" name="radioButton_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -3529,6 +3532,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_7">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -3542,6 +3548,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        </property>
       </widget>
       <widget class="QDateEdit" name="DEYear">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -3805,6 +3814,9 @@ of colors:</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="RBReportWithDetails">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -3883,6 +3895,9 @@ of colors:</string>
       </property>
      </widget>
      <widget class="QPushButton" name="PBReportPerField">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>70</x>
@@ -3896,6 +3911,9 @@ of colors:</string>
       </property>
      </widget>
      <widget class="QPushButton" name="PBReportPerCrop">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>70</x>
@@ -3947,7 +3965,7 @@ of colors:</string>
        <rect>
         <x>20</x>
         <y>30</y>
-        <width>151</width>
+        <width>231</width>
         <height>16</height>
        </rect>
       </property>
@@ -3960,7 +3978,7 @@ of colors:</string>
        <rect>
         <x>270</x>
         <y>20</y>
-        <width>161</width>
+        <width>191</width>
         <height>28</height>
        </rect>
       </property>
@@ -3973,7 +3991,7 @@ of colors:</string>
        <rect>
         <x>300</x>
         <y>420</y>
-        <width>121</width>
+        <width>151</width>
         <height>28</height>
        </rect>
       </property>
@@ -3986,7 +4004,7 @@ of colors:</string>
        <rect>
         <x>300</x>
         <y>390</y>
-        <width>121</width>
+        <width>151</width>
         <height>28</height>
        </rect>
       </property>
@@ -4009,7 +4027,7 @@ of colors:</string>
        <rect>
         <x>430</x>
         <y>510</y>
-        <width>161</width>
+        <width>191</width>
         <height>28</height>
        </rect>
       </property>
