@@ -73,6 +73,7 @@ class CreateFarm:
         password = check_text(password_inp).encode('utf-8')
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
+        insertion_ok = False
         r = requests.post('http://geodatafarm.com:5000/create', data={'username':username,'password':password, 'farmname':farmname, 'email':email_inp})
         if r == None:
             QMessageBox.information(None, self.tr("Error:"), self.tr('- Is your computer online? \n- If you are sure that your computer please send an email to geo_farm@gmail.com'))
@@ -85,15 +86,18 @@ class CreateFarm:
             QMessageBox.information(None, self.tr("Error:"), self.tr('User name allready taken, please choose another name as user name!'))
             return
         else:
-            QMessageBox.information(None, self.tr("Done"), self.tr('Database created'))
+            insertion_ok = True
         with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
+        self._connect_to_db()
+        self.parent_widget.db = self.db
         self.create_spec_functions()
         self.add_schemas()
         self.add_tables(first_year)
-        self.dock_widget.populate = Populate(self)
-        self.dock_widget.PBUpdateLists.clicked.connect(self.dock_widget.populate.update_table_list)
+        self.parent_widget.set_buttons()
+        if insertion_ok:
+            QMessageBox.information(None, self.tr("Done"), self.tr('Database created'))
         self.CF.done(0)
 
     def connect_to_source(self):
@@ -109,11 +113,14 @@ class CreateFarm:
         with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
+        self._connect_to_db()
+        self.parent_widget.db = self.db
+        self.parent_widget.set_buttons()
         self.CF.done(0)
 
     def _connect_to_db(self):
         """Simple function to connect to the new database"""
-        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
         connected = self.db.get_conn()
 
     def create_spec_functions(self):

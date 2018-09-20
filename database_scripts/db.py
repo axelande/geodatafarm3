@@ -3,7 +3,7 @@ import psycopg2.extras
 import time
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Hörteborn'
 
 
 class DBException(Exception):
@@ -11,7 +11,7 @@ class DBException(Exception):
 
 
 class DB:
-    def __init__(self, dock_widget, path=None):
+    def __init__(self, dock_widget, path=None, tr=None):
         """The widget that is connects to the database
         :param dock_widget: The docked widget
         :return:
@@ -24,6 +24,7 @@ class DB:
         self.dbname = None
         self.dbuser = None
         self.dbpass = None
+        self.tr = tr
 
     def get_conn(self):
         """

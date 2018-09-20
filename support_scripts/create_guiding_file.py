@@ -53,7 +53,7 @@ class CreateGuideFile:
         self.CGF.PBCreateFile.setEnabled(True)
 
     def update_names(self):
-        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
         connected = self.db.get_conn()
         if not connected:
             QMessageBox.information(None, "Error:", self.tr(
