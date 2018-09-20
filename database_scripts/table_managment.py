@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 from ..widgets.table_managment_dialog import TableMgmtDialog
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Hörteborn'
 
 
 class TableManagement:
@@ -12,6 +12,7 @@ class TableManagement:
         self.add_to_Param_row_count = 0
         self.db = parent.db
         self.dock_widget = parent.dock_widget
+        self.parent = parent
         self.tr = parent.tr
         # Create the dialog (after translation) and keep reference
         self.TMD = TableMgmtDialog()
@@ -34,7 +35,19 @@ class TableManagement:
     def merge_tbls(self):
         tables_to_merge = []
         new_name = self.TMD.LEName.text()
-        new_schema = self.TMD.CBDataType.currentText()
+        new_type = self.TMD.CBDataType.currentText()
+        if new_type == self.tr('plant'):
+            new_schema = 'plant'
+        if new_type == self.tr('fertilize'):
+            new_schema = 'ferti'
+        if new_type == self.tr('spray'):
+            new_schema = 'spray'
+        if new_type == self.tr('other'):
+            new_schema = 'other'
+        if new_type == self.tr('harvest'):
+            new_schema = 'harvest'
+        if new_type == self.tr('soil'):
+            new_schema = 'soil'
         if new_name == '':
             QMessageBox.information(None, self.tr("Error:"), self.tr('You need to fill in a new name'))
             return
@@ -164,9 +177,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
 
     def update_table_list(self):
         """Update the list of tables in the docket widget"""
-        lw_list = [[self.dock_widget.LWActivityTable, 'activity'],
-                   [self.dock_widget.LWHarvestTable, 'harvest'],
-                   [self.dock_widget.LWSoilTable, 'soil']]
+        lw_list = self.parent.populate.get_lw_list()
         if self.tables_in_db != 0:
             model = self.TMD.SATables.model()
             for item in self.items_in_table:
@@ -176,7 +187,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         for lw, schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
-                if name[0] in ["spatial_ref_sys", "pointcloud_formats", "temp_polygon"]:
+                if str(name[0]) in ['harrowing_manual', 'plowing_manual', 'manual']:
                     continue
                 item_name = schema + '.' + str(name[0])
                 testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)

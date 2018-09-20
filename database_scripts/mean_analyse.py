@@ -28,7 +28,9 @@ class Analyze:
         self.db = parent_widget.db
         self.tsk_mngr = parent_widget.tsk_mngr
         self.harvest_tables = {}
-        self.activity_tables = {}
+        self.plant_tables = {}
+        self.spray_tables = {}
+        self.ferti_tables = {}
         self.soil_tables = {}
         self.tables = tables_to_analyse
         self.cb = []
@@ -78,20 +80,20 @@ class Analyze:
         self.overlapping_tables = {}
         overlapping = -1
         for ha in self.harvest_tables.keys():
-            ha_year = self.db.execute_and_return("""select year from harvest.{tbl} 
+            ha_year = self.db.execute_and_return("""select extract(year from date_) from harvest.{tbl} 
                         limit 1""".format(
                 tbl=self.harvest_tables[ha][0]['tbl_name']))[0][0]
-            if len(self.activity_tables) > 0:
-                for ac in self.activity_tables.keys():
-                    ac_year = self.db.execute_and_return("""select year from activity.{tbl} 
+            if len(self.plant_tables) > 0:
+                for ac in self.plant_tables.keys():
+                    ac_year = self.db.execute_and_return("""select extract(year from date_) from plant.{tbl} 
                                 limit 1""".format(
-                        tbl=self.activity_tables[ac][0]['tbl_name']))[0][0]
+                        tbl=self.plant_tables[ac][0]['tbl_name']))[0][0]
                     if ac_year == ha_year:
                         sql = """select st_intersects(a.geom, b.geom) from 
-                        (select st_extent(ac.polygon) geom from activity.{a_tbl} ac) a,
+                        (select st_extent(ac.polygon) geom from plant.{a_tbl} ac) a,
                         (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
                         """.format(
-                            a_tbl=self.activity_tables[ac][0]['tbl_name'],
+                            a_tbl=self.plant_tables[ac][0]['tbl_name'],
                             h_tbl=self.harvest_tables[ha][0]['tbl_name'])
                         overlaps = self.db.execute_and_return(sql)[0][0]
                         if overlaps:
@@ -104,13 +106,73 @@ class Analyze:
                                 self.overlapping_tables[overlapping]['ha'] = \
                                 self.harvest_tables[ha][ha_key]
                             self.overlapping_tables[overlapping]['ac'] = []
-                            for ac_key in self.activity_tables[ac].keys():
-                                if 'pkey' in self.activity_tables[ac][ac_key][
+                            for ac_key in self.plant_tables[ac].keys():
+                                if 'pkey' in self.plant_tables[ac][ac_key][
                                     'index_name']:
                                     continue
                                 self.overlapping_tables[overlapping][
                                     'ac'].append(
-                                    self.activity_tables[ac][ac_key])
+                                    self.plant_tables[ac][ac_key])
+            if len(self.spray_tables) > 0:
+                for ac in self.spray_tables.keys():
+                    ac_year = self.db.execute_and_return("""select extract(year from date_) from spray.{tbl} 
+                                limit 1""".format(
+                        tbl=self.spray_tables[ac][0]['tbl_name']))[0][0]
+                    if ac_year == ha_year:
+                        sql = """select st_intersects(a.geom, b.geom) from 
+                        (select st_extent(ac.polygon) geom from spray.{a_tbl} ac) a,
+                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
+                        """.format(
+                            a_tbl=self.spray_tables[ac][0]['tbl_name'],
+                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
+                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        if overlaps:
+                            overlapping += 1
+                            self.overlapping_tables[overlapping] = {}
+                            for ha_key in self.harvest_tables[ha].keys():
+                                if 'pkey' in self.harvest_tables[ha][ha_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping]['ha'] = \
+                                self.harvest_tables[ha][ha_key]
+                            self.overlapping_tables[overlapping]['ac'] = []
+                            for ac_key in self.spray_tables[ac].keys():
+                                if 'pkey' in self.spray_tables[ac][ac_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping][
+                                    'ac'].append(
+                                    self.spray_tables[ac][ac_key])
+            if len(self.ferti_tables) > 0:
+                for ac in self.ferti_tables.keys():
+                    ac_year = self.db.execute_and_return("""select extract(year from date_) from ferti.{tbl} 
+                                limit 1""".format(
+                        tbl=self.ferti[ac][0]['tbl_name']))[0][0]
+                    if ac_year == ha_year:
+                        sql = """select st_intersects(a.geom, b.geom) from 
+                        (select st_extent(ac.polygon) geom from ferti.{a_tbl} ac) a,
+                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
+                        """.format(
+                            a_tbl=self.ferti_tables[ac][0]['tbl_name'],
+                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
+                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        if overlaps:
+                            overlapping += 1
+                            self.overlapping_tables[overlapping] = {}
+                            for ha_key in self.harvest_tables[ha].keys():
+                                if 'pkey' in self.harvest_tables[ha][ha_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping]['ha'] = \
+                                self.harvest_tables[ha][ha_key]
+                            self.overlapping_tables[overlapping]['ac'] = []
+                            for ac_key in self.ferti_tables[ac].keys():
+                                if 'pkey' in self.ferti_tables[ac][ac_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping][
+                                    'ac'].append(
+                                    self.ferti_tables[ac][ac_key])
 
             if len(self.soil_tables) > 0:
                 for so in self.soil_tables.keys():
@@ -138,8 +200,13 @@ class Analyze:
         for i, (schema, table) in enumerate(self.tables):
             if schema == 'harvest':
                 self.harvest_tables[i] = self.db.get_indexes(table, schema)
-            if schema == 'activity':
-                self.activity_tables[i] = self.db.get_indexes(table, schema)
+            if schema == 'plant':
+                self.plant_tables[i] = self.db.get_indexes(table, schema)
+            if schema == 'ferti':
+                self.ferti_tables[i] = self.db.get_indexes(table, schema)
+            if schema == 'spray':
+                self.spray_tables[i] = self.db.get_indexes(table, schema)
+
             if schema == 'soil':
                 self.soil_tables[i] = self.db.get_indexes(table, schema)
 
@@ -154,6 +221,7 @@ class Analyze:
         analyse_params = {}
         temp1 = []
         temp2 = []
+        #TODO: Handle None values
         distinct = self.db.get_distinct(tbl, parameter_to_eval, schema)
         for value, count in distinct:
             temp1.append(value)
@@ -193,6 +261,8 @@ class Analyze:
 
     def _set_number_layout(self, qbox, analyse_params, col, nbr):
         QtWidgets.QLabel('Min:', qbox).move(83, 34)
+        if None in analyse_params['distinct_values']:
+            analyse_params['distinct_values'].remove(None)
         min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(108, 32)
         org_min = QtWidgets.QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
@@ -462,9 +532,11 @@ class Analyze:
             maxvalue = float(self.layout_dict[i_col]['max'])
             values = copy.deepcopy(investigating_param['values'])
             for value in investigating_param['values']:
-                if round(value, 3) < minvalue:
+                if value is None:
                     values.remove(value)
-                if round(value, 3) > maxvalue:
+                elif round(value, 3) < minvalue:
+                    values.remove(value)
+                elif round(value, 3) > maxvalue:
                     values.remove(value)
             investigating_param['values'] = values
         if not investigating_param['checked'] and len(
