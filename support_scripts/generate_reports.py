@@ -77,15 +77,22 @@ class RapportGen:
             report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
                                                     t=self.tr('GeoDataFarm_Limited_report'),
                                                     y=year)
+            self.simple_operation(report_name=report_name)
         else:
             report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
                                                     t=self.tr('GeoDataFarm_Limited_report'),
                                                     y=year)
+
+    def simple_operation(self, report_name):
+        """Generates a simple report of all operations"""
+        if self.dw.RBAllYear.isChecked():
+            year = None
+        else:
+            year = self.dw.DEReportYear.text()
+        operation_dict = self.collect_data(year)
         cur_date = date.today().isoformat()
         growing_year = self.dw.DEReportYear.text()
         doc = MyDocTemplate(report_name, self.tr, self.plugin_dir, growing_year, cur_date)
-        operation_dict = self.collect_data()
-        print(operation_dict)
         story = []
         operation_found = False
         for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
@@ -141,7 +148,59 @@ class RapportGen:
                                     self.tr('You must close the file in order to create it again'))
             return
 
-    def collect_data(self):
+    def simple_field(self, report_name):
+        """Generates a simple report of all operations listed by fields."""
+        if self.dw.RBAllYear.isChecked():
+            year = None
+        else:
+            year = self.dw.DEReportYear.text()
+        operation_dict = self.collect_data(year)
+        cur_date = date.today().isoformat()
+        growing_year = self.dw.DEReportYear.text()
+        doc = MyDocTemplate(report_name, self.tr, self.plugin_dir, growing_year, cur_date)
+        story = []
+        field_dict = {}
+        for field in self.db.execute_and_return('select field_name from fields'):
+            field = field[0]
+            if field is None:
+                QMessageBox.information(None, self.tr('Error'),
+                                        self.tr('You must create fields before you can get make reports'))
+                return
+            field_dict[field] = {'table': [],
+                                 'heading': []}
+        data_found = False
+        for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
+            if operation == 'planting':
+                operation_name = self.tr('Planting')
+            if operation_dict[operation]['simple']:
+                data_found = True
+                field_col = operation_dict[operation]['simple_heading'].index(self.tr('Field'))
+                for col in operation_dict[operation]['simple_heading']:
+                    if col not in field_dict[row[field_col]]['heading']:
+                        field_dict[row[field_col]]['heading'].append(col)
+                for row in operation_dict[operation]['simple_data']:
+                    temp_row = [None] * len(field_dict[row[field_col]]['heading'])
+                    for i, col in enumerate(row):
+                        if i == field_col:
+                            col = operation_name
+                        temp_row[i] = col
+                    field_dict[row[field_col]]['table'].append(temp_row)
+
+
+        if not data_found:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('No data where found for that year'))
+            return
+
+    def collect_data(self, year):
+        """Collect data from the different schemas at the server and
+        store them in a dict
+
+        Returns
+        -------------------
+        dict
+         """
+        # TODO: Make this a QgsTask
         data_dict = {'planting': {'simple': False, 'advanced': False},
                      'fertilizing': {'simple': False, 'advanced': False},
                      'spraying': {'simple': False, 'advanced': False},
@@ -150,10 +209,12 @@ class RapportGen:
                      'harrowing': {'simple': False, 'advanced': False},
                      'soil': {'simple': False, 'advanced': False}
                      }
-        year = self.dw.DEReportYear.text()
+
         # Planting
         sql = """select date_, field, crop, variety from plant.manual 
-        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        where table_ = 'None' """
+        if year is not None:
+            sql += """and extract(year from date_) = {y}""".format(y=year)
         simple_plant_data = self.db.execute_and_return(sql)
         if len(simple_plant_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety')]
@@ -177,8 +238,10 @@ class RapportGen:
                 if date_[:2] == 'c_':
                     _date_ = date_[2:]
                 else:
-                    sql = """ select array_agg(distinct({d}::date)) from plant.{t} where extract(year from date_) = {y}""".format(
-                        d=date_, t=table_, y=year)
+                    sql = """ select array_agg(distinct({d}::date)) from plant.{t}""".format(
+                        d=date_, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _date_ = ''
                     temp_ans = self.db.execute_and_return(sql)[0][0]
                     if temp_ans is None:
@@ -191,7 +254,9 @@ class RapportGen:
                 elif variety == 'None':
                     _variety_ = ''
                 else:
-                    sql = """ select array_agg(distinct({v})) from plant.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
+                    sql = """ select array_agg(distinct({v})) from plant.{t}""".format(v=variety, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _variety_ = Paragraph(str(self.db.execute_and_return(sql)[0][0])[1:-1], styleN)
                 field = Paragraph(field, styleN)
                 crop = Paragraph(crop, styleN)
@@ -202,7 +267,9 @@ class RapportGen:
                 data_dict['planting']['advance_dat'] = adv_data
                 data_dict['planting']['adv_heading'] = adv_heading
         sql = """select date_, field, crop, variety, rate from ferti.manual 
-        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        where table_ = 'None' """
+        if year is not None:
+            sql += """and extract(year from date_) = {y}""".format(y=year)
         # Fertilizing
         simple_ferti_data = self.db.execute_and_return(sql)
         if len(simple_ferti_data) > 0:
@@ -227,8 +294,9 @@ class RapportGen:
                 if date_[:2] == 'c_':
                     _date_ = date_[2:]
                 else:
-                    sql = """ select array_agg(distinct(date_)) from ferti.{t} where extract(year from date_) = {y}""".format(
-                        t=table_, y=year)
+                    sql = """ select array_agg(distinct(date_)) from ferti.{t}""".format(t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _date_ = ''
                     for temp in self.db.execute_and_return(sql)[0][0]:
                         _date_ += temp.date().isoformat() + ', '
@@ -238,7 +306,9 @@ class RapportGen:
                 elif variety == 'None':
                     _variety_ = ''
                 else:
-                    sql = """ select array_agg(distinct({v})) from ferti.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
+                    sql = """ select array_agg(distinct({v})) from ferti.{t}""".format(v=variety, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _variety_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
                 if rate[:2] == 'c_':
                     _rate_ = rate[2:]
@@ -258,7 +328,9 @@ class RapportGen:
                 data_dict['fertilizing']['adv_heading'] = adv_heading
         # Spraying
         sql = """select date_, field, crop, variety, rate from spray.manual 
-        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        where table_ = 'None' and """
+        if year is not None:
+            sql += """and extract(year from date_) = {y}""".format(y=year)
         simple_data = self.db.execute_and_return(sql)
         if len(simple_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Variety'), self.tr('Rate')]
@@ -284,8 +356,10 @@ class RapportGen:
                 elif date_[:2] == 'c_':
                     _date_ = date_[2:]
                 else:
-                    sql = """ select array_agg(distinct({d})) from spray.{t} where extract(year from date_) = {y}""".format(
-                        d=date_, t=table_, y=year)
+                    sql = """ select array_agg(distinct({d})) from spray.{t}""".format(
+                        d=date_, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _date_ = ''
                     for temp in self.db.execute_and_return(sql)[0][0]:
                         _date_ += temp.date().isoformat() + ', '
@@ -295,14 +369,18 @@ class RapportGen:
                 elif variety == 'None':
                     _variety_ = ''
                 else:
-                    sql = """ select array_agg(distinct({v})) from spray.{t} where extract(year from date_) = {y}""".format(v=variety, t=table_, y=year)
+                    sql = """ select array_agg(distinct({v})) from spray.{t}""".format(v=variety, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _variety_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
                 if rate[:2] == 'c_':
                     _rate_ = rate[2:]
                 elif rate == 'None':
                     _rate_ = ''
                 else:
-                    sql = """ select array_agg(distinct({r})) from spray.{t} where extract(year from date_) = {y}""".format(r=rate, t=table_, y=year)
+                    sql = """ select array_agg(distinct({r})) from spray.{t}""".format(r=rate, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _rate_ = str(self.db.execute_and_return(sql)[0][0])[1:-1]
                 field = Paragraph(field, styleN)
                 crop = Paragraph(crop, styleN)
@@ -315,7 +393,9 @@ class RapportGen:
                 data_dict['spraying']['adv_heading'] = adv_heading
         #Harvest
         sql = """select date_, field, crop, total_yield, yield from harvest.manual 
-        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        where table_ = 'None' and """
+        if year is not None:
+            sql += """and extract(year from date_) = {y}""".format(y=year)
         simple_data = self.db.execute_and_return(sql)
         if len(simple_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Crop'), self.tr('Total yield'), self.tr('Yield (kg/ha)')]
@@ -338,7 +418,9 @@ class RapportGen:
                 if date_[:2] == 'c_':
                     _date_ = date_[2:]
                 else:
-                    sql = """ select array_agg(distinct({d}::date)) from harvest.{t} where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
+                    sql = """ select array_agg(distinct({d}::date)) from harvest.{t}""".format(d=date_, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _date_ = ''
                     temp_ans = self.db.execute_and_return(sql)[0][0]
                     if temp_ans is None:
@@ -351,14 +433,18 @@ class RapportGen:
                 elif yield_ == 'None':
                     _yield_ = ''
                 else:
-                    sql = """ select round(avg({v})*100)/100::double precision from harvest.{t} where extract(year from date_) = {y}""".format(v=yield_, t=table_, y=year)
+                    sql = """ select round(avg({v})*100)/100::double precision from harvest.{t}""".format(v=yield_, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _yield_ = str(self.db.execute_and_return(sql)[0][0])
                 if total_yield[:2] == 'c_':
                     _total_yield_ = total_yield[2:]
                 elif total_yield == 'None':
                     _total_yield_ = ''
                 else:
-                    sql = """ select round(avg({v})*100)/100::double precision from harvest.{t} where extract(year from date_) = {y}""".format(v=total_yield, t=table_, y=year)
+                    sql = """ select round(avg({v})*100)/100::double precision from harvest.{t} """.format(v=total_yield, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _total_yield_ = str(self.db.execute_and_return(sql)[0][0])
                 field = Paragraph(field, styleN)
                 crop = Paragraph(crop, styleN)
@@ -369,8 +455,9 @@ class RapportGen:
                 data_dict['harvesting']['advance_dat'] = adv_data
                 data_dict['harvesting']['adv_heading'] = adv_heading
         # Plowing
-        sql = """select date_, field, depth from other.plowing_manual 
-        where extract(year from date_) = {y}""".format(y=year)
+        sql = """select date_, field, depth from other.plowing_manual"""
+        if year is not None:
+            sql += """where extract(year from date_) = {y}""".format(y=year)
         simple_data = self.db.execute_and_return(sql)
         if len(simple_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Depth')]
@@ -384,8 +471,9 @@ class RapportGen:
             data_dict['plowing']['simple_data'] = simple_data
             data_dict['plowing']['simple_heading'] = simple_heading
         # Harrowing
-        sql = """select date_, field, depth from other.harrowing_manual 
-        where extract(year from date_) = {y}""".format(y=year)
+        sql = """select date_, field, depth from other.harrowing_manual"""
+        if year is not None:
+            sql += """where extract(year from date_) = {y}""".format(y=year)
         simple_data = self.db.execute_and_return(sql)
         if len(simple_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Depth')]
@@ -400,7 +488,9 @@ class RapportGen:
             data_dict['harrowing']['simple_heading'] = simple_heading
         #Soil
         sql = """select date_, field, clay, humus, ph, rx from soil.manual 
-        where table_ = 'None' and extract(year from date_) = {y}""".format(y=year)
+        where table_ = 'None' """
+        if year is not None:
+            sql += """and extract(year from date_) = {y}""".format(y=year)
         simple_data = self.db.execute_and_return(sql)
         if len(simple_data) > 0:
             simple_heading = [self.tr('Date'), self.tr('Field'), self.tr('Clay'), self.tr('Humus'), self.tr('pH'), self.tr('rx')]
@@ -425,7 +515,9 @@ class RapportGen:
                     _date_ = date_[2:]
                 else:
                     sql = """ select array_agg(distinct({d})) from soil.{t} 
-                    where extract(year from date_) = {y}""".format(d=date_, t=table_, y=year)
+                    """.format(d=date_, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _date_ = ''
                     for temp in self.db.execute_and_return(sql)[0][0]:
                         _date_ += temp.date().isoformat()
@@ -436,7 +528,9 @@ class RapportGen:
                     _clay_ = ''
                 else:
                     sql = """ select round(avg({v})*100)/100::double precision 
-                    from soil.{t} where extract(year from date_) = {y}""".format(v=clay, t=table_, y=year)
+                    from soil.{t}""".format(v=clay, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _clay_ = str(self.db.execute_and_return(sql)[0][0])
                 if humus[:2] == 'c_':
                     _humus_ = humus[2:]
@@ -444,23 +538,27 @@ class RapportGen:
                     _humus_ = ''
                 else:
                     sql = """ select round(avg({r})*100)/100::double precision 
-                    from soil.{t} where extract(year from date_) = {y}""".format(r=humus, t=table_, y=year)
+                    from soil.{t}""".format(r=humus, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _humus_ = str(self.db.execute_and_return(sql)[0][0])
                 if ph[:2] == 'c_':
                     _ph_ = ph[2:]
                 elif ph == 'None':
                     _ph_ = ''
                 else:
-                    sql = """ select round(avg({r})*100)/100::double precision 
-                    from soil.{t} where extract(year from date_) = {y}""".format(r=ph, t=table_, y=year)
+                    sql = """ select round(avg({r})*100)/100::double precision from soil.{t}""".format(r=ph, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _ph_ = str(self.db.execute_and_return(sql)[0][0])
                 if rx[:2] == 'c_':
                     _rx_ = rx[2:]
                 elif rx == 'None':
                     _rx_ = ''
                 else:
-                    sql = """ select round(avg({r})*100)/100::double precision 
-                    from soil.{t} where extract(year from date_) = {y}""".format(r=rx, t=table_, y=year)
+                    sql = """ select round(avg({r})*100)/100::double precision from soil.{t} """.format(r=rx, t=table_)
+                    if year is not None:
+                        sql += """where extract(year from date_) = {y}""".format(y=year)
                     _rx_ = str(self.db.execute_and_return(sql)[0][0])
                 adv_data.append([_date_, field, _clay_, _humus_, _ph_, _rx_])
             adv_heading = [self.tr('Date'), self.tr('Field'), self.tr('Clay'), self.tr('Humus'), self.tr('pH'), self.tr('rx')]
