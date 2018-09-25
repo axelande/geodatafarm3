@@ -3961,6 +3961,188 @@ of colors:</string>
        </property>
       </widget>
      </widget>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>50</y>
+        <width>161</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Select operations</string>
+      </property>
+      <widget class="QCheckBox" name="CBPlanting">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Planting</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBSpraying">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Spraying</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBFertilizing">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fertilizing</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBHarvest">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Harvest</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBPlowing">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Plowing</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBHarrowing">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>140</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Harrowing</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBSoil">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>200</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Soil</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBOther">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Other</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBIrrigation">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>160</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Irrigation</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="CBWeather">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>180</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Weather</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_31">
      <attribute name="title">

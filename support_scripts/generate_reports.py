@@ -188,18 +188,32 @@ class RapportGen:
         for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
             if operation == 'planting':
                 operation_name = self.tr('Planting')
+                if not self.dw.CBPlanting.isChecked():
+                    continue
             elif operation == 'fertilizing':
                 operation_name = self.tr('Fertilizing')
+                if not self.dw.CBFertilizing.isChecked():
+                    continue
             elif operation == 'spraying':
                 operation_name = self.tr('Spraying')
-            elif operation == 'harvest':
+                if not self.dw.CBSpraying.isChecked():
+                    continue
+            elif operation == 'harvesting':
                 operation_name = self.tr('Harvest')
+                if not self.dw.CBHarvest.isChecked():
+                    continue
             elif operation == 'plowing':
                 operation_name = self.tr('Plowing')
+                if not self.dw.CBPlowing.isChecked():
+                    continue
             elif operation == 'harrowing':
                 operation_name = self.tr('Harrowing')
+                if not self.dw.CBHarrowing.isChecked():
+                    continue
             elif operation == 'soil':
                 operation_name = self.tr('Soil')
+                if not self.dw.CBSoil.isChecked():
+                    continue
             if operation_dict[operation]['simple']:
                 data_found = True
                 field_col = operation_dict[operation]['simple_heading'].index(self.tr('Field'))
