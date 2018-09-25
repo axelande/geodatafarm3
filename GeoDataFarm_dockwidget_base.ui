@@ -141,9 +141,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
      <widget class="QPushButton" name="PBAddField">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>12</x>
         <y>260</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -154,9 +154,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
      <widget class="QPushButton" name="PBRemoveField">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>12</x>
         <y>290</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -279,9 +279,9 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
      <widget class="QPushButton" name="PBViewFields">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>12</x>
         <y>320</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -537,7 +537,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>450</x>
           <y>350</y>
-          <width>111</width>
+          <width>161</width>
           <height>16</height>
          </rect>
         </property>
@@ -652,7 +652,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </rect>
         </property>
         <property name="text">
-         <string>Rate</string>
+         <string>Rate:</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBFAddFile">
@@ -758,17 +758,18 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>360</x>
           <y>80</y>
-          <width>81</width>
+          <width>111</width>
           <height>16</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
-         <string>Manual input:</string>
+         <string>File input:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_26">
@@ -776,7 +777,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>350</x>
           <y>284</y>
-          <width>111</width>
+          <width>141</width>
           <height>16</height>
          </rect>
         </property>
@@ -827,11 +828,12 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
-         <string>File input</string>
+         <string>File input:</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LEFSawDepth">
@@ -1031,13 +1033,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>370</x>
           <y>80</y>
-          <width>81</width>
+          <width>151</width>
           <height>16</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
@@ -1049,7 +1052,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>390</x>
           <y>334</y>
-          <width>111</width>
+          <width>141</width>
           <height>16</height>
          </rect>
         </property>
@@ -1123,11 +1126,12 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
-         <string>File input</string>
+         <string>File input:</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LESpWindSpeed">
@@ -1275,7 +1279,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>20</x>
           <y>274</y>
-          <width>111</width>
+          <width>141</width>
           <height>16</height>
          </rect>
         </property>
@@ -1502,14 +1506,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_50">
         <property name="geometry">
          <rect>
-          <x>370</x>
+          <x>350</x>
           <y>224</y>
-          <width>81</width>
-          <height>16</height>
+          <width>101</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Yield</string>
+         <string>Yield:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_51">
@@ -1540,14 +1544,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          </font>
         </property>
         <property name="text">
-         <string>File input</string>
+         <string>File input:</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBHvAddFile">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>169</y>
+          <y>130</y>
           <width>277</width>
           <height>28</height>
          </rect>
@@ -1652,7 +1656,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>370</x>
           <y>254</y>
-          <width>111</width>
+          <width>131</width>
           <height>16</height>
          </rect>
         </property>
@@ -1673,14 +1677,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_57">
         <property name="geometry">
          <rect>
-          <x>370</x>
+          <x>350</x>
           <y>194</y>
-          <width>81</width>
-          <height>16</height>
+          <width>101</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Total yield</string>
+         <string>Total yield:</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBHvSaveManual">
@@ -1706,7 +1710,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>140</y>
+          <y>101</y>
           <width>277</width>
           <height>22</height>
          </rect>
@@ -1814,7 +1818,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>20</x>
           <y>134</y>
-          <width>111</width>
+          <width>151</width>
           <height>16</height>
          </rect>
         </property>
@@ -1959,7 +1963,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>20</x>
           <y>144</y>
-          <width>111</width>
+          <width>151</width>
           <height>16</height>
          </rect>
         </property>
@@ -2810,14 +2814,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_91">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>560</x>
           <y>220</y>
-          <width>81</width>
-          <height>16</height>
+          <width>91</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Humus</string>
+         <string>Humus:</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="LESoPh">
@@ -2835,7 +2839,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>570</x>
           <y>310</y>
-          <width>111</width>
+          <width>141</width>
           <height>16</height>
          </rect>
         </property>
@@ -2848,13 +2852,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>580</x>
           <y>74</y>
-          <width>81</width>
+          <width>141</width>
           <height>16</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
@@ -2877,14 +2882,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_95">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>560</x>
           <y>250</y>
-          <width>81</width>
-          <height>16</height>
+          <width>91</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Average pH</string>
+         <string>Average pH:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_96">
@@ -2903,14 +2908,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_97">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>560</x>
           <y>190</y>
-          <width>81</width>
-          <height>16</height>
+          <width>91</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Clay</string>
+         <string>Clay:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_98">
@@ -2918,17 +2923,18 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
          <rect>
           <x>20</x>
           <y>80</y>
-          <width>81</width>
+          <width>111</width>
           <height>16</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <underline>true</underline>
+          <pointsize>10</pointsize>
+          <underline>false</underline>
          </font>
         </property>
         <property name="text">
-         <string>File input</string>
+         <string>File input:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_99">
@@ -2999,14 +3005,14 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        <widget class="QLabel" name="label_106">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>560</x>
           <y>280</y>
-          <width>81</width>
+          <width>101</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>Average rx</string>
+         <string>Average rx:</string>
         </property>
        </widget>
       </widget>
@@ -3845,48 +3851,12 @@ of colors:</string>
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="label_8">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>60</y>
-        <width>111</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Select year</string>
-      </property>
-     </widget>
-     <widget class="QDateEdit" name="DEReportYear">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>80</y>
-        <width>110</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="dateTime">
-       <datetime>
-        <hour>0</hour>
-        <minute>0</minute>
-        <second>0</second>
-        <year>2019</year>
-        <month>1</month>
-        <day>1</day>
-       </datetime>
-      </property>
-      <property name="displayFormat">
-       <string>yyyy</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="PBReportSelectFolder">
       <property name="geometry">
        <rect>
         <x>70</x>
         <y>170</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -3896,7 +3866,7 @@ of colors:</string>
      </widget>
      <widget class="QPushButton" name="PBReportPerField">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -3925,6 +3895,71 @@ of colors:</string>
       <property name="text">
        <string>List all operations per crop</string>
       </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>20</y>
+        <width>231</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QRadioButton" name="RBAllYear">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>All years</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="RBSpecYear">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Specific year</string>
+       </property>
+      </widget>
+      <widget class="QDateEdit" name="DEReportYear">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>40</y>
+         <width>110</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>2019</year>
+         <month>1</month>
+         <day>1</day>
+        </datetime>
+       </property>
+       <property name="displayFormat">
+        <string>yyyy</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_31">

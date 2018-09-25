@@ -212,7 +212,7 @@
     <rect>
      <x>502</x>
      <y>650</y>
-     <width>81</width>
+     <width>91</width>
      <height>16</height>
     </rect>
    </property>
@@ -286,7 +286,7 @@ following column</string>
     <rect>
      <x>230</x>
      <y>80</y>
-     <width>491</width>
+     <width>541</width>
      <height>16</height>
     </rect>
    </property>
@@ -384,7 +384,7 @@ following column</string>
      <rect>
       <x>80</x>
       <y>0</y>
-      <width>61</width>
+      <width>81</width>
       <height>17</height>
      </rect>
     </property>
@@ -448,7 +448,7 @@ following column</string>
      <rect>
       <x>320</x>
       <y>0</y>
-      <width>61</width>
+      <width>81</width>
       <height>17</height>
      </rect>
     </property>
@@ -462,7 +462,7 @@ following column</string>
    <widget class="QLineEdit" name="LEOwnSep">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>400</x>
       <y>0</y>
       <width>31</width>
       <height>20</height>
@@ -693,7 +693,7 @@ following column</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>580</x>
+     <x>590</x>
      <y>640</y>
      <width>111</width>
      <height>23</height>

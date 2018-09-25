@@ -82,13 +82,13 @@ class InputTextHandler(object):
 
     def show_abbreviations(self):
         QMessageBox.information(None, self.tr('Information'),
-                                self.tr('%Y = Year (2010)'
-                                        '%y = Year (98)'
-                                        '%m = Month'
-                                        '%d = Day'
-                                        '%H = Hour (24h)'
-                                        '%M = Minute'
-                                        '%S = Second'
+                                self.tr('%Y = Year (2010)\n'
+                                        '%y = Year (98)\n'
+                                        '%m = Month\n'
+                                        '%d = Day\n'
+                                        '%H = Hour (24h)\n'
+                                        '%M = Minute\n'
+                                        '%S = Second\n'
                                         'If you are missing any formats please contact geodatafarm@gmail.com'
                                         ))
 
