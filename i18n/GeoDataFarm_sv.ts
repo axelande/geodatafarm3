@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="sv_SE" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="sv_SE" sourcelanguage="en">
 <context>
     <name>@default</name>
     <message>
@@ -491,93 +492,93 @@ benämn ditt attribut som [0], [1] etc.:</translation>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2582"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2586"/>
         <source>Add data</source>
         <translation>Lägg till data</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2756"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2760"/>
         <source>--- Select file type ---</source>
         <translation>----Välj fil typ ----</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2761"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2765"/>
         <source>Text file (.csv; .txt)</source>
         <translation>Text fil (.csv; .txt)</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2766"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2770"/>
         <source>Shape file (.shp)</source>
         <translation>Shape fil (.shp)</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2771"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2775"/>
         <source>Databasefile (.db)</source>
         <translation>Databas fil (.db)</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2788"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2792"/>
         <source>Open the text file and save it</source>
         <translation>Öppna och spara data från fil</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3735"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3741"/>
         <source>Reload layer</source>
         <translation>Ladda om lager</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3664"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3670"/>
         <source>Min value:</source>
         <translation>Minsta värde:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3614"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3620"/>
         <source>Max value:</source>
         <translation>Högsta värde:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3637"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3643"/>
         <source>Max number 
 of colors:</source>
         <translation>Max antal färger:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3651"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3657"/>
         <source>20</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3754"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3760"/>
         <source>Labels rules</source>
         <translation>Figursättnings regler</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3769"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3775"/>
         <source>Equal count intervals</source>
         <translation>Lika antal i varje interval</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3788"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3794"/>
         <source>Evenenly distrubuted intervals</source>
         <translation>Lika stora interval</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3197"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3203"/>
         <source>Update lists</source>
         <translation>Updatera listorna</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3122"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3128"/>
         <source>Harvest data sets:</source>
         <translation>Skörde data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3175"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3181"/>
         <source>Soil data sets:</source>
         <translation>Jorddata listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3219"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3225"/>
         <source>Add selected tables to the canvas</source>
         <translation>Lägg till data till kartan</translation>
     </message>
@@ -587,12 +588,12 @@ of colors:</source>
         <translation>Ingen gård är skapad</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3690"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3696"/>
         <source>Edit the attributes of the current layer</source>
         <translation>Editera följande lager i kartan</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3703"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3709"/>
         <source>Edit the presentation of the layer on the canvas:</source>
         <translation>Ändra presentationen av följande läger i kartvyn:</translation>
     </message>
@@ -602,7 +603,7 @@ of colors:</source>
         <translation>Skapa styrfil</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1999"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2003"/>
         <source>Irrigation</source>
         <translation>Bevattning</translation>
     </message>
@@ -674,17 +675,17 @@ Hur detta pluginet fungerar kan du läsa om på www.geodatafarm.com</translation
         <translation>Sådd</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2728"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2732"/>
         <source>--- Select field ---</source>
         <translation>---Lägg tll fält ---</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2807"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2811"/>
         <source>Save data</source>
         <translation>Spara data</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1576"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1580"/>
         <source>--- Select crop ---</source>
         <translation>--- Välj gröda ---</translation>
     </message>
@@ -699,22 +700,22 @@ Hur detta pluginet fungerar kan du läsa om på www.geodatafarm.com</translation
         <translation>Så mängd:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="797"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="798"/>
         <source>Saw depth:</source>
         <translation>Så djup:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1993"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1997"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1600"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1604"/>
         <source>kg/ha</source>
         <translation>kg/ha</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2843"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2847"/>
         <source>Other comments:</source>
         <translation>Andra kommentarer:</translation>
     </message>
@@ -744,416 +745,411 @@ Hur detta pluginet fungerar kan du läsa om på www.geodatafarm.com</translation
         <translation>Gödning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="655"/>
-        <source>Rate</source>
-        <translation>Giva</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2861"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2866"/>
         <source>Manual input:</source>
         <translation>Manuel inport:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2931"/>
-        <source>File input</source>
-        <translation>Import från fil</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1080"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1083"/>
         <source>Varerity:</source>
         <translation>Preparat:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="906"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="908"/>
         <source>Spraying</source>
         <translation>Sprutning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="928"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="930"/>
         <source>Rate:</source>
         <translation>Giva:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="975"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="977"/>
         <source>m/s</source>
         <translation>m/s</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1093"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1096"/>
         <source>Wind speed:</source>
         <translation>Vind hastighet:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1196"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1200"/>
         <source>deg</source>
         <translation>deg</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1209"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1213"/>
         <source>Wind direction:</source>
         <translation>Vind riktning:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1215"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1219"/>
         <source>Other</source>
         <translation>Övrigt</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1296"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1300"/>
         <source>Value</source>
         <translation>Värde</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1338"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1342"/>
         <source>Operation name:</source>
         <translation>Övrigt namn:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1371"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1375"/>
         <source>unit</source>
         <translation>Enhet</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1384"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1388"/>
         <source>Option</source>
         <translation>Inställning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1490"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1494"/>
         <source>Harvesting</source>
         <translation>Skörd</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1512"/>
-        <source>Yield</source>
-        <translation>Avkastning</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1525"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1529"/>
         <source>tonnes</source>
         <translation>ton</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1683"/>
-        <source>Total yield</source>
-        <translation>Total avkastning</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1741"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1745"/>
         <source>Plowing</source>
         <translation>Plöjning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1897"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1901"/>
         <source>Optional input</source>
         <translation>Valfritt</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1980"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1984"/>
         <source>Depth:</source>
         <translation>Djup:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1870"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1874"/>
         <source>Harrowing</source>
         <translation>Harvning</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2102"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2106"/>
         <source>Simple Manual input:</source>
         <translation>Enkel input:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2118"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2122"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2134"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2138"/>
         <source>Amount:</source>
         <translation>Giva:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2176"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2180"/>
         <source>Make editble</source>
         <translation>Ändra</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2192"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2196"/>
         <source>Name the field:</source>
         <translation>Fält namn:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2208"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2212"/>
         <source>Add from raindancer</source>
         <translation>Hämta från Raindancer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2224"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2228"/>
         <source>User name:</source>
         <translation>Användarnamn:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2240"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2244"/>
         <source>End Lat:</source>
         <translation>Slut lat:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2282"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2286"/>
         <source>Start Lat:</source>
         <translation>Start lat:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2311"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2315"/>
         <source>Date
 (YYYY-mm-dd)</source>
         <translation>Datum
 (YYYY-mm-dd)</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2328"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2332"/>
         <source>Start Lon:</source>
         <translation>Start lon:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2344"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2348"/>
         <source>Edit data</source>
         <translation>Editera</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2386"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2390"/>
         <source>Precipitation:</source>
         <translation>Giva:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2402"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2406"/>
         <source>First date:</source>
         <translation>Första datum:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2457"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2461"/>
         <source>Password:</source>
         <translation>Lösenord:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2486"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2490"/>
         <source>Width:</source>
         <translation>Bredd:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2521"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2525"/>
         <source>Load data from a raindancer account:</source>
         <translation>Ladda in data från ditt raindancer account:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2537"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2541"/>
         <source>Client id:</source>
         <translation>Klient id:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2566"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2570"/>
         <source>End Lon:</source>
         <translation>Slut lon:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2604"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2608"/>
         <source>Advance Manual input:</source>
         <translation>Avancerad manuel input:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2633"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2637"/>
         <source>Last date:</source>
         <translation>Slut datum:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2672"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2676"/>
         <source>Support for Irrigation data will come in the future</source>
         <translation>Support för bevattnings data kommer att komma</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2678"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2682"/>
         <source>Weather</source>
         <translation>Väder</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2696"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2700"/>
         <source>Support for loading weather data will come in the future</source>
         <translation>Stöd för att hantera väderdata kommer komma</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2702"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2706"/>
         <source>Soil</source>
         <translation>Jord</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2820"/>
-        <source>Humus</source>
-        <translation>Mullhalt</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2944"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2950"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2887"/>
-        <source>Average pH</source>
-        <translation>pH</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2900"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2905"/>
         <source>(0-14)</source>
         <translation>(0 - 14)</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2913"/>
-        <source>Clay</source>
-        <translation>Lerhalt</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2983"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2989"/>
         <source>Or</source>
         <translation>Eller</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3009"/>
-        <source>Average rx</source>
-        <translation>Ledningstal(rx)</translation>
-    </message>
-    <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3017"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3023"/>
         <source>Canvas data</source>
         <translation>Geospatiala analyser</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3069"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3075"/>
         <source>Planting data sets:</source>
         <translation>Så data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3247"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3253"/>
         <source>Run geo- spatial analyse</source>
         <translation>Kör geospatial analys</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3275"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3281"/>
         <source>Edit data sets</source>
         <translation>Editera data listor</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3328"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3334"/>
         <source>Spraying data sets:</source>
         <translation>Besprutnings listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3381"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3387"/>
         <source>Fertilizing data sets:</source>
         <translation>Gödningslistor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3434"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3440"/>
         <source>Other data sets:</source>
         <translation>Andra listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3462"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3468"/>
         <source>Weather data sets:</source>
         <translation>Väder data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3512"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3921"/>
         <source>All years</source>
         <translation>Alla år</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3531"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3937"/>
         <source>Specific year</source>
         <translation>Specifict år</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3858"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3553"/>
         <source>Select year</source>
         <translation>Välj år</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4048"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4083"/>
         <source>yyyy</source>
         <translation>yyyy</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3580"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3586"/>
         <source>Canvas settings</source>
         <translation>Kartinställningar</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3801"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3807"/>
         <source>Reports</source>
         <translation>Rapporter</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3813"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3819"/>
         <source>List all operations per operation</source>
         <translation>Lista alla operationer per operation</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3829"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3835"/>
         <source>With details</source>
         <translation>Med detaljer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3842"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3848"/>
         <source>Without details</source>
         <translation>Utan detaljer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3894"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3864"/>
         <source>Select Folder</source>
         <translation>Välj mapp</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3910"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3880"/>
         <source>List all operations per field</source>
         <translation>Lista alla operationer per fält</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3926"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3896"/>
         <source>List all operations per crop</source>
         <translation>Lista alla opertioner per gröda</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3932"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3967"/>
         <source>Plan ahead</source>
         <translation>Planera framåt</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3960"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3995"/>
         <source>Plan summary</source>
         <translation>Summering av plan</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3973"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4008"/>
         <source>Make your plan ahead</source>
         <translation>Gör din planering frammöver</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3986"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4021"/>
         <source>Update fields and crops</source>
         <translation>Updatera fält och grödor</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3999"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4034"/>
         <source>Save planning</source>
         <translation>Spara planering</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4012"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4047"/>
         <source>Update summary</source>
         <translation>Uppdatera summering</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4035"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="4070"/>
         <source>View year on canvas</source>
         <translation>Se årets planering på kartan</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2937"/>
+        <source>File input:</source>
+        <translation>Fil inport:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1516"/>
+        <source>Yield:</source>
+        <translation>Avkastning:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="1687"/>
+        <source>Total yield:</source>
+        <translation>Total avkastning:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2824"/>
+        <source>Humus:</source>
+        <translation>Mullhalt:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2892"/>
+        <source>Average pH:</source>
+        <translation>pH:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="2918"/>
+        <source>Clay:</source>
+        <translation>Lera:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3015"/>
+        <source>Average rx:</source>
+        <translation>Ledningstal (rx):</translation>
     </message>
 </context>
 <context>
@@ -1712,14 +1708,21 @@ följande kolumn</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="84"/>
-        <source>%Y = Year (2010)%y = Year (98)%m = Month%d = Day%H = Hour (24h)%M = Minute%S = SecondIf you are missing any formats please contact geodatafarm@gmail.com</source>
-        <translation>%Y = Year (2010)
+        <source>%Y = Year (2010)
 %y = Year (98)
 %m = Month
 %d = Day
 %H = Hour (24h)
 %M = Minute
 %S = Second
+If you are missing any formats please contact geodatafarm@gmail.com</source>
+        <translation>%Y = År (2010)
+%y = År (98)
+%m = Månad
+%d = Dag
+%H = Timme (24h)
+%M = Minut
+%S = Sekund
 Om du saknar något skriv ett mail till: geodatafarm@gmail.com</translation>
     </message>
 </context>
@@ -1776,134 +1779,184 @@ Are you sure that id, username and password was correct?</source>
 <context>
     <name>RapportGen</name>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="140"/>
+        <location filename="../support_scripts/generate_reports.py" line="246"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="72"/>
+        <location filename="../support_scripts/generate_reports.py" line="88"/>
         <source>A directory to save the report must be selected.</source>
         <translation>En mapp att spara rapporten i måste väljas.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="81"/>
+        <location filename="../support_scripts/generate_reports.py" line="98"/>
         <source>GeoDataFarm_Limited_report</source>
         <translation>GeoDataFarm_begrännsad_rapport</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="94"/>
+        <location filename="../support_scripts/generate_reports.py" line="117"/>
         <source>Planting data (simple input)</source>
         <translation>Sådd (manuel input)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="96"/>
+        <location filename="../support_scripts/generate_reports.py" line="119"/>
         <source>Fertilizing data (simple input)</source>
         <translation>Gödsling (manuel input)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="98"/>
+        <location filename="../support_scripts/generate_reports.py" line="121"/>
         <source>Spraying data (simple input)</source>
         <translation>Bespruting (manuel input)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="106"/>
+        <location filename="../support_scripts/generate_reports.py" line="129"/>
         <source>Harvest data (simple input)</source>
         <translation>Skörd (manuel input)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="117"/>
+        <location filename="../support_scripts/generate_reports.py" line="140"/>
         <source>Planting data (text input)</source>
         <translation>Sådd (från fil)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="119"/>
+        <location filename="../support_scripts/generate_reports.py" line="142"/>
         <source>Fertilizing data (text input)</source>
         <translation>Gödsling (från fil)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="121"/>
+        <location filename="../support_scripts/generate_reports.py" line="144"/>
         <source>Spraying data (text input)</source>
         <translation>Besprutning (från fil)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="125"/>
+        <location filename="../support_scripts/generate_reports.py" line="146"/>
         <source>Harvest data (text input)</source>
         <translation>Skörd (från fil)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="134"/>
+        <location filename="../support_scripts/generate_reports.py" line="231"/>
         <source>No data where found for that year</source>
         <translation>Ingen data kundre hittas för det året</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="140"/>
+        <location filename="../support_scripts/generate_reports.py" line="246"/>
         <source>You must close the file in order to create it again</source>
         <translation>Du måste stänga filen för att kunna spara om rapporten</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>Field</source>
         <translation>Fält</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="382"/>
+        <location filename="../support_scripts/generate_reports.py" line="523"/>
         <source>Crop</source>
         <translation>Gröda</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="323"/>
+        <location filename="../support_scripts/generate_reports.py" line="456"/>
         <source>Variety</source>
         <translation>Sort/Preparat</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="323"/>
+        <location filename="../support_scripts/generate_reports.py" line="456"/>
         <source>Rate</source>
         <translation>Giva</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="332"/>
+        <location filename="../support_scripts/generate_reports.py" line="467"/>
         <source>Total yield</source>
         <translation>Total avkastning</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="382"/>
+        <location filename="../support_scripts/generate_reports.py" line="523"/>
         <source>Yield (kg/ha)</source>
         <translation>Avkastning (kg/ha)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="382"/>
+        <location filename="../support_scripts/generate_reports.py" line="523"/>
         <source>Total Yield</source>
         <translation>Total avkastning</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="407"/>
+        <location filename="../support_scripts/generate_reports.py" line="550"/>
         <source>Depth</source>
         <translation>Djup</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>Clay</source>
         <translation>Lerhalt</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>Humus</source>
         <translation>Mullhalt</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>pH</source>
         <translation>pH</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="489"/>
+        <location filename="../support_scripts/generate_reports.py" line="643"/>
         <source>rx</source>
         <translation>Ledningstal (rx)</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="148"/>
+        <source>Soil data (text input)</source>
+        <translation>Jordkartering (textfil)</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="182"/>
+        <source>You must create fields before you can get make reports</source>
+        <translation>Du måste skapa fält innan du kan skapa rapporter</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="190"/>
+        <source>Planting</source>
+        <translation>Sådd</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="192"/>
+        <source>Fertilizing</source>
+        <translation>Gödning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="194"/>
+        <source>Spraying</source>
+        <translation>Sprutning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="196"/>
+        <source>Harvest</source>
+        <translation>Skörd</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="198"/>
+        <source>Plowing</source>
+        <translation>Plöjning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="200"/>
+        <source>Harrowing</source>
+        <translation>Harvning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="202"/>
+        <source>Soil</source>
+        <translation>Jord</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/generate_reports.py" line="219"/>
+        <source>Operation</source>
+        <translation>Operation</translation>
     </message>
 </context>
 <context>
