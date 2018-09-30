@@ -306,7 +306,7 @@ class GeoDataFarm:
                 if item.checkState() == 2:
                     if schema == 'harvest':
                         harvest_file = True
-                    if schema == 'activity' or schema == 'soil' or schema == 'spray' or schema == 'ferti':
+                    if schema == 'plant' or schema == 'soil' or schema == 'spray' or schema == 'ferti':
                         input_file = True
                     names.append([schema, item.text()])
         if harvest_file and input_file:
