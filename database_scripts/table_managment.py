@@ -123,19 +123,20 @@ class TableManagement:
         schema = self.current_schema
         indexes = self.db.get_indexes(table, schema)
         create_index_for = []
+        remove_index_for = []
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
         for item in self.params_in_table:
             if item.text() in checked_params:
-                if item.checkState() == 1:
-                    checked_params.remove(item.text())
-                continue
-            if item.checkState() == 2:
-                create_index_for.append(item.text())
+                if item.checkState() == 0:
+                    remove_index_for.append(item.text())
+            else:
+                if item.checkState() == 2:
+                    create_index_for.append(item.text())
         for index in create_index_for:
-            self.db.execute_sql("""create index {index}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
-        for del_index in checked_params:
-            self.db.execute_sql("DROP INDEX IF EXISTS {schema}.{old_index}_{tbl}".format(old_index=del_index, tbl=table, schema=schema))
+            self.db.execute_sql("""create index {index}_{schema}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
+        for index in remove_index_for:
+            self.db.execute_sql("DROP INDEX IF EXISTS {schema}.{index}_{schema}_{tbl}".format(index=index, tbl=table, schema=schema))
         try:
             self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(polygon) """.format(tbl=table, schema=schema))
