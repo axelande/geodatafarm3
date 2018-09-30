@@ -512,6 +512,7 @@ class InputTextHandler(object):
         params['tr'] = self.tr
         params['epsg'] = self.ITD.LEEPSG.text()
         #a = insert_data_to_database('debug', self.db, params)
+        #print(a)
         task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
                                     on_finished=self.finish)
         self.tsk_mngr.addTask(task)
@@ -522,8 +523,15 @@ class InputTextHandler(object):
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
                                                                                                       t=values[2])))
             return
+        if not values[1]:
+            QMessageBox.information(None, self.tr("Information:"),
+                                    str(values[2]) + self.tr(' rows were skipped '
+                                                             'since the row'
+                                                             ' did not match '
+                                                             'the heading.'))
+
         schema = self.data_type
-        tbl = self.file_name
+        tbl = check_text(self.file_name)
         if isint(tbl[0]):
             tbl = '_' + tbl
         length = self.db.execute_and_return("select field_row_id from {s}.{t} limit 2".format(s=schema, t=tbl))
@@ -601,7 +609,6 @@ def insert_data_to_database(task, db, params):
                 sql += "Date_ TIMESTAMP, "
                 inserting_text += 'Date_, '
                 date_inserted = True
-                continue
             if column_types[i] == 0:
                 sql += str(col_name) + " INT, "
             elif column_types[i] == 1:
@@ -637,12 +644,12 @@ def insert_data_to_database(task, db, params):
                     continue
                 if float(row[heading_row.index(latitude_col)]) < 0.1 or float(
                         row[heading_row.index(longitude_col)]) < 0.1:
-                    break
+                    continue
                 if schema == 'harvest':
                     if float(row[heading_row.index(yield_row)]) > max_yield:
-                        break
+                        continue
                     elif float(row[heading_row.index(yield_row)]) < min_yield:
-                        break
+                        continue
                 if task != 'debug':
                     task.setProgress(2 + row_count / len(read_all) * 45)
                 date_inserted = False
@@ -661,13 +668,13 @@ def insert_data_to_database(task, db, params):
                     if lat_lon_inserted and (
                             key == longitude_col or key == latitude_col):
                         continue
+                    if all_same_date and not date_inserted:
+                        row_value += "'{s}', ".format(s=all_same_date)
+                        date_inserted = True
                     if key == date_row:
                         in_date = datetime.strptime(row[heading_row.index(date_row)], date_format)
                         out_date = datetime.strftime(in_date, '%Y-%m-%d %H:%M:%S')
                         row_value += "'{s}', ".format(s=out_date)
-                    elif all_same_date and not date_inserted:
-                        row_value += "'{s}', ".format(s=all_same_date)
-                        date_inserted = True
                     elif column_types[heading_row.index(key)] == 0:
                         try:  # Trying to add a int
                             row_value += '{s}, '.format(s=int(float(col_data)))
@@ -688,18 +695,16 @@ def insert_data_to_database(task, db, params):
                         row_value += "'{s}', ".format(s=check_text(col_data))
                 inserting_text += row_value[:-2] + '),'
                 if count_db_insert > 10000:
+                    #print(inserting_text)
                     db.execute_sql(inserting_text[:-1])
                     inserting_text = insert_org_sql
                     count_db_insert = 0
                 else:
                     count_db_insert += 1
+            #print(inserting_text[:-1])
             db.execute_sql(inserting_text[:-1])
             if some_wrong_len > 0:
-                QMessageBox.information(None, tr("Information:"),
-                                        str(some_wrong_len) + tr(' rows were skipped '
-                                                                      'since the row'
-                                                                      ' did not match '
-                                                                      'the heading.'))
+                no_miss_heading = False
 
         sql = """SELECT * INTO {schema}.{tbl} 
         from {schema}.temp_table
@@ -733,6 +738,6 @@ def insert_data_to_database(task, db, params):
         if task != 'debug':
             task.setProgress(90)
         db.create_indexes(tbl_name, focus_col, schema)
-        return [True]
+        return [True, no_miss_heading, some_wrong_len]
     except Exception as e:
         return [False, e, traceback.format_exc()]
