@@ -21,7 +21,7 @@ def isfloat(x):
     """Checks if the inserted value is of float type"""
     try:
         a = float(x)
-    except (ValueError, OverflowError):
+    except (ValueError, OverflowError, TypeError):
         return False
     else:
         return True
@@ -32,7 +32,7 @@ def isint(x):
     try:
         a = float(x)
         b = int(a)
-    except (ValueError, OverflowError):
+    except (ValueError, OverflowError, TypeError):
         return False
     else:
         return a == b
