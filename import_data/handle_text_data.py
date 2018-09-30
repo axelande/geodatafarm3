@@ -595,7 +595,7 @@ def insert_data_to_database(task, db, params):
                     col_name == longitude_col or col_name == latitude_col):
                 sql += "pos geometry(POINT, 4326),"
                 if schema != 'harvest':
-                    sql += " polygon geometry(POLYGON, 4326), "
+                    sql += " polygon geometry(MULTIPOLYGON, 4326), "
                 inserting_text += 'pos, '
                 lat_lon_inserted = True
             if lat_lon_inserted and (
@@ -728,8 +728,8 @@ def insert_data_to_database(task, db, params):
         FROM voronoi_temp2;
         create index temp_index on {schema}.temp_tbl2 Using gist(geom);
         update {schema}.{tbl}
-        SET polygon = ST_Intersection(geom, (select polygon 
-            from fields where field_name = '{field}'))
+        SET polygon = st_multi(ST_Intersection(geom, (select polygon 
+            from fields where field_name = '{field}')))
         FROM {schema}.temp_tbl2
         WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
             db.execute_sql(sql)
