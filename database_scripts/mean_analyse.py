@@ -362,6 +362,8 @@ class Analyze:
                     self.overlapping_tables[key][sch][tbl_k]['index_col'],
                     self.overlapping_tables[key][sch][tbl_k]['tbl_name'],
                     self.overlapping_tables[key][sch][tbl_k]['schema'])
+                if len(analyse_params['distinct_values']) == 0:
+                    continue
                 if table['index_col'] in self.layout_dict.keys():
                     self._update_layout(analyse_params, table['index_col'])
                     self.layout_dict[table['index_col']]['tbl'].append(table['tbl_name'])
