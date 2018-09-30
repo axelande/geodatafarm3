@@ -228,9 +228,10 @@ ORDER BY table_name""".format(schema=schema)
         self._close()
         checked_values = []
         for col, count in all_distinct:
-            if col != " " or col is None:
+            if col is None:
+                continue
+            if col != " ":
                 checked_values.append([col, count])
-
         return checked_values
 
     def get_all_columns(self, table, schema, exclude=''):
