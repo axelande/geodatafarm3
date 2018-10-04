@@ -78,7 +78,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Save filed</string>
+    <string>Save field</string>
    </property>
   </widget>
   <widget class="QPushButton" name="PBQuit">
@@ -91,7 +91,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Finished</string>
+    <string>Finish</string>
    </property>
   </widget>
  </widget>

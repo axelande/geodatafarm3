@@ -82,6 +82,7 @@ from .support_scripts.add_field import AddField
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint
 from .support_scripts.populate_lists import Populate
+from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 
 
 class GeoDataFarm:
@@ -253,27 +254,8 @@ class GeoDataFarm:
     def add_selected_tables(self):
         """Adds a layer for each "parameter" of all selected tables
         """
-        self.items_in_table = self.populate.get_items_in_table()
-        tables = []
-        for list_widget, schema, lw in self.items_in_table:
-            for item in list_widget:
-                if item.checkState() == 2:
-                    tables.append(str(item.text()))
-            parameters = self.db.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], schema)
-            for nr in range(len(parameters)):
-                target_field = parameters[nr]['index_col']
-                tbl_name = parameters[nr]['tbl_name']
-                if 'field_row_id' in target_field:
-                    continue
-                if parameters[nr]['schema'] == 'harvest':
-                    layer = self.db.addPostGISLayer(tbl_name.lower(),
-                                                    geom_col='pos', schema='harvest',
-                                                    extra_name='harvest')
-                else:
-                    layer = self.db.addPostGISLayer(tbl_name.lower(), 'polygon', parameters[nr]['schema'], str(target_field.lower()))
-                create_layer = CreateLayer(self.db)
-                create_layer.create_layer_style(layer, target_field, tbl_name.lower(), parameters[nr]['schema'])
-                QgsProject.instance().addMapLayer(layer)
+        add_layer_to_canvas = AddLayerToCanvas(self)
+        add_layer_to_canvas.run()
 
     def reload_layer(self):
         create_layer = CreateLayer(self.db, self.dock_widget)
