@@ -6,10 +6,13 @@ import matplotlib.colors as mplib_colors
 import numpy as np
 import time
 from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QThread
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint
 import copy
+import traceback
+
 __author__ = 'Axel Andersson'
 
 
@@ -27,11 +30,13 @@ class Analyze:
         self.dlg = RunAnalyseDialog()
         self.db = parent_widget.db
         self.tsk_mngr = parent_widget.tsk_mngr
+        self.tr = parent_widget.tr
         self.harvest_tables = {}
         self.plant_tables = {}
         self.spray_tables = {}
         self.ferti_tables = {}
         self.soil_tables = {}
+        self.weather_tables = {}
         self.tables = tables_to_analyse
         self.cb = []
         self.harvest_tbls = {}
@@ -55,22 +60,6 @@ class Analyze:
 
     def run_update(self):
         self.update_pic()
-
-        # TODO: Fix threading
-        # self.next_thread = QThread()
-        # self.next_thread.started.connect(self.update_pic)
-        # self.next_thread.start()
-        # waiting_thread = QThread()
-        # waiting_thread.start()
-        # wait_msg = 'Please wait while data is being prosecuted'
-        # self.wait = Waiting(wait_msg)
-        # self.wait.moveToThread(waiting_thread)
-        # self.wait.start.connect(self.wait.start_work)
-        # self.wait.start.emit('run')
-        # while not self.finish:
-        #    time.sleep(1)
-        # self.wait.stop_work()
-        # self.next_thread.join()
 
     def check_consistency(self):
         """Checks that the harvest tables is intersecting some of the input data
@@ -194,6 +183,36 @@ class Analyze:
                             if 'pkey' in self.soil_tables[so][so_key]['index_name']:
                                 continue
                             self.overlapping_tables[overlapping]['so'].append(self.soil_tables[so][so_key])
+            if len(self.weather_tables) > 0:
+                for ac in self.weather_tables.keys():
+                    ac_year = 2018#self.db.execute_and_return("""select extract(year from date_) from weather.{tbl}
+                                #limit 1""".format(
+                        #tbl=self.weather_tables[ac][0]['tbl_name']))[0][0]
+                    if ac_year == ha_year:
+                        sql = """select st_intersects(a.geom, b.geom) from 
+                        (select st_extent(ac.polygon) geom from weather.{a_tbl} ac) a,
+                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
+                        """.format(
+                            a_tbl=self.weather_tables[ac][0]['tbl_name'],
+                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
+                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        if overlaps:
+                            overlapping += 1
+                            self.overlapping_tables[overlapping] = {}
+                            for ha_key in self.harvest_tables[ha].keys():
+                                if 'pkey' in self.harvest_tables[ha][ha_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping]['ha'] = \
+                                    self.harvest_tables[ha][ha_key]
+                            self.overlapping_tables[overlapping]['ac'] = []
+                            for ac_key in self.weather_tables[ac].keys():
+                                if 'pkey' in self.weather_tables[ac][ac_key][
+                                    'index_name']:
+                                    continue
+                                self.overlapping_tables[overlapping][
+                                    'ac'].append(
+                                    self.weather_tables[ac][ac_key])
 
     def fill_dict_tables(self):
         """Filles the three dict tables"""
@@ -209,6 +228,8 @@ class Analyze:
 
             if schema == 'soil':
                 self.soil_tables[i] = self.db.get_indexes(table, schema)
+            if schema == 'weather':
+                self.weather_tables[i] = self.db.get_indexes(table, schema)
 
     def get_initial_distinct_values(self, parameter_to_eval, tbl, schema):
         """
@@ -429,14 +450,17 @@ class Analyze:
                     table = self.layout_dict[col]['tbl'][tbl_nr]
                     schema = self.layout_dict[col]['schema'][tbl_nr]
                     ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
-                    s_t = f'{schema}.{table}'
+                    s_t = '{s}.{t}'.format(s=schema, t=table)
                     for item in self.layout_dict[col]['checked_items']:
-                        if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
-                            other_parameters[ha][s_t][col]['check_text'] += item.text() + "','"
-                        if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
-                            text_v += f"'{item.text()}',"
-                    if col in other_parameters[ha][s_t].keys():
-                        other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-2]
+                        if s_t in other_parameters[ha].keys():
+                            if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
+                                other_parameters[ha][s_t][col]['check_text'] += item.text() + "','"
+                        if s_t in main_investigate_col[ha].keys():
+                            if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
+                                text_v += f"'{item.text()}',"
+                    if s_t in other_parameters[ha].keys():
+                        if col in other_parameters[ha][s_t].keys():
+                            other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-2]
                 else:
                     break
             if len(text_v) > 0:
