@@ -6,6 +6,7 @@ from operator import xor
 from psycopg2 import ProgrammingError, IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
+import time
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
@@ -21,6 +22,7 @@ class AddField:
         self.parent = parent_widget
         self.AFD = AddFieldFileDialog()
         self.field = None
+        self.defined_field = ''
 
     def run(self):
         """Presents the sub widget HandleInput and connects the different
@@ -41,8 +43,10 @@ class AddField:
     def remove_field(self):
         """Removes a field that the user wants, a check that there are no
         data that is depended on is made."""
+        j = -1
         for i in range(self.parent.dock_widget.LWFields.count()):
-            item = self.parent.dock_widget.LWFields.item(i)
+            j += 1
+            item = self.parent.dock_widget.LWFields.item(j)
             if item.checkState() == 2:
                 field_name = item.text()
                 qm = QMessageBox()
@@ -53,13 +57,13 @@ class AddField:
                     continue
                 field_names = []
                 for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
-                    field_names.extend(self.db.execute_and_return("select field_name from {type}.manual".format(type=tble_type)))
+                    field_names.extend(self.db.execute_and_return("select field from {type}.manual".format(type=tble_type)))
                 sql = """SELECT table_name
                FROM   information_schema.tables 
                WHERE  table_schema = 'other'"""
                 for tble_type in self.db.execute_and_return(sql):
                     tbl = tble_type[0]
-                    field_names.extend(self.db.execute_and_return("select field_name from other.{tbl}".format(tbl=tbl)))
+                    field_names.extend(self.db.execute_and_return("select field from other.{tbl}".format(tbl=tbl)))
                 stop_removing = False
                 for row in field_names:
                     if row[0] == field_name:
@@ -71,16 +75,22 @@ class AddField:
                     continue
                 sql = "delete from fields where field_name='{f}'".format(f=field_name)
                 self.db.execute_sql(sql)
-                self.parent.dock_widget.LWFields.takeItem(i)
+                self.parent.dock_widget.LWFields.takeItem(j)
+                j -= 1
 
     def view_fields(self):
         """Add all fields that aren't displayed on the canvas, if no background map is loaded Google maps are loaded."""
-        add_background()
+        defined_field = self.defined_field
+        if defined_field == '':
+            add_background()
         sources = [layer.source() for layer in QgsProject.instance().mapLayers().values()]
         fields_db = self.db.execute_and_return("select field_name from fields")
         for field in fields_db:
             field = field[0]
             found = False
+            if defined_field != '':
+                if field != defined_field:
+                    continue
             for source in sources:
                 if str(field).lower() in source.lower():
                     found = True
@@ -91,7 +101,9 @@ class AddField:
                                             filter_text="field_name='{f}'".format(f=field))
             set_label(layer, 'field_name')
             QgsProject.instance().addMapLayer(layer)
-        set_zoom(self.parent.iface, 1.1)
+        if defined_field == '':
+            set_zoom(self.parent.iface, 1.1)
+        self.defined_field = ''
 
     def clicked_define_field(self):
         """Creates an empty polygon that's define a field"""
@@ -117,6 +129,7 @@ class AddField:
             self.iface.actionSaveActiveLayerEdits().trigger()
             self.iface.actionToggleEditing().trigger()
             feature = self.field.getFeature(1)
+            QgsProject.instance().removeMapLayers([self.field.id()])
         except:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 'No coordinates where found, did you mark the field on the canvas?'))
@@ -143,6 +156,8 @@ class AddField:
         item = QListWidgetItem(_name, self.dock_widget.LWFields)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
         item.setCheckState(QtCore.Qt.Unchecked)
+        self.defined_field = name
+        self.view_fields()
 
     def help(self):
         QMessageBox.information(None, self.tr("Help:"), self.tr(
