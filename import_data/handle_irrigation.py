@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMessageBox
 # Import the code for the dialog
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
-
-__author__ = 'Axel Andersson'
+from ..support_scripts.__init__ import check_text
+__author__ = 'Axel Hörteborn'
 
 
 class IrrigationHandler:
@@ -27,7 +27,8 @@ class IrrigationHandler:
 
     def run(self):
         self.IIR.show()
-        self.IIR.PBAddRaindancer.clicked.connect(self.insert_data_from_raindancer)
+        self.IIR.PBCreateYear.clicked.connect(self.create_grid_year)
+        self.IIR.PBGetData.clicked.connect(self.get_grid_data)
         self.IIR.exec_()
 
     def insert_data_from_raindancer(self):
@@ -45,6 +46,9 @@ class IrrigationHandler:
         #self.update_total_irrigation()
 
     def _connect(self):
+        self.client_id = self.IIR.LEClientId.text()
+        self.user_name = self.IIR.LEUserName.text()
+        self.password = self.IIR.LEPassword.text()
         self.dancer = MyRainDancer(client=self.client_id,
                                    username=self.user_name,
                                    password=self.password)
@@ -57,6 +61,50 @@ class IrrigationHandler:
             return True
         except:
             return False
+
+    def create_grid_year(self):
+        """Creates a 2x2 grid over all fields"""
+        sql = """create table weather.irrigation_{year} (row_id serial, 
+                                                         polygon geometry, 
+                                                         precipitation double precision)
+              """.format(year=self.IIR.DECreateYear.text())
+        #self.db.execute_sql(sql)
+        sql = "select field_name, st_astext(polygon) from fields"
+        fields = self.db.execute_and_return(sql)
+        for field_name, polygon in fields:
+            sql = """with first as(select (st_dump(makegrid_2d(st_geomfromtext('{polygon}', 4326), 2, 2))).geom as grid)
+            insert into weather.irrigation_{year} (polygon, precipitation)
+            select grid, 0 
+            from first where st_intersects(grid, st_geomfromtext('{polygon}', 4326))
+            """.format(polygon=polygon, field=check_text(field_name), year=self.IIR.DECreateYear.text())
+            self.db.execute_sql(sql)
+        self.db.execute_sql("""ALTER TABLE weather.irrigation_{year}
+    ADD CONSTRAINT p_key_irrigation{year} PRIMARY KEY (row_id);""")
+
+    def get_grid_data(self):
+        if not hasattr(self, 'dancer'):
+            self._connect()
+        operations = self.dancer.get_operation_data()
+        if operations == 'Failed':
+            QMessageBox.information(None, "Error:",
+                                    self.tr("Wasn't able to fetch data from raindancer.\nAre you sure that id, username and password was correct?"))
+            return
+        for data in operations:
+            if data['finished'] is None:
+                continue
+            finished = f"""{data['finished']['year']}-{data['finished']['month']}-{data['finished']['day']} {data['finished']['hour']}:{data['finished']['minute']}:{data['finished']['second']}"""
+            if finished < '{year}-01-01'.format(year=self.IIR.DECreateYear.text()):
+                continue
+            if finished > '{year}-01-01'.format(year=int(self.IIR.DECreateYear.text()) + 1):
+                continue
+            line = 'LINESTRING({long1} {lat1}, {long2} {lat2})'.format(long1=data["destination"]["lng"], lat1=data["destination"]["lat"], long2=data["origin"]["lng"], lat2=data["origin"]["lat"])
+            sql = """Update weather.irrigation_{year}
+            set precipitation = precipitation + {p}
+            where st_intersects(polygon, ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),
+                                                  30, 'endcap=flat join=round')::geometry)
+            """.format(line=line, p=data["precipitation"], year=self.IIR.DECreateYear.text())#, d=finished)
+            self.db.execute_sql(sql)
+            print('inserted')
 
     def reset_tables(self):
         pass
