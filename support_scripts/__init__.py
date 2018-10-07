@@ -46,12 +46,16 @@ def check_date_format(sample, column, format_):
     :param format_, the format of the date"""
     try:
         first_row = True
+        second_row = True
         for row in sample:
             if first_row:
                 heading_row = row
                 first_row = False
             else:
+                if second_row:
+                    sec_data = datetime.strptime(row[heading_row.index(column)], format_)
+                    second_row = False
                 datetime.strptime(row[heading_row.index(column)], format_)
-        return True
+        return [True, sec_data]
     except ValueError:
-        return False
+        return [False]
