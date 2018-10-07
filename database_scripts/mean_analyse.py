@@ -567,141 +567,178 @@ class Analyze:
                                      on_finished=self.end_method)
         self.tsk_mngr.addTask(task1)
 
-    def end_method(self, result, filter):
+    def end_method(self, result, values):
+        if values[0] is False:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+                                                                                                      t=values[2])))
+            return
+        else:
+            filtered_data = values[1]
         fig, ax1 = plt.subplots()
-        ax2 = ax1.twinx()
+        #ax2 = ax1.twinx()
         if self.investigating_param['checked']:
-            xlabels = filter[1]
+            xlabels = filtered_data[1]
             x = np.arange(len(xlabels))
-            ax1.plot(x, filter[0], color='green')
+            ax1.plot(x, filtered_data[0], color='green')
             ax1.set_xticks(x)
             ax1.set_xticklabels(xlabels, rotation=40, ha='right')
-            ax2.plot(x, filter[2], 'x', color='blue')
-            ax2.set_xticks(x)
-            ax2.set_xticklabels(xlabels, rotation=40, ha='right')
+            #ax2.plot(x, filtered_data[2], 'x', color='blue')
+            #ax2.set_xticks(x)
+            #ax2.set_xticklabels(xlabels, rotation=40, ha='right')
         else:
-            ax1.plot(filter[1], filter[0], color='green')
-            ax2.plot(filter[1], filter[2], 'x', color='blue')
+            ax1.plot(filtered_data[1], filtered_data[0], color='green')
+            #ax2.plot(filtered_data[1], filtered_data[2], 'x', color='blue')
         ax1.yaxis.label.set_color('green')
         ax1.set_xlabel(self.column_investigated.replace('_', ' '))
         ax1.set_ylabel('mean yield (kg/ha)')
-        ax2.yaxis.label.set_color('blue')
-        ax2.set_ylabel('Number of harvest samples')
+        #ax2.yaxis.label.set_color('blue')
+        #ax2.set_ylabel(sel.tr('Number of harvest samples'))
         plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.17, bottom=0.12,
                             right=0.85, top=0.92)
         self.canvas = FigureCanvas(fig)
         self.dlg.mplvl.addWidget(self.canvas)
         self.canvas.draw()
+        self.dlg.TWValues.clear()
+        self.dlg.TWValues.setRowCount(len(filtered_data[0]))
+        self.dlg.TWValues.setColumnCount(3)
+        self.dlg.TWValues.setHorizontalHeaderItem(0, QTableWidgetItem(self.column_investigated.replace('_', ' ')))
+        self.dlg.TWValues.setHorizontalHeaderItem(1, QTableWidgetItem(self.tr('Average yield')))
+        self.dlg.TWValues.setHorizontalHeaderItem(2, QTableWidgetItem(self.tr('Yield samples')))
+        for i, m_yield in enumerate(filtered_data[0]):
+            try:
+                current_value = filtered_data[1][i].replace("'", "")
+            except AttributeError:
+                try:
+                    current_value = round(filtered_data[1][i], 2)
+                except:
+                    current_value = filtered_data[1][i]
+                    pass
+                pass
+            current_count = filtered_data[2][i]
+            m_yield = round(m_yield, 2)
+            item1 = QTableWidgetItem()
+            item1.setText(str(current_value))
+            item2 = QTableWidgetItem()
+            item2.setText(str(m_yield))
+            item3 = QTableWidgetItem()
+            item3.setText(str(current_count))
+            self.dlg.TWValues.setItem(i, 0, item1)
+            self.dlg.TWValues.setItem(i, 1, item2)
+            self.dlg.TWValues.setItem(i, 2, item3)
 
 
 def sql_queary(task, investigating_param, other_parameters, db,
                min_counts):
-    mean_yields = [[], [], []]
-    values = investigating_param['values']
-    if investigating_param['checked']:
-        values = values.split(',')
-    values.sort()
-    task.setProgress(25)
-    for value_nbr, value in enumerate(values):
-        if investigating_param['hist'] and value_nbr == 0:
-            continue
-        if value == '':
-            value = ' '
-        sql = 'with '
-        for ha in investigating_param.keys():
-            all_ready_joined = []
-            if not type(investigating_param[ha]) == dict:
+    try:
+        mean_yields = [[], [], []]
+        values = investigating_param['values']
+        if investigating_param['checked']:
+            values = values.split(',')
+        values.sort()
+        task.setProgress(25)
+        for value_nbr, value in enumerate(values):
+            if investigating_param['hist'] and value_nbr == 0:
                 continue
-            sql += f"""{ha} as(select COALESCE(avg({investigating_param[ha]['ha_col']}),0) as yield, count(*)
-            FROM harvest.{ha} ha
-            """
-            for in_key in investigating_param[ha].keys():
-                if in_key == 'ha_col':
+            if value == '':
+                value = ' '
+            sql = 'with '
+            for ha in investigating_param.keys():
+                all_ready_joined = []
+                if not type(investigating_param[ha]) == dict:
                     continue
-                pre = investigating_param[ha][in_key]['prefix']
-                sql += f"""JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                sql += f"""{ha} as(select COALESCE(avg({investigating_param[ha]['ha_col']}),0) as yield, count(*)
+                FROM harvest.{ha} ha
                 """
-                all_ready_joined.append(in_key)
-            if ha in other_parameters.keys():
-                for oth_key in other_parameters[ha].keys():
-                    if not oth_key in sql:
-                        pre = other_parameters[ha][oth_key]['prefix']
-                        sql += f"""JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
-                        """
-                        all_ready_joined.append(oth_key)
-            sql += 'WHERE '
-            if ha in other_parameters.keys():
-                for oth_key in other_parameters[ha].keys():
-                    pre = other_parameters[ha][oth_key]['prefix']
-                    for attr in other_parameters[ha][oth_key].items():
-                        if attr[0] == 'prefix':
-                            continue
-                        if attr[1]['type'] == 'max_min':
-                            sql+= f"""{pre}.{attr[0]} >= {attr[1]['min']} AND
-                            """
-                            sql += f"""{pre}.{attr[0]} <= {attr[1]['max']} AND
-                            """
-                        if attr[1]['type'] == 'checked':
-                            sql+= f"""{pre}.{attr[0]} in ({attr[1]['check_text']}) AND
-                            """
-            for in_key in investigating_param[ha].keys():
-                if in_key == 'ha_col':
-                    continue
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue
                     pre = investigating_param[ha][in_key]['prefix']
-                    col = investigating_param[ha][in_key]['col']
-                    if investigating_param['checked']:
-                        sql += f"{pre}.{col} like {value}),"
-                    elif investigating_param['hist']:
-                        if len(values) != value_nbr:
-                            sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
-                            {pre}.{col} < {value}),"""
+                    sql += f"""JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                    """
+                    all_ready_joined.append(in_key)
+                if ha in other_parameters.keys():
+                    for oth_key in other_parameters[ha].keys():
+                        if not oth_key in sql:
+                            pre = other_parameters[ha][oth_key]['prefix']
+                            sql += f"""JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                            """
+                            all_ready_joined.append(oth_key)
+                sql += 'WHERE '
+                if ha in other_parameters.keys():
+                    for oth_key in other_parameters[ha].keys():
+                        pre = other_parameters[ha][oth_key]['prefix']
+                        for attr in other_parameters[ha][oth_key].items():
+                            if attr[0] == 'prefix':
+                                continue
+                            if attr[1]['type'] == 'max_min':
+                                sql+= f"""{pre}.{attr[0]} >= {attr[1]['min']} AND
+                                """
+                                sql += f"""{pre}.{attr[0]} <= {attr[1]['max']} AND
+                                """
+                            if attr[1]['type'] == 'checked':
+                                sql+= f"""{pre}.{attr[0]} in ({attr[1]['check_text']}) AND
+                                """
+                for in_key in investigating_param[ha].keys():
+                    if in_key == 'ha_col':
+                        continue
+                    for in_key in investigating_param[ha].keys():
+                        if in_key == 'ha_col':
+                            continue
+                        pre = investigating_param[ha][in_key]['prefix']
+                        col = investigating_param[ha][in_key]['col']
+                        if investigating_param['checked']:
+                            sql += f"{pre}.{col} like {value}),"
+                        elif investigating_param['hist']:
+                            if len(values) != value_nbr:
+                                sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
+                                {pre}.{col} < {value}),"""
+                            else:
+                                sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
+                                {pre}.{col} <= {value}),"""
                         else:
-                            sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
-                            {pre}.{col} <= {value}),"""
-                    else:
-                        sql += f'{pre}.{col} = {value}),'
-        sql = sql[:-1]
-        sql += f"""
-        SELECT case when("""
-        for ha in investigating_param.keys():
-            if not type(investigating_param[ha]) == dict:
+                            sql += f'{pre}.{col} = {value}),'
+            sql = sql[:-1]
+            sql += f"""
+            SELECT case when("""
+            for ha in investigating_param.keys():
+                if not type(investigating_param[ha]) == dict:
+                    continue
+                sql += f'{ha}.count + '
+            sql = sql[:-3] + ') > 0 then ('
+            for ha in investigating_param.keys():
+                if not type(investigating_param[ha]) == dict:
+                    continue
+                sql += f' {ha}.yield * {ha}.count + '
+            sql = sql[:-3] + ')/('
+            for ha in investigating_param.keys():
+                if not type(investigating_param[ha]) == dict:
+                    continue
+                sql += f'{ha}.count + '
+            sql = sql[:-3] + ') else 0 end as yield, ('
+            for ha in investigating_param.keys():
+                if not type(investigating_param[ha]) == dict:
+                    continue
+                sql += f'{ha}.count + '
+            sql = sql[:-3] + """)
+            FROM """
+            for ha in investigating_param.keys():
+                if not type(investigating_param[ha]) == dict:
+                    continue
+                sql += f'{ha}, '
+            sql = sql[:-2]
+            #print(sql)
+            result = db.execute_and_return(sql)[0]
+            mean_value = result[0]
+            count_samples = result[1]
+            if count_samples <= int(min_counts):
                 continue
-            sql += f'{ha}.count + '
-        sql = sql[:-3] + ') > 0 then ('
-        for ha in investigating_param.keys():
-            if not type(investigating_param[ha]) == dict:
-                continue
-            sql += f' {ha}.yield * {ha}.count + '
-        sql = sql[:-3] + ')/('
-        for ha in investigating_param.keys():
-            if not type(investigating_param[ha]) == dict:
-                continue
-            sql += f'{ha}.count + '
-        sql = sql[:-3] + ') else 0 end as yield, ('
-        for ha in investigating_param.keys():
-            if not type(investigating_param[ha]) == dict:
-                continue
-            sql += f'{ha}.count + '
-        sql = sql[:-3] + """)
-        FROM """
-        for ha in investigating_param.keys():
-            if not type(investigating_param[ha]) == dict:
-                continue
-            sql += f'{ha}, '
-        sql = sql[:-2]
-        #print(sql)
-        result = db.execute_and_return(sql)[0]
-        mean_value = result[0]
-        count_samples = result[1]
-        if count_samples <= int(min_counts):
-            continue
-        if investigating_param['hist']:
-            value = (value + investigating_param['values'][value_nbr - 1]) / 2
-        mean_yields[0].append(mean_value)
-        mean_yields[1].append(value)
-        mean_yields[2].append(count_samples)
-        task.setProgress(25 + value_nbr / len(values) * 50)
-    return mean_yields
+            if investigating_param['hist']:
+                value = (value + investigating_param['values'][value_nbr - 1]) / 2
+            mean_yields[0].append(mean_value)
+            mean_yields[1].append(value)
+            mean_yields[2].append(count_samples)
+            task.setProgress(25 + value_nbr / len(values) * 50)
+        return [True, mean_yields]
+    except Exception as e:
+        return [False, e, traceback.format_exc()]
