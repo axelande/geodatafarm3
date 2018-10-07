@@ -358,7 +358,7 @@ class InputTextHandler(object):
 
     def insert_manual_data(self, date_):
         field = self.ITD.CBField.currentText()
-        table = self.file_name
+        table = self.tbl_name
         date_ = "'{d}'".format(d=date_)
         if self.data_type == 'soil':
             if self.manual_values[0]['checkbox'].isChecked():
@@ -465,7 +465,6 @@ class InputTextHandler(object):
         """
         params = {}
         params['schema'] = self.data_type
-        params['tbl_name'] = self.file_name
         params['column_types'] = self.col_types
         params['heading_row'] = []
         for col in self.heading_row:
@@ -476,7 +475,26 @@ class InputTextHandler(object):
         params['longitude_col'] = self.longitude_col
         params['latitude_col'] = self.latitude_col
         params['focus_col'] = []
-        if self.db.check_table_exists(self.file_name, self.data_type):
+        if self.ITD.RBDateOnly.isChecked():
+            is_ok, first_date = check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()),
+                                                  self.ITD.ComBDate_2.currentText())
+            if not is_ok:
+                QMessageBox.information(None, self.tr('Error'),
+                                        self.tr("The date format didn't match the selected format, please change"))
+                return
+            params['date_row'] = check_text(self.ITD.ComBDate.currentText())
+            params['date_format'] = self.ITD.ComBDate_2.currentText()
+            params['all_same_date'] = ''
+            manual_date = 'date_'
+            table_date = first_date
+        else:
+            params['all_same_date'] = self.ITD.DE.text()
+            manual_date = 'c_' + self.ITD.DE.text()
+            table_date = self.ITD.DE.text()
+            params['date_row'] = ''
+        self.tbl_name = check_text(self.ITD.CBField.currentText() + '_' + self.data_type + '_' + table_date)
+        params['tbl_name'] = self.tbl_name
+        if self.db.check_table_exists(self.tbl_name, self.data_type):
             qm = QMessageBox()
             res = qm.question(None, self.tr('Message'),
                               self.tr(
@@ -487,7 +505,8 @@ class InputTextHandler(object):
             else:
                 self.db.execute_sql("""DROP TABLE {schema}.{tbl};
                                             DELETE FROM {schema}.manual
-        	                                WHERE table_ = '{tbl}';""".format(schema=self.data_type, tbl=self.file_name))
+        	                                WHERE table_ = '{tbl}';""".format(schema=self.data_type,
+                                                                              tbl=self.tbl_name))
         for i in range(self.add_to_param_row_count):
             params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
         self.focus_cols = params['focus_col']
@@ -495,19 +514,7 @@ class InputTextHandler(object):
             params['yield_row'] = params['focus_col'][0]
             params['max_yield'] = float(self.ITD.LEMaximumYield.text())
             params['min_yield'] = float(self.ITD.LEMinimumYield.text())
-        if self.ITD.RBDateOnly.isChecked():
-            if not check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()), self.ITD.ComBDate_2.currentText()):
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr("The date format didn't match the selected format, please change"))
-                return
-            params['date_row'] = check_text(self.ITD.ComBDate.currentText())
-            params['date_format'] = self.ITD.ComBDate_2.currentText()
-            params['all_same_date'] = ''
-            self.insert_manual_data('date_')
-        else:
-            params['all_same_date'] = self.ITD.DE.text()
-            self.insert_manual_data('c_' + self.ITD.DE.text())
-            params['date_row'] = ''
+        self.insert_manual_data(manual_date)
         params['sep'] = self.sep
         params['tr'] = self.tr
         params['epsg'] = self.ITD.LEEPSG.text()
@@ -531,9 +538,9 @@ class InputTextHandler(object):
                                                              'the heading.'))
 
         schema = self.data_type
-        tbl = check_text(self.file_name)
+        tbl = self.tbl_name
         if isint(tbl[0]):
-            tbl = '_' + tbl
+            tbl = '_' + self.tbl_name
         length = self.db.execute_and_return("select field_row_id from {s}.{t} limit 2".format(s=schema, t=tbl))
         if len(length) == 0:
             QMessageBox.information(None, self.tr('Error'),
@@ -614,7 +621,7 @@ def insert_data_to_database(task, db, params):
             elif column_types[i] == 1:
                 sql += str(col_name) + " REAL, "
             elif column_types[i] == 2:
-                sql += str(col_name) + " CHARACTER VARYING(20), "
+                sql += str(col_name) + " text, "
             inserting_text += str(col_name) + ', '
         sql = sql[:-2]
         sql += ")"
@@ -703,8 +710,9 @@ def insert_data_to_database(task, db, params):
                     count_db_insert += 1
             #print(inserting_text[:-1])
             db.execute_sql(inserting_text[:-1])
-            if some_wrong_len > 0:
-                no_miss_heading = False
+        no_miss_heading = True
+        if some_wrong_len > 0:
+            no_miss_heading = False
 
         sql = """SELECT * INTO {schema}.{tbl} 
         from {schema}.temp_table
@@ -718,7 +726,6 @@ def insert_data_to_database(task, db, params):
         db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
         if task != 'debug':
             task.setProgress(70)
-        ## TODO: Remove if data_type = harvest?
         if schema != 'harvest':
             sql = """drop table if exists {schema}.temp_tbl2;
         WITH voronoi_temp2 AS (
