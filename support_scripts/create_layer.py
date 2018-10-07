@@ -84,7 +84,7 @@ class CreateLayer:
     def _apply_symbology_fixed_divisions(self, layer, field, tbl_name, schema,
                                          min_v, max_v, steps):
         """Finds the amount of levels that is necessary to describe the layer,
-        a maximum of 20 different levels is set"""
+        a maximum of 20 different levels is set, if less """
         if min_v is not None and max_v is not None:
             distinct_values = list(np.arange(min_v, max_v, steps))
         else:
@@ -104,7 +104,7 @@ class CreateLayer:
                 distinct_values = temp_list
 
         colors = self._create_colors(len(distinct_values))
-        try:
+        if len(distinct_values) > 19:
             range_list = []
             for i in range(len(distinct_values) - 1):
                 red, green, blue = colors[i]
@@ -114,7 +114,7 @@ class CreateLayer:
                                                      QColor(int(red*255),int(green*255), int(blue*255), 128) ) )
             renderer = QgsGraduatedSymbolRenderer(field, range_list)
             renderer.setMode(QgsGraduatedSymbolRenderer.Custom )
-        except TypeError:
+        else:
             categories = []
             for i in range(len(distinct_values)):
                 symbol = QgsSymbol.defaultSymbol(layer.geometryType())
@@ -152,7 +152,7 @@ class CreateLayer:
             if geometryType == Qgis.Point:
                 symbol = QgsMarkerSymbol()
             elif geometryType == Qgis.Line:
-                symbol =  QgsLineSymbol()
+                symbol = QgsLineSymbol()
             elif geometryType == Qgis.Polygon:
                 symbol = QgsFillSymbol()
         return symbol
@@ -205,6 +205,7 @@ class CreateLayer:
     def repaint_layer(self):
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
+        # TODO: AttributeError: 'QgsSingleSymbolRenderer' object has no attribute 'classAttribute'
         field = layer.renderer().classAttribute()
         min_user_val = float(self.dock_widget.LEMinColor.text())
         max_user_val = float(self.dock_widget.LEMaxColor.text())
