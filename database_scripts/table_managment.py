@@ -20,8 +20,10 @@ class TableManagement:
         self.params_in_list = 0
         self.current_table = None
         self.current_schema = None
+        self.params_in_table = None
 
     def run(self):
+        """Connects the push buttons and enable the visibility of the dialog."""
         self.TMD.pButRemove.clicked.connect(self.remove_table_from_db)
         self.TMD.pButCombine.clicked.connect(self.merge_tbls)
         self.TMD.pButChangeTbl.clicked.connect(self.edit_tbl_name)
@@ -33,6 +35,8 @@ class TableManagement:
         self.TMD.exec_()
 
     def merge_tbls(self):
+        """Merging two data sets into one."""
+        # TODO: remove all polygons and create new polygons.
         tables_to_merge = []
         new_name = self.TMD.LEName.text()
         new_type = self.TMD.CBDataType.currentText()
@@ -78,6 +82,8 @@ class TableManagement:
         self.update_table_list()
 
     def retrieve_params(self):
+        """This function is trigged by "edit" table, and basically fills the left list widget,
+        all attributes that have a index get selected by default."""
         c = 0
         for item in self.items_in_table:
             if item.checkState() == 2:
@@ -118,6 +124,7 @@ class TableManagement:
         self.params_in_table = self.TMD.SAParams.findItems('', QtCore.Qt.MatchContains)
 
     def save_table(self):
+        """Updates the attribute indexes that are checked in the list widget"""
         checked_params = []
         table = self.current_table
         schema = self.current_schema
@@ -154,26 +161,39 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         self.params_in_list = 0
 
     def edit_tbl_name(self):
+        """This function pops a question if the user wants to rename the selected tables to.
+        Then it is replaced and the manual table is also updated."""
         for item in self.items_in_table:
             if item.checkState() == 2:
                 schema, tbl = item.text().split('.')
-                text, y_n = QInputDialog.getText(None, 'Dataset name', 'What do you want to '
-                                                       'rename ' + tbl + ' to?')
+                text, y_n = QInputDialog.getText(None, self.tr('Data set name'),
+                                                 self.tr('What do you want to rename ') + tbl + self.tr(' to?'))
                 if y_n:
                     sql = "ALTER TABLE {schema}.{old} RENAME TO {new}".format(schema=schema, old=tbl, new=text)
                     self.db.execute_sql(sql)
-                    #sql = "ALTER TABLE public." + tbl_name + " RENAME " + item.text() + " TO " + text
+                    sql = "Update {schema}.manual SET table_ = '{new}' where table_ = '{old}'".format(schema=schema, old=tbl, new=text)
+                    self.db.execute_sql(sql)
         self.update_table_list()
 
     def edit_param_name(self):
+        """Edit the name of all selected parameters."""
         for item in self.params_in_table:
             if item.checkState() == 2:
-                text, y_n = QInputDialog.getText(None, 'Dataset name', 'What do you want to '
-                                                       'rename ' + item.text() + ' to?')
+                text, y_n = QInputDialog.getText(None, self.tr('Parameter name'),
+                                                 self.tr('What do you want to rename ') + item.text() +
+                                                 self.tr(' to?'))
                 if y_n:
-                    sql = "ALTER TABLE {tbl} RENAME {new_name} TO {text}".format(tbl=self.current_table, new_name=item.text(), text=text)
+                    sql = """ALTER TABLE {schema}.{tbl} RENAME {new_name} TO {text}
+                    """.format(schema=self.current_schema, tbl=self.current_table, new_name=item.text(), text=text)
                     self.db.execute_sql(sql)
-
+                    try:
+                        sql = """ALTER INDEX {schema}.{old}_{schema}_{tbl}
+                              RENAME TO {new}_{schema}_{tbl}
+                              """.format(schema=self.current_schema, tbl=self.current_table,
+                                         old=item.text(), new=text)
+                        self.db.execute_sql(sql)
+                    except:
+                        pass
         self.retrieve_params()
 
     def update_table_list(self):
@@ -197,7 +217,6 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 item.setCheckState(QtCore.Qt.Unchecked)
                 self.tables_in_db += 1
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
-
 
     def remove_table_from_db(self):
         """Removes the selected tables from the database"""
