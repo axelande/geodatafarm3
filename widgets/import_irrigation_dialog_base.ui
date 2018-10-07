@@ -48,89 +48,7 @@
     <string>Add data to canvas</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="PBAddManually">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>360</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add data</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_12">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>120</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start Lat:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_13">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>150</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start Lon:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_14">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>180</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>End Lat:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_15">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>210</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>End Lon:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_16">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>300</y>
-     <width>71</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Date
-(YYYY-mm-dd)</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBAddRaindancer">
+  <widget class="QPushButton" name="PBGetData">
    <property name="geometry">
     <rect>
      <x>460</x>
@@ -143,56 +61,6 @@
     <string>Add from raindancer</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="LEStartLat">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>120</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEStartLon">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>150</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEEndLat">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>180</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEEndLon">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>210</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEDate">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>300</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="LEClientId">
    <property name="geometry">
     <rect>
@@ -201,6 +69,9 @@
      <width>121</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
   <widget class="QLineEdit" name="LEUserName">
@@ -212,6 +83,9 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
   <widget class="QLineEdit" name="LEPassword">
    <property name="geometry">
@@ -222,28 +96,8 @@
      <height>20</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QLabel" name="label_17">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>270</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
    <property name="text">
-    <string>Precipitation:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEPrep">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>270</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="label_18">
@@ -285,19 +139,6 @@
     <string>User name:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_21">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>231</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add data manually:</string>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="LEFirstDate">
    <property name="geometry">
     <rect>
@@ -335,29 +176,6 @@
     <string>Load data from your raindancer account:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_24">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>240</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Width:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEWidth">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>240</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
@@ -384,57 +202,43 @@
     <string>Make editble</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="PBEditData">
+  <widget class="QPushButton" name="PBCreateYear">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>360</y>
-     <width>75</width>
+     <x>30</x>
+     <y>80</y>
+     <width>141</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>Edit data</string>
+    <string>Create irrigation year</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_25">
+  <widget class="QDateEdit" name="DECreateYear">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>330</y>
-     <width>81</width>
-     <height>20</height>
+     <x>30</x>
+     <y>50</y>
+     <width>110</width>
+     <height>22</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Name the field:</string>
+   <property name="dateTime">
+    <datetime>
+     <hour>0</hour>
+     <minute>0</minute>
+     <second>0</second>
+     <year>2018</year>
+     <month>1</month>
+     <day>1</day>
+    </datetime>
    </property>
-  </widget>
-  <widget class="QLineEdit" name="LEDate_2">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>330</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_26">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>591</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>This part is under development, the data can be stored in the database, hence how to analyse is not formulated yet!
- All suggestion on how to analyse the data is more than welcome!</string>
+   <property name="displayFormat">
+    <string>yyyy</string>
    </property>
   </widget>
  </widget>
@@ -443,19 +247,9 @@
   <tabstop>LEUserName</tabstop>
   <tabstop>LEPassword</tabstop>
   <tabstop>LEFirstDate</tabstop>
-  <tabstop>PBAddRaindancer</tabstop>
-  <tabstop>LEStartLat</tabstop>
-  <tabstop>LEStartLon</tabstop>
-  <tabstop>LEEndLat</tabstop>
-  <tabstop>LEEndLon</tabstop>
-  <tabstop>LEWidth</tabstop>
-  <tabstop>LEPrep</tabstop>
-  <tabstop>LEDate</tabstop>
-  <tabstop>LEDate_2</tabstop>
-  <tabstop>PBAddManually</tabstop>
+  <tabstop>PBGetData</tabstop>
   <tabstop>tableWidget</tabstop>
   <tabstop>PBMakeEditble</tabstop>
-  <tabstop>PBEditData</tabstop>
   <tabstop>pButInsertDataIntoDB</tabstop>
  </tabstops>
  <resources/>

@@ -2198,7 +2198,7 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
        </widget>
        <widget class="QPushButton" name="PBAddRaindancer">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="geometry">
          <rect>
@@ -2674,6 +2674,22 @@ How to use the plugin is explained at: www.geodatafarm.com</string>
         </property>
         <property name="text">
          <string>Support for Irrigation data will come in the future</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="PBOpenRD">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>300</y>
+          <width>181</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Open Raindancer window</string>
         </property>
        </widget>
       </widget>

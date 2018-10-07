@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>824</width>
-    <height>652</height>
+    <width>1272</width>
+    <height>748</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -27,8 +27,8 @@
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>591</width>
-     <height>361</height>
+     <width>601</width>
+     <height>461</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -62,7 +62,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>370</y>
+     <y>470</y>
      <width>201</width>
      <height>23</height>
     </rect>
@@ -75,7 +75,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>400</y>
+     <y>500</y>
      <width>571</width>
      <height>241</height>
     </rect>
@@ -97,8 +97,8 @@
   <widget class="QScrollArea" name="groupBoxConstraints">
    <property name="geometry">
     <rect>
-     <x>610</x>
-     <y>0</y>
+     <x>1050</x>
+     <y>10</y>
      <width>201</width>
      <height>361</height>
     </rect>
@@ -121,7 +121,7 @@
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>370</y>
+     <y>470</y>
      <width>151</width>
      <height>20</height>
     </rect>
@@ -134,7 +134,7 @@
    <property name="geometry">
     <rect>
      <x>370</x>
-     <y>370</y>
+     <y>470</y>
      <width>41</width>
      <height>20</height>
     </rect>
@@ -144,6 +144,16 @@
    </property>
    <property name="text">
     <string>10</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="TWValues">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>11</y>
+     <width>401</width>
+     <height>591</height>
+    </rect>
    </property>
   </widget>
  </widget>
