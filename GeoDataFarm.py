@@ -277,6 +277,7 @@ class GeoDataFarm:
 
     def run_analyse(self):
         """Gathers the "in parameters" and start the analyse session"""
+        # TODO: Check that the lw are updated..
         names = []
         schemas = []
         harvest_file = False
@@ -442,37 +443,39 @@ class GeoDataFarm:
     def set_buttons(self):
         """Since most functions are dependent on that a database connections exist
         the buttons are set when a connection is set."""
-        self.populate = Populate(self)
-        self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
-        self.save_planting = SavePlanting(self)
-        self.save_planting.set_widget_connections()
-        self.save_fertilizing = SaveFertilizing(self)
-        self.save_fertilizing.set_widget_connections()
-        self.report_generator = RapportGen(self)
-        self.report_generator.set_widget_connections()
-        self.add_field = AddField(self)
-        self.add_field.set_widget_connections()
-        self.plan_ahead = PlanAhead(self)
-        self.plan_ahead.set_widget_connections()
-        self.save_spraying = SaveSpraying(self)
-        self.save_spraying.set_widget_connections()
-        self.save_other = SaveOther(self)
-        self.save_other.set_widget_connections()
-        self.save_harvesting = SaveHarvesting(self)
-        self.save_harvesting.set_widget_connections()
-        self.save_plowing = SavePlowing(self)
-        self.save_plowing.set_widget_connections()
-        self.save_harrowing = SaveHarrowing(self)
-        self.save_harrowing.set_widget_connections()
-        self.save_soil = SaveSoil(self)
-        self.save_soil.set_widget_connections()
-        self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
-        self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
-        self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
-        self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
-        self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
-        self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
-        self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
+        if self.populate is None:
+            self.populate = Populate(self)
+            self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
+            self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
+            self.save_planting = SavePlanting(self)
+            self.save_planting.set_widget_connections()
+            self.save_fertilizing = SaveFertilizing(self)
+            self.save_fertilizing.set_widget_connections()
+            self.report_generator = RapportGen(self)
+            self.report_generator.set_widget_connections()
+            self.add_field = AddField(self)
+            self.add_field.set_widget_connections()
+            self.plan_ahead = PlanAhead(self)
+            self.plan_ahead.set_widget_connections()
+            self.save_spraying = SaveSpraying(self)
+            self.save_spraying.set_widget_connections()
+            self.save_other = SaveOther(self)
+            self.save_other.set_widget_connections()
+            self.save_harvesting = SaveHarvesting(self)
+            self.save_harvesting.set_widget_connections()
+            self.save_plowing = SavePlowing(self)
+            self.save_plowing.set_widget_connections()
+            self.save_harrowing = SaveHarrowing(self)
+            self.save_harrowing.set_widget_connections()
+            self.save_soil = SaveSoil(self)
+            self.save_soil.set_widget_connections()
+            self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
+            self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
+            self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
+            self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
+            self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
+            self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
+            self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
 
     def run(self):
         """Run method that loads and starts the plugin"""
