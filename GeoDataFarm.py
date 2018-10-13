@@ -404,7 +404,7 @@ class GeoDataFarm:
         self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
         connected = self.db.get_conn()
         if not connected:
-            QMessageBox.information(None, "Error:", self.tr('No farm is created, please create a farm to continue'))
+            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of improvments or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
 
