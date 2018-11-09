@@ -26,7 +26,7 @@ import os
 from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'Import_irrigation_dialog_base.ui'))
+    os.path.dirname(__file__), 'import_irrigation_dialog_base.ui'))
 
 
 class ImportIrrigationDialog(QtWidgets.QDialog, FORM_CLASS):

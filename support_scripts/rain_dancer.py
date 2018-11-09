@@ -17,8 +17,3 @@ class MyRainDancer:
             return data
         except KeyError:
             return 'Failed'
-
-
-if __name__ == "__main__":
-    dancer = MyRainDancer()
-    operations = dancer.get_operation_data()
