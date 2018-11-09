@@ -1,13 +1,10 @@
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtWidgets import QMessageBox
-import os
 import requests
 import hashlib
-from ..widgets.create_farm_popup import CreateFarmPopup
-from ..support_scripts.populate_lists import Populate
 from ..support_scripts.__init__ import check_text
 from .db import DB
-__author__ = 'Axel Andersson'
+
+__author__ = 'Axel Hörteborn'
 
 
 class CreateFarm:
@@ -17,25 +14,6 @@ class CreateFarm:
         :param parent_widget the GeoDataFarm class
         :param new_farm bool, True if the user creates new farm,
                               False if user connects to a farm"""
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'CreateFarmPopup{}.qm'.format(locale))
-
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
-
-        #print "** INITIALIZING GeoDataFarm"
-        # Create the dialog (after translation) and keep reference
         if new_farm:
             from ..widgets.create_farm_popup import CreateFarmPopup
             self.CF = CreateFarmPopup()
@@ -150,7 +128,7 @@ class CreateFarm:
       Xmax := ST_XMax(bound_polygon);
       Ymax := ST_YMax(bound_polygon);
       SRID := ST_SRID(bound_polygon);
-    
+
       Y := ST_YMin(bound_polygon); --current sector's corner coordinate
       i := -1;
       <<yloop>>
@@ -158,28 +136,28 @@ class CreateFarm:
         IF (Y > Ymax) THEN  
             EXIT;
         END IF;
-    
+
         X := Xmin;
         <<xloop>>
         LOOP
           IF (X > Xmax) THEN
               EXIT;
           END IF;
-    
+
           CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
           NextX := ST_X(ST_Project(CPoint, $2, radians(90))::geometry);
           NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
-    
+
           i := i + 1;
           sectors[i] := ST_MakeEnvelope(X, Y, NextX, NextY, SRID);
-    
+
           X := NextX;
         END LOOP xloop;
         CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
         NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
         Y := NextY;
       END LOOP yloop;
-    
+
       RETURN ST_Collect(sectors);
     END;
     $body$
