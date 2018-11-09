@@ -77,6 +77,10 @@ class InputTextHandler(object):
             self.ITD.LMinYield.setEnabled(True)
             self.ITD.LEMaximumYield.setEnabled(True)
             self.ITD.LEMinimumYield.setEnabled(True)
+            self.ITD.LMoveX.setEnabled(True)
+            self.ITD.LMoveY.setEnabled(True)
+            self.ITD.LEMoveX.setEnabled(True)
+            self.ITD.LEMoveY.setEnabled(True)
         self.add_specific_columns()
         self.ITD.exec_()
 
@@ -518,6 +522,12 @@ class InputTextHandler(object):
         params['sep'] = self.sep
         params['tr'] = self.tr
         params['epsg'] = self.ITD.LEEPSG.text()
+        if float(self.ITD.LEMoveX.text()) != 0.0 or float(self.ITD.LEMoveY.text()) != 0.0:
+            params['move'] = True
+            params['move_x'] = float(self.ITD.LEMoveX.text())
+            params['move_y'] = float(self.ITD.LEMoveY.text())
+        else:
+            params['move'] = False
         #a = insert_data_to_database('debug', self.db, params)
         #print(a)
         task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
@@ -742,9 +752,58 @@ def insert_data_to_database(task, db, params):
             db.execute_sql(sql)
             db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
 
+        db.create_indexes(tbl_name, focus_col, schema)
+        if params['move']:
+            min_row_id = db.execute_and_return("select min(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
+            max_row_id = db.execute_and_return("select max(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
+            if min_row_id is None:
+                # If the user choose the wrong field this part cant be used...
+                return [True, no_miss_heading, some_wrong_len, sql]
+            move_x = params['move_x']
+            move_y = params['move_y']
+            distance = math.sqrt(move_x * move_x + move_y * move_y)
+            if move_x > 0:
+                p_bearing = 90 - math.degrees(math.atan(move_y/move_x))
+            elif move_x < 0:
+                p_bearing = 270 - math.degrees(math.atan(move_y/move_x))
+            else:
+                if move_y > 0:
+                    p_bearing = 0
+                else:
+                    p_bearing = 180
+            for i in range(min_row_id, max_row_id, 2000):
+                if task != 'debug':
+                    task.setProgress(50 + (i - min_row_id) / (max_row_id - min_row_id) * 40)
+                sql = """
+            WITH first_selected as
+                (SELECT field_row_id, pos, st_azimuth(pos,
+                    (SELECT pos
+                    FROM {tbl} new
+                    WHERE org.field_row_id+1=new.field_row_id)
+                    ) as bearing
+                FROM {tbl} org
+            where org.field_row_id >= {i1} - 3
+            and org.field_row_id < {i3} + 3
+            ),
+            sub_section as(SELECT field_row_id, st_project(pos::geography, 
+                                                           {dist}, 
+                                                           (select atan2(avg(sin(bearing)), avg(cos(bearing))) 
+                                                            from first_selected fs 
+                                                            where fs.field_row_id > (ss.field_row_id -3) 
+                                                            and fs.field_row_id < (ss.field_row_id +3)
+                                                            ) + radians({p_bearing})
+                                                          )::geometry as new_pos
+            FROM first_selected ss
+            )
+            update {tbl}
+            set pos=new_pos
+            from sub_section
+            where {tbl}.field_row_id = sub_section.field_row_id
+            and {tbl}.field_row_id >= {i1}
+            and {tbl}.field_row_id < {i3}""".format(tbl='harvest.'+tbl_name, i1=i, i2=i + 1, i3=i + 2000, dist=distance, p_bearing=p_bearing)
+                db.execute_sql(sql)
         if task != 'debug':
             task.setProgress(90)
-        db.create_indexes(tbl_name, focus_col, schema)
-        return [True, no_miss_heading, some_wrong_len]
+        return [True, no_miss_heading, some_wrong_len, sql]
     except Exception as e:
         return [False, e, traceback.format_exc()]
