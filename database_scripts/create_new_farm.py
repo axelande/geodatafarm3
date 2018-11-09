@@ -52,16 +52,23 @@ class CreateFarm:
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
         insertion_ok = False
-        r = requests.post('http://geodatafarm.com:5000/create', data={'username':username,'password':password, 'farmname':farmname, 'email':email_inp})
-        if r == None:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('- Is your computer online? \n- If you are sure that your computer please send an email to geo_farm@gmail.com'))
+        r = requests.post(
+            'http://geodatafarm.com/create/?username={u}&password={p}&farmname={f}&email={e}'.format(u=username,
+                                                                                                     p=password,
+                                                                                                     f=farmname,
+                                                                                                     e=email_inp))
+        if r is None:
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                '- Is your computer online? \n- If you are sure that your computer please send an email to geo_farm@gmail.com'))
             return
         r = r.text.split(',')
         if r[0] == 'false':
-            QMessageBox.information(None, self.tr("Error:"), self.tr('Farm name allready taken, please choose another name for your farm!'))
+            QMessageBox.information(None, self.tr("Error:"),
+                                    self.tr('Farm name allready taken, please choose another name for your farm!'))
             return
-        elif r[1] == 'false':
-            QMessageBox.information(None, self.tr("Error:"), self.tr('User name allready taken, please choose another name as user name!'))
+        elif r[1] == ' false':
+            QMessageBox.information(None, self.tr("Error:"),
+                                    self.tr('User name allready taken, please choose another name as user name!'))
             return
         else:
             insertion_ok = True
