@@ -74,6 +74,10 @@ class CreateFarm:
         self.add_schemas()
         self.add_tables(first_year)
         self.parent_widget.set_buttons()
+        self.parent_widget.populate.refresh(self.db)
+        self.parent_widget.populate.update_table_list()
+        self.parent_widget.populate.reload_fields()
+        self.parent_widget.populate.reload_crops()
         if insertion_ok:
             QMessageBox.information(None, self.tr("Done"), self.tr('Database created'))
         self.CF.done(0)
@@ -93,7 +97,13 @@ class CreateFarm:
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self._connect_to_db()
         self.parent_widget.db = self.db
+        # This is important when no connection is active at startup
         self.parent_widget.set_buttons()
+        # This is important when another connection is active at startup
+        self.parent_widget.populate.refresh(self.db)
+        self.parent_widget.populate.update_table_list()
+        self.parent_widget.populate.reload_fields()
+        self.parent_widget.populate.reload_crops()
         self.CF.done(0)
 
     def _connect_to_db(self):
