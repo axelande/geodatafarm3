@@ -57,8 +57,9 @@ class SaveFertilizing:
                 saw_depth = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into ferti.manual(field, crop, date_, variety, rate, saw_depth, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{saw_depth}','{other}', 'None')"""
+            sql = """Insert into ferti.manual(field, crop, date_, variety, rate, saw_depth, other, table_) 
+            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{saw_depth}','{other}', 'None')
+            """.format(field=field, crop=crop, date_=date_, varerity=varerity, rate=rate, saw_depth=saw_depth, other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))

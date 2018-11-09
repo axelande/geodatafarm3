@@ -60,8 +60,10 @@ class SavePlanting:
                 saw_depth = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into plant.manual(field, crop, date_, variety, spacing, seed_rate, saw_depth, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{spacing}','{seed_rate}','{saw_depth}','{other}', 'None')"""
+            sql = """Insert into plant.manual(field, crop, date_, variety, spacing, seed_rate, saw_depth, other, table_) 
+            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{spacing}','{seed_rate}','{saw_depth}','{other}', 'None')
+            """.format(field=field, crop=crop, date_=date_, varerity=varerity, spacing=spacing, seed_rate=seed_rate,
+                       saw_depth=saw_depth, other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))

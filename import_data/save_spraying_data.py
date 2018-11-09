@@ -60,8 +60,10 @@ class SaveSpraying:
                 wind_dir = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into spray.manual(field, crop, date_, variety, rate, wind_speed, wind_dir, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{wind_speed}','{wind_dir}','{other}', 'None')"""
+            sql = """Insert into spray.manual(field, crop, date_, variety, rate, wind_speed, wind_dir, other, table_) 
+            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{wind_speed}','{wind_dir}','{other}', 'None')
+            """.format(field=field, crop=crop, date_=date_, varerity=varerity, rate=rate, wind_speed=wind_speed,
+                       wind_dir=wind_dir, other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))

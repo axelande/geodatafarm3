@@ -61,8 +61,9 @@ class SaveSoil:
                 rx = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into soil.manual(field, date_, clay, humus, ph, rx, other, table_) 
-            VALUES ('{field}', '{date_}','{clay}','{humus}','{ph}','{rx}','{other}', 'None')"""
+            sql = """Insert into soil.manual(field, date_, clay, humus, ph, rx, other, table_) 
+            VALUES ('{field}', '{date_}','{clay}','{humus}','{ph}','{rx}','{other}', 'None')
+            """.format(field=field, date_=date_, clay=clay, humus=humus, ph=ph, rx=rx, other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))

@@ -56,8 +56,9 @@ class SaveHarvesting:
                 yield_ = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into harvest.manual(field, crop, date_, total_yield, yield, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{total_yield}','{yield_}','{other}', 'None')"""
+            sql = """Insert into harvest.manual(field, crop, date_, total_yield, yield, other, table_) 
+            VALUES ('{field}', '{crop}', '{date_}','{total_yield}','{yield_}','{other}', 'None')
+            """.format(field=field, crop=crop, date_=date_, total_yield=total_yield, yield_=yield_, other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))

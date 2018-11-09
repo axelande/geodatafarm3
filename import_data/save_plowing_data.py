@@ -26,8 +26,9 @@ class SavePlowing:
                 depth = 'Null'
             if other == '':
                 other = 'Null'
-            sql = f"""Insert into other.plowing_manual(field, date_, depth, other) 
-            VALUES ('{field}', '{date_}','{depth}','{other}')"""
+            sql = """Insert into other.plowing_manual(field, date_, depth, other) 
+            VALUES ('{field}', '{date_}','{depth}','{other}')""".format(field=field, date_=date_, depth=depth,
+                                                                        other=other)
             try:
                 self.parent.db.execute_sql(sql)
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
