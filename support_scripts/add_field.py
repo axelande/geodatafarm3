@@ -132,6 +132,10 @@ class AddField:
 
     def quit(self):
         """Closes the widget."""
+        self.AFD.PBSelectExtent.clicked.disconnect()
+        self.AFD.PBSave.clicked.disconnect()
+        self.AFD.PBHelp.clicked.disconnect()
+        self.AFD.PBQuit.clicked.disconnect()
         self.AFD.done(0)
 
     def save(self):
