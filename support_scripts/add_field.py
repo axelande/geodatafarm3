@@ -13,8 +13,13 @@ import time
 
 class AddField:
     def __init__(self, parent_widget):
-        """This class creates a guide file
-        :param parent_widget"""
+        """
+        This class handle the creation of Fields.
+        Parameters
+        ----------
+        parent_widget
+            GeoDataFarm class object
+        """
         self.iface = parent_widget.iface
         self.db = parent_widget.db
         self.tr = parent_widget.tr
@@ -25,7 +30,7 @@ class AddField:
         self.defined_field = ''
 
     def run(self):
-        """Presents the sub widget HandleInput and connects the different
+        """Presents the sub widget AddField and connects the different
         buttons to their function"""
         self.AFD.show()
         self.AFD.PBSelectExtent.clicked.connect(self.clicked_define_field)
@@ -36,6 +41,11 @@ class AddField:
         self.parent.populate.reload_fields()
 
     def set_widget_connections(self):
+        """
+        Function that sets the main widget connections.
+        Returns
+        -------
+        """
         self.parent.dock_widget.PBAddField.clicked.connect(self.run)
         self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
         self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
@@ -79,7 +89,8 @@ class AddField:
                 j -= 1
 
     def view_fields(self):
-        """Add all fields that aren't displayed on the canvas, if no background map is loaded Google maps are loaded."""
+        """Add all fields that aren't displayed on the canvas,
+        if no background map is loaded Google maps are loaded."""
         defined_field = self.defined_field
         if defined_field == '':
             add_background()
