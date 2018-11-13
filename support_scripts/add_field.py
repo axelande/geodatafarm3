@@ -1,11 +1,10 @@
-from qgis.core import QgsProject, QgsVectorLayer, QgsRasterLayer, QgsRectangle, QgsCoordinateReferenceSystem, \
-    QgsMapSettings
+from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
-from operator import xor
-from psycopg2 import ProgrammingError, IntegrityError, InternalError
+from psycopg2 import IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
+import traceback
 import time
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
@@ -21,6 +20,7 @@ class AddField:
             GeoDataFarm class object
         """
         self.iface = parent_widget.iface
+        self.tsk_mngr = parent_widget.tsk_mngr
         self.db = parent_widget.db
         self.tr = parent_widget.tr
         self.dock_widget = parent_widget.dock_widget
@@ -94,25 +94,49 @@ class AddField:
         defined_field = self.defined_field
         if defined_field == '':
             add_background()
-        sources = [layer.source() for layer in QgsProject.instance().mapLayers().values()]
+        sources = [layer.name().split('_')[0] for layer in QgsProject.instance().mapLayers().values()]
         fields_db = self.db.execute_and_return("select field_name from fields")
-        for field in fields_db:
-            field = field[0]
-            found = False
-            if defined_field != '':
-                if field != defined_field:
-                    continue
-            for source in sources:
-                if str(field).lower() in source.lower():
-                    found = True
-            if found:
-                continue
-            layer = self.db.addPostGISLayer('fields', 'polygon', 'public',
-                                            extra_name=field + '_',
-                                            filter_text="field_name='{f}'".format(f=field))
-            set_label(layer, 'field_name')
+        task = QgsTask.fromFunction('Run import text data', self.add_fields_2_canvas, self.db, fields_db,
+                                    defined_field, sources,
+                                    on_finished=self.finish)
+        self.tsk_mngr.addTask(task)
+
+    def add_fields_2_canvas(self, task, db, fields_db, defined_field, sources):
+        try:
+            layers = []
+            d_f = 0
+            f_c =0
+            for i, field in enumerate(fields_db):
+                task.setProgress(i/len(fields_db)*100)
+                field = field[0]
+                found = False
+                if defined_field != '':
+                    if field != defined_field:
+                        d_f +=1
+                        continue
+                for source in sources:
+                    if str(field).lower() in source.lower():
+                        f_c +=1
+                        continue
+                layer = db.addPostGISLayer('fields', 'polygon', 'public',
+                                           extra_name=field + '_',
+                                           filter_text="field_name='{f}'".format(f=field))
+                set_label(layer, 'field_name')
+                layers.append(layer)
+            return [True, f_c, d_f, layers]
+        except Exception as e:
+            return [False, e, traceback.format_exc()]
+
+    def finish(self, result, values):
+        print(values)
+        if values[0] is False:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+                                                                                                      t=values[2])))
+            return
+        for layer in values[-1]:
             QgsProject.instance().addMapLayer(layer)
-        if defined_field == '':
+        if self.defined_field == '':
             set_zoom(self.parent.iface, 1.1)
         self.defined_field = ''
 
