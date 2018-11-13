@@ -41,6 +41,18 @@ def set_label(layer, field_label):
 
 
 def set_zoom(iface, extra_extent):
+    """
+    Sets the zoom level to include all layers (excluding tiles layer) with some extra extent
+    Parameters
+    ----------
+    iface: QGIS interface
+        The QGIS iface module.
+    extra_extent: float
+        How much extra space around the layers eg. 1.1 is 10% extra
+    Returns
+    -------
+
+    """
     zoom_extent = QgsRectangle()
     for layer in QgsProject.instance().mapLayers().values():
         if 'xyz&url' not in layer.source():
@@ -56,6 +68,9 @@ def set_zoom(iface, extra_extent):
 
 
 def add_background():
+    """Check if there are no other tiles present on the canvas then
+    adds a google satellite as a background map.
+    """
     source_found = False
     for layer in QgsProject.instance().mapLayers().values():
         if 'xyz&url' in layer.source():
