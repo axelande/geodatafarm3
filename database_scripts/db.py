@@ -242,7 +242,7 @@ ORDER BY table_name""".format(schema=schema)
         :return
         """
 
-        sql = f"""select
+        sql = """select
         a.attname as column_name
         from
         pg_class t
@@ -256,15 +256,15 @@ ORDER BY table_name""".format(schema=schema)
         and n.nspname in ('{schema}')
         and a.attname not in ('{exclude}')
         group by t.relname,
-        a.attname order by a.attname"""
+        a.attname order by a.attname""".format(table=table, schema=schema, exclude=exclude)
         columns = self.execute_and_return(sql)
         return columns
 
     def update_row_id(self, schema, table):
         """Update the field row id"""
-        sql = f"""ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
+        sql = """ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
         ALTER TABLE {schema}.{table} add COLUMN field_row_id serial UNIQUE NOT NULL
-"""
+        """.format(schema=schema, table=table)
         self.execute_sql(sql)
 
     def get_indexes(self, tables, schema):
@@ -273,7 +273,8 @@ ORDER BY table_name""".format(schema=schema)
         :param schema: str, what schema to look in. 
         :return: list of strings of the index names
         """
-        sql = f"""select
+        schema_txt = "" if schema == '' else "and n.nspname='{s}'".format(s=schema)
+        sql = """select
              t.relname as table_name,
              i.relname as index_name,
              a.attname as column_name,
@@ -291,10 +292,10 @@ ORDER BY table_name""".format(schema=schema)
              and a.attnum = ANY(ix.indkey)
              and t.relkind = 'r'
              and t.relname in ('{tables}')
-             {"" if schema == '' else "and n.nspname='" + schema + "'"}
+             {schema_txt}
             order by
              t.relname,
-             i.relname;"""
+             i.relname;""".format(tables=tables, schema_txt=schema_txt)
         big_table = self.execute_and_return(sql)
         parameter_to_eval = {}
         ind = -1
@@ -336,12 +337,28 @@ ORDER BY table_name""".format(schema=schema)
 
     def remove_table(self, tbl_name):
         """
-        :param tbl_name: list of strings
-        :return:
+        Function that removes a table from the database
+        Parameters
+        ----------
+        tbl_name: str
+            string with schema.table
+
+        Returns
+        -------
+
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
+        try:
+            #TODO Fix this, this only work for fields without _ in the name
+            schema = tbl_name.split('.')[0]
+            tbl = tbl_name.split('.')[1]
+            field = tbl.split('_')[0]
+            date = 'c_' + tbl.split('_')[-3] + '-' + tbl.split('_')[-2] + '-' + tbl.split('_')[-1]
+            cur.execute("DELETE FROM {tbl} WHERE field='{f}' and date_text='{d}'".format(tbl=tbl_name, f=field, d=date))
+        except:
+            pass
         self.conn.commit()
         self._close()
 
