@@ -513,10 +513,10 @@ class Analyze:
                 schema = self.layout_dict[col]['schema'][tbl_nr]
                 data_type = self.layout_dict[col]['type']
                 ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
-                s_t = f'{schema}.{table}'
+                s_t = '{schema}.{table}'.format(schema=schema, table=table)
                 if s_t not in prefixes.keys():
                     prefix_count += 1
-                    prefixes[s_t] = f'a{prefix_count}'
+                    prefixes[s_t] = 'a{prefix_count}'.format(prefix_count=prefix_count)
                 if self.cb[nbr].isChecked():
                     column_investigated = col
                     if ha not in investigating_param.keys():
@@ -671,22 +671,22 @@ def sql_queary(task, investigating_param, other_parameters, db,
                 all_ready_joined = []
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f"""{ha} as(select COALESCE(avg({investigating_param[ha]['ha_col']}),0) as yield, count(*)
+                sql += """{ha} as(select COALESCE(avg({avg_val}),0) as yield, count(*)
                 FROM harvest.{ha} ha
-                """
+                """.format(ha=ha, avg_val=investigating_param[ha]['ha_col'])
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue
                     pre = investigating_param[ha][in_key]['prefix']
-                    sql += f"""JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
-                    """
+                    sql += """JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                    """.format(in_key=in_key, pre=pre)
                     all_ready_joined.append(in_key)
                 if ha in other_parameters.keys():
                     for oth_key in other_parameters[ha].keys():
                         if not oth_key in sql:
                             pre = other_parameters[ha][oth_key]['prefix']
-                            sql += f"""JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
-                            """
+                            sql += """JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
+                            """.format(oth_key=oth_key, pre=pre)
                             all_ready_joined.append(oth_key)
                 sql += 'WHERE '
                 if ha in other_parameters.keys():
@@ -696,13 +696,13 @@ def sql_queary(task, investigating_param, other_parameters, db,
                             if attr[0] == 'prefix':
                                 continue
                             if attr[1]['type'] == 'max_min':
-                                sql+= f"""{pre}.{attr[0]} >= {attr[1]['min']} AND
-                                """
-                                sql += f"""{pre}.{attr[0]} <= {attr[1]['max']} AND
-                                """
+                                sql += """{pre}.{attr} >= {txt} AND
+                                """.format(pre=pre, attr=attr[0], txt=attr[1]['min'])
+                                sql += """{pre}.{attr} <= {txt} AND
+                                """.format(pre=pre, attr=attr[0], txt=attr[1]['max'])
                             if attr[1]['type'] == 'checked':
-                                sql+= f"""{pre}.{attr[0]} in ({attr[1]['check_text']}) AND
-                                """
+                                sql += """{pre}.{attr} in ({txt}) AND
+                                """.format(pre=pre, attr=attr[0], txt=attr[1]['check_text'])
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue
@@ -712,44 +712,44 @@ def sql_queary(task, investigating_param, other_parameters, db,
                         pre = investigating_param[ha][in_key]['prefix']
                         col = investigating_param[ha][in_key]['col']
                         if investigating_param['checked']:
-                            sql += f"{pre}.{col} like {value}),"
+                            sql += "{pre}.{col} like {value}),".format(pre=pre, col=col, value=value)
                         elif investigating_param['hist']:
                             if len(values) != value_nbr:
-                                sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
-                                {pre}.{col} < {value}),"""
+                                sql += """{pre}.{col} >= {value2} AND
+                                {pre}.{col} < {value}),""".format(pre=pre, col=col, value=value, value2=values[value_nbr - 1])
                             else:
-                                sql += f"""{pre}.{col} >= {values[value_nbr - 1]} AND
-                                {pre}.{col} <= {value}),"""
+                                sql += """{pre}.{col} >= {value2} AND
+                                {pre}.{col} <= {value}),""".format(pre=pre, col=col, value=value, value2=values[value_nbr - 1])
                         else:
-                            sql += f'{pre}.{col} = {value}),'
+                            sql += '{pre}.{col} = {value}),'.format(pre=pre, col=col, value=value)
             sql = sql[:-1]
-            sql += f"""
+            sql += """
             SELECT case when("""
             for ha in investigating_param.keys():
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f'{ha}.count + '
+                sql += '{ha}.count + '.format(ha=ha)
             sql = sql[:-3] + ') > 0 then ('
             for ha in investigating_param.keys():
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f' {ha}.yield * {ha}.count + '
+                sql += ' {ha}.yield * {ha}.count + '.format(ha=ha)
             sql = sql[:-3] + ')/('
             for ha in investigating_param.keys():
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f'{ha}.count + '
+                sql += '{ha}.count + '.format(ha=ha)
             sql = sql[:-3] + ') else 0 end as yield, ('
             for ha in investigating_param.keys():
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f'{ha}.count + '
+                sql += '{ha}.count + '.format(ha=ha)
             sql = sql[:-3] + """)
             FROM """
             for ha in investigating_param.keys():
                 if not type(investigating_param[ha]) == dict:
                     continue
-                sql += f'{ha}, '
+                sql += '{ha}, '.format(ha=ha)
             sql = sql[:-2]
             #print(sql)
             result = db.execute_and_return(sql)[0]
