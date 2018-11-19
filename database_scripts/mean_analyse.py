@@ -452,15 +452,18 @@ class Analyze:
                     ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
                     s_t = '{s}.{t}'.format(s=schema, t=table)
                     for item in self.layout_dict[col]['checked_items']:
+                        if ha in other_parameters.keys():
+                            if s_t in other_parameters[ha].keys():
+                                if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
+                                    other_parameters[ha][s_t][col]['check_text'] += item.text() + "','"
+                        if ha in main_investigate_col.keys():
+                            if s_t in main_investigate_col[ha].keys():
+                                if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
+                                    text_v += "'{it}',".format(it=item.text())
+                    if ha in other_parameters.keys():
                         if s_t in other_parameters[ha].keys():
-                            if item.checkState() == 2 and col in other_parameters[ha][s_t].keys():
-                                other_parameters[ha][s_t][col]['check_text'] += item.text() + "','"
-                        if s_t in main_investigate_col[ha].keys():
-                            if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
-                                text_v += f"'{item.text()}',"
-                    if s_t in other_parameters[ha].keys():
-                        if col in other_parameters[ha][s_t].keys():
-                            other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-2]
+                            if col in other_parameters[ha][s_t].keys():
+                                other_parameters[ha][s_t][col]['check_text'] = other_parameters[ha][s_t][col]['check_text'][:-2]
                 else:
                     break
             if len(text_v) > 0:
