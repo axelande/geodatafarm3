@@ -99,9 +99,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>0</x>
      <y>340</y>
-     <width>141</width>
+     <width>171</width>
      <height>23</height>
     </rect>
    </property>
@@ -125,7 +125,7 @@
   <widget class="QLineEdit" name="LEName">
    <property name="geometry">
     <rect>
-     <x>380</x>
+     <x>390</x>
      <y>340</y>
      <width>113</width>
      <height>20</height>
@@ -135,7 +135,7 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>310</x>
      <y>340</y>
      <width>71</width>
      <height>16</height>
@@ -151,9 +151,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>0</x>
      <y>370</y>
-     <width>141</width>
+     <width>171</width>
      <height>23</height>
     </rect>
    </property>
@@ -214,7 +214,7 @@
   <widget class="QComboBox" name="CBDataType">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>180</x>
      <y>340</y>
      <width>121</width>
      <height>20</height>
