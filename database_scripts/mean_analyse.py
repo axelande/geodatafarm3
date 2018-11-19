@@ -426,13 +426,13 @@ class Analyze:
                         self.cb[nbr].setChecked(False)
                     self.radio_group.addButton(self.cb[nbr], nbr)
                     self.cb[nbr].move(15, 34)
-                    if isint(analyse_params['distinct_values'][0]) or isfloat(
-                            analyse_params['distinct_values'][0]):
-                        self._set_number_layout(qbox, analyse_params,
-                                                table['index_col'], nbr)
-                    else:
+                    if isinstance(analyse_params['distinct_values'][0], str):
                         self._set_checkbox_layout(qbox, analyse_params,
                                                   table['index_col'], nbr)
+                    else:
+                        self._set_number_layout(qbox, analyse_params,
+                                                table['index_col'], nbr)
+
 
         constranint_area.setLayout(constranint_layout)
         self.dlg.groupBoxConstraints.setWidget(constranint_area)
