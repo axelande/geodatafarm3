@@ -168,26 +168,26 @@ class MultiEdit:
                                  self.tr("Please select a layer"))
 
 
-def bool2str(bVar):
-    if bVar:
+def bool2str(b_var):
+    if b_var:
         return 'True'
     else:
         return 'False'
 
 
-def str2bool(bVar):
-    if (bVar == 'True'):
+def str2bool(b_var):
+    if b_var == 'True':
         return True
     else:
         return False
 
 
-def rm_if_too_old_settings_file(myPath_and_File):
-    if os.path.exists(myPath_and_File) and os.path.isfile(
-            myPath_and_File) and os.access(myPath_and_File, R_OK):
+def rm_if_too_old_settings_file(my_path_and_file):
+    if os.path.exists(my_path_and_file) and os.path.isfile(
+            my_path_and_file) and os.access(my_path_and_file, R_OK):
         now = time.time()
-        tmpfileSectime = os.stat(myPath_and_File)[
+        tmpfileSectime = os.stat(my_path_and_file)[
             7]  # get last modified time,[8] would be last creation time
         if (
                 now - tmpfileSectime > 60 * 60 * 12):  # if settings file is older than 12 hour
-            os.remove(myPath_and_File)
+            os.remove(my_path_and_file)
