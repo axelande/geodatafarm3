@@ -9,6 +9,49 @@ import time
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
+def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
+    """
+    A function that adds fields that are not added previously.
+    Parameters
+    ----------
+    task: QgsTask
+        a QgsTask to run the function in
+    db: DB
+        A database connection
+    fields_db: list
+        list of the names of all fields in the database
+    defined_field: str
+        the last added field name
+    sources: list
+        list of source names
+    Returns
+    -------
+    list
+        If all went ok:
+            [True, list of layers]
+        Else:
+            [False, exception, traceback]
+    """
+    try:
+        layers = []
+        for i, field in enumerate(fields_db):
+            task.setProgress(i / len(fields_db) * 100)
+            field = field[0]
+            if defined_field != '':
+                if field != defined_field:
+                    continue
+            for source in sources:
+                if str(field).lower() in source.lower():
+                    continue
+            layer = db.addPostGISLayer('fields', 'polygon', 'public',
+                                       extra_name=field + '_',
+                                       filter_text="field_name='{f}'".format(f=field))
+            set_label(layer, 'field_name')
+            layers.append(layer)
+        return [True, layers]
+    except Exception as e:
+        return [False, e, traceback.format_exc()]
+
 
 class AddField:
     def __init__(self, parent_widget):
@@ -101,34 +144,22 @@ class AddField:
                                     on_finished=self.finish)
         self.tsk_mngr.addTask(task)
 
-    def add_fields_2_canvas(self, task, db, fields_db, defined_field, sources):
-        try:
-            layers = []
-            d_f = 0
-            f_c =0
-            for i, field in enumerate(fields_db):
-                task.setProgress(i/len(fields_db)*100)
-                field = field[0]
-                found = False
-                if defined_field != '':
-                    if field != defined_field:
-                        d_f +=1
-                        continue
-                for source in sources:
-                    if str(field).lower() in source.lower():
-                        f_c +=1
-                        continue
-                layer = db.addPostGISLayer('fields', 'polygon', 'public',
-                                           extra_name=field + '_',
-                                           filter_text="field_name='{f}'".format(f=field))
-                set_label(layer, 'field_name')
-                layers.append(layer)
-            return [True, f_c, d_f, layers]
-        except Exception as e:
-            return [False, e, traceback.format_exc()]
-
     def finish(self, result, values):
-        print(values)
+        """
+        Produces either an error message telling what went wrong or adds the fields to canvas and zoom to the layers.
+        Parameters
+        ----------
+        result
+        values: list
+            If all went ok:
+                [True, list of layers]
+            Else:
+                [False, exception, traceback]
+
+        Returns
+        -------
+
+        """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
@@ -199,6 +230,12 @@ class AddField:
         self.view_fields()
 
     def help(self):
+        """
+        A function that gives some advice on how the function works for the user.
+        Returns
+        -------
+
+        """
         QMessageBox.information(None, self.tr("Help:"), self.tr(
             'Here is where you add a field.\n'
             '1. Start with giving the field a name.\n'
