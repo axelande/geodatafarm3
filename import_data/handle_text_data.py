@@ -1,17 +1,14 @@
-from qgis.core import QgsProject, QgsVectorLayer, QgsTask
+from qgis.core import QgsTask
 import traceback
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
     QMessageBox, QLabel, QLineEdit, QComboBox, QCheckBox
-from osgeo import osr
-import os
 import re
 import math
 import time
 
 from operator import xor, itemgetter
 from datetime import datetime
-from dateutil.parser import parse
 # Import the code for the dialog
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
@@ -546,7 +543,6 @@ class InputTextHandler(object):
                                                              'since the row'
                                                              ' did not match '
                                                              'the heading.'))
-
         schema = self.data_type
         tbl = self.tbl_name
         if isint(tbl[0]):
