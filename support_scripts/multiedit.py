@@ -20,6 +20,7 @@ class MultiEdit:
         self.MED = MultiEditDialog()
         self.tr = parent.tr
         self.iface = parent.iface
+        self.db = parent.db
         layer = self.iface.mapCanvas().currentLayer()
         self.MED.buttonBox.accepted.connect(self.run)
         delimchars = "#"
@@ -96,56 +97,75 @@ class MultiEdit:
             layer.startEditing()
         value = self.tr(self.MED.QLEvalore.displayText())
         nPosField = self.MED.CBfields.currentIndex()
-        f_index = self.MED.CBfields.itemData(nPosField)[0]
-        f_name = self.MED.CBfields.itemData(nPosField)
         if len(value) <= 0:
             infoString = self.tr("Warning <b> please input a value... </b>")
             self.MED.label.setText(infoString)
             return
         layer = self.iface.mapCanvas().currentLayer()
-        if (layer):
-            nF = layer.selectedFeatureCount()  # numero delle features selezionate
-            if (nF > 0):
-                oFeaIterator = layer.selectedFeatures()  # give the selected feauter new in api2
-                for feature in oFeaIterator:  # in oFea2 there is an iterator object (api2)
-                    layer.changeAttributeValue(feature.id(), nPosField, value,
-                                               True)
-                if not os.path.exists(
-                        tempfile.gettempdir() + "/QuickMultiAttributeEdit_tmp"):
-                    out_file = open(
-                        tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
-                        'w')
-                    # out_file.write( layer.name() + delimchars +  self.tr(self.MED.CBfields.currentText()) + delimchars + value + delimchars + bool2str(self.MED.cBkeepLatestValue.isChecked())  )
-                    out_file.write(layer.name() + delimchars + self.MED.CBfields.currentText() + delimchars + value + delimchars + bool2str(
-                                           self.MED.cBkeepLatestValue.isChecked()))
-                    out_file.close()
-
+        if layer:
+            if layer.source()[:6] == 'dbname':
+                if layer.selectedFeatureCount() > 0:
+                    ids_to_change = []
+                    for feature in layer.getSelectedFeatures():
+                        ids_to_change.append(feature.attributes()[0])
+                    tbl = layer.source()[layer.source().find('table')+6:layer.source().find('(polygon)')-1]
+                    field_name = layer.fields()[nPosField].name()
+                    type_ = layer.fields()[nPosField].typeName()
+                    if type_ == 'int4' or type_ == 'float4':
+                        f_value = value
+                    else:
+                        f_value = "'" + value + "'"
+                    sql = """UPDATE {tbl}
+                    SET {field}={field_value}
+                    where field_row_id in ({ids})""".format(tbl=tbl, field=field_name,
+                                                            field_value=f_value, ids=str(ids_to_change)[1:-1])
+                    self.db.execute_sql(sql)
+                    self.iface.actionSaveActiveLayerEdits().trigger()
+                    self.iface.actionToggleEditing().trigger()
+                    layer.triggerRepaint()
                 else:
-                    in_file = open(
-                        tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
-                        'r')
-                    file_cont = in_file.read()
-                    in_file.close()
-                    file_cont_splitted = file_cont.split(delimchars)
-                    lastlayer = file_cont_splitted[0]
-                    lastfield = file_cont_splitted[1]
-                    lastvalue = file_cont_splitted[2]
-                    out_file = open(
-                        tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
-                        'w')
-                    # out_file.write( layer.name() + delimchars +  self.tr(self.MED.CBfields.currentText()) + delimchars + value + delimchars + bool2str(self.MED.cBkeepLatestValue.isChecked())  )
-                    out_file.write(layer.name() + delimchars + self.MED.CBfields.currentText() + delimchars + value + delimchars + bool2str(
-                                           self.MED.cBkeepLatestValue.isChecked()))
-                    out_file.close()
-                self.iface.actionSaveActiveLayerEdits().trigger()
-                self.iface.actionToggleEditing().trigger()
-                # layer.commitChanges()
+                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
+                                         self.tr("Please select at least one feature from <b>{lyr}</b> current layer".format(lyr=layer.name())))
             else:
-                QMessageBox.critical(self.iface.mainWindow(), "Error",
-                                     "Please select at least one feature from <b> " + layer.name() + "</b> current layer")
+                nF = layer.selectedFeatureCount()
+                if nF > 0:
+                    oFeaIterator = layer.selectedFeatures()  # give the selected feature new in api2
+                    for feature in oFeaIterator:  # in oFea2 there is an iterator object (api2)
+                        layer.changeAttributeValue(feature.id(), nPosField, value,
+                                                   True)
+                    if not os.path.exists(
+                            tempfile.gettempdir() + "/QuickMultiAttributeEdit_tmp"):
+                        out_file = open(
+                            tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
+                            'w')
+                        # out_file.write( layer.name() + delimchars +  self.tr(self.MED.CBfields.currentText()) + delimchars + value + delimchars + bool2str(self.MED.cBkeepLatestValue.isChecked())  )
+                        out_file.write(layer.name() + delimchars + self.MED.CBfields.currentText() + delimchars + value + delimchars + bool2str(
+                                               self.MED.cBkeepLatestValue.isChecked()))
+                        out_file.close()
+                    else:
+                        path_ext = False
+                        in_file = open(
+                            tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
+                            'r')
+                        file_cont = in_file.read()
+                        in_file.close()
+                        file_cont_splitted = file_cont.split(delimchars)
+                        out_file = open(
+                            tempfile.gettempdir() + '/QuickMultiAttributeEdit_tmp',
+                            'w')
+                        # out_file.write( layer.name() + delimchars +  self.tr(self.MED.CBfields.currentText()) + delimchars + value + delimchars + bool2str(self.MED.cBkeepLatestValue.isChecked())  )
+                        out_file.write(layer.name() + delimchars + self.MED.CBfields.currentText() + delimchars + value + delimchars + bool2str(
+                                               self.MED.cBkeepLatestValue.isChecked()))
+                        out_file.close()
+                    self.iface.actionSaveActiveLayerEdits().trigger()
+                    self.iface.actionToggleEditing().trigger()
+                    # layer.commitChanges()
+                else:
+                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
+                                         self.tr("Please select at least one feature from <b>{lyr}</b> current layer".format(lyr=layer.name())))
         else:
-            QMessageBox.critical(self.iface.mainWindow(), "Error",
-                                 "Please select a layer")
+            QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
+                                 self.tr("Please select a layer"))
 
 
 def bool2str(bVar):
