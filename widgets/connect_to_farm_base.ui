@@ -35,9 +35,9 @@
   <widget class="QLineEdit" name="farm_name">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>40</y>
-     <width>121</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
@@ -50,7 +50,7 @@
     <rect>
      <x>18</x>
      <y>40</y>
-     <width>61</width>
+     <width>101</width>
      <height>16</height>
     </rect>
    </property>
@@ -74,9 +74,9 @@
   <widget class="QLineEdit" name="user_name">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>70</y>
-     <width>121</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
@@ -87,9 +87,9 @@
   <widget class="QLineEdit" name="pass_word">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>100</y>
-     <width>121</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
