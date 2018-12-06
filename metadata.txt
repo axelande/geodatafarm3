@@ -11,11 +11,11 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.0.3
+version=2.0.4
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
-about=This is a plugin for farmers that both works as a log for different efforts on the field and also aims to determine the yield impact of different parameters. It is built for any crops and any field parameters, however it is mostly tested for potatoes. The program requires third party packages, matplotlib and reportlib, which is installed be default if not already installed, to use the plugin requires a stable internet connection. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
+about=This is a plugin for farmers that both works as a log for different efforts on the field and also aims to determine the yield impact of different parameters. It is built for any crops and any field parameters, however it is mostly tested for potatoes. The program requires third party packages, matplotlib and reportlib, which is installed be default if not already installed. The plugin requires a stable internet connection. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
 
 tracker=https://github.com/axelande/geodatafarm3/issues
 repository=https://github.com/axelande/geodatafarm3
@@ -24,12 +24,12 @@ repository=https://github.com/axelande/geodatafarm3
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-# changelog=*Added a script to autoinstall matplotlib so the user dont have to.
+changelog=Minor change of the user interface and updated swedish translation
 
 # Tags are comma separated with spaces allowed
 tags=Farm, data analysis, csv file reader
 
-homepage=www.geodatafarm.com
+homepage=http://www.geodatafarm.com
 category=Database
 icon=img\icon.png
 # experimental flag
@@ -37,4 +37,3 @@ experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-
