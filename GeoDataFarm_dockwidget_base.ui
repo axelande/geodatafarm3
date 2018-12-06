@@ -34,7 +34,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>70</y>
+        <y>20</y>
         <width>269</width>
         <height>20</height>
        </rect>
@@ -56,7 +56,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>100</y>
+        <y>50</y>
         <width>269</width>
         <height>20</height>
        </rect>
@@ -74,33 +74,11 @@
        <string>Connect to an exicting farm</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="PBCreateGuide">
-      <property name="geometry">
-       <rect>
-        <x>770</x>
-        <y>80</y>
-        <width>130</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>23</height>
-       </size>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedKingdom"/>
-      </property>
-      <property name="text">
-       <string>Create guide file</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="LFarmName">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>130</y>
+        <y>80</y>
         <width>269</width>
         <height>25</height>
        </rect>
@@ -127,16 +105,30 @@
      <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>310</x>
         <y>10</y>
-        <width>891</width>
-        <height>61</height>
+        <width>601</width>
+        <height>101</height>
        </rect>
       </property>
       <property name="text">
        <string>Welcome to GeoDataFarm!
-Some parts of the plugin is explained at: www.geodatafarm.com
+This plugin aims to help farmers, it was orignal built to view and analyse field data.
+Data in terms of log positions from farm equipment, like yield measurment.
+Since it is a complex plugin it is explained at: www.geodatafarm.com
 If you have any questions or suggestions please send me an e-mail geodatafarm@gmail.com</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="openExternalLinks">
+       <bool>true</bool>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::TextSelectableByMouse</set>
       </property>
      </widget>
      <widget class="QPushButton" name="PBAddField">
@@ -2531,7 +2523,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Canvas data</string>
+      <string>Data sets</string>
      </attribute>
      <widget class="QListWidget" name="LWPlantingTable">
       <property name="geometry">
@@ -3094,169 +3086,13 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Canvas settings</string>
+      <string>Loaded data sets</string>
      </attribute>
-     <widget class="Line" name="line">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>200</y>
-        <width>277</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>10</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="lineWidth">
-       <number>3</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>360</y>
-        <width>62</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Max value:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="LEMinColor">
-      <property name="geometry">
-       <rect>
-        <x>118</x>
-        <y>389</y>
-        <width>195</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>425</y>
-        <width>71</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Max number 
-of colors:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="LEMaxNbrColor">
-      <property name="geometry">
-       <rect>
-        <x>118</x>
-        <y>425</y>
-        <width>195</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>20</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>389</y>
-        <width>59</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Min value:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="LEMaxColor">
-      <property name="geometry">
-       <rect>
-        <x>118</x>
-        <y>360</y>
-        <width>195</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="PBMultiEdit">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>110</y>
-        <width>275</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedKingdom"/>
-      </property>
-      <property name="text">
-       <string>Edit the attributes of the current layer</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>220</y>
-        <width>275</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Edit the presentation of the layer on the canvas:</string>
-      </property>
-     </widget>
-     <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>240</y>
-        <width>275</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="PBReloadLayer">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>490</y>
-        <width>275</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedKingdom"/>
-      </property>
-      <property name="text">
-       <string>Reload layer</string>
-      </property>
-     </widget>
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>270</y>
+        <x>20</x>
+        <y>100</y>
         <width>275</width>
         <height>91</height>
        </rect>
@@ -3312,6 +3148,248 @@ of colors:</string>
        </property>
       </widget>
      </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>255</y>
+        <width>71</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Max number 
+of colors:</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEMinColor">
+      <property name="geometry">
+       <rect>
+        <x>98</x>
+        <y>219</y>
+        <width>195</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEMaxColor">
+      <property name="geometry">
+       <rect>
+        <x>98</x>
+        <y>190</y>
+        <width>195</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>219</y>
+        <width>59</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Min value:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBReloadLayer">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>320</y>
+        <width>275</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+      <property name="text">
+       <string>Reload layer</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>50</y>
+        <width>275</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Edit the presentation of the layer on the canvas:</string>
+      </property>
+     </widget>
+     <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>275</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEMaxNbrColor">
+      <property name="geometry">
+       <rect>
+        <x>98</x>
+        <y>255</y>
+        <width>195</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>20</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>190</y>
+        <width>62</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Max value:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>201</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Presentation settings</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>190</y>
+        <width>411</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Do you change some of the data of
+the selected layer in the canvas?
+Select the objects with QGIS default selector and click Edit attributes</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBCreateGuide">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>100</y>
+        <width>130</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+      <property name="text">
+       <string>Create guide file</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>60</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Based on data sets, do you want to
+create a guide file?</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBMultiEdit">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>270</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+      <property name="text">
+       <string>Edit attributes</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_19">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>40</y>
+        <width>201</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Guide file</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_21">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>170</y>
+        <width>201</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Edit data</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -3320,8 +3398,8 @@ of colors:</string>
      <widget class="QPushButton" name="PBReportPerOperation">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>210</y>
+        <x>20</x>
+        <y>260</y>
         <width>241</width>
         <height>28</height>
        </rect>
@@ -3336,8 +3414,8 @@ of colors:</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>110</y>
+        <x>30</x>
+        <y>160</y>
         <width>95</width>
         <height>20</height>
        </rect>
@@ -3349,8 +3427,8 @@ of colors:</string>
      <widget class="QRadioButton" name="RBReportWithoutDetails">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>140</y>
+        <x>30</x>
+        <y>190</y>
         <width>131</width>
         <height>20</height>
        </rect>
@@ -3365,8 +3443,8 @@ of colors:</string>
      <widget class="QPushButton" name="PBReportSelectFolder">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>170</y>
+        <x>20</x>
+        <y>220</y>
         <width>111</width>
         <height>28</height>
        </rect>
@@ -3381,8 +3459,8 @@ of colors:</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>240</y>
+        <x>20</x>
+        <y>290</y>
         <width>241</width>
         <height>28</height>
        </rect>
@@ -3397,8 +3475,8 @@ of colors:</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>270</y>
+        <x>20</x>
+        <y>320</y>
         <width>241</width>
         <height>28</height>
        </rect>
@@ -3410,8 +3488,8 @@ of colors:</string>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>20</y>
+        <x>20</x>
+        <y>70</y>
         <width>231</width>
         <height>80</height>
        </rect>
@@ -3475,8 +3553,8 @@ of colors:</string>
      <widget class="QGroupBox" name="groupBox_4">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>50</y>
+        <x>310</x>
+        <y>100</y>
         <width>161</width>
         <height>251</height>
        </rect>
@@ -3653,6 +3731,39 @@ of colors:</string>
         <bool>false</bool>
        </property>
       </widget>
+     </widget>
+     <widget class="QLabel" name="label_17">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>531</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Generate reports</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_18">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>721</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Here you can generate reports of the imported data.
+If you are missing a report / something in a report please send a e-mail to geodatafarm@gmail.com</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_31">
