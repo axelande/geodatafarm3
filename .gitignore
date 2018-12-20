@@ -48,7 +48,7 @@ Temporary Items
 
 
 *.pyc
-help/
+help/build/
 .idea/
 resources.py
 connection_data.ini
