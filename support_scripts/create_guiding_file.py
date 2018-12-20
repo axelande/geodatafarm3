@@ -16,20 +16,24 @@ from ..support_scripts import shapefile as shp
 class CreateGuideFile:
     def __init__(self, parent_widget):
         """This class creates a guide file
-        :param parent_widget"""
+
+        Parameters
+        ----------
+        parent_widget: GeoDataFarm
+        """
         self.iface = parent_widget.iface
         self.plugin_dir = parent_widget.plugin_dir
         self.CGF = CreateGuideFileDialog()
         self.grid_layer = None
         self.tr = parent_widget.tr
         self.dock_widget = parent_widget.dock_widget
+        self.db = parent_widget.db
         self.tables_in_tw_cb = 0
         self.nbr_selected_attr = 0
         self.select_table = ''
         self.eq_text2 = ''
         self.save_folder = ''
         self.rotation = 0
-        self.db = None
 
     def run(self):
         """Presents the sub widget HandleInput and connects the different
@@ -41,7 +45,7 @@ class CreateGuideFile:
         self.CGF.PBSelectOutput.clicked.connect(self.set_output_path)
         self.CGF.PBCreateFile.clicked.connect(self.create_file)
         self.CGF.PBHelp.clicked.connect(self.help)
-        self.update_names()
+        self.fill_cb()
         self.CGF.exec()
 
     def set_output_path(self):
@@ -52,27 +56,30 @@ class CreateGuideFile:
         self.save_folder = folder_path
         self.CGF.PBCreateFile.setEnabled(True)
 
-    def update_names(self):
-        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
-        connected = self.db.get_conn()
-        if not connected:
-            QMessageBox.information(None, "Error:", self.tr(
-                'No farm is created, please create a farm to continue'))
-            return
+    def fill_cb(self):
+        """Updates the ComboBox with names from the differnt schemas in the
+        database"""
         lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil']
         self.CGF.CBDataSource.clear()
         names = []
         for schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
-                if name[0] in ["spatial_ref_sys", "pointcloud_formats",
-                               "temp_polygon", 'manual']:
+                if name[0] in ["temp_polygon", 'manual']:
                     continue
                 names.append(schema + '.' + str(name[0]))
         self.CGF.CBDataSource.addItems(names)
         self.CGF.CBDataSource.activated[str].connect(self.possible_attr)
 
     def possible_attr(self, text):
+        """Adds the name of the table which the user than can use as base for
+        calculation of the guiding file.
+
+        Parameters
+        ----------
+        text: str
+            The schema.table
+        """
         self.selected_table = text
         self.CGF.TWColumnNames.clear()
         params = self.db.get_all_columns(table=text.split('.')[1],
@@ -128,7 +135,8 @@ class CreateGuideFile:
         self.nbr_selected_attr = row_count
 
     def update_max_min(self):
-        """Update the text min, max text and set the equation for the guide file."""
+        """Update the text min, max text and set the equation for the guide
+        file."""
         eq_text = self.CGF.TEEquation.toPlainText()
         row_count = self.nbr_selected_attr
         existing_values = []
@@ -164,8 +172,6 @@ class CreateGuideFile:
         float_type = False
         if self.CGF.CBDataType.currentText() == 'Float (1.234)':
             float_type = True
-        save_path = ''
-
         sql = """WITH grid AS (
       SELECT 
         ROW_NUMBER() OVER () AS grid_id,
@@ -240,6 +246,7 @@ class CreateGuideFile:
             self.CGF.done(0)
 
     def help(self):
+        """Shows a help message in a QMessageBox"""
         QMessageBox.information(None, self.tr("Help:"), self.tr(
             'Here you create a guide file.\n'
             '1. Start with select which data you want to base the guide file on in the top left corner.\n'

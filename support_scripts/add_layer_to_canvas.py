@@ -6,22 +6,34 @@ from ..widgets.add_to_canvas import AddToCanvas
 
 
 class AddLayerToCanvas:
+    """A class that adds layers to the canvas"""
     def __init__(self, parent):
+        """The function adds AddToCanvas class on self.dlg
+        The function populate_widget is run with this function.
+        Parameters
+        ----------
+        parent: object
+            The GeoDataFarm parent class
+        """
         self.parent = parent
         self.dlg = AddToCanvas()
         self.populate_widget()
         self.parameters = {}
+        self.items_in_table = []
 
     def run(self):
+        """Displays the widget and connects the button"""
         self.dlg.show()
         self.dlg.PBAddData.clicked.connect(self.add_selected)
         self.dlg.exec_()
 
     def get_tables(self):
-        self.parent.items_in_table = self.parent.populate.get_items_in_table()
-        parameters = {}
+        """Fills the dict 'parameters' with an int as key and a dict as the value
+        The value dict has following args: index_col, schema, and tbl_name"""
+        self.items_in_table = self.parent.populate.get_items_in_table()
+        self.parameters = {}
         ins = -1
-        for list_widget, schema, lw in self.parent.items_in_table:
+        for list_widget, schema, lw in self.items_in_table:
             tables = []
             for item in list_widget:
                 if item.checkState() == 2:
@@ -31,13 +43,40 @@ class AddLayerToCanvas:
                 if temp_d[key]['index_col'] == 'field_row_id':
                     continue
                 ins += 1
-                parameters[ins] = temp_d[key]
-        return parameters
+                self.parameters[ins] = temp_d[key]
+
+    def add_2_canvas(self, parameter):
+        """Adds the parameter to the canvas
+        Parameters
+        ----------
+        parameter: dict
+            A dict containing index_col, tbl_name, schema
+        """
+        target_field = parameter['index_col']
+        tbl_name = parameter['tbl_name']
+        schema = parameter['schema']
+        if schema == 'harvest':
+            layer = self.parent.db.add_postgis_layer(tbl_name.lower(),
+                                                   geom_col='pos', schema='harvest',
+                                                   extra_name='harvest')
+        else:
+            layer = self.parent.db.add_postgis_layer(tbl_name.lower(), 'polygon', schema,
+                                                   str(target_field.lower()))
+        create_layer = CreateLayer(self.parent.db)
+        create_layer.create_layer_style(layer, target_field, tbl_name.lower(), schema)
+        QgsProject.instance().addMapLayer(layer)
 
     def populate_widget(self):
-        # TODO: If only one attribute add directly to canvas.
+        """For all selected data sets in the GeoDataFarm widget adds all column names
+        to a ListWidget except if there is only one, then it is directly added to the
+        canvas."""
         self.dlg.LWAttributes.clear()
-        self.parameters = self.get_tables()
+        self.get_tables()
+        if len(self.parameters) == 1:
+            self.add_2_canvas(self.parameters[0])
+            self.dlg.PBAddData.disconnect()
+            self.dlg.done(0)
+            return
         for nr in range(len(self.parameters)):
             target_field = self.parameters[nr]['index_col']
             tbl_name = self.parameters[nr]['tbl_name']
@@ -48,21 +87,13 @@ class AddLayerToCanvas:
             item.setCheckState(QtCore.Qt.Unchecked)
 
     def add_selected(self):
+        """All checked items in the ListWidget is added to the canvas. Afterwards the button
+        becomes disconnected and this widget closes"""
         lw = self.dlg.LWAttributes.findItems('', QtCore.Qt.MatchContains)
-        self.parameters = self.get_tables()
+        if len(self.parameters) == 0:
+            self.get_tables()
         for i, item in enumerate(lw):
             if item.checkState() == 2:
-                target_field = self.parameters[i]['index_col']
-                tbl_name = self.parameters[i]['tbl_name']
-                if self.parameters[i]['schema'] == 'harvest':
-                    layer = self.parent.db.addPostGISLayer(tbl_name.lower(),
-                                                    geom_col='pos', schema='harvest',
-                                                    extra_name='harvest')
-                else:
-                    layer = self.parent.db.addPostGISLayer(tbl_name.lower(), 'polygon', self.parameters[i]['schema'],
-                                                    str(target_field.lower()))
-                create_layer = CreateLayer(self.parent.db)
-                create_layer.create_layer_style(layer, target_field, tbl_name.lower(), self.parameters[i]['schema'])
-                QgsProject.instance().addMapLayer(layer)
+                self.add_2_canvas(self.parameters[i])
         self.dlg.PBAddData.disconnect()
         self.dlg.done(0)

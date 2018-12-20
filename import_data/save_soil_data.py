@@ -5,9 +5,11 @@ from PyQt5.QtCore import QDate
 
 class SaveSoil:
     def __init__(self, parent):
-        """
-        A class for storing spraying data
-        :param parent: GeoDataFarm "self"
+        """A class for storing spraying data
+
+        Parameters
+        ----------
+        parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
         self.tr = parent.tr
@@ -43,6 +45,7 @@ class SaveSoil:
             self.ShpHandler.add_input()
 
     def save_manual_data(self):
+        """Saves the manual data."""
         if self.check_input():
             field = self.dw.CBSoField.currentText()
             date_ = self.dw.DESoil.text()
@@ -84,7 +87,11 @@ class SaveSoil:
 
     def check_input(self):
         """Some simple checks that ensure that the basic data is filled in.
-        :return bool"""
+
+        Returns
+        -------
+        bool
+        """
         if self.dw.CBSoField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False

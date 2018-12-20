@@ -1,4 +1,4 @@
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Horteborn'
 from qgis.core import QgsProject, QgsVectorLayer
 import processing
 from PyQt5 import QtCore
@@ -7,7 +7,6 @@ from osgeo import osr
 import os
 from operator import xor
 # Import the code for the dialog
-from ..import_data.insert_input_to_db import InsertInputToDB
 from ..widgets.import_shp_dialog import ImportShpDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer

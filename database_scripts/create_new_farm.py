@@ -3,17 +3,21 @@ import requests
 import hashlib
 from ..support_scripts.__init__ import check_text
 from .db import DB
-
-__author__ = 'Axel Hörteborn'
+#from ..GeoDataFarm import GeoDataFarm
+__author__ = 'Axel Horteborn'
 
 
 class CreateFarm:
     def __init__(self, parent_widget, new_farm):
         """Sends a request to create a database for the farm
 
-        :param parent_widget the GeoDataFarm class
-        :param new_farm bool, True if the user creates new farm,
-                              False if user connects to a farm"""
+        Parameters
+        ----------
+        parent_widget: GeoDataFarm
+        new_farm: bool,
+            True if the user creates new farm,
+            False if user connects to a farm
+        """
         if new_farm:
             from ..widgets.create_farm_popup import CreateFarmPopup
             self.CF = CreateFarmPopup()
@@ -119,6 +123,8 @@ class CreateFarm:
         connected = self.db.get_conn()
 
     def create_spec_functions(self):
+        """Generates the function makegrid_2d in the users postgres
+        database."""
         if self.db is None:
             self._connect_to_db()
         sql = """CREATE OR REPLACE FUNCTION public.makegrid_2d (
@@ -182,7 +188,7 @@ class CreateFarm:
         self.db.execute_sql(sql)
 
     def add_tables(self, first_year):
-        """Add tables to the database"""
+        """Add field, crops and manual tables to the database"""
         if self.db is None:
             self._connect_to_db()
         sql = """CREATE table fields(field_row_id serial,

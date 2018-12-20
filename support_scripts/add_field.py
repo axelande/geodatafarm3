@@ -9,9 +9,10 @@ import time
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
+
 def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
-    """
-    A function that adds fields that are not added previously.
+    """A function that adds fields that are not added previously.
+
     Parameters
     ----------
     task: QgsTask
@@ -24,6 +25,7 @@ def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
         the last added field name
     sources: list
         list of source names
+
     Returns
     -------
     list
@@ -43,7 +45,7 @@ def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
             for source in sources:
                 if str(field).lower() in source.lower():
                     continue
-            layer = db.addPostGISLayer('fields', 'polygon', 'public',
+            layer = db.add_postgis_layer('fields', 'polygon', 'public',
                                        extra_name=field + '_',
                                        filter_text="field_name='{f}'".format(f=field))
             set_label(layer, 'field_name')
@@ -55,12 +57,11 @@ def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
 
 class AddField:
     def __init__(self, parent_widget):
-        """
-        This class handle the creation of Fields.
+        """This class handle the creation of Fields.
+
         Parameters
         ----------
-        parent_widget
-            GeoDataFarm class object
+        parent_widget: GeoDataFarm
         """
         self.iface = parent_widget.iface
         self.tsk_mngr = parent_widget.tsk_mngr
@@ -84,11 +85,7 @@ class AddField:
         self.parent.populate.reload_fields()
 
     def set_widget_connections(self):
-        """
-        Function that sets the main widget connections.
-        Returns
-        -------
-        """
+        """Function that sets the main widget connections."""
         self.parent.dock_widget.PBAddField.clicked.connect(self.run)
         self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
         self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
@@ -145,20 +142,16 @@ class AddField:
         self.tsk_mngr.addTask(task)
 
     def finish(self, result, values):
-        """
-        Produces either an error message telling what went wrong or adds the fields to canvas and zoom to the layers.
+        """Produces either an error message telling what went wrong or adds the fields to canvas and zoom to the layers.
+
         Parameters
         ----------
-        result
+        result: object
         values: list
             If all went ok:
                 [True, list of layers]
             Else:
                 [False, exception, traceback]
-
-        Returns
-        -------
-
         """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
@@ -170,20 +163,6 @@ class AddField:
         if self.defined_field == '':
             set_zoom(self.parent.iface, 1.1)
         self.defined_field = ''
-
-    def clicked_define_field(self):
-        """Creates an empty polygon that's define a field"""
-        name = self.AFD.LEFieldName.text()
-        if len(name) == 0:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Field name must be filled in.'))
-            return
-        self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
-        add_background()
-        set_zoom(self.parent.iface, 2)
-        self.field.startEditing()
-        self.iface.actionAddFeature().trigger()
-        QgsProject.instance().addMapLayer(self.field)
 
     def quit(self):
         """Closes the widget."""
@@ -230,11 +209,7 @@ class AddField:
         self.view_fields()
 
     def help(self):
-        """
-        A function that gives some advice on how the function works for the user.
-        Returns
-        -------
-
+        """A function that gives some advice on how the function works for the user.
         """
         QMessageBox.information(None, self.tr("Help:"), self.tr(
             'Here is where you add a field.\n'

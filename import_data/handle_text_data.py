@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
 import re
 import math
 import time
-
 from operator import xor, itemgetter
 from datetime import datetime
 # Import the code for the dialog
@@ -14,20 +13,24 @@ from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, isfloat, isint, check_date_format
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Horteborn'
 
 
 class InputTextHandler(object):
     def __init__(self, parent_widget, data_type, columns=None):
         """A widget that enables the possibility to insert data from a text
-        file into a shapefile"""
+        file into a postgres database.
+        Parameters
+        ----------
+        parent_widget: GeoDataFarm
+        data_type: str
+            the name of the schema to add the data to
+        columns: list
+            list of str (the name) which columns to create a special
+            request for the user to specify data/columns"""
         # initialize plugin directory
         self.data_type = data_type
 
-        self.col_types = None
-        self.file_name_with_path = None
-        self.file_name = None
-        self.input_file_path = None
         self.add_to_param_row_count = 0
         self.add_to_db_row_count = 0
         # Create the dialog (after translation) and keep reference
@@ -46,14 +49,19 @@ class InputTextHandler(object):
         self.fields_to_db = False
         self.combo = None
         self.sep = None
-        self.encoding = 'utf-8'
+        self.col_types = None
+        self.file_name_with_path = None
+        self.file_name = None
+        self.input_file_path = None
         self.longitude_col = None
         self.latitude_col = None
         self.heading_row = None
         self.sample_data = None
+        self.tbl_name = ''
+        self.encoding = 'utf-8'
 
     def run(self):
-        """Presents the sub widget HandleInput and connects the different
+        """Presents the sub widget ImportTextDialog and connects the different
         buttons to their function"""
         self.ITD.show()
         self.ITD.PBAddInputFile.clicked.connect(self.open_input_file)
@@ -62,10 +70,10 @@ class InputTextHandler(object):
         self.ITD.PBInsertDataIntoDB.clicked.connect(self.trigger_insection)
         self.ITD.PBContinue.clicked.connect(self.prepare_last_choices)
         self.ITD.PBAbbreviations.clicked.connect(self.show_abbreviations)
-        self.ITD.RBComma.clicked.connect(self.get_sep)
-        self.ITD.RBSemi.clicked.connect(self.get_sep)
-        self.ITD.RBTab.clicked.connect(self.get_sep)
-        self.ITD.RBOwnSep.clicked.connect(self.get_sep)
+        self.ITD.RBComma.clicked.connect(self.change_sep)
+        self.ITD.RBSemi.clicked.connect(self.change_sep)
+        self.ITD.RBTab.clicked.connect(self.change_sep)
+        self.ITD.RBOwnSep.clicked.connect(self.change_sep)
         self.populate.reload_fields(self.ITD.CBField)
         self.populate.reload_crops(self.ITD.CBCrop)
         if self.data_type == 'harvest':
@@ -82,6 +90,7 @@ class InputTextHandler(object):
         self.ITD.exec_()
 
     def show_abbreviations(self):
+        """Shows a messageBox with the time abbreviations"""
         QMessageBox.information(None, self.tr('Information'),
                                 self.tr('%Y = Year (2010)\n'
                                         '%y = Year (98)\n'
@@ -132,7 +141,8 @@ class InputTextHandler(object):
             row_count -= 1
         self.add_to_param_row_count = row_count
 
-    def get_separator(self):
+    def define_separator(self):
+        """Define the file encoding and the separator of the file"""
         with open(self.file_name_with_path, 'rb') as f:
             # Join binary lines for specified number of lines
             try:
@@ -159,9 +169,9 @@ class InputTextHandler(object):
             else:
                 self.sep = '\t'
 
-    def get_columns_names(self):
-        """A function that retrieves the name of the columns from the .csv file
-        and returns a list with name"""
+    def set_column_list(self):
+        """A function that retrieves the name of the columns from the text file
+        and fills the TWColumnName list with the name, first value and data type"""
         self.ITD.TWColumnNames.clear()
         with open(self.file_name_with_path, encoding=self.encoding) as f:
             read_all = f.readlines()
@@ -174,7 +184,7 @@ class InputTextHandler(object):
                 else:
                     second_row = row
                     break
-        self.col_types = self.determine_column_type()
+        self.determine_column_type()
         combo_box_options = ["Integer", "Decimal value", "Character"]
         self.combo = []
         self.ITD.TWColumnNames.setRowCount(len(heading_row))
@@ -201,6 +211,8 @@ class InputTextHandler(object):
         self.add_to_db_row_count = i
 
     def add_specific_columns(self):
+        """Adds rows for the user to manual define which columns contains
+        schema specific columns (or one single value / Not applicable)"""
         self.manual_values = {}
         for i, column in enumerate(self.type_specific_cols):
             self.manual_values[i] = {}
@@ -222,7 +234,8 @@ class InputTextHandler(object):
             self.manual_values[i]['checkbox'] = check
             self.ITD.GLSpecific.addWidget(check, i, 3)
 
-    def set_radio_but(self):
+    def set_sep_radio_but(self):
+        """Sets the radioButton indicating the separator of the file"""
         if self.sep == ',':
             self.ITD.RBComma.setChecked(True)
         if self.sep == ';':
@@ -230,7 +243,8 @@ class InputTextHandler(object):
         if self.sep == '\t':
             self.ITD.RBTab.setChecked(True)
 
-    def get_sep(self):
+    def change_sep(self):
+        """Change the separator and reload the column list"""
         if self.ITD.RBComma.isChecked():
             self.sep = ','
         if self.ITD.RBSemi.isChecked():
@@ -239,13 +253,11 @@ class InputTextHandler(object):
             self.sep = '\t'
         if self.ITD.RBOwnSep.isChecked():
             self.sep = self.ITD.LEOwnSep.text().encode('utf-8')
-        self.get_columns_names()
+        self.set_column_list()
 
     def change_col_type(self):
         """Updates the values (in self.col_types) of the data types for each 
-        column in the data set
-        :return:
-        """
+        column in the data set"""
         self.col_types = []
         for c_box in self.combo:
             if c_box.currentText() == "Integer":
@@ -256,12 +268,9 @@ class InputTextHandler(object):
                 self.col_types.append(2)
 
     def open_input_file(self):
-        """
-        Open the file dialog and let the user choose which file that should
-        be inserted. In the end of this function the function get_columns_names
-        are being called.
-        :return:
-        """
+        """Open the file dialog and let the user choose which file that should
+        be inserted. In the end of this function the function define_separator,
+        set_sep_radio_but and set_column_list are being called."""
         filters = "Text files (*.txt *.csv)"
         self.file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
                                                       filters)[0]
@@ -270,13 +279,13 @@ class InputTextHandler(object):
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = self.file_name_with_path[0:self.file_name_with_path.index(self.file_name)]
-        self.get_separator()
-        self.set_radio_but()
-        self.get_columns_names()
+        self.define_separator()
+        self.set_sep_radio_but()
+        self.set_column_list()
 
     def prepare_last_choices(self):
         """A function that prepares the last parts of the widget with the data
-        to be inserted into the shapefile, determining date and time columns """
+        to be inserted into the database"""
         columns_to_add = []
         for i in range(self.add_to_db_row_count + 1):
             columns_to_add.append(self.ITD.TWColumnNames.item(i, 0).text())
@@ -320,7 +329,7 @@ class InputTextHandler(object):
     def determine_column_type(self):
         """
         A function that retrieves the types of the columns from the .csv file
-        :return: a list with with 0=int, 1=float, 2=char
+        and sets col_types as a list where with 0=int, 1=float, 2=char
         """
         row_types = []
         self.sample_data = []
@@ -355,9 +364,23 @@ class InputTextHandler(object):
         row_type_return = []
         for i, col_value in enumerate(row_types):
             row_type_return.append(int(col_value/(max_rows*0.7)))
-        return row_type_return
+        self.col_types = row_type_return
 
     def insert_manual_data(self, date_):
+        """Inserts the manual data that is used to generate reports, rather long
+        function since all schemas have separate attributes.
+
+        Parameters
+        ----------
+        date_: str
+            The column where the dates is listed or one date that is the same
+            for all rows (than it starts with c_)
+
+        Returns
+        -------
+        bool
+            If success or not
+        """
         field = self.ITD.CBField.currentText()
         table = self.tbl_name
         date_ = "'{d}'".format(d=date_)
@@ -458,11 +481,9 @@ class InputTextHandler(object):
         return True
 
     def trigger_insection(self):
-        """
-        Preparing the data, by setting the correct type (including the date and
+        """Preparing the data, by setting the correct type (including the date and
         time format), creating a shp file and finally ensure that the
         coordinates is in EPSG:4326
-        :return:
         """
         params = {}
         params['schema'] = self.data_type
@@ -532,6 +553,16 @@ class InputTextHandler(object):
         self.tsk_mngr.addTask(task)
 
     def finish(self, result, values):
+        """Checks that all data is uploaded to the postgres database and adds
+        the data to the canvas and closes the widget
+
+        Parameters
+        ----------
+        result: object
+            The result object
+        values: list
+            list with [bool, bool, int]
+        """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
@@ -558,23 +589,43 @@ class InputTextHandler(object):
             param_layer = check_text(param_layer)
             target_field = param_layer
             if self.data_type == 'harvest':
-                layer = self.db.addPostGISLayer(tbl, 'pos', '{schema}'.format(schema=schema),
+                layer = self.db.add_postgis_layer(tbl, 'pos', '{schema}'.format(schema=schema),
                                                 check_text(param_layer.lower()))
             else:
-                layer = self.db.addPostGISLayer(tbl, 'polygon', '{schema}'.format(schema=schema),
+                layer = self.db.add_postgis_layer(tbl, 'polygon', '{schema}'.format(schema=schema),
                                                 check_text(param_layer.lower()))
 
             create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
+        self.close()
 
+    def close(self):
+        """Disconnects buttons and closes the widget"""
         self.ITD.PBAddInputFile.clicked.disconnect()
         self.ITD.PBAddParam.clicked.disconnect()
         self.ITD.PBRemParam.clicked.disconnect()
         self.ITD.PBInsertDataIntoDB.clicked.disconnect()
         self.ITD.PBContinue.clicked.disconnect()
+        self.ITD.PBAbbreviations.clicked.disconnect()
+        self.ITD.RBComma.clicked.disconnect()
+        self.ITD.RBSemi.clicked.disconnect()
+        self.ITD.RBTab.clicked.disconnect()
+        self.ITD.RBOwnSep.clicked.disconnect()
         self.ITD.done(0)
 
-
 def insert_data_to_database(task, db, params):
+    """Walks though the text files and adds data to the database
+    Parameters
+    ----------
+    task: QgsTask
+    db: object
+    params: dict
+
+    Returns
+    -------
+    list
+        if no error: [bool, bool, int, str]
+        else: [False, e, traceback.format_exc()]
+    """
     try:
         schema = params['schema']
         tbl_name = params['tbl_name']

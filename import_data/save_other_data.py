@@ -5,9 +5,11 @@ from ..support_scripts.__init__ import check_text
 
 class SaveOther:
     def __init__(self, parent):
-        """
-        A class for storing other data
-        :param parent: GeoDataFarm "self"
+        """A class for storing other data
+
+        Parameters
+        ----------
+        parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
         self.tr = parent.tr
@@ -18,6 +20,7 @@ class SaveOther:
         self.parent.dock_widget.PBSaveOther.clicked.connect(self.save_manual_data)
 
     def save_manual_data(self):
+        """Saves manual data."""
         if self.check_input():
             field = self.dw.CBOField.currentText()
             sql = "Select '{f}' as field, ".format(f=field)
@@ -110,7 +113,11 @@ class SaveOther:
 
     def check_input(self):
         """Some simple checks that ensure that the basic data is filled in.
-        :return bool"""
+
+        Returns
+        -------
+        bool
+        """
         if self.dw.CBOField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False

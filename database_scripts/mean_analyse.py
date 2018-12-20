@@ -13,19 +13,23 @@ from ..support_scripts.__init__ import isfloat, isint
 import copy
 import traceback
 
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Horteborn'
 
 
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class Analyze:
     def __init__(self, parent_widget, tables_to_analyse):
-        """
-        A widget that analyses the data in the database
-        :param parent_widget: the docked widget
-        :param tables_to_analyse: list of list schemas and tables that should
-        be included in the analyse
-        :return:
+        """A widget that analyses the data in the database
+
+        Parameters
+        ----------
+        parent_widget: GeoDataFarm
+            The main class
+        tables_to_analyse: list
+            list of list schemas and tables that should
+            be included in the analyse
+
         """
         self.dlg = RunAnalyseDialog()
         self.db = parent_widget.db
@@ -40,7 +44,7 @@ class Analyze:
         self.tables = tables_to_analyse
         self.cb = []
         self.harvest_tbls = {}
-        self.dlg.pButRun.clicked.connect(self.run_update)
+        self.dlg.pButRun.clicked.connect(self.update_pic)
         self.scrollWidget = QtWidgets.QWidget()
         self.radio_group = QtWidgets.QButtonGroup()
         self.overlapping_tables = {}
@@ -51,15 +55,9 @@ class Analyze:
         self.canvas = None
 
     def run(self):
-        """
-        Starts this widget
-        :return:
-        """
+        """Starts this widget"""
         self.dlg.show()
         self.dlg.exec_()
-
-    def run_update(self):
-        self.update_pic()
 
     def check_consistency(self):
         """Checks that the harvest tables is intersecting some of the input data
@@ -215,7 +213,7 @@ class Analyze:
                                     self.weather_tables[ac][ac_key])
 
     def fill_dict_tables(self):
-        """Filles the three dict tables"""
+        """Fills the dict tables"""
         for i, (schema, table) in enumerate(self.tables):
             if schema == 'harvest':
                 self.harvest_tables[i] = self.db.get_indexes(table, schema)
@@ -225,24 +223,29 @@ class Analyze:
                 self.ferti_tables[i] = self.db.get_indexes(table, schema)
             if schema == 'spray':
                 self.spray_tables[i] = self.db.get_indexes(table, schema)
-
             if schema == 'soil':
                 self.soil_tables[i] = self.db.get_indexes(table, schema)
             if schema == 'weather':
                 self.weather_tables[i] = self.db.get_indexes(table, schema)
 
     def get_initial_distinct_values(self, parameter_to_eval, tbl, schema):
-        """
-        Calls the database and gets distinct values
-        :param parameter_to_eval: str, What parameter to eval
-        :param tbl: str, In what table is the param located
-        :param schema: str, In what schema
-        :return: analyse_params{'distinct_values':[],'distinct_count':[]}
+        """Calls the database and gets distinct values
+
+        Parameters
+        ----------
+        parameter_to_eval: str, What parameter to eval
+        tbl: str, In what table is the param located
+        schema: str, In what schema
+
+        Returns
+        -------
+        dict
+            analyse_params{'distinct_values':[],'distinct_count':[]}
         """
         analyse_params = {}
         temp1 = []
         temp2 = []
-        #TODO: Handle None values
+        # TODO: Handle None values
         distinct = self.db.get_distinct(tbl, parameter_to_eval, schema)
         for value, count in distinct:
             temp1.append(value)
@@ -252,6 +255,16 @@ class Analyze:
         return analyse_params
 
     def _set_checkbox_layout(self, qbox, analyse_params, col, nbr):
+        """Sets the layout of a parameter that has strings as distinct values.
+
+        Parameters
+        ----------
+        qbox: QGroupBox
+        analyse_params: dict, {'distinct_values':[],'distinct_count':[]}
+        col: str
+        nbr: int
+
+        """
         self.layout_dict[col]['type'] = 'checked'
         self.layout_dict[col]['checked'] = []
         self.layout_dict[col]['checked_items'] = []
@@ -281,6 +294,17 @@ class Analyze:
         self.layout_dict[col]['param_label'] = param_label
 
     def _set_number_layout(self, qbox, analyse_params, col, nbr):
+        """Sets the layout of a parameter that has floats or ints as distinct
+        values.
+
+        Parameters
+        ----------
+        qbox: QGroupBox
+        analyse_params: dict, {'distinct_values':[],'distinct_count':[]}
+        col: str
+        nbr: int
+
+        """
         QtWidgets.QLabel('Min:', qbox).move(83, 34)
         if None in analyse_params['distinct_values']:
             analyse_params['distinct_values'].remove(None)
@@ -311,6 +335,13 @@ class Analyze:
         param_label.move(10, 20)
 
     def _update_layout(self, analyse_params, col):
+        """Updates the layout there are multiple tables with the same col name
+
+        Parameters
+        ----------
+        analyse_params: dict
+        col: str
+        """
         if self.layout_dict[col]['type'] == 'max_min':
             if self.layout_dict[col]['min'] > np.nanmin(analyse_params['distinct_values']):
                 self.layout_dict[col]['min'] = np.nanmin(analyse_params['distinct_values'])
@@ -344,18 +375,17 @@ class Analyze:
             self.layout_dict[col]['param_label'] = param_label
 
     def default_layout(self):
-        """
-        Creating the layout, (the UI file only contains the plotting area).
+        """Creating the layout, (the UI file only contains the plotting area).
         This function adds parameters names and default value both in a scroll
         area bellow and to the right of the drawing area.
-        :return:
         """
-        colors = ['green', 'blue', 'red', 'green', 'blue', 'red', 'green', 'blue', 'red']
+        colors = ['green', 'blue', 'red', 'green', 'blue', 'red', 'green',
+                  'blue', 'red', 'green', 'blue', 'red', 'green', 'blue', 'red']
         #for key in mplib_colors.cnames.keys():
         #    colors.append(key)
         scroll_area_layout = QtWidgets.QVBoxLayout()
-        constranint_area = QtWidgets.QWidget()
-        constranint_layout = QtWidgets.QVBoxLayout()
+        constraint_area = QtWidgets.QWidget()
+        constraint_layout = QtWidgets.QVBoxLayout()
         first_radio = True
         harvest_nbr = 0
         nbr = -1
@@ -407,7 +437,7 @@ class Analyze:
                     self.top_right_panel[nbr].setStyleSheet("border:0px;")
                     param_label = QtWidgets.QLabel(table['index_col'].replace('_', ' '), self.top_right_panel[nbr])
                     param_label.move(10, 5)
-                    constranint_layout.addWidget(self.top_right_panel[nbr])
+                    constraint_layout.addWidget(self.top_right_panel[nbr])
 
                     ## Set bottom group basic data
                     qbox = QtWidgets.QGroupBox()
@@ -433,16 +463,20 @@ class Analyze:
                         self._set_number_layout(qbox, analyse_params,
                                                 table['index_col'], nbr)
 
-
-        constranint_area.setLayout(constranint_layout)
-        self.dlg.groupBoxConstraints.setWidget(constranint_area)
+        constraint_area.setLayout(constraint_layout)
+        self.dlg.groupBoxConstraints.setWidget(constraint_area)
         self.scrollWidget.setLayout(scroll_area_layout)
         self.dlg.paramArea.setWidget(self.scrollWidget)
         self.update_pic()
 
     def update_checked_field(self, other_parameters, main_investigate_col):
         """Updates the parameters listed as checked in layout_dict
-        :param other_parameters: dict"""
+
+        Parameters
+        ----------
+        other_parameters: dict
+        main_investigate_col: dict
+        """
         for col in self.layout_dict.keys():
             text_v = ""
             for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
@@ -472,6 +506,11 @@ class Analyze:
 
     def update_top_panel(self, nbr, col):
         """Updates the top right panel with the data that complies the diagram
+
+        Parameters
+        ----------
+        nbr: int, what number to update
+        col: str, the name och parameter to update
         """
         if self.layout_dict[col]['type'] == 'max_min':
             self.layout_dict[col]['min'] = self.layout_dict[col][
@@ -498,10 +537,8 @@ class Analyze:
             self.top_right_panel[nbr].children()[1].setText(text)
 
     def update_pic(self):
-        """
-        Updates the diagram with a parameters and limits
-        :return:
-        """
+        """Collects the data that the user gave as input and starts the QgsTask
+        that runs the SQL query. On finish plot_data is called"""
         if self.canvas is not None:
             self.dlg.mplvl.removeWidget(self.canvas)
         other_parameters = {}
@@ -588,13 +625,25 @@ class Analyze:
         min_counts = self.dlg.minNumber.text()
         self.column_investigated = column_investigated
         self.investigating_param = investigating_param
-        task1 = QgsTask.fromFunction('running script', sql_queary,
+        task1 = QgsTask.fromFunction('running script', sql_query,
                                      investigating_param, other_parameters,
                                      self.db, min_counts,
-                                     on_finished=self.end_method)
+                                     on_finished=self.plot_data)
         self.tsk_mngr.addTask(task1)
 
-    def end_method(self, result, values):
+    def plot_data(self, result, values):
+        """Plots the data from the sql query.
+
+        Parameters
+        ----------
+        result: Unused parameter
+
+        values: list
+            if success:
+                [True, dict]
+            else:
+                [False, message, tracback]
+        """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
@@ -655,8 +704,28 @@ class Analyze:
             self.dlg.TWValues.setItem(i, 2, item3)
 
 
-def sql_queary(task, investigating_param, other_parameters, db,
-               min_counts):
+def sql_query(task, investigating_param, other_parameters, db,
+              min_counts):
+    """Function that creates and runs the SQL questions to the database, creates
+    filters and connects the correct tables to each other. Runs one question for
+    each interval.
+
+    Parameters
+    ----------
+    task: QgsTask
+    investigating_param: dict
+    other_parameters: dict
+    db: DB
+    min_counts: int, the minimum data points that are required.
+
+    Returns
+    -------
+    list
+        if success:
+            [bool, dict]
+        else:
+            [bool, str, str]
+    """
     try:
         mean_yields = [[], [], []]
         values = investigating_param['values']

@@ -1,8 +1,18 @@
-import math
-def rg(b):
-    """ A colour map with 100 colours, from green(0) to yellow to red(1) with the possibility to 
-    grey on 1.0001"""
-    rgb_color=[[1.0001, 0.600, 0.60, 0.6],
+def rg(percent):
+    """ A colour map with 100 colours, from green(0) to yellow to red(1)
+
+    Parameters
+    ----------
+    percent: float
+        Anywhere between 0 and 1
+
+    Returns
+    -------
+    list
+        The RGB code corresponding to the percentage, 0=red, 0.5 yellow
+        and 1=green
+    """
+    rgb_color = [[1.0001, 0.600, 0.60, 0.6],
              [0, 1.0000, 0, 0],
              [0.01, 1.0, 0, 0],
              [0.02, 1.0000, 0.0200, 0],
@@ -105,8 +115,6 @@ def rg(b):
              [0.99, 0.0400, 1.0000, 0],
              [1, 0.0200, 1.0000, 0]]
     for i in range(len(rgb_color)):
-        if round(b, 2) == rgb_color[i][0]:
+        if round(percent, 2) == rgb_color[i][0]:
             color = rgb_color[i][1:4]
-            #print(i)
     return color
-

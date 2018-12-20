@@ -14,8 +14,15 @@ __author__ = 'Axel'
 def set_label(layer, field_label):
     """Function that sets the label to a field value. Inspiration found at:
     https://gis.stackexchange.com/questions/277106/loading-labels-from-python-script-in-qgis
-    :param layer valid qgis layer.
-    :param field_label str with the field """
+
+    Parameters
+    ----------
+    layer: QgsVectorLayer
+        valid qgis layer.
+    field_label: str
+        The label of the field
+
+    """
     layer_settings = QgsPalLayerSettings()
     text_format = QgsTextFormat()
 
@@ -41,17 +48,14 @@ def set_label(layer, field_label):
 
 
 def set_zoom(iface, extra_extent):
-    """
-    Sets the zoom level to include all layers (excluding tiles layer) with some extra extent
+    """Sets the zoom level to include all layers (excluding tiles layer) with some extra extent
+
     Parameters
     ----------
     iface: QGIS interface
         The QGIS iface module.
     extra_extent: float
         How much extra space around the layers eg. 1.1 is 10% extra
-    Returns
-    -------
-
     """
     zoom_extent = QgsRectangle()
     for layer in QgsProject.instance().mapLayers().values():
@@ -69,8 +73,7 @@ def set_zoom(iface, extra_extent):
 
 def add_background():
     """Check if there are no other tiles present on the canvas then
-    adds a google satellite as a background map.
-    """
+    adds a google satellite as a background map."""
     source_found = False
     for layer in QgsProject.instance().mapLayers().values():
         if 'xyz&url' in layer.source():
@@ -82,8 +85,22 @@ def add_background():
         QgsProject.instance().addMapLayer(rlayer)
 
 
-def histedges_equalN(x, nbin):
-    """Nice function found at https://stackoverflow.com/questions/39418380/histogram-with-equal-number-of-points-in-each-bin"""
+def hist_edges_equal(x, nbin):
+    """Histogram with equal number of points in each bin
+     https://stackoverflow.com/questions/39418380/histogram-with-equal-number-of-points-in-each-bin
+
+    Parameters
+    ----------
+    x: list
+        list of all values to put in the histogram
+    nbin: int
+        Number of bins to use in the histogram
+
+    Returns
+    -------
+    bins
+        Returns the second parameter (bins) in plt.hist
+    """
     npt = len(x)
     return np.interp(np.linspace(0, npt, nbin + 1),
                      np.arange(npt),
@@ -99,7 +116,18 @@ class CreateLayer:
     def _apply_symbology_fixed_divisions(self, layer, field, tbl_name, schema,
                                          min_v, max_v, steps):
         """Finds the amount of levels that is necessary to describe the layer,
-        a maximum of 20 different levels is set, if less """
+        a maximum of 20 different levels is set.
+
+        Parameters
+        ----------
+        layer: QgsVectorLayer
+        field: str
+        tbl_name: str
+        schema: str
+        min_v: float
+        max_v: float
+        steps: int
+        """
         if min_v is not None and max_v is not None:
             distinct_values = list(np.arange(min_v, max_v, steps))
         else:
@@ -143,7 +171,20 @@ class CreateLayer:
         layer.setRenderer(renderer)
 
     def _make_symbology(self, layer, min , max, title, color):
-        """Creates the symbols and sets the coloring of the layer"""
+        """Creates the symbols and sets the coloring of the layer
+
+        Parameters
+        ----------
+        layer: QgsVectorLayer
+        min: float
+        max: float
+        title: str
+        color: QColor
+
+        Returns
+        -------
+        QgsRendererRange
+        """
         symbol = self._validated_default_symbol(layer.geometryType() )
         symbol.setColor(color)
         symbol.symbolLayer(0).setStrokeColor(color)
@@ -152,28 +193,61 @@ class CreateLayer:
 
     def _create_colors(self, number_of_items):
         """Returning a list of lists with RGB code, where the size of the list
-         is equals the number_of_items"""
+         is equals the number_of_items
+
+         Parameters
+         ----------
+         number_of_items: int
+
+         Returns
+         -------
+         list
+            list with rgb colors"""
         colors = []
         for i in range(number_of_items):
             value = float(i) / float(number_of_items)
             colors.append(rg(value))
         return colors
 
-    def _validated_default_symbol(self, geometryType ):
+    def _validated_default_symbol(self, geometry_type ):
         """Validates that the symbol is of the correct type, (point, line or
-        polygon and then returning a Qgis type symbol)"""
-        symbol = QgsSymbol.defaultSymbol( geometryType )
+        polygon and then returning a Qgis type symbol)
+
+        Parameters
+        ----------
+        Qgis.geometry
+
+        Returns
+        -------
+        QgsSymbol
+        """
+        symbol = QgsSymbol.defaultSymbol(geometry_type)
         if symbol is None:
-            if geometryType == Qgis.Point:
+            if geometry_type == Qgis.Point:
                 symbol = QgsMarkerSymbol()
-            elif geometryType == Qgis.Line:
+            elif geometry_type == Qgis.Line:
                 symbol = QgsLineSymbol()
-            elif geometryType == Qgis.Polygon:
+            elif geometry_type == Qgis.Polygon:
                 symbol = QgsFillSymbol()
         return symbol
 
     def equal_count(self, layer, data_values_list, field, steps=10,
                     min_value=None, max_value=None):
+        """
+
+        Parameters
+        ----------
+        layer
+        data_values_list
+        field
+        steps
+        min_value
+        max_value
+
+        Returns
+        -------
+
+        """
         if min_value is not None:
             values = []
             for value in data_values_list:
@@ -193,7 +267,7 @@ class CreateLayer:
             data_values_list = remove_values_from_list(data_values_list, 0)
             data_values_list.insert(0, 0)
         n, bins, patches = plt.hist(data_values_list,
-                                    histedges_equalN(data_values_list, steps))
+                                    hist_edges_equal(data_values_list, steps))
         colors = self._create_colors(steps)
         range_list = []
         for i in range(steps):
@@ -211,13 +285,25 @@ class CreateLayer:
         layer.setRenderer(renderer)
         return layer
 
-    def create_layer_style(self, layer, target_field, tbl_name, schema, min=None, max=None, steps=None):
-        """Create the layer and adds the layer to the canvas"""
+    def create_layer_style(self, layer, target_field, tbl_name, schema, min=None, max=None, steps=20):
+        """Create the layer and adds the layer to the canvas
+
+        Parameters
+        ----------
+        layer: QgsVectorLayer
+        target_field: str
+        tbl_name: str
+        schema: str
+        min: float, optional
+        max: float, optional
+        steps: int, optional default 20
+        """
         if layer.isValid():
             self._apply_symbology_fixed_divisions(layer, target_field, tbl_name, schema, min, max, steps)
             QgsProject.instance().addMapLayers([layer])
 
     def repaint_layer(self):
+        """Applies the new min and max and repaints the layer with new colors"""
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
         # TODO: AttributeError: 'QgsSingleSymbolRenderer' object has no attribute 'classAttribute'

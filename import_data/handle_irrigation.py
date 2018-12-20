@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
 from ..support_scripts.__init__ import check_text
-__author__ = 'Axel Hörteborn'
+__author__ = 'Axel Horteborn'
 
 
 class IrrigationHandler:

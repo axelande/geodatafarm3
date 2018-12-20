@@ -7,7 +7,9 @@ class SaveHarvesting:
     def __init__(self, parent):
         """
         A class for storing harvesting data
-        :param parent: GeoDataFarm "self"
+        Parameters
+        ----------
+        parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
         self.tr = parent.tr
@@ -43,6 +45,7 @@ class SaveHarvesting:
             self.ShpHandler.add_input()
 
     def save_manual_data(self):
+        """Saves the manual data."""
         if self.check_input():
             field = self.dw.CBHvField.currentText()
             crop = self.dw.CBHvCrop.currentText()
@@ -78,7 +81,11 @@ class SaveHarvesting:
 
     def check_input(self):
         """Some simple checks that ensure that the basic data is filled in.
-        :return bool"""
+
+        Returns
+        -------
+        bool
+        """
         if self.dw.CBHvField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False

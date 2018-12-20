@@ -93,8 +93,6 @@ class PlanAhead:
         self.parent.dock_widget.LWPlanSummary.addItems(formated_row)
         self.parent.dock_widget.LPlanSummaryLabel.setText('Plan summary {y2} ({y1})'.format(y1=year_now-1, y2=year_now))
 
-        pass
-
     def save_data(self):
         """Saves the plan"""
         table = self.parent.dock_widget.TWPlan
@@ -123,5 +121,5 @@ class PlanAhead:
         year = self.parent.dock_widget.DEPlanYear.text()
         sql = "select _{y}, st_astext(polygon) from fields".format(y=year)
         self.db.execute_and_return(sql)
-        layer = self.db.addPostGISLayer('fields', 'polygon', 'public', extra_name=str(year))
+        layer = self.db.add_postgis_layer('fields', 'polygon', 'public', extra_name=str(year))
         self.create_layer.create_layer_style(layer, '_' + year, 'fields', 'public')

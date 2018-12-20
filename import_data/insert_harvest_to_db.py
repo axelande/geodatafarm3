@@ -4,7 +4,7 @@ from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import shapefile as shp
 from ..support_scripts.__init__ import check_text, isint
 import time
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Horteborn'
 
 
 class InsertHarvestData:
@@ -37,7 +37,7 @@ class InsertHarvestData:
         tbl = self.IH.file_name.lower()
         if isint(tbl[0]):
             tbl = '_' + tbl
-        layer = self.db.addPostGISLayer(tbl, 'pos', 'harvest',
+        layer = self.db.add_postgis_layer(tbl, 'pos', 'harvest',
                                         'harvest')
 
         self.CreateLayer.create_layer_style(layer,

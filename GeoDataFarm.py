@@ -7,8 +7,8 @@
                               -------------------
         begin                : 2016-05-13
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Axel Andersson
-        email                : axel.n.c.andersson@gmail.com
+        copyright            : (C) 2016 by Axel Horteborn
+        email                : geodatafarm@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -61,10 +61,8 @@ from .database_scripts.mean_analyse import Analyze
 from .database_scripts.plan_ahead import PlanAhead
 from .import_data.handle_text_data import InputTextHandler
 from .database_scripts.create_new_farm import CreateFarm
-from .import_data.insert_input_to_db import InsertInputToDB
 from .import_data.handle_input_shp_data import InputShpHandler
 from .import_data.handle_db_file_data import DBFileHandler
-from .import_data.insert_harvest_to_db import InsertHarvestData
 from .import_data.handle_irrigation import IrrigationHandler
 from .import_data.save_planting_data import SavePlanting
 from .import_data.save_fertilizing_data import SaveFertilizing
@@ -91,10 +89,12 @@ class GeoDataFarm:
     def __init__(self, iface):
         """Constructor.
 
-        :param iface: An interface instance that will be passed to this class
+        Parameters
+        ----------
+        iface: QgsInterface, An interface instance that will be passed to this class
             which provides the hook by which you can manipulate the QGIS
             application at run time.
-        :type iface: QgsInterface
+
         """
         # Save reference to the QGIS interface
         self.iface = iface
@@ -147,14 +147,16 @@ class GeoDataFarm:
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
-
         We implement this ourselves since we do not inherit QObject.
 
-        :param message: String for translation.
-        :type message: str, QString
+        Parameters
+        ----------
+        message: str, String for translation.
 
-        :returns: Translated version of message.
-        :rtype: QString
+        Returns
+        -------
+        QString
+            Translated version of message.
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('GeoDataFarm', message)
@@ -164,41 +166,39 @@ class GeoDataFarm:
                    whats_this=None, parent=None):
         """Add a toolbar icon to the toolbar.
 
-        :param icon_path: Path to the icon for this action. Can be a resource
+        Parameters
+        ----------
+        icon_path: str
+            Path to the icon for this action. Can be a resource
             path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
+        text: str
+            Text that should be shown in menu items for this action.
+        callback: function
+            Function to be called when the action is triggered.
+        enabled_flag: bool
+            A flag indicating if the action should be enabled
             by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
+        add_to_menu: bool
+            Flag indicating whether the action should also
             be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
+        add_to_toolbar: bool
+            Flag indicating whether the action should also
             be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
+        status_tip: str
+            Optional text to show in a popup when mouse pointer
             hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
+        parent: QWidget
+            Parent widget for the new action. Defaults None.
+        whats_this: str
+            Optional text to show in the status bar when the
             mouse pointer hovers over the action.
 
-        :returns: The action that was created. Note that the action is also
+        Returns
+        -------
+        QAction
+            The action that was created. Note that the action is also
             added to self.actions list.
-        :rtype: QAction
+
         """
 
         icon = QIcon(icon_path)
@@ -252,16 +252,19 @@ class GeoDataFarm:
 
     # Functions create specific for GeoDataFarm-----------------------------
     def add_selected_tables(self):
-        """Adds a layer for each "parameter" of all selected tables
-        """
+        """Adds a layer for each "parameter" of all selected tables"""
         add_layer_to_canvas = AddLayerToCanvas(self)
         add_layer_to_canvas.run()
 
     def reload_layer(self):
+        """Reloads a layer be create a CreateLayer object and call
+        the function repaint_layer"""
         create_layer = CreateLayer(self.db, self.dock_widget)
         create_layer.repaint_layer()
 
     def reload_range(self):
+        """Reload the range of the lowest and highest value of the layer"""
+        # TODO: Fix this function!
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
         if layer is not None:
@@ -276,7 +279,7 @@ class GeoDataFarm:
                 pass
 
     def run_analyse(self):
-        """Gathers the "in parameters" and start the analyse session"""
+        """Gathers the parameters and start the analyse dialog"""
         # TODO: Check that the lw are updated..
         names = []
         schemas = []
@@ -301,31 +304,9 @@ class GeoDataFarm:
             QMessageBox.information(None, self.tr("Error:"),
                                     self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
 
-    def clicked_input(self):
-        """Connects the docked widget with the correct InputHandler script and 
-        starts the input widget"""
-        if self.dock_widget.CBFileType.currentText() == self.tr('Text file (.csv; .txt)'):
-            self.IH = InputTextHandler(self.iface, self)
-            self.IH.run()
-        elif self.dock_widget.CBFileType.currentText() == self.tr('Databasefile (.db)'):
-            QMessageBox.information(None, "Error:", self.tr(
-                'Support for databasefiles are not implemented 100% yet'))
-            return
-            self.IH = dbFileHandler(self.iface, self.dock_widget)
-            self.IH.start_up()
-        elif self.dock_widget.CBFileType.currentText() == self.tr('Shape file (.shp)'):
-            QMessageBox.information(None, "Error:", self.tr(
-                'Support for shapefiles are not implemented 100% yet'))
-            return
-            try:
-                feature = self.df.getFeatures().next()
-                polygon = feature.geometry().asPolygon()[0]
-            except:
-                polygon = None
-            self.ShpHandler = InputShpHandler(self.iface, self, polygon)
-            self.ShpHandler.add_input()
-
     def _q_replace_db_data(self, tbl=None):
+        """Function that might be removed after the full support for shape files
+        """
         schema = self.dock_widget.CBDataType.currentText()
         tables_in_db = self.db.get_tables_in_db(schema=schema)
         if tbl is not None:
@@ -352,55 +333,28 @@ class GeoDataFarm:
         else:
             return True
 
-    def clicked_input2(self):
-        """Connects the docked widget with the InserInputInDB script and starts
-        the inserting of data into the database"""
-        if self._q_replace_db_data():
-            schema = self.dock_widget.CBDataType.currentText()
-            try:
-                self.iface.actionSaveActiveLayerEdits().trigger()
-                self.iface.actionToggleEditing().trigger()
-                feature = self.df.getFeature(1)
-                polygon = feature.geometry().asWkt()
-            except:
-                polygon = None
-            try:
-                QgsProject.instance().removeMapLayer(self.df)
-            except:
-                pass
-            if schema == self.tr('harvest'):
-                obj = InsertHarvestData(self.IH, self.iface, self.dock_widget,
-                                  polygon, self.db, self.tr, self.tsk_mngr)
-                obj.run()
-            else:
-                iitdb = InsertInputToDB(self.IH, self.iface, self.dock_widget, polygon, self.tsk_mngr, self.DB)
-                iitdb.import_data_to_db(schema)
-
-    def clicked_define_field(self):
-        """Creates an empty polygon that's define a field"""
-        self.df = QgsVectorLayer("Polygon?crs=epsg:4326", "temporary_points", "memory")
-        self.df.startEditing()
-        self.iface.actionAddFeature().trigger()
-        QgsProject.instance().addMapLayer(self.df)
-
     def tbl_mgmt(self):
         """Open the table manager widget"""
         tabel_mgmt = TableManagement(self)
         tabel_mgmt.run()
 
     def multi_edit(self):
+        """Opens the multi edit widget"""
         me = MultiEdit(self)
         me.show()
 
     def import_irrigation(self):
+        """Opens the irrigation handler widget"""
         irr = IrrigationHandler(self)
         irr.run()
 
     def create_guide(self):
+        """Opens the create guide file widget"""
         guide = CreateGuideFile(self)
         guide.run()
 
     def get_database_connection(self):
+        """Connects to the database and create the db object"""
         self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
         connected = self.db.get_conn()
         if not connected:
@@ -409,6 +363,7 @@ class GeoDataFarm:
         return True
 
     def add_crop(self):
+        """Adds a crop to the database"""
         crop_name = self.dock_widget.LECropName.text()
         if len(crop_name) == 0:
             QMessageBox.information(None, self.tr('Error:'),
@@ -441,8 +396,8 @@ class GeoDataFarm:
         create_farm.run()
 
     def set_buttons(self):
-        """Since most functions are dependent on that a database connections exist
-        the buttons are set when a connection is set."""
+        """Since most functions are dependent on that a database connections
+        exist the buttons are set when a connection is set."""
         if self.populate is None:
             self.populate = Populate(self)
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
@@ -479,7 +434,6 @@ class GeoDataFarm:
 
     def run(self):
         """Run method that loads and starts the plugin"""
-
         if not self.pluginIsActive:
             self.pluginIsActive = True
 

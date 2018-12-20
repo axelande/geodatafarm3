@@ -17,26 +17,30 @@ class MultiEdit:
     almost a copy of QuickMultiAttributeEdit, so all cred to them for it!
     https://github.com/lucadelu/QuickMultiAttributeEdit"""
     def __init__(self, parent):
+        """Initiate the plugin and calls on do_checks"""
         self.MED = MultiEditDialog()
         self.tr = parent.tr
         self.iface = parent.iface
         self.db = parent.db
-        layer = self.iface.mapCanvas().currentLayer()
+        self.layer = self.iface.mapCanvas().currentLayer()
         self.MED.buttonBox.accepted.connect(self.run)
-        delimchars = "#"
+        self.do_checks()
 
-        if layer.type() == QgsMapLayer.VectorLayer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
+    def do_checks(self):
+        """Checks that all is ready to be updated"""
+        delimchars = "#"
+        if self.layer.type() == QgsMapLayer.VectorLayer:
+            if self.layer.type() == QgsMapLayer.VectorLayer:
+                provider = self.layer.dataProvider()
                 fields = provider.fields()
                 self.MED.QLEvalore.setText("")
                 self.MED.CBfields.clear()
                 for f in fields:
                     self.MED.CBfields.addItem(f.name(), f.name())
-                    nF = layer.selectedFeatureCount()
+                    nF = self.layer.selectedFeatureCount()
                     if nF > 0:
                         self.MED.label.setText("<font color='green'>For <b>" + str(
-                            nF) + "</b> selected elements in <b>" + layer.name() + "</b> set value of field</font>")
+                            nF) + "</b> selected elements in <b>" + self.layer.name() + "</b> set value of field</font>")
                         self.MED.CBfields.setFocus(True)
                         rm_if_too_old_settings_file(
                             tempfile.gettempdir() + "/QuickMultiAttributeEdit_tmp")
@@ -65,15 +69,15 @@ class MultiEdit:
 
                     if (nF == 0):
                         infoString = self.tr(
-                            "<font color='red'> Please select some elements into current <b>" + layer.name() + "</b> layer</font>")
+                            "<font color='red'> Please select some elements into current <b>" + self.layer.name() + "</b> layer</font>")
                         self.MED.label.setText(infoString)
                         self.MED.buttonBox.button(QDialogButtonBox.Ok).setEnabled(
                             False)
                         self.MED.QLEvalore.setEnabled(False)
                         self.MED.CBfields.setEnabled(False)
-        elif layer.type() != QgsMapLayer.VectorLayer:
+        elif self.layer.type() != QgsMapLayer.VectorLayer:
             infoString = self.tr(
-                "<font color='red'> Layer <b>" + layer.name() + "</b> is not a vector layer</font>")
+                "<font color='red'> Layer <b>" + self.layer.name() + "</b> is not a vector layer</font>")
             self.MED.label.setText(infoString)
             self.MED.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
             self.MED.QLEvalore.setEnabled(False)
@@ -87,10 +91,13 @@ class MultiEdit:
             self.MED.CBfields.setEnabled(False)
 
     def show(self):
+        """Displays the widget"""
         self.MED.show()
         self.MED.exec_()
 
     def run(self):
+        """Change the values, if it is a postgres database source it does the
+        update directly to the server and then reloads the layer."""
         delimchars = "#"
         layer = self.iface.mapCanvas().currentLayer()
         if not layer.isEditable():
@@ -169,6 +176,17 @@ class MultiEdit:
 
 
 def bool2str(b_var):
+    """Converts a str to bool
+
+    Parameters
+    ----------
+    b_var: bool
+
+    Returns
+    -------
+    str
+    """
+
     if b_var:
         return 'True'
     else:
@@ -176,6 +194,16 @@ def bool2str(b_var):
 
 
 def str2bool(b_var):
+    """Converts a str to bool
+
+    Parameters
+    ----------
+    b_var: str
+
+    Returns
+    -------
+    bool
+    """
     if b_var == 'True':
         return True
     else:
@@ -183,6 +211,7 @@ def str2bool(b_var):
 
 
 def rm_if_too_old_settings_file(my_path_and_file):
+    """Removes the settings file if it is too old."""
     if os.path.exists(my_path_and_file) and os.path.isfile(
             my_path_and_file) and os.access(my_path_and_file, R_OK):
         now = time.time()

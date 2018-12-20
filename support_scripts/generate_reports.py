@@ -16,15 +16,26 @@ styleH = styles['Heading1']
 styleN = styles['Normal']
 
 
-def coord(x, y, unit=1):
-    x, y = x * unit, height - y * unit
-    return x, y
-
-
 class MyDocTemplate(BaseDocTemplate):
     def __init__(self, filename, tr, plugin_dir, growing_year, cur_date, **kw):
-        self.allowSplitting = 0
+        """Generate a basic A4 pdf document
+
+        Parameters
+        ----------
+        filename: str
+            The file name to store the PDF document
+        tr: translation
+            The Translation function from GeoDataFarm
+        plugin_dir: str
+            path to the plugin dir in order to find the icon
+        growing_year: int
+             What growing year
+        cur_date: str
+            Current date, to write on the report
+        kw
+        """
         BaseDocTemplate.__init__(self, filename, **kw)
+        self.allowSplitting = 0
         self.tr = tr
         self.plugin_dir = plugin_dir
         frame = Frame(self.leftMargin, self.bottomMargin, self.width, self.height - 2 * cm, id='normal')
@@ -34,6 +45,16 @@ class MyDocTemplate(BaseDocTemplate):
         self.addPageTemplates(template)
 
     def header(self, canvas, doc, growing_year, cur_date):
+        """Create the header of the document
+
+        Parameters
+        ----------
+        canvas
+        doc
+        growing_year: int
+        cur_date: str, with the current date
+
+        """
         canvas.saveState()
         canvas.drawString(30, 750, self.tr('Simple report from GeoDataFarm'))
         canvas.drawString(30, 733, self.tr('For the growing season of ') + str(growing_year))
@@ -48,6 +69,12 @@ class MyDocTemplate(BaseDocTemplate):
 
 class RapportGen:
     def __init__(self, parent):
+        """Generates reports from GeoDataFarm
+
+        Parameters
+        ----------
+        parent: GeoDataFarm
+        """
         self.tr = parent.tr
         self.db = parent.db
         self.dw = parent.dock_widget
@@ -71,6 +98,8 @@ class RapportGen:
             self.path = folder_path
 
     def report_per_operation(self):
+        """Creates a QgsTask in order to collect data then on finish it runs
+        simple_operation."""
         if self.path is None:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('A directory to save the report must be selected.'))
@@ -84,7 +113,8 @@ class RapportGen:
                 year = None
             else:
                 year = self.dw.DEReportYear.text()
-            task = QgsTask.fromFunction('Run import text data', self.collect_data, year,
+            task = QgsTask.fromFunction('Run import text data',
+                                        self.collect_data, year,
                                         on_finished=self.simple_operation)
             self.tsk_mngr.addTask(task)
         else:
@@ -93,6 +123,8 @@ class RapportGen:
                                                     y=year)
 
     def report_per_field(self):
+        """Creates a QgsTask in order to collect data then on finish it runs
+        simple_field."""
         if self.path is None:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('A directory to save the report must be selected.'))
@@ -115,7 +147,17 @@ class RapportGen:
                                                     y=year)
 
     def simple_operation(self,  result, values):
-        """Generates a simple report of all operations"""
+        """Generates a simple report of all operations
+
+        Parameters
+        ----------
+        result: QgsTask.result
+            Not used
+        values: list
+            if success:
+                [True, dict]
+            else:
+                [False, message, tracback]"""
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
@@ -181,7 +223,18 @@ class RapportGen:
             return
 
     def simple_field(self, result, values):
-        """Generates a simple report of all operations listed by fields."""
+        """Generates a simple report of all operations listed by fields.
+
+        Parameters
+        ----------
+        result: QgsTask.result
+            Not used
+        values: list
+            if success:
+                [True, dict]
+            else:
+                [False, message, tracback]
+        """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
@@ -282,10 +335,19 @@ class RapportGen:
         """Collect data from the different schemas at the server and
         store them in a dict
 
+        Parameters
+        ----------
+        task: QgsTask
+        year: int
+
         Returns
-        -------------------
-        dict
-         """
+        -------
+        list
+            if success:
+                [bool, dict]
+            else:
+                [bool, str, str]
+        """
         data_dict = {'planting': {'simple': False, 'advanced': False},
                      'fertilizing': {'simple': False, 'advanced': False},
                      'spraying': {'simple': False, 'advanced': False},

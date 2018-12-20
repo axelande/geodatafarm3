@@ -6,7 +6,10 @@ class SaveHarrowing:
     def __init__(self, parent):
         """
         A class for storing harrowing data
-        :param parent: GeoDataFarm "self"
+
+        Parameters
+        ----------
+        parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
         self.tr = parent.tr
@@ -17,6 +20,7 @@ class SaveHarrowing:
         self.parent.dock_widget.PBHwSaveManual.clicked.connect(self.save_manual_data)
 
     def save_manual_data(self):
+        """Saves the manual data."""
         if self.check_input():
             field = self.dw.CBHwField.currentText()
             date_ = self.dw.DEHarrowing.text()
@@ -46,7 +50,11 @@ class SaveHarrowing:
 
     def check_input(self):
         """Some simple checks that ensure that the basic data is filled in.
-        :return bool"""
+
+        Returns
+        -------
+        bool
+        """
         if self.dw.CBHwField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False

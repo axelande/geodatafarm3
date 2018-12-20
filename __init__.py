@@ -6,9 +6,9 @@
  This is a plugin that aims to determine the yield impact of different parameters
                              -------------------
         begin                : 2016-10-24
-        copyright            : (C) 2016 by Axel Andersson
-        email                : axel.n.c.andersson@gmail.com
-        git sha              : $Format:%H$
+        copyright            : (C) 2016 by Axel Horteborn
+        email                : geodatafarm@gmail.com
+        git sha              : https://github.com/axelande/geodatafarm3
  ***************************************************************************/
 
 /***************************************************************************

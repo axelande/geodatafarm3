@@ -7,7 +7,7 @@
                              -------------------
         begin                : 2016-03-04
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Axel Andersson
+        copyright            : (C) 2016 by Axel Horteborn
         email                : axel.n.c.andersson@gmail.com
  ***************************************************************************/
 

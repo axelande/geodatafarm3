@@ -4,26 +4,53 @@
     <list default="true" id="48be064e-6426-430f-b32c-3a5f581db867" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GeoDataFarm.py" beforeDir="false" afterPath="$PROJECT_DIR$/GeoDataFarm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GeoDataFarm_dockwidget_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/GeoDataFarm_dockwidget_base.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GeoDataFarm_dockwidget.py" beforeDir="false" afterPath="$PROJECT_DIR$/GeoDataFarm_dockwidget.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_scripts/create_new_farm.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_scripts/create_new_farm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_scripts/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_scripts/db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_scripts/mean_analyse.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_scripts/mean_analyse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_scripts/plan_ahead.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_scripts/plan_ahead.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_scripts/table_managment.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_scripts/table_managment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.pro" beforeDir="false" afterPath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.pro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.qm" beforeDir="false" afterPath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.qm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.ts" beforeDir="false" afterPath="$PROJECT_DIR$/i18n/GeoDataFarm_sv.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/handle_db_file_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/handle_db_file_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/handle_input_shp_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/handle_input_shp_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/handle_irrigation.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/handle_irrigation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/import_data/handle_text_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/handle_text_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/insert_harvest_to_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/insert_harvest_to_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/insert_input_to_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_fertilizing_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_fertilizing_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_harrowing_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_harrowing_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_harvest_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_harvest_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_other_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_other_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_planting_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_planting_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_plowing_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_plowing_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_soil_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_soil_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import_data/save_spraying_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/import_data/save_spraying_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pb_tool.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/pb_tool.cfg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/RG.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/RG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/ShapefileCreate.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/support_scripts/add_field.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/add_field.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/add_layer_to_canvas.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/add_layer_to_canvas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/support_scripts/create_guiding_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/create_guiding_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/create_layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/create_layer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/support_scripts/generate_reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/generate_reports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/multiedit.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/multiedit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/support_scripts/populate_lists.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/populate_lists.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_data/planting_file.csv" beforeDir="false" afterPath="$PROJECT_DIR$/test_data/planting_file.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/widgets/Run_analyse_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/Run_analyse_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/widgets/create_farm_popup_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/create_farm_popup_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/widgets/import_text_dialog_base.ui" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_text_dialog_base.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/widgets/table_managment.ui" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/table_managment.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/radio_box.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/radio_box.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_scripts/rain_dancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/support_scripts/rain_dancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/add_field.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/add_field.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/connect_to_farm.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/connect_to_farm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/create_farm_popup.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/create_farm_popup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/create_guide_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/create_guide_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_db_file_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_db_file_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_harvest_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_harvest_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_input_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_input_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_irrigation_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_irrigation_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_shp_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_shp_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/import_text_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/import_text_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/run_analyse.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/run_analyse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets/table_managment_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets/table_managment_dialog.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -70,6 +97,23 @@
         <item name="demo3: database" type="6d9b600a:PostgresImplModel$Database" />
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
       </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="demo3@geodatafarm" type="feb32156:DbDataSourceImpl" />
+        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="demo3: database" type="6d9b600a:PostgresImplModel$Database" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="plant: schema" type="a16502c0:PostgresImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="demo3@geodatafarm" type="feb32156:DbDataSourceImpl" />
+        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="demo3: database" type="6d9b600a:PostgresImplModel$Database" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="plant: schema" type="a16502c0:PostgresImplModel$Schema" />
+        <item name="manual: table" type="a93d6ac6:PostgresImplModel$LocalTable" />
+      </path>
     </expand>
     <select />
   </component>
@@ -78,98 +122,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GeoDataFarm.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GeoDataFarm.py">
+      <file leaf-file-name="geodatafarm.support_scripts.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.support_scripts.rst">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4199">
-              <caret line="257" column="35" selection-start-line="257" selection-start-column="35" selection-end-line="257" selection-end-column="35" />
-              <folding>
-                <element signature="e#1381#1395#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mean_analyse.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/database_scripts/mean_analyse.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8959">
-              <caret line="538" column="18" selection-start-line="538" selection-start-column="18" selection-end-line="538" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="populate_lists.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/support_scripts/populate_lists.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1853">
-              <caret line="112" column="31" selection-start-line="112" selection-start-column="17" selection-end-line="112" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#64#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="create_new_farm.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/database_scripts/create_new_farm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="99" column="87" selection-start-line="99" selection-start-column="87" selection-end-line="99" selection-end-column="87" />
-              <folding>
-                <element signature="e#0#75#0" expanded="true" />
-                <element signature="e#443#1953#0" />
-                <element signature="e#1982#2069#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="save_soil_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/import_data/save_soil_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="39" column="12" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="db.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/database_scripts/db.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3553">
-              <caret line="213" column="15" selection-start-line="213" selection-start-column="12" selection-end-line="213" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="create_guiding_file.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/support_scripts/create_guiding_file.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2720">
-              <caret line="191" column="24" selection-start-line="191" selection-start-column="24" selection-end-line="191" selection-end-column="24" />
-              <folding>
-                <element signature="e#627#1152#0" />
-                <element signature="e#1789#2091#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="generate_reports.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/support_scripts/generate_reports.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2482">
-              <caret line="155" column="58" selection-start-line="155" selection-start-column="34" selection-end-line="155" selection-end-column="58" />
-              <folding>
-                <element signature="e#0#46#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1819">
+              <caret line="107" selection-start-line="107" selection-end-line="107" />
             </state>
           </provider>
         </entry>
@@ -177,22 +134,83 @@
       <file leaf-file-name="handle_text_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/import_data/handle_text_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8279">
-              <caret line="505" column="42" selection-start-line="505" selection-start-column="42" selection-end-line="505" selection-end-column="42" />
+            <state relative-caret-position="171">
+              <caret line="376" column="49" selection-start-line="376" selection-start-column="49" selection-end-line="376" selection-end-column="49" />
               <folding>
-                <element signature="e#0#57#0" expanded="true" />
+                <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#731#2262#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="table_managment.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/database_scripts/table_managment.py">
+      <file leaf-file-name="index.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/help/source/index.rst">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3179">
-              <caret line="190" column="28" selection-start-line="190" selection-start-column="28" selection-end-line="190" selection-end-column="28" />
+            <state relative-caret-position="10">
+              <caret line="12" column="15" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geodatafarm.rst" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.rst">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="55">
+              <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GeoDataFarm.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GeoDataFarm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="503">
+              <caret line="434" column="18" selection-start-line="434" selection-start-column="18" selection-end-line="434" selection-end-column="18" />
               <folding>
-                <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#1381#1395#0" expanded="true" />
+                <element signature="e#4053#5837#0" />
+                <element signature="e#5913#6347#0" />
+                <element signature="e#6553#8571#0" />
+                <element signature="e#8604#8894#0" />
+                <element signature="e#8933#9107#0" />
+                <element signature="e#9139#9479#0" />
+                <element signature="e#9601#9759#0" />
+                <element signature="e#9725#9815#0" />
+                <element signature="e#9948#10505#0" />
+                <element signature="e#10519#11704#0" />
+                <element signature="e#11886#12871#0" />
+                <element signature="e#14289#14392#0" />
+                <element signature="e#13137#13175#0" />
+                <element signature="e#13260#13307#0" />
+                <element signature="e#13386#13485#0" />
+                <element signature="e#13542#13981#0" />
+                <element signature="e#14079#14971#0" />
+                <element signature="e#16102#16274#0" />
+                <element signature="e#16315#16492#0" />
+                <element signature="e#16529#18606#0" />
+                <element signature="e#18635#19859#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="add_field.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/support_scripts/add_field.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="add_layer_to_canvas.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/support_scripts/add_layer_to_canvas.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="668">
+              <caret line="95" column="38" lean-forward="true" selection-start-line="95" selection-start-column="38" selection-end-line="95" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -209,36 +227,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Para</find>
-      <find>1</find>
-      <find>Sp</find>
-      <find>date_row</find>
-      <find>shape</find>
-      <find>data_dict</find>
-      <find>QM</find>
-      <find>created</find>
-      <find>set as</find>
-      <find>CON</find>
-      <find>self.db</find>
-      <find>harvest</find>
+      <find>InsertInputToDB</find>
+      <find>clicked_input2</find>
+      <find>insert_data_polygon</find>
+      <find>path</find>
+      <find>insert in</find>
       <find>addPostGISLayer</find>
-      <find>spra</find>
-      <find>date_</find>
-      <find>== ''</find>
-      <find>is None</find>
-      <find>Par</find>
+      <find>tk</find>
+      <find>get_indexes</find>
+      <find>processi</find>
+      <find>insert_in</find>
+      <find>database_scripts</find>
+      <find>moc</find>
+      <find>self.update</find>
+      <find>selected_table</find>
+      <find>histedges_equalN</find>
+      <find>hist_edges_equal</find>
+      <find>_make_symbology</find>
+      <find>coord</find>
+      <find>header</find>
+      <find>import sh</find>
+      <find>ShapefileCreate</find>
+      <find>run_update</find>
+      <find>_set_checkbox_layout</find>
       <find>year</find>
-      <find>400</find>
-      <find>activity_tables</find>
-      <find>DB</find>
-      <find>activity</find>
-      <find>db</find>
-      <find>table</find>
-      <find>is \</find>
-      <find>CB</find>
-      <find>dist</find>
-      <find>dis</find>
-      <find>items_in_table</find>
+      <find>_update_layout</find>
+      <find>main_file</find>
+      <find>reload_range</find>
+      <find>clicked_input</find>
+      <find>_q_replace_db_data</find>
+      <find>clicked_define_field</find>
     </findStrings>
     <replaceStrings>
       <replace>QtWidgets</replace>
@@ -255,7 +273,20 @@
       <replace>plant_tables</replace>
       <replace>spray_tables</replace>
       <replace>ferti_tables</replace>
+      <replace>self.IIR.DECreateYear.text()</replace>
+      <replace>{tbl}</replace>
+      <replace>define_separator</replace>
+      <replace>set_column_list</replace>
+      <replace>change_sep</replace>
+      <replace>set_sep_radio_but</replace>
+      <replace>Horteborn</replace>
+      <replace>add_postgis_layer</replace>
+      <replace>import_data</replace>
     </replaceStrings>
+    <dirStrings>
+      <dir>C:\dev\geodatafarm\help\source</dir>
+      <dir>C:\dev\geodatafarm\</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -263,53 +294,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/GeoDataFarm_dockwidget.py" />
-        <option value="$PROJECT_DIR$/widgets/create_farm_popup_base.py" />
-        <option value="$PROJECT_DIR$/widgets/create_farm_popup.py" />
-        <option value="$PROJECT_DIR$/widgets/impact_check_dockwidget_base.py" />
-        <option value="$PROJECT_DIR$/widgets/import_db_file_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/import_harvest_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/import_input_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/import_shp_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/import_text_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/ImportHarvest_dialog_base.py" />
-        <option value="$PROJECT_DIR$/widgets/ImportInput_dialog_base.py" />
-        <option value="$PROJECT_DIR$/widgets/run_analyse.py" />
-        <option value="$PROJECT_DIR$/widgets/Run_analyse_base.py" />
-        <option value="$PROJECT_DIR$/widgets/table_managment_dialog.py" />
-        <option value="$PROJECT_DIR$/widgets/waiting.py" />
-        <option value="$PROJECT_DIR$/widgets/waiting_msg.py" />
-        <option value="$PROJECT_DIR$/pb_tool.cfg" />
-        <option value="$PROJECT_DIR$/db_tester/db_test.py" />
-        <option value="$PROJECT_DIR$/db_tester/rain_dancer_tester.py" />
-        <option value="$PROJECT_DIR$/db_tester/handle_irrigation_tester.py" />
-        <option value="$PROJECT_DIR$/import_data/handle_irrigation.py" />
         <option value="$PROJECT_DIR$/support_scripts/radio_box.py" />
         <option value="$PROJECT_DIR$/widgets/add_field.py" />
         <option value="$PROJECT_DIR$/support_scripts/combo_box.py" />
         <option value="$PROJECT_DIR$/support_scripts/add_crop.py" />
         <option value="$PROJECT_DIR$/widgets/connect_to_farm.py" />
-        <option value="$PROJECT_DIR$/support_scripts/create_layer.py" />
+        <option value="$PROJECT_DIR$/db_tester/db_test.py" />
+        <option value="$PROJECT_DIR$/widgets/add_to_canvas.py" />
+        <option value="$PROJECT_DIR$/pb_tool.cfg" />
+        <option value="$PROJECT_DIR$/widgets/import_irrigation_dialog.py" />
+        <option value="$PROJECT_DIR$/import_data/handle_irrigation.py" />
+        <option value="$PROJECT_DIR$/temp_q.sql" />
+        <option value="$PROJECT_DIR$/metadata.txt" />
+        <option value="$PROJECT_DIR$/database_scripts/table_managment.py" />
+        <option value="$PROJECT_DIR$/support_scripts/populate_lists.py" />
+        <option value="$PROJECT_DIR$/help/build/source/conf.py" />
+        <option value="$PROJECT_DIR$/Makefile" />
+        <option value="$PROJECT_DIR$/help/make.bat" />
+        <option value="C:/OSGeo4W64/apps/Python37/lib/site-packages/pb_tool/pb_tool.py" />
+        <option value="C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/application.py" />
+        <option value="C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/registry.py" />
         <option value="$PROJECT_DIR$/database_scripts/plan_ahead.py" />
-        <option value="$PROJECT_DIR$/import_data/save_planting_data.py" />
-        <option value="$PROJECT_DIR$/import_data/save_other_data.py" />
-        <option value="$PROJECT_DIR$/import_data/save_spraying_data.py" />
+        <option value="$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.main_file.rst" />
+        <option value="$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.database_scripts.rst" />
+        <option value="$PROJECT_DIR$/database_scripts/create_new_farm.py" />
+        <option value="$PROJECT_DIR$/database_scripts/db.py" />
+        <option value="$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.import_data.rst" />
+        <option value="$PROJECT_DIR$/import_data/handle_input_shp_data.py" />
         <option value="$PROJECT_DIR$/import_data/save_fertilizing_data.py" />
-        <option value="$PROJECT_DIR$/import_data/save_plowing_data.py" />
         <option value="$PROJECT_DIR$/import_data/save_harrowing_data.py" />
-        <option value="$PROJECT_DIR$/import_data/save_soil_data.py" />
         <option value="$PROJECT_DIR$/import_data/save_harvest_data.py" />
+        <option value="$PROJECT_DIR$/import_data/save_other_data.py" />
+        <option value="$PROJECT_DIR$/import_data/save_planting_data.py" />
+        <option value="$PROJECT_DIR$/import_data/save_plowing_data.py" />
+        <option value="$PROJECT_DIR$/import_data/save_soil_data.py" />
+        <option value="$PROJECT_DIR$/import_data/save_spraying_data.py" />
+        <option value="$PROJECT_DIR$/help/source/conf.py" />
         <option value="$PROJECT_DIR$/support_scripts/__init__.py" />
         <option value="$PROJECT_DIR$/support_scripts/add_field.py" />
-        <option value="$PROJECT_DIR$/import_data/handle_text_data.py" />
-        <option value="$PROJECT_DIR$/support_scripts/generate_reports.py" />
-        <option value="$PROJECT_DIR$/support_scripts/populate_lists.py" />
-        <option value="$PROJECT_DIR$/database_scripts/mean_analyse.py" />
-        <option value="$PROJECT_DIR$/database_scripts/db.py" />
-        <option value="$PROJECT_DIR$/database_scripts/table_managment.py" />
         <option value="$PROJECT_DIR$/support_scripts/create_guiding_file.py" />
+        <option value="$PROJECT_DIR$/support_scripts/create_layer.py" />
+        <option value="$PROJECT_DIR$/support_scripts/generate_reports.py" />
+        <option value="$PROJECT_DIR$/support_scripts/multiedit.py" />
+        <option value="$PROJECT_DIR$/support_scripts/rain_dancer.py" />
+        <option value="$PROJECT_DIR$/support_scripts/RG.py" />
+        <option value="$PROJECT_DIR$/database_scripts/mean_analyse.py" />
+        <option value="$PROJECT_DIR$/import_data/handle_text_data.py" />
+        <option value="$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.support_scripts.rst" />
+        <option value="$PROJECT_DIR$/help/source/index.rst" />
+        <option value="$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.rst" />
+        <option value="$PROJECT_DIR$/support_scripts/add_layer_to_canvas.py" />
         <option value="$PROJECT_DIR$/GeoDataFarm.py" />
-        <option value="$PROJECT_DIR$/database_scripts/create_new_farm.py" />
       </list>
     </option>
   </component>
@@ -323,16 +358,16 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="950" />
-    <option name="width" value="980" />
-    <option name="height" value="1040" />
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="1940" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -343,34 +378,40 @@
             <path>
               <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
               <item name="geodatafarm" type="462c0819:PsiDirectoryNode" />
+              <item name="database_scripts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
+              <item name="geodatafarm" type="462c0819:PsiDirectoryNode" />
+              <item name="help" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
+              <item name="geodatafarm" type="462c0819:PsiDirectoryNode" />
+              <item name="help" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
+              <item name="geodatafarm" type="462c0819:PsiDirectoryNode" />
               <item name="support_scripts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
-            <path>
-              <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.6 (1) &gt;" type="70bed36:NamedLibraryElementNode" />
-            </path>
-            <path>
-              <item name="geodatafarm" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.6 (1) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="PostgreSQL" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../privat/_testar" />
-    <property name="settings.editor.selected.configurable" value="SQL Dialects" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../program/seaman_f" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -586,47 +627,48 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.38176638" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32905984" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.49932885" visible="true" weight="0.33190882" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49769586" visible="true" weight="0.19530201" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.49932885" visible="true" weight="0.2948718" />
+      <window_info anchor="bottom" id="TypeScript" order="9" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.497151" visible="true" weight="0.30067113" />
+      <window_info anchor="bottom" id="Statistic" order="9" weight="0.84045583" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" weight="0.3295302" />
+      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Structure" order="1" sideWeight="0.502849" side_tool="true" weight="0.29194632" />
       <window_info id="Favorites" order="2" sideWeight="0.50230414" side_tool="true" weight="0.18724832" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
-      <window_info anchor="bottom" id="TypeScript" order="9" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24966443" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" id="Data View" order="3" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Data View" order="3" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24966443" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32905984" />
-      <window_info anchor="right" id="Data View" order="4" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19865772" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Python Console" order="8" weight="0.32905984" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19865772" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32905984" />
+      <window_info anchor="right" id="Data View" order="4" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
+      <window_info anchor="right" id="Database" order="5" />
       <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="right" id="Database" order="5" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Python Console" order="8" weight="0.32905984" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -655,338 +697,476 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/database_scripts/db.py</url>
-          <line>46</line>
+          <line>55</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/database_scripts/db.py</url>
-          <line>66</line>
+          <line>76</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/database_scripts/table_managment.py</url>
+          <line>127</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="14" />
+      <option name="time" value="17" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/widgets/ImportHarvest_dialog_base.py" />
-    <entry file="file://$PROJECT_DIR$/widgets/ImportInput_dialog_base.py" />
-    <entry file="file://$PROJECT_DIR$/widgets/run_analyse.py">
+    <entry file="file://$PROJECT_DIR$/make.bat" />
+    <entry file="file://$PROJECT_DIR$/i18n/GeoDataFarm_sv.pro">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="31" column="32" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="32" />
+        <state>
+          <caret column="398" selection-start-column="11" selection-end-column="398" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/Run_analyse_base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="65" column="34" selection-start-line="65" selection-start-column="34" selection-end-line="65" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/table_managment_dialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="31" column="31" selection-start-line="31" selection-start-column="31" selection-end-line="31" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/waiting.py" />
-    <entry file="file://$PROJECT_DIR$/widgets/waiting_msg.py" />
-    <entry file="file://$PROJECT_DIR$/widgets/import_input_dialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="31" column="33" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/metadata.txt">
+    <entry file="file://$PROJECT_DIR$/help/index.html" />
+    <entry file="file://$PROJECT_DIR$/help/_sources/index.rst.txt" />
+    <entry file="file://C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/pb_tool.cfg">
+    <entry file="file://$PROJECT_DIR$/help/make.bat">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="77" selection-start-line="44" selection-start-column="77" selection-end-line="44" selection-end-column="77" />
+        <state relative-caret-position="17">
+          <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/rain_dancer.py">
+    <entry file="file://$PROJECT_DIR$/help/build/html/index.html">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/import_irrigation_dialog.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db_tester/db._testpy" />
-    <entry file="file://$PROJECT_DIR$/db_tester/db_test.py">
+    <entry file="file://C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/extension.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+        <state relative-caret-position="-27" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2018.1/system/python_stubs/1966160555/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="565" column="4" selection-start-line="565" selection-start-column="4" selection-end-line="565" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db_tester/rain_dancer_tester.py">
+    <entry file="file://C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/registry.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="17">
+          <caret line="468" column="49" selection-start-line="468" selection-start-column="49" selection-end-line="468" selection-end-column="49" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db_tester/handle_irrigation_tester.py">
+    <entry file="file://C:/OSGeo4W64/apps/Python37/lib/site-packages/sphinx/application.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1479">
-          <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
+        <state relative-caret-position="110">
+          <caret line="450" column="18" selection-start-line="450" selection-start-column="18" selection-end-line="450" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/OSGeo4W64/apps/Python37/lib/site-packages/pb_tool/pb_tool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="595" column="29" selection-start-line="595" selection-start-column="26" selection-end-line="595" selection-end-column="29" />
           <folding>
-            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#1108#1117#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/OSGeo4W64/apps/Python36/lib/site-packages/psycopg2/extras.py">
+    <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="143" selection-start-line="143" selection-end-line="143" />
+        <state relative-caret-position="50">
+          <caret line="48" column="337" selection-start-line="48" selection-start-column="337" selection-end-line="48" selection-end-column="337" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/handle_irrigation.py">
+    <entry file="file://$PROJECT_DIR$/GeoDataFarm_dockwidget.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="61" column="12" selection-start-line="61" selection-start-column="12" selection-end-line="61" selection-end-column="12" />
-        </state>
+        <state relative-caret-position="-543" />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/radio_box.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="28" selection-start-column="28" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/add_field.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="27" column="41" selection-start-line="27" selection-start-column="41" selection-end-line="27" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/combo_box.py" />
-    <entry file="file://$PROJECT_DIR$/support_scripts/add_crop.py" />
-    <entry file="file://$PROJECT_DIR$/import_data/handle_db_file_data.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/import_data/insert_input_to_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2072">
-          <caret line="130" column="20" selection-start-line="130" selection-start-column="20" selection-end-line="130" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/create_farm_popup_base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/create_farm_popup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="412">
-          <caret line="35" column="31" lean-forward="true" selection-start-line="35" selection-start-column="31" selection-end-line="35" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/connect_to_farm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/create_layer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
+        <state relative-caret-position="68">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/database_scripts/plan_ahead.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_planting_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/OSGeo4W64/apps/Python36/lib/site-packages/reportlab/platypus/doctemplate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="1105" lean-forward="true" selection-start-line="1105" selection-end-line="1105" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_fertilizing_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="77" column="41" selection-start-line="77" selection-start-column="41" selection-end-line="77" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_plowing_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="714">
-          <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_spraying_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="73" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_harrowing_data.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_other_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="71" column="23" selection-start-line="71" selection-start-column="23" selection-end-line="74" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="52" column="17" selection-start-line="52" selection-start-column="17" selection-end-line="52" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/5d37070b-57e4-4860-b7ac-6370f18dc072/console.sql">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/add_field.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="155" column="14" selection-start-line="155" selection-start-column="14" selection-end-line="155" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/widgets/impact_check_dockwidget_base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="98" column="89" selection-start-line="98" selection-start-column="89" selection-end-line="98" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_harvest_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="229">
-          <caret line="69" column="53" lean-forward="true" selection-start-line="69" selection-start-column="53" selection-end-line="69" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/save_soil_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="39" column="12" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import_data/handle_text_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8279">
-          <caret line="505" column="42" selection-start-line="505" selection-start-column="42" selection-end-line="505" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/generate_reports.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2482">
-          <caret line="155" column="58" selection-start-line="155" selection-start-column="34" selection-end-line="155" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#46#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database_scripts/table_managment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3179">
-          <caret line="190" column="28" selection-start-line="190" selection-start-column="28" selection-end-line="190" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database_scripts/mean_analyse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8959">
-          <caret line="538" column="18" selection-start-line="538" selection-start-column="18" selection-end-line="538" selection-end-column="18" />
+        <state relative-caret-position="212">
+          <caret line="124" column="18" selection-start-line="124" selection-start-column="18" selection-end-line="124" selection-end-column="18" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/database_scripts/create_new_farm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#248#1092#0" />
+            <element signature="e#1121#1208#0" />
+            <element signature="e#1249#4226#0" />
+            <element signature="e#4269#5396#0" />
+            <element signature="e#5436#5600#0" />
+            <element signature="e#5713#7358#0" />
+            <element signature="e#7340#10356#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/database_scripts/db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3553">
-          <caret line="213" column="15" selection-start-line="213" selection-start-column="12" selection-end-line="213" selection-end-column="15" />
+        <state relative-caret-position="297">
+          <caret line="391" column="8" selection-start-line="391" selection-start-column="8" selection-end-line="391" selection-end-column="8" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#709#1327#0" />
+            <element signature="e#1361#2037#0" />
+            <element signature="e#2069#2240#0" />
+            <element signature="e#2337#3424#0" />
+            <element signature="e#3813#4437#0" />
+            <element signature="e#4163#4530#0" />
+            <element signature="e#5070#6156#0" />
+            <element signature="e#7202#7649#0" />
+            <element signature="e#7710#8384#0" />
+            <element signature="e#8452#9184#0" />
+            <element signature="e#9238#9500#0" />
+            <element signature="e#9553#11298#0" />
+            <element signature="e#11340#11635#0" />
+            <element signature="e#11684#12002#0" />
+            <element signature="e#12976#13248#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.main_file.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.database_scripts.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/handle_input_shp_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="17" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-373" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.widgets.rst">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.import_data.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_fertilizing_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_harrowing_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_harvest_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_other_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="22" column="29" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_planting_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="90" column="8" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_plowing_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_soil_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="90" column="8" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/save_spraying_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1853">
+          <caret line="109" selection-start-line="109" selection-end-line="109" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/modules.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/conf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/support_scripts/create_guiding_file.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2720">
-          <caret line="191" column="24" selection-start-line="191" selection-start-column="24" selection-end-line="191" selection-end-column="24" />
+        <state relative-caret-position="318">
+          <caret line="80" column="28" selection-start-line="80" selection-start-column="28" selection-end-line="80" selection-end-column="28" />
           <folding>
-            <element signature="e#627#1152#0" />
-            <element signature="e#1789#2091#0" />
+            <element signature="e#0#48#0" expanded="true" />
+            <element signature="e#3786#5137#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/support_scripts/populate_lists.py">
+    <entry file="file://$PROJECT_DIR$/support_scripts/create_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1853">
-          <caret line="112" column="31" selection-start-line="112" selection-start-column="17" selection-end-line="112" selection-end-column="31" />
+        <state relative-caret-position="544">
+          <caret line="318" selection-start-line="318" selection-end-line="318" />
           <folding>
-            <element signature="e#0#64#0" expanded="true" />
+            <element signature="e#0#371#0" expanded="true" />
+            <element signature="e#558#1479#0" />
+            <element signature="e#1521#2384#0" />
+            <element signature="e#2413#3000#0" />
+            <element signature="e#3038#3300#0" />
+            <element signature="e#3376#3485#0" />
+            <element signature="e#3637#6014#0" />
+            <element signature="e#6087#6380#0" />
+            <element signature="e#6437#6723#0" />
+            <element signature="e#6789#7280#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/multiedit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="97" column="18" selection-start-line="97" selection-start-column="18" selection-end-line="97" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#608#939#0" />
+            <element signature="e#971#4700#0" />
+            <element signature="e#4888#9626#0" />
+            <element signature="e#9437#9501#0" />
+            <element signature="e#9529#9599#0" />
+            <element signature="e#9657#10081#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/rain_dancer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/shapefile.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/ShapefileCreate.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/RG.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/generate_reports.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="344" selection-start-line="344" selection-end-line="348" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#46#0" expanded="true" />
+            <element signature="e#745#1302#0" />
+            <element signature="e#1362#1960#0" />
+            <element signature="e#2688#2933#0" />
+            <element signature="e#2981#3317#0" />
+            <element signature="e#3356#3658#0" />
+            <element signature="e#3807#4914#0" />
+            <element signature="e#5094#6311#0" />
+            <element signature="e#10533#15998#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database_scripts/mean_analyse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1035">
+          <caret line="336" column="50" selection-start-line="336" selection-start-column="50" selection-end-line="336" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#1772#1880#0" />
+            <element signature="e#1976#11556#0" />
+            <element signature="e#11598#12345#0" />
+            <element signature="e#12430#13139#0" />
+            <element signature="e#13256#14563#0" />
+            <element signature="e#14910#16566#0" />
+            <element signature="e#16906#18822#0" />
+            <element signature="e#18273#23512#0" />
+            <element signature="e#23598#25436#0" />
+            <element signature="e#25488#26701#0" />
+            <element signature="e#27573#32717#0" />
+            <element signature="e#32829#35989#0" />
+            <element signature="e#36086#42114#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/import_data/handle_text_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="376" column="49" selection-start-line="376" selection-start-column="49" selection-end-line="376" selection-end-column="49" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#731#2262#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.support_scripts.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1819">
+          <caret line="107" selection-start-line="107" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/index.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10">
+          <caret line="12" column="15" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/help/source/geodatafarm/geodatafarm.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="55">
+          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/add_field.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/support_scripts/add_layer_to_canvas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="668">
+          <caret line="95" column="38" lean-forward="true" selection-start-line="95" selection-start-column="38" selection-end-line="95" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GeoDataFarm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4199">
-          <caret line="257" column="35" selection-start-line="257" selection-start-column="35" selection-end-line="257" selection-end-column="35" />
+        <state relative-caret-position="503">
+          <caret line="434" column="18" selection-start-line="434" selection-start-column="18" selection-end-line="434" selection-end-column="18" />
           <folding>
             <element signature="e#1381#1395#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database_scripts/create_new_farm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="99" column="87" selection-start-line="99" selection-start-column="87" selection-end-line="99" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#75#0" expanded="true" />
-            <element signature="e#443#1953#0" />
-            <element signature="e#1982#2069#0" />
+            <element signature="e#4053#5837#0" />
+            <element signature="e#5913#6347#0" />
+            <element signature="e#6553#8571#0" />
+            <element signature="e#8604#8894#0" />
+            <element signature="e#8933#9107#0" />
+            <element signature="e#9139#9479#0" />
+            <element signature="e#9601#9759#0" />
+            <element signature="e#9725#9815#0" />
+            <element signature="e#9948#10505#0" />
+            <element signature="e#10519#11704#0" />
+            <element signature="e#11886#12871#0" />
+            <element signature="e#14289#14392#0" />
+            <element signature="e#13137#13175#0" />
+            <element signature="e#13260#13307#0" />
+            <element signature="e#13386#13485#0" />
+            <element signature="e#13542#13981#0" />
+            <element signature="e#14079#14971#0" />
+            <element signature="e#16102#16274#0" />
+            <element signature="e#16315#16492#0" />
+            <element signature="e#16529#18606#0" />
+            <element signature="e#18635#19859#0" />
           </folding>
         </state>
       </provider>

@@ -1,9 +1,8 @@
 import psycopg2
 import psycopg2.extras
-import time
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
-__author__ = 'Axel Hörteborn'
+__author__ = 'Axel Horteborn'
 
 
 class DBException(Exception):
@@ -13,9 +12,16 @@ class DBException(Exception):
 class DB:
     def __init__(self, dock_widget, path=None, tr=None):
         """The widget that is connects to the database
-        :param dock_widget: The docked widget
-        :return:
+        Parameters
+        ----------
+        dock_widget: dock_widget
+            The widget from GeoDataFarm
+        path: str
+            The path to plugin main folder
+        tr: tr
+            The translation function of GeoDataFarm
         """
+
         self.dock_widget = dock_widget
         self.path = path
         self.conn = None
@@ -27,10 +33,12 @@ class DB:
         self.tr = tr
 
     def get_conn(self):
-        """
-        A function that checks if the database is created and sets then the
+        """A function that checks if the database is created and sets then the
         database name, user name and password.
-        :return: True or False
+
+        Returns
+        -------
+        bool
         """
         try:
             with open(self.path + '\database_scripts\connection_data.ini', 'r') as f:
@@ -41,13 +49,15 @@ class DB:
         self.dbname = farmname
         self.dbuser = username
         self.dbpass = password
-        self.dock_widget.LFarmName.setText(farmname + self.tr(' is set as your farm'))
+        self.dock_widget.LFarmName.setText(farmname +
+                                           self.tr(' is set as your farm'))
         return True
 
     def _connect(self):
-        """
-        Connects to the database
-        :return:
+        """Connects to the database
+        Returns
+        -------
+        bool
         """
         if self.conn is None:
             try:
@@ -65,46 +75,66 @@ class DB:
                 return False
 
     def _close(self):
-        """
-        Closes the connection to the database
-        :return:
-        """
+        """Closes the connection to the database"""
         if self.conn is not None:
             self.conn.close()
             self.conn = None
 
-    def addPostGISLayer(self, table, geom_col, schema, extra_name='', filter_text=''):
-        """
-        Creates a qgis layer from a postgres database table.
-        :param table: The table that should be added
-        :param geom_col: the geometry column in that table
-        :param schema: text string
-        :param extra_name: text string for a "prename" in front of the table
-        :param filter_text: text string
-        :return:
+    def add_postgis_layer(self, table, geom_col, schema, extra_name='',
+                          filter_text=''):
+        """Creates a qgis layer from a postgres database table.
+
+        Parameters
+        ----------
+        table: str
+            The table that should be added
+        geom_col: str
+            the geometry column in that table
+        schema: str
+            The schema
+        extra_name: str, optional
+            for a "pre name" in front of the table
+        filter_text: str, optional
+            SQL statement to filter the data
+
+        Returns
+        -------
+        QgsVectorLayer
+            A QgsVectorLayer ready to be styled.
+
         """
         host = self.dbhost
         port = self.dbport
         dbname = self.dbname
         username = self.dbuser
         password = self.dbpass
-
-        ## Adds a PostGIS table to the map
+        # Adds a PostGIS table to the map
         uri = QgsDataSourceUri()
-        uri.setConnection(str(host), str(port), str(dbname), str(username), str(password))
-        uri.setDataSource(str(schema), str(table), str(geom_col), filter_text, 'field_row_id')
+        uri.setConnection(str(host), str(port), str(dbname), str(username),
+                          str(password))
+        uri.setDataSource(str(schema), str(table), str(geom_col), filter_text,
+                          'field_row_id')
         uri.setKeyColumn('field_row_id')
         uri.setSrid('4326')
-        vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table), 'postgres')
+        vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table),
+                                'postgres')
         if not vlayer.isValid():
-            QMessageBox.information(None, 'Error', 'Layer not loaded correctly, Connection:\n' + str(uri.uri()))
+            QMessageBox.information(None, 'Error',
+                                    'Layer not loaded correctly,Connection:\n' +
+                                    str(uri.uri()))
         return vlayer
 
-    def check_table_exists(self, tablename, schema=None):
-        """
-        :param tablename: text string
-        :param schema: text string
-        :return: True or False
+    def check_table_exists(self, table_name, schema):
+        """Checks if a table already exists.
+
+        Parameters
+        ----------
+        table_name: str
+        schema: str
+
+        Returns
+        -------
+        bool
         """
         self._connect()
         dbcur = self.conn.cursor()
@@ -112,22 +142,24 @@ class DB:
             SELECT COUNT(*)
             FROM information_schema.tables
             WHERE table_name = '{tbl}'
-            """.format(tbl=tablename.replace('\'', '\'\''))
-        if schema is not None:
-            sql += "\nAnd table_schema='{s}'".format(s=schema)
+            And table_schema='{s}'
+            """.format(tbl=table_name.replace('\'', '\'\''), s=schema)
         dbcur.execute(sql)
         if dbcur.fetchone()[0] == 1:
             self._close()
             return True
-
         self._close()
         return False
 
     def create_table(self, sql, tbl_name):
-        """
-        :param sql: text string with the sql statement
-        :param tbl_name: text string
-        :return:
+        """Create s table, if table exists the table is dropped.
+
+        Parameters
+        ----------
+        sql: str
+            With the sql statement to create the table
+        tbl_name: str
+            table name
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -136,26 +168,18 @@ class DB:
         self.conn.commit()
         self._close()
 
-    def insert_data(self, sql, tbl_name, params_to_eval):
-        """
-        :param sql: text string with the sql statement
-        :param tbl_name: text string
-        :param params_to_eval: list of text strings
-        :return:
-        """
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        #for sql in sql_list:
-        #print(sql)
-        cur.execute(sql)
-        self.conn.commit()
-        self._close()
-
     def create_indexes(self, tbl_name, params_to_eval, schema):
-        """
-        :param tbl_name: text string
-        :param params_to_eval: list of text strings
-        :return:
+        """Drops is exists and create a gist index and
+        btree indexes for params_to_eval a table
+
+        Parameters
+        ----------
+        tbl_name: str
+            table name
+        params_to_eval: list
+            of text strings with columns to make indexes over
+        schema: str
+            schema name
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -171,35 +195,17 @@ class DB:
         self.conn.commit()
         self._close()
 
-    def insert_data_polygon(self, sql, tbl_name):
-        """
-        :param sql: text string with the sql statement
-        :param tbl_name: text string
-        :return:
-        """
-        t0 = time.time()
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        # for sql in sql_list:
-        #print(sql)
-        cur.execute(sql)
-        self.conn.commit()
-        cur.execute("""DROP INDEX IF EXISTS gist_{tbl2}""".format(tbl2=tbl_name.replace('.', '_')))
-        cur.execute("""create index gist_{tbl2}
-         on {tbl} using gist(polygon) """.format(tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
-        sql = """UPDATE {tbl}
-                set polygon = subquery.poly
-                from (SELECT polygon as poly
-                      from temp_polygon) AS subquery
-                WHERE ST_INTERSECTS({tbl}.pos, subquery.poly)""".format(tbl=tbl_name)
-        cur.execute(sql)
-        self.conn.commit()
-        self._close()
+    def get_tables_in_db(self, schema):
+        """Get the tables in schema
 
-    def get_tables_in_db(self, schema='public'):
-        """
-        :param: str
-        :return: A list of tables in the database
+        Parameters
+        ----------
+        schema: str
+
+        Returns
+        -------
+        list
+            A list of tables in the database
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -212,10 +218,18 @@ ORDER BY table_name""".format(schema=schema)
         return table_names
 
     def get_distinct(self, table, column, schema):
-        """
-        :param table: text string
-        :param column: text string
-        :return: list [distinct value, count]
+        """Get distinct values from a schema.table
+
+        Parameters
+        ----------
+        table: str
+        column: str
+        schema: str
+
+        Returns
+        -------
+        list
+            [distinct value, count]
         """
         sql = """SELECT {item}, count(*)
         FROM {schema}.{tbl}
@@ -235,11 +249,17 @@ ORDER BY table_name""".format(schema=schema)
         return checked_values
 
     def get_all_columns(self, table, schema, exclude=''):
-        """
-        :param table: text string
-        :param schema: text string
-        :param exclude: optional, text comma sep string
-        :return
+        """Get all columns of a table
+
+        Parameters
+        ----------
+        table: str
+        schema: str
+        exclude: str, optional, string with comma sep names
+
+        Returns
+        -------
+        list of lists
         """
 
         sql = """select
@@ -261,17 +281,33 @@ ORDER BY table_name""".format(schema=schema)
         return columns
 
     def update_row_id(self, schema, table):
-        """Update the field row id"""
+        """Update the field_row_id
+        Parameters
+        ----------
+        schema: str
+        table: str
+        """
         sql = """ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
         ALTER TABLE {schema}.{table} add COLUMN field_row_id serial UNIQUE NOT NULL
         """.format(schema=schema, table=table)
         self.execute_sql(sql)
 
     def get_indexes(self, tables, schema):
-        """
-        :param tables: str, what table to look for. (separated by comma if multiple)
-        :param schema: str, what schema to look in. 
-        :return: list of strings of the index names
+        """Get indexes of tables in a schema, returns a dict.
+
+        Parameters
+        ----------
+        tables: str
+            what table(s) to look for. (separated by comma if multiple)
+        schema: str
+            schema name
+
+        Returns
+        -------
+        dict
+            int as first arg and for each int 'tbl_name','index_name',
+            'index_col' and 'schema'
+
         """
         schema_txt = "" if schema == '' else "and n.nspname='{s}'".format(s=schema)
         sql = """select
@@ -314,8 +350,10 @@ ORDER BY table_name""".format(schema=schema)
 
     def execute_sql(self, sql):
         """
-        :param sql: text string with the sql statement
-        :return: the data requested in the statement
+        Parameters
+        ----------
+        sql: str
+            text string with the sql statement
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -324,9 +362,17 @@ ORDER BY table_name""".format(schema=schema)
         self._close()
 
     def execute_and_return(self, sql):
-        """
-        :param sql: text string with the sql statement
-        :return: the data requested in the statement
+        """Execute and returns an SQL statement
+
+        Parameters
+        ----------
+        sql: str
+            text string with the sql statement
+
+        Returns
+        -------
+        list of lists
+            the data requested in the statement
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -335,37 +381,36 @@ ORDER BY table_name""".format(schema=schema)
         self._close()
         return data
 
-    def remove_table(self, tbl_name):
-        """
-        Function that removes a table from the database
+    def remove_table(self, tbl_schema_name):
+        """Function that removes a table from the database
+
         Parameters
         ----------
-        tbl_name: str
+        tbl_schema_name: str
             string with schema.table
-
-        Returns
-        -------
 
         """
         self._connect()
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
+        cur.execute("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_schema_name))
         try:
-            #TODO Fix this, this only work for fields without _ in the name
-            schema = tbl_name.split('.')[0]
-            tbl = tbl_name.split('.')[1]
+            # TODO Check that this is ok
+            schema = tbl_schema_name.split('.')[0]
+            tbl = tbl_schema_name.split('.')[1]
             field = tbl.split('_')[0]
             date = 'c_' + tbl.split('_')[-3] + '-' + tbl.split('_')[-2] + '-' + tbl.split('_')[-1]
-            cur.execute("DELETE FROM {tbl} WHERE field='{f}' and date_text='{d}'".format(tbl=tbl_name, f=field, d=date))
+            sql = "DELETE FROM {s}.manual WHERE table_='{tbl}'".format(s=schema, tbl=tbl)
+            cur.execute(sql)
         except:
             pass
         self.conn.commit()
         self._close()
 
     def test_connection(self):
-        """
-        Tests to open the connection and then closes it again
-        :return: True, False
+        """Tests to open the connection and then closes it again
+        Returns
+        -------
+        bool
         """
         try:
             self._connect()

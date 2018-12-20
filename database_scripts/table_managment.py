@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 from ..widgets.table_managment_dialog import TableMgmtDialog
-__author__ = 'Axel Hörteborn'
+__author__ = 'Axel Horteborn'
 
 
 class TableManagement:
@@ -21,6 +21,8 @@ class TableManagement:
         self.current_table = None
         self.current_schema = None
         self.params_in_table = None
+        # TODO: check this
+        self.items_in_table = []
 
     def run(self):
         """Connects the push buttons and enable the visibility of the dialog."""

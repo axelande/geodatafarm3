@@ -7,7 +7,7 @@ from operator import xor
 from collections import OrderedDict
 # Import the code for the dialog
 from ..widgets.import_db_file_dialog import ImportDBFileDialog
-__author__ = 'Axel Andersson'
+__author__ = 'Axel Horteborn'
 
 
 class DBFileHandler:

@@ -3,7 +3,17 @@ from datetime import datetime
 
 
 def check_text(text):
-    """Checks that the text only contains ascii letters and numbers"""
+    """Checks that the text only contains ascii letters and numbers
+
+    Parameters
+    ----------
+    text: str
+
+    Returns
+    -------
+    str
+        A text string with only ascii letters and numbers
+    """
     only_char = ''
     for letter in text:
         if letter in ascii_letters:
@@ -18,7 +28,16 @@ def check_text(text):
 
 
 def isfloat(x):
-    """Checks if the inserted value is of float type"""
+    """Checks if the inserted value is of float type
+
+    Parameters
+    ----------
+    x: str
+
+    Returns
+    -------
+    bool
+    """
     try:
         a = float(x)
     except (ValueError, OverflowError, TypeError):
@@ -28,7 +47,16 @@ def isfloat(x):
 
 
 def isint(x):
-    """Checks if the inserted value is of int type"""
+    """Checks if the inserted value is of int type
+
+    Parameters
+    ----------
+    x: str
+
+    Returns
+    -------
+    bool
+    """
     try:
         a = float(x)
         b = int(a)
@@ -41,9 +69,20 @@ def isint(x):
 def check_date_format(sample, column, format_):
     """Checks that the date format matches the selected format
 
-    :param sample, the sample of the data including a heading row
-    :param column, the column in the heading row containing the date
-    :param format_, the format of the date"""
+    Parameters
+    ----------
+    sample: list
+        the sample of the data including a heading row
+    column: str
+        the column in the heading row containing the date
+    format_: str
+        the format of the date
+
+    Returns
+    -------
+    bool
+        That tells if the sample had the correct format
+    """
     try:
         first_row = True
         second_row = True

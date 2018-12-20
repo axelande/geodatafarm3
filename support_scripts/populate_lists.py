@@ -5,7 +5,16 @@ from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 
 
 class Populate:
+    """A class to set/reload list widgets and comboBoxes"""
     def __init__(self, parent):
+        """Starts/resets the class and all its objects,
+        calls: - reload_fields,
+               - reload_crops,
+               - update_table_list
+        Parameters
+        ----------
+        parent: GeoDataFarm class
+        """
         self.plugin_dir = parent.plugin_dir
         self.dw = parent.dock_widget
         self.db = parent.db
@@ -21,23 +30,38 @@ class Populate:
                    [self.dw.LWSoilTable, 'soil'],
                    [self.dw.LWOtherTable, 'other'],
                    [self.dw.LWWeatherTable, 'weather']]
-        self.reload_all()
+        self.reload_fields()
+        self.reload_crops()
         self.update_table_list()
 
     def refresh(self, db):
+        """Refreshes database connection in this Populate class
+        Parameters
+        ----------
+        db: database class"""
         self.db = db
 
     def get_items_in_table(self):
+        """Returns the list of list 'items in table'
+        Returns
+        -------
+        list"""
         return self.items_in_table
 
     def get_lw_list(self):
+        """ Function returns the list of lists with [[ListWidget, 'name']]
+        Returns
+        -------
+        list
+        """
         return self.lw_list
 
-    def reload_all(self):
-        self.reload_fields()
-        self.reload_crops()
-
     def reload_fields(self, cmd_box=None):
+        """Reloads all field comboBoxes in the GeoDataFarm widget
+        Parameters
+        ----------
+        cmd_box: QtComboBox, optional
+            a comboBox to fill with the field names (used in text_data_handler)"""
         if cmd_box is None:
             cmd_box = [self.dw.CBPField,
                        self.dw.CBFField,
@@ -63,6 +87,11 @@ class Populate:
         self.fields.extend(fields)
 
     def reload_crops(self, cmd_box=None):
+        """Reloads all crops comboBoxes in the GeoDataFarm widget
+        Parameters
+        ----------
+        cmd_box: QtComboBox, optional
+            a comboBox to fill with the crop names (used in text_data_handler)"""
         if cmd_box is None:
             cmd_box = [self.dw.CBPCrop,
                        self.dw.CBFCrop,
@@ -85,20 +114,11 @@ class Populate:
 
     def update_table_list(self):
         """Update the list of tables in the docket widget"""
-        lw_list = [[self.dw.LWPlantingTable, 'plant'],
-                   [self.dw.LWHarvestTable, 'harvest'],
-                   [self.dw.LWSoilTable, 'soil'],
-                   [self.dw.LWSprayingTable, 'spray'],
-                   [self.dw.LWFertiTable, 'ferti'],
-                   [self.dw.LWOtherTable, 'other'],
-                   [self.dw.LWWeatherTable, 'weather']]
         for i, (lw, schema) in enumerate(self.lw_list):
             table_names = self.db.get_tables_in_db(schema)
+            # If already added, starts with cleaning the lw
             if self.tables_in_db[i] != 0:
-                model = lw.model()
-                for item in self.items_in_table[i][0]:
-                    q_index = lw.indexFromItem(item)
-                    model.removeRow(q_index.row())
+                lw.clear()
             self.tables_in_db[i] = 0
             for name in table_names:
                 if name[0] in ["spatial_ref_sys", "pointcloud_formats",
@@ -115,11 +135,6 @@ class Populate:
             self.items_in_table[i][2] = lw
         lw = self.dw.LWCrops
         lw.clear()
-        #model = lw.model()
-        #counted = lw.count()
-        #for item in range(counted):
-        #    q_index = lw.indexFromItem(item)
-        #    model.removeRow(q_index.row())
         crops = self.db.get_distinct('crops', 'crop_name', 'public')
         for crop_name in crops:
             _name = QApplication.translate("qadashboard", crop_name[0], None)
