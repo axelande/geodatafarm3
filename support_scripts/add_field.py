@@ -139,7 +139,7 @@ class AddField:
             add_background()
         sources = [layer.name().split('_')[0] for layer in QgsProject.instance().mapLayers().values()]
         fields_db = self.db.execute_and_return("select field_name from fields")
-        task = QgsTask.fromFunction('Run import text data', self.add_fields_2_canvas, self.db, fields_db,
+        task = QgsTask.fromFunction('Run import text data', add_fields_2_canvas, self.db, fields_db,
                                     defined_field, sources,
                                     on_finished=self.finish)
         self.tsk_mngr.addTask(task)
