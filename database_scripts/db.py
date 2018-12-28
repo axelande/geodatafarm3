@@ -274,7 +274,7 @@ ORDER BY table_name""".format(schema=schema)
         and t.relkind = 'r'
         and t.relname in ('{table}')
         and n.nspname in ('{schema}')
-        and a.attname not in ('{exclude}')
+        and a.attname not in ({exclude})
         group by t.relname,
         a.attname order by a.attname""".format(table=table, schema=schema, exclude=exclude)
         columns = self.execute_and_return(sql)
