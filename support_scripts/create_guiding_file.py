@@ -59,13 +59,14 @@ class CreateGuideFile:
     def fill_cb(self):
         """Updates the ComboBox with names from the differnt schemas in the
         database"""
-        lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil']
+        lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil', 'other']
         self.CGF.CBDataSource.clear()
         names = []
         for schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
-                if name[0] in ["temp_polygon", 'manual']:
+                if name[0] in ["temp_polygon", 'manual', 'harrowing_manual',
+                               'plowing_manual']:
                     continue
                 names.append(schema + '.' + str(name[0]))
         self.CGF.CBDataSource.addItems(names)
@@ -83,7 +84,8 @@ class CreateGuideFile:
         self.selected_table = text
         self.CGF.TWColumnNames.clear()
         params = self.db.get_all_columns(table=text.split('.')[1],
-                                         schema=text.split('.')[0])
+                                         schema=text.split('.')[0],
+                                         exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'poly', 'field_row_id'")
         self.CGF.TWColumnNames.setRowCount(len(params))
         self.CGF.TWColumnNames.setColumnCount(1)
         self.CGF.TWColumnNames.setSelectionBehavior(
@@ -224,7 +226,7 @@ class CreateGuideFile:
                                   float(pair.split(' ')[1])])
                 if value is None:
                     value = 0
-                attribute_values.append(value)
+                attribute_values.append(float(value))
                 w.poly(parts=[coord])
                 if float_type:
                     w.record(value)
