@@ -59,10 +59,7 @@ from .resources import *
 from .database_scripts.db import DB
 from .database_scripts.mean_analyse import Analyze
 from .database_scripts.plan_ahead import PlanAhead
-from .import_data.handle_text_data import InputTextHandler
 from .database_scripts.create_new_farm import CreateFarm
-from .import_data.handle_input_shp_data import InputShpHandler
-from .import_data.handle_db_file_data import DBFileHandler
 from .import_data.handle_irrigation import IrrigationHandler
 from .import_data.save_planting_data import SavePlanting
 from .import_data.save_fertilizing_data import SaveFertilizing
