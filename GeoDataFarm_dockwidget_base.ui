@@ -388,6 +388,11 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
           <string>Databasefile (.db)</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Georeferenced Raster (.tif; .geotif)</string>
+         </property>
+        </item>
        </widget>
        <widget class="QComboBox" name="CBPCrop">
         <property name="geometry">
@@ -871,6 +876,11 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
           <string>Databasefile (.db)</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Georeferenced Raster (.tif; .geotif)</string>
+         </property>
+        </item>
        </widget>
        <widget class="QLineEdit" name="LEFVarerity">
         <property name="geometry">
@@ -1167,6 +1177,11 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
         <item>
          <property name="text">
           <string>Databasefile (.db)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Georeferenced Raster (.tif; .geotif)</string>
          </property>
         </item>
        </widget>
@@ -2276,6 +2291,11 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
         <item>
          <property name="text">
           <string>Databasefile (.db)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Georeferenced Raster (.tif; .geotif)</string>
          </property>
         </item>
        </widget>

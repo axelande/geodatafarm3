@@ -1,4 +1,5 @@
 from ..import_data.handle_text_data import InputTextHandler
+from ..import_data.handle_raster import ImportRaster
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 
@@ -26,6 +27,9 @@ class SaveFertilizing:
         if self.dw.CBFFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'ferti', columns=columns)
             add_f.run()
+        elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
+            ir = ImportRaster(self.parent, self.dw.DEFertilizing, 'ferti')
+            ir.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Databasefile (.db)'):
             QMessageBox.information(None, "Error:", self.tr(
                 'Support for databasefiles are not implemented 100% yet'))

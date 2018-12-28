@@ -1,4 +1,5 @@
 from ..import_data.handle_text_data import InputTextHandler
+from ..import_data.handle_raster import ImportRaster
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 
@@ -43,6 +44,9 @@ class SavePlanting:
                 polygon = None
             self.ShpHandler = InputShpHandler(self.iface, self, polygon)
             self.ShpHandler.add_input()
+        elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
+            ir = ImportRaster(self.parent, self.dw.DEPlanting, 'plant')
+            ir.run()
 
     def save_manual_data(self):
         """Saves the manual data"""
