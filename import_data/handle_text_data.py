@@ -374,7 +374,7 @@ class InputTextHandler(object):
         ----------
         date_: str
             The column where the dates is listed or one date that is the same
-            for all rows (than it starts with c_)
+            for all rows (than it starts with c\_)
 
         Returns
         -------
@@ -611,6 +611,7 @@ class InputTextHandler(object):
         self.ITD.RBTab.clicked.disconnect()
         self.ITD.RBOwnSep.clicked.disconnect()
         self.ITD.done(0)
+
 
 def insert_data_to_database(task, db, params):
     """Walks though the text files and adds data to the database

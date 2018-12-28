@@ -2,13 +2,15 @@
 """
 /***************************************************************************
  GeoDataFarm
-                                 A QGIS plugin
- This is a plugin that aims to determine the yield impact of different parameters
-                             -------------------
-        begin                : 2016-10-24
-        copyright            : (C) 2016 by Axel Horteborn
-        email                : geodatafarm@gmail.com
-        git sha              : https://github.com/axelande/geodatafarm3
+
+ A QGIS plugin
+ This is a plugin that aims to determine the yield impact of different
+ parameters
+
+ begin                : 2016-10-24
+ copyright            : (C) 2016 by Axel Horteborn
+ email                : geodatafarm@gmail.com
+ git sha              : https://github.com/axelande/geodatafarm3
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,8 +20,10 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+
  ***************************************************************************/
- This script initializes the plugin, making it known to QGIS.
+
+This script initializes the plugin, making it known to QGIS.
 """
 
 

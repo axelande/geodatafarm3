@@ -1,10 +1,10 @@
-geodatafarm.main_file package
-=============================
+geodatafarm package
+===================
 
 Module contents
 ---------------
 
-.. automodule:: geodatafarm.main_file
+.. automodule:: geodatafarm
     :members:
     :undoc-members:
     :show-inheritance:
@@ -13,8 +13,8 @@ Module contents
 Submodules
 ----------
 
-geodatafarm.main_file.geodatafarm module
-----------------------------------------
+geodatafarm.geodatafarm module
+------------------------------
 
 .. automodule:: geodatafarm.GeoDataFarm
     :members:
