@@ -168,7 +168,8 @@ class DB:
         self.conn.commit()
         self._close()
 
-    def create_indexes(self, tbl_name, params_to_eval, schema):
+    def create_indexes(self, tbl_name, params_to_eval, schema,
+                       primary_key=True):
         """Drops is exists and create a gist index and
         btree indexes for params_to_eval a table
 
@@ -181,19 +182,32 @@ class DB:
         schema: str
             schema name
         """
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
-        cur.execute("""create index gist_{schema}_{tbl2}
-    on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
-        for parm in params_to_eval:
-            cur.execute("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
-            cur.execute("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
-    using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
-        cur.execute("""ALTER TABLE {schema}.{tbl}
-    ADD CONSTRAINT pkey_{schema}_{tbl} PRIMARY KEY (field_row_id);""".format(tbl=tbl_name, schema=schema))
-        self.conn.commit()
-        self._close()
+        try:
+            self._connect()
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
+            cur.execute("""create index gist_{schema}_{tbl2}
+        on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
+            if schema != 'harvest':
+                cur.execute("""DROP INDEX IF EXISTS gist2_{schema}_{tbl2}""".format(
+                    schema=schema, tbl2=tbl_name.replace('.', '_')))
+                cur.execute("""create index gist2_{schema}_{tbl2}
+                    on {schema}.{tbl} using gist(polygon) """.format(schema=schema,
+                                                                 tbl=tbl_name,
+                                                                 tbl2=tbl_name.replace(
+                                                                     '.', '_')))
+            for parm in params_to_eval:
+                cur.execute("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
+                cur.execute("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
+        using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
+            if primary_key:
+                cur.execute("""ALTER TABLE {schema}.{tbl}
+        ADD CONSTRAINT pkey_{schema}_{tbl} PRIMARY KEY (field_row_id);""".format(tbl=tbl_name, schema=schema))
+            self.conn.commit()
+            self._close()
+        except Exception as e:
+            print('Failed when trying to create indexes')
+            print(e)
 
     def get_tables_in_db(self, schema):
         """Get the tables in schema
@@ -248,7 +262,7 @@ ORDER BY table_name""".format(schema=schema)
                 checked_values.append([col, count])
         return checked_values
 
-    def get_all_columns(self, table, schema, exclude=''):
+    def get_all_columns(self, table, schema, exclude="''"):
         """Get all columns of a table
 
         Parameters
@@ -272,11 +286,12 @@ ORDER BY table_name""".format(schema=schema)
         where
         a.attrelid = t.oid
         and t.relkind = 'r'
-        and t.relname in ('{table}')
+        and t.relname = '{table}'
         and n.nspname in ('{schema}')
         and a.attname not in ({exclude})
         group by t.relname,
-        a.attname order by a.attname""".format(table=table, schema=schema, exclude=exclude)
+        a.attname order by a.attname""".format(table=table, schema=schema,
+                                               exclude=exclude)
         columns = self.execute_and_return(sql)
         return columns
 
@@ -335,10 +350,8 @@ ORDER BY table_name""".format(schema=schema)
         big_table = self.execute_and_return(sql)
         parameter_to_eval = {}
         ind = -1
-        self.yield_tbls = []
-        self.yield_col = []
         for table, index_name, index_col, schema in big_table:
-            if 'field_row_id' in index_name or 'gist' in index_name:
+            if index_col == 'field_row_id' or 'gist' in index_name:
                 continue
             ind += 1
             parameter_to_eval[ind] = {}
