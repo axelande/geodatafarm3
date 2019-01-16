@@ -29,6 +29,14 @@ geodatafarm.import_data.handle_text_data module
     :undoc-members:
     :show-inheritance:
 
+geodatafarm.import_data.handle_raster module
+--------------------------------------------
+
+.. automodule:: geodatafarm.import_data.handle_raster
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 geodatafarm.import_data.save_fertilizing_data module
 ----------------------------------------------------
 
