@@ -1,6 +1,14 @@
+import os
 import gdal
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from functools import partial
 import subprocess
+from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,
+                       QgsProcessingContext,
+                       QgsMessageLog, Qgis)
+from ..support_scripts.create_layer import CreateLayer
+
+MESSAGE_CATEGORY = 'AlgRunnerTask'
 
 
 class ImportRaster:
@@ -14,10 +22,14 @@ class ImportRaster:
         """
         self.db = parent.db
         self.tr = parent.tr
+        self.tsk_mngr = parent.tsk_mngr
+        self.plugin_dir = parent.plugin_dir
         self.date_dialog = date_dialog
         self.schema = schema
         self.parent = parent
         self.s_tbl = ''
+        self.file_name = ''
+        self.file_name_with_path = ''
 
     def run(self):
         """Check that a date is filled in, open the file explorer, preforms
@@ -32,7 +44,6 @@ class ImportRaster:
         if not self.check_if_exist():
             return
         self.run_import_command()
-        self.run_sql_commands()
 
     def open_input_file(self):
         """Open the file dialog and let the user choose which file that should
@@ -46,8 +57,7 @@ class ImportRaster:
             return False
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var) - 1][0:-4]
-        self.input_file_path = self.file_name_with_path[
-                               0:self.file_name_with_path.index(self.file_name)]
+        self.file_name = self.file_name.lower()
         return True
 
     def check_date(self):
@@ -66,7 +76,6 @@ class ImportRaster:
         """Check if there is a table with the same name, if so this function
         checks weather the user wants to replace the data in the database or
         if the user want to stop importing the file."""
-
         if self.db.check_table_exists(self.file_name, self.schema):
             qm = QMessageBox()
             res = qm.question(None, self.tr('Message'),
@@ -81,7 +90,7 @@ class ImportRaster:
                                        WHERE table_ = '{tbl}';
                                        """.format(schema=self.schema,
                                                   tbl=self.file_name))
-                return True
+        return True
 
     def check_file(self):
         """Tries to open the file
@@ -99,39 +108,100 @@ class ImportRaster:
             return True
 
     def run_import_command(self):
-        """Imports the raster to the database"""
+        """Adds the polygonize script to a QgsTask"""
         self.s_tbl = "{schema}.{file_name}".format(file_name=self.file_name,
                                                    schema=self.schema)
-        run_text = """gdal_polygonize.bat {file_w_path} -f PostgreSQL PG:"host='{host}' port='{port}' dbname='{dbname}' user='{username}' password='{password}'" {s_tbl}
-            """.format(host=self.db.dbhost, port=self.db.dbport,
-                       dbname=self.db.dbname, username=self.db.dbuser,
-                       password=self.db.dbpass, s_tbl=self.s_tbl,
-                       file_w_path=self.file_name_with_path)
-        run = subprocess.Popen(run_text)
-        run.wait()
+        input_ = self.file_name_with_path
+        params = {'INPUT': input_, 'BAND': 1, 'OUTPUT': self.plugin_dir + '/temp.shp',
+                  'FIELD': 'raster_value'}
+        alg = QgsApplication.processingRegistry().algorithmById(
+                                      u'gdal:polygonize')
+        context = QgsProcessingContext()
+        task = QgsProcessingAlgRunnerTask(alg, params, context)
+        task.executed.connect(partial(self.task_finished, context))
+        self.tsk_mngr.addTask(task)
 
-    def run_sql_commands(self):
+    def task_finished(self, context, successful, results):
+        """Function that is called after polygonize is complete, starts the next
+        task with importing the data to the database,
+
+        Parameters
+        ----------
+        context: QgsProcessingContext
+        successful: bool
+        results: Unused
+
+        Returns
+        -------
+
+        """
+        if not successful:
+            QgsMessageLog.logMessage('Task finished unsucessfully',
+                                     MESSAGE_CATEGORY, Qgis.Warning)
+        else:
+            task = QgsTask.fromFunction('Importing data to storage',
+                                        self.import_to_db,
+                                        on_finished=self.run_sql_commands)
+            self.tsk_mngr.addTask(task)
+
+    def import_to_db(self, task):
+        """Imports the shapefile with a ogr2ogr command in a shell script
+
+        Parameters
+        ----------
+        task: QgsTask
+
+        Returns
+        -------
+        bool
+        """
+        cmd = """ogr2ogr -f PostgreSQL PG:"host='{host}' port='{port}' dbname='{dbname}' user='{username}' password='{password}'" "{shp_path}" -nln {s_tbl}""".format(host=self.db.dbhost, port=self.db.dbport,
+                               dbname=self.db.dbname, username=self.db.dbuser,
+                               password=self.db.dbpass, s_tbl=self.s_tbl,
+                               shp_path=self.plugin_dir + '/temp.shp')
+        res = subprocess.call(cmd, shell=True)
+        if res == 0:
+            return True
+        else:
+            return False
+
+    def run_sql_commands(self, result, values):
         """Changes the names of some columns and change the srid to 4326, adds
         the column pos as the centroid of the polygon"""
         sql = """ALTER TABLE {s_tbl} 
               RENAME COLUMN ogc_fid TO field_row_id""".format(s_tbl=self.s_tbl)
         self.db.execute_sql(sql)
         sql = """ALTER TABLE {s_tbl} 
-              RENAME COLUMN wkb_geometry TO poly""".format(s_tbl=self.s_tbl)
+              RENAME COLUMN wkb_geometry TO polygon""".format(s_tbl=self.s_tbl)
         self.db.execute_sql(sql)
-        srid = self.db.execute_and_return("""select st_srid(poly) 
+        srid = self.db.execute_and_return("""select st_srid(polygon) 
                                           from {s_tbl} limit 1
                                           """.format(s_tbl=self.s_tbl))[0][0]
         sql = """ALTER TABLE {s_tbl}
-        ALTER COLUMN poly TYPE geometry(POLYGON, 4326) 
-          USING ST_Transform(ST_SetSRID(poly,{srid}),4326);
+        ALTER COLUMN polygon TYPE geometry(POLYGON, 4326) 
+          USING ST_Transform(ST_SetSRID(polygon,{srid}),4326);
         """.format(s_tbl=self.s_tbl, srid=srid)
         self.db.execute_sql(sql)
         sql = """ALTER TABLE {s_tbl}
         ADD pos geometry(POINT, 4326);""".format(s_tbl=self.s_tbl)
         self.db.execute_sql(sql)
         sql = """UPDATE {s_tbl} 
-        SET pos=st_centroid(poly)""".format(s_tbl=self.s_tbl)
+        SET pos=st_centroid(polygon)""".format(s_tbl=self.s_tbl)
         self.db.execute_sql(sql)
-
-
+        cols = self.db.get_all_columns(self.file_name, self.schema,
+                                       "'field_row_id', 'pos', 'polygon', 'cmin', 'cmax', 'xmin', 'xmax', 'ctid', 'tableoid'")
+        cols_to_add = []
+        for col in cols:
+            col_ = col[0]
+            cols_to_add.append(col_)
+        self.db.create_indexes(self.file_name, cols_to_add, self.schema,
+                               primary_key=False)
+        layer = self.db.add_postgis_layer(self.file_name, 'polygon',
+                                          self.schema)
+        create_layer = CreateLayer(self.db)
+        create_layer.create_layer_style(layer, 'raster_val', self.file_name,
+                                        self.schema)
+        os.remove(self.plugin_dir + '/temp.shp')
+        os.remove(self.plugin_dir + '/temp.shx')
+        os.remove(self.plugin_dir + '/temp.dbf')
+        os.remove(self.plugin_dir + '/temp.prj')
