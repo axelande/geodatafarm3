@@ -443,6 +443,7 @@ class GeoDataFarm:
 
     def run(self):
         """Run method that loads and starts the plugin"""
+        icon_path = ':/plugins/GeoDataFarm/img/icon.png'
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
@@ -454,6 +455,10 @@ class GeoDataFarm:
             if self.dock_widget is None:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
+                img = QImage(icon_path)
+                pimg = QtGui.QPixmap.fromImage(img).scaled(91, 91,
+                                                                QtCore.Qt.KeepAspectRatio)
+                self.dock_widget.LIcon.setPixmap(pimg)
             if self.get_database_connection():
                 self.set_buttons()
             self.dock_widget.PBAddNewFarm.clicked.connect(self.clicked_create_farm)

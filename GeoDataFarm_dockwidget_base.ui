@@ -107,7 +107,7 @@
        <rect>
         <x>310</x>
         <y>10</y>
-        <width>601</width>
+        <width>541</width>
         <height>101</height>
        </rect>
       </property>
@@ -116,7 +116,8 @@
 This plugin aims to help farmers, it was orignal built to view and analyse field data.
 Data in terms of log positions from farm equipment, like yield measurment.
 Since it is a complex plugin it is explained at: www.geodatafarm.com
-If you have any questions or suggestions please send me an e-mail geodatafarm@gmail.com</string>
+If you have any questions or suggestions please send me an e-mail
+geodatafarm@gmail.com</string>
       </property>
       <property name="textFormat">
        <enum>Qt::AutoText</enum>
@@ -282,6 +283,16 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
        <string>View fields</string>
       </property>
      </widget>
+     <widget class="QLabel" name="LIcon">
+      <property name="geometry">
+       <rect>
+        <x>864</x>
+        <y>0</y>
+        <width>91</width>
+        <height>91</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_5">
      <attribute name="title">
@@ -353,7 +364,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the text file and save it</string>
+         <string>Open the file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBPFileType">
@@ -666,7 +677,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the text file and save it</string>
+         <string>Open the file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBFCrop">
@@ -767,7 +778,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          </font>
         </property>
         <property name="text">
-         <string>File input:</string>
+         <string>Manual input:</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_26">
@@ -946,7 +957,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the text file and save it</string>
+         <string>Open the file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBSpCrop">
@@ -1568,7 +1579,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the text file and save it</string>
+         <string>Open the file and save it</string>
         </property>
        </widget>
        <widget class="QComboBox" name="CBHvCrop">
@@ -2312,7 +2323,7 @@ If you have any questions or suggestions please send me an e-mail geodatafarm@gm
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>Open the text file and save it</string>
+         <string>Open the file and save it</string>
         </property>
        </widget>
        <widget class="QPushButton" name="PBSoSaveManual">
