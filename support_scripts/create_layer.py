@@ -142,11 +142,13 @@ class CreateLayer:
             if len(distinct_values) > 20:
                 distinct_values.sort()
                 temp_list = []
-                for val in range(0, len(distinct_values), int(round(len(distinct_values)/20))):
+                for val in range(0, len(distinct_values), int(np.floor(len(distinct_values)/20))):
                     temp_list.append(distinct_values[val])
+                if temp_list[-1] != distinct_values[-1]:
+                    temp_list.append(distinct_values[-1])
                 distinct_values = temp_list
-
         colors = self._create_colors(len(distinct_values))
+        # TODO: fix for str values!
         if len(distinct_values) > 19:
             range_list = []
             for i in range(len(distinct_values) - 1):
