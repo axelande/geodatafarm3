@@ -90,6 +90,21 @@ class AddField:
         self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
         self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
 
+    def clicked_define_field(self):
+        """Creates an empty polygon that's define a field"""
+        name = self.AFD.LEFieldName.text()
+        if len(name) == 0:
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('Field name must be filled in.'))
+            return
+        self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
+        add_background()
+        set_zoom(self.parent.iface, 2)
+        self.field.startEditing()
+        self.iface.actionAddFeature().trigger()
+        QgsProject.instance().addMapLayer(self.field)
+
+
     def remove_field(self):
         """Removes a field that the user wants, a check that there are no
         data that is depended on is made."""

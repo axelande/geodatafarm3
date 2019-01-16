@@ -25,36 +25,48 @@
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 import os.path
-from . import resources
 from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
-from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from qgis.core import QgsApplication
+from PyQt5 import QtGui
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QImage
 from psycopg2 import IntegrityError
 import os
 import sys
+import subprocess
+import platform
+from .resources import *
 plugin_dir = os.path.dirname(__file__)
+
 try:
     import matplotlib
-    import reportlab
-except:
-    import subprocess
-    import platform
-    print('installing matplotlib and reportlab')
+except ModuleNotFoundError:
+    print('installing matplotlib')
     if platform.system() == 'Windows':
         subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'matplotlib'])
+    else:
+        subprocess.call(['python3', '-m', 'pip', 'install', 'matplotlib'])
+    import matplotlib
+    try:
+        import matplotlib
+        print('installation completed')
+    except ModuleNotFoundError:
+        QMessageBox.information(None, 'ERROR', "During the first startup this program there are some third party packages that is requried to be installed, they tries to be installed with pip but fails. If you can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.")
+
+try:
+    import reportlab
+except ModuleNotFoundError:
+    print('installing reportlab')
+    if platform.system() == 'Windows':
         subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', 'reportlab'])
     else:
-        subprocess.call(['pip3', 'install', 'matplotlib'])
-        subprocess.call(['pip3', 'install', 'reportlab'])
-    import matplotlib
-    import reportlab
-    print('installation completed')
-
-# Initialize Qt resources from file resources.py
-from .resources import *
+        subprocess.call(['python3', '-m', 'pip', 'install', 'reportlab'])
+    try:
+        import reportlab
+        print('installation completed')
+    except ModuleNotFoundError:
+        QMessageBox.information(None, 'ERROR', 'During the first startup this program is the python package Reportlab installed, this may require that you run QGIS with administration rights.')
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.db import DB
 from .database_scripts.mean_analyse import Analyze
