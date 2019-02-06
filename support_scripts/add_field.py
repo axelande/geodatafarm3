@@ -57,7 +57,8 @@ def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
 
 class AddField:
     def __init__(self, parent_widget):
-        """This class handle the creation of Fields.
+        """This class handle the creation of Fields. This class is also imported
+        in the MeanAnalyse class.
 
         Parameters
         ----------
@@ -90,20 +91,24 @@ class AddField:
         self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
         self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
 
-    def clicked_define_field(self):
+    def clicked_define_field(self, ignore_name=True):
         """Creates an empty polygon that's define a field"""
-        name = self.AFD.LEFieldName.text()
-        if len(name) == 0:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Field name must be filled in.'))
-            return
-        self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
+        if ignore_name:
+            self.field = QgsVectorLayer("Polygon?crs=epsg:4326", 'Search area',
+                                        "memory")
+        else:
+            name = self.AFD.LEFieldName.text()
+            if len(name) == 0:
+                QMessageBox.information(None, self.tr('Error:'),
+                                        self.tr('Field name must be filled in.'))
+                return
+            self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
+
         add_background()
         set_zoom(self.parent.iface, 2)
         self.field.startEditing()
         self.iface.actionAddFeature().trigger()
         QgsProject.instance().addMapLayer(self.field)
-
 
     def remove_field(self):
         """Removes a field that the user wants, a check that there are no
@@ -151,7 +156,7 @@ class AddField:
             add_background()
         sources = [layer.name().split('_')[0] for layer in QgsProject.instance().mapLayers().values()]
         fields_db = self.db.execute_and_return("select field_name from fields")
-        task = QgsTask.fromFunction('Run import text data', add_fields_2_canvas, self.db, fields_db,
+        task = QgsTask.fromFunction('Adding fields to the canvas', add_fields_2_canvas, self.db, fields_db,
                                     defined_field, sources,
                                     on_finished=self.finish)
         self.tsk_mngr.addTask(task)
