@@ -107,15 +107,23 @@ class CreateFarm:
             f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self._connect_to_db()
-        self.parent_widget.db = self.db
+        self.reset_db_connections()
         # This is important when no connection is active at startup
         self.parent_widget.set_buttons()
         # This is important when another connection is active at startup
-        self.parent_widget.populate.refresh(self.db)
         self.parent_widget.populate.update_table_list()
         self.parent_widget.populate.reload_fields()
         self.parent_widget.populate.reload_crops()
         self.CF.done(0)
+
+    def reset_db_connections(self):
+        """Resets the database connection"""
+        self.parent_widget.db = self.db
+        try:
+            self.parent_widget.add_field.db = self.db
+            self.parent_widget.populate.db = self.db
+        except AttributeError:
+            pass
 
     def _connect_to_db(self):
         """Simple function to connect to the new database"""

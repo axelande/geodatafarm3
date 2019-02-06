@@ -406,7 +406,9 @@ class GeoDataFarm:
 
     def set_buttons(self):
         """Since most functions are dependent on that a database connections
-        exist the buttons are set when a connection is set."""
+        exist the buttons are set when a connection is set. If new connections
+        are added here do not forget to add them in create_new_farms function
+        that resets the database connection"""
         if self.populate is None:
             self.populate = Populate(self)
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
