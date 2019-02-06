@@ -125,7 +125,9 @@ class DB:
         return vlayer
 
     def check_table_exists(self, table_name, schema):
-        """Checks if a table already exists.
+        """Checks if a table already exists, if it exists, the user can choose
+        if it wants to reset the table. Returns False the table doesn't exists
+        or have been dropped.
 
         Parameters
         ----------
@@ -136,19 +138,28 @@ class DB:
         -------
         bool
         """
-        self._connect()
-        dbcur = self.conn.cursor()
         sql = """
             SELECT COUNT(*)
             FROM information_schema.tables
             WHERE table_name = '{tbl}'
             And table_schema='{s}'
             """.format(tbl=table_name.replace('\'', '\'\''), s=schema)
-        dbcur.execute(sql)
-        if dbcur.fetchone()[0] == 1:
-            self._close()
-            return True
-        self._close()
+        res = self.execute_and_return(sql)
+        if res[0][0] > 0:
+            qm = QMessageBox()
+            res = qm.question(None, self.tr('Message'),
+                              self.tr(
+                                  "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                              qm.Yes, qm.No)
+            if res == qm.No:
+                return True
+            else:
+                self.execute_sql("""DROP TABLE {schema}.{tbl};
+                                                   DELETE FROM {schema}.manual
+                                                   WHERE table_ = '{tbl}';
+                                                   """.format(
+                    schema=schema,
+                    tbl=table_name))
         return False
 
     def create_table(self, sql, tbl_name):
@@ -161,12 +172,8 @@ class DB:
         tbl_name: str
             table name
         """
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
-        cur.execute(sql)
-        self.conn.commit()
-        self._close()
+        self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
+        self.execute_sql(sql)
 
     def create_indexes(self, tbl_name, params_to_eval, schema,
                        primary_key=True):
@@ -181,30 +188,28 @@ class DB:
             of text strings with columns to make indexes over
         schema: str
             schema name
+        primary_key: bool
+            default True -> create a primary key over field_row_id
         """
         try:
-            self._connect()
-            cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cur.execute("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
-            cur.execute("""create index gist_{schema}_{tbl2}
+            self.execute_sql("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
+            self.execute_sql("""create index gist_{schema}_{tbl2}
         on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
             if schema != 'harvest':
-                cur.execute("""DROP INDEX IF EXISTS gist2_{schema}_{tbl2}""".format(
+                self.execute_sql("""DROP INDEX IF EXISTS gist2_{schema}_{tbl2}""".format(
                     schema=schema, tbl2=tbl_name.replace('.', '_')))
-                cur.execute("""create index gist2_{schema}_{tbl2}
+                self.execute_sql("""create index gist2_{schema}_{tbl2}
                     on {schema}.{tbl} using gist(polygon) """.format(schema=schema,
                                                                  tbl=tbl_name,
                                                                  tbl2=tbl_name.replace(
                                                                      '.', '_')))
             for parm in params_to_eval:
-                cur.execute("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
-                cur.execute("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
+                self.execute_sql("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
+                self.execute_sql("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
         using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
             if primary_key:
-                cur.execute("""ALTER TABLE {schema}.{tbl}
+                self.execute_sql("""ALTER TABLE {schema}.{tbl}
         ADD CONSTRAINT pkey_{schema}_{tbl} PRIMARY KEY (field_row_id);""".format(tbl=tbl_name, schema=schema))
-            self.conn.commit()
-            self._close()
         except Exception as e:
             print('Failed when trying to create indexes')
             print(e)
@@ -221,14 +226,11 @@ class DB:
         list
             A list of tables in the database
         """
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         sql = """select table_name 
 from information_schema.tables 
 where table_schema = '{schema}' and table_type = 'BASE TABLE'
 ORDER BY table_name""".format(schema=schema)
-        cur.execute(sql)
-        table_names = cur.fetchall()
+        table_names = self.execute_and_return(sql)
         return table_names
 
     def get_distinct(self, table, column, schema):
@@ -249,11 +251,7 @@ ORDER BY table_name""".format(schema=schema)
         FROM {schema}.{tbl}
         GROUP BY {item}
         ORDER BY {item}""".format(item=column, tbl=table, schema=schema)
-        self._connect()
-        dbcur = self.conn.cursor()
-        dbcur.execute(sql)
-        all_distinct = dbcur.fetchall()
-        self._close()
+        all_distinct = self.execute_and_return(sql)
         checked_values = []
         for col, count in all_distinct:
             if col is None:
@@ -403,9 +401,7 @@ ORDER BY table_name""".format(schema=schema)
             string with schema.table
 
         """
-        self._connect()
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_schema_name))
+        self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_schema_name))
         try:
             # TODO Check that this is ok
             schema = tbl_schema_name.split('.')[0]
@@ -413,11 +409,9 @@ ORDER BY table_name""".format(schema=schema)
             field = tbl.split('_')[0]
             date = 'c_' + tbl.split('_')[-3] + '-' + tbl.split('_')[-2] + '-' + tbl.split('_')[-1]
             sql = "DELETE FROM {s}.manual WHERE table_='{tbl}'".format(s=schema, tbl=tbl)
-            cur.execute(sql)
+            self.execute_sql(sql)
         except:
             pass
-        self.conn.commit()
-        self._close()
 
     def test_connection(self):
         """Tests to open the connection and then closes it again
