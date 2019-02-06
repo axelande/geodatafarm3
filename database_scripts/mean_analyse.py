@@ -1,17 +1,17 @@
-from qgis.core import QgsTask
+from qgis.core import QgsProject, QgsTask
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
-import matplotlib.colors as mplib_colors
 import numpy as np
+from functools import partial
+import copy
+import traceback
 import time
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
-from PyQt5.QtCore import QThread
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint
-import copy
-import traceback
+from ..support_scripts.add_field import AddField
 
 __author__ = 'Axel Horteborn'
 
@@ -35,6 +35,7 @@ class Analyze:
         self.db = parent_widget.db
         self.tsk_mngr = parent_widget.tsk_mngr
         self.tr = parent_widget.tr
+        self.iface = parent_widget.iface
         self.harvest_tables = {}
         self.plant_tables = {}
         self.spray_tables = {}
@@ -44,7 +45,6 @@ class Analyze:
         self.tables = tables_to_analyse
         self.cb = []
         self.harvest_tbls = {}
-        self.dlg.pButRun.clicked.connect(self.update_pic)
         self.scrollWidget = QtWidgets.QWidget()
         self.radio_group = QtWidgets.QButtonGroup()
         self.overlapping_tables = {}
@@ -53,10 +53,14 @@ class Analyze:
         # self.populate_list(parameters)
         self.finish = False
         self.canvas = None
+        self.search_area = ''
+        self.add_field = AddField(parent_widget)
 
     def run(self):
         """Starts this widget"""
         self.dlg.show()
+        self.dlg.pButRun.clicked.connect(self.update_pic)
+        self.dlg.PBSelectArea.clicked.connect(partial(self.add_field.clicked_define_field, ignore_name=True))
         self.dlg.exec_()
 
     def check_consistency(self):
@@ -541,6 +545,32 @@ class Analyze:
         that runs the SQL query. On finish plot_data is called"""
         if self.canvas is not None:
             self.dlg.mplvl.removeWidget(self.canvas)
+        if self.dlg.CBLimitArea.isChecked() and self.search_area == '':
+            try:
+                self.iface.actionSaveActiveLayerEdits().trigger()
+                self.iface.actionToggleEditing().trigger()
+                feature = self.add_field.field.getFeature(1)
+                QgsProject.instance().removeMapLayer(self.add_field.field.id())
+                self.add_field.field = None
+            except:
+                QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'No coordinates where found, did you mark the field on the canvas?'))
+                return
+            limiting_polygon = feature.geometry().asWkt()
+            self.search_area = limiting_polygon
+        elif self.dlg.CBLimitArea.isChecked() and self.add_field.field is not None:
+            self.iface.actionSaveActiveLayerEdits().trigger()
+            self.iface.actionToggleEditing().trigger()
+            feature = self.add_field.field.getFeature(1)
+            QgsProject.instance().removeMapLayer(self.add_field.field.id())
+            self.add_field.field = None
+            limiting_polygon = feature.geometry().asWkt()
+            self.search_area = limiting_polygon
+        elif self.dlg.CBLimitArea.isChecked():
+            limiting_polygon = self.search_area
+        else:
+            limiting_polygon = None
+            self.search_area = ''
         other_parameters = {}
         investigating_param = {}
         investigating_param['values'] = []
@@ -627,9 +657,11 @@ class Analyze:
         self.investigating_param = investigating_param
         task1 = QgsTask.fromFunction('running script', sql_query,
                                      investigating_param, other_parameters,
-                                     self.db, min_counts,
+                                     self.db, min_counts, limiting_polygon,
                                      on_finished=self.plot_data)
         self.tsk_mngr.addTask(task1)
+        #a = sql_query('debug', investigating_param, other_parameters, self.db, min_counts, limiting_polygon)
+        #self.plot_data('a', a)
 
     def plot_data(self, result, values):
         """Plots the data from the sql query.
@@ -705,7 +737,7 @@ class Analyze:
 
 
 def sql_query(task, investigating_param, other_parameters, db,
-              min_counts):
+              min_counts, limiting_polygon):
     """Function that creates and runs the SQL questions to the database, creates
     filters and connects the correct tables to each other. Runs one question for
     each interval.
@@ -717,6 +749,7 @@ def sql_query(task, investigating_param, other_parameters, db,
     other_parameters: dict
     db: DB
     min_counts: int, the minimum data points that are required.
+    limiting_polygon: str, a wkt string with a polygon limiting the search.
 
     Returns
     -------
@@ -732,7 +765,8 @@ def sql_query(task, investigating_param, other_parameters, db,
         if investigating_param['checked']:
             values = values.split(',')
         values.sort()
-        task.setProgress(25)
+        if task != 'debug':
+            task.setProgress(25)
         for value_nbr, value in enumerate(values):
             if investigating_param['hist'] and value_nbr == 0:
                 continue
@@ -761,6 +795,8 @@ def sql_query(task, investigating_param, other_parameters, db,
                             """.format(oth_key=oth_key, pre=pre)
                             all_ready_joined.append(oth_key)
                 sql += 'WHERE '
+                if limiting_polygon is not None:
+                    sql += "st_intersects(st_geomfromtext('{lp}', 4326), ha.pos) AND ".format(lp=limiting_polygon)
                 if ha in other_parameters.keys():
                     for oth_key in other_parameters[ha].keys():
                         pre = other_parameters[ha][oth_key]['prefix']
@@ -823,7 +859,8 @@ def sql_query(task, investigating_param, other_parameters, db,
                     continue
                 sql += '{ha}, '.format(ha=ha)
             sql = sql[:-2]
-            #print(sql)
+            if task == 'debug':
+               print(sql)
             result = db.execute_and_return(sql)[0]
             mean_value = result[0]
             count_samples = result[1]
@@ -834,7 +871,8 @@ def sql_query(task, investigating_param, other_parameters, db,
             mean_yields[0].append(mean_value)
             mean_yields[1].append(value)
             mean_yields[2].append(count_samples)
-            task.setProgress(25 + value_nbr / len(values) * 50)
+            if task != 'debug':
+                task.setProgress(25 + value_nbr / len(values) * 50)
         return [True, mean_yields]
     except Exception as e:
         return [False, e, traceback.format_exc()]
