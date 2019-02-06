@@ -34,13 +34,6 @@ class Populate:
         self.reload_crops()
         self.update_table_list()
 
-    def refresh(self, db):
-        """Refreshes database connection in this Populate class
-        Parameters
-        ----------
-        db: database class"""
-        self.db = db
-
     def get_items_in_table(self):
         """Returns the list of list 'items in table'
         Returns
