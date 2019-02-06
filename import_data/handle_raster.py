@@ -41,7 +41,7 @@ class ImportRaster:
             return
         if not self.check_file():
             return
-        if not self.check_if_exist():
+        if self.db.check_table_exists(self.file_name, self.schema):
             return
         self.run_import_command()
 
@@ -70,26 +70,6 @@ class ImportRaster:
         if self.date_dialog.text() == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
-        return True
-
-    def check_if_exist(self):
-        """Check if there is a table with the same name, if so this function
-        checks weather the user wants to replace the data in the database or
-        if the user want to stop importing the file."""
-        if self.db.check_table_exists(self.file_name, self.schema):
-            qm = QMessageBox()
-            res = qm.question(None, self.tr('Message'),
-                              self.tr(
-                                  "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                              qm.Yes, qm.No)
-            if res == qm.No:
-                return False
-            else:
-                self.db.execute_sql("""DROP TABLE {schema}.{tbl};
-                                       DELETE FROM {schema}.manual
-                                       WHERE table_ = '{tbl}';
-                                       """.format(schema=self.schema,
-                                                  tbl=self.file_name))
         return True
 
     def check_file(self):
