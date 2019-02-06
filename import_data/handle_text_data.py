@@ -1,8 +1,8 @@
 from qgis.core import QgsTask
 import traceback
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, \
-    QMessageBox, QLabel, QLineEdit, QComboBox, QCheckBox
+from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, \
+                             QMessageBox)
 import re
 import math
 import time
@@ -13,6 +13,7 @@ from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, isfloat, isint, check_date_format
+from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
 
@@ -43,8 +44,8 @@ class InputTextHandler(object):
         self.db = parent_widget.db
         self.parent_widget = parent_widget
         self.tsk_mngr = parent_widget.tsk_mngr
-        self.type_specific_cols = columns
-        self.manual_values = {}
+        self.mff = ManualFromFile(parent_widget.db, parent_widget.tr, self.ITD,
+                                  columns)
         self.rb_pressed = False
         self.fields_to_db = False
         self.combo = None
@@ -86,7 +87,6 @@ class InputTextHandler(object):
             self.ITD.LMoveY.setEnabled(True)
             self.ITD.LEMoveX.setEnabled(True)
             self.ITD.LEMoveY.setEnabled(True)
-        self.add_specific_columns()
         self.ITD.exec_()
 
     def show_abbreviations(self):
@@ -210,30 +210,6 @@ class InputTextHandler(object):
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
         self.add_to_db_row_count = i
 
-    def add_specific_columns(self):
-        """Adds rows for the user to manual define which columns contains
-        schema specific columns (or one single value / Not applicable)"""
-        self.manual_values = {}
-        for i, column in enumerate(self.type_specific_cols):
-            self.manual_values[i] = {}
-            label = QLabel(column)
-            self.ITD.GLSpecific.addWidget(label, i, 0)
-            combo = QComboBox()
-            combo.setEnabled(False)
-            combo.setFixedWidth(220)
-            self.manual_values[i]['Combo'] = combo
-            self.ITD.GLSpecific.addWidget(combo, i, 1)
-            line = QLineEdit()
-            line.setEnabled(False)
-            line.setFixedWidth(110)
-            self.manual_values[i]['line_edit'] = line
-            self.ITD.GLSpecific.addWidget(line, i, 2)
-            check = QCheckBox(text=self.tr('Not Applicable'))
-            check.setEnabled(False)
-            check.setFixedWidth(110)
-            self.manual_values[i]['checkbox'] = check
-            self.ITD.GLSpecific.addWidget(check, i, 3)
-
     def set_sep_radio_but(self):
         """Sets the radioButton indicating the separator of the file"""
         if self.sep == ',':
@@ -319,12 +295,7 @@ class InputTextHandler(object):
         self.ITD.ComBDate.setEnabled(True)
         self.ITD.ComBDate.addItems(columns_to_add)
         self.ITD.PBInsertDataIntoDB.setEnabled(True)
-
-        for i, column in enumerate(self.type_specific_cols):
-            self.manual_values[i]['Combo'].setEnabled(True)
-            self.manual_values[i]['Combo'].addItems(columns_to_add)
-            self.manual_values[i]['line_edit'].setEnabled(True)
-            self.manual_values[i]['checkbox'].setEnabled(True)
+        self.mff.prepare_data(columns_to_add)
 
     def determine_column_type(self):
         """
@@ -366,120 +337,6 @@ class InputTextHandler(object):
             row_type_return.append(int(col_value/(max_rows*0.7)))
         self.col_types = row_type_return
 
-    def insert_manual_data(self, date_):
-        """Inserts the manual data that is used to generate reports, rather long
-        function since all schemas have separate attributes.
-
-        Parameters
-        ----------
-        date_: str
-            The column where the dates is listed or one date that is the same
-            for all rows (than it starts with c\_)
-
-        Returns
-        -------
-        bool
-            If success or not
-        """
-        field = self.ITD.CBField.currentText()
-        table = self.tbl_name
-        date_ = "'{d}'".format(d=date_)
-        if self.data_type == 'soil':
-            if self.manual_values[0]['checkbox'].isChecked():
-                clay = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                clay = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                clay = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                humus = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                humus = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                humus = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            if self.manual_values[2]['checkbox'].isChecked():
-                ph = 'None'
-            elif self.manual_values[2]['Combo'].currentText() != '':
-                ph = '{t}'.format(t=check_text(self.manual_values[2]['Combo'].currentText()))
-            else:
-                ph = 'c_{t}'.format(t=self.manual_values[2]['line_edit'].text())
-            if self.manual_values[3]['checkbox'].isChecked():
-                rx = 'None'
-            elif self.manual_values[3]['Combo'].currentText() != '':
-                rx = '{t}'.format(t=check_text(self.manual_values[3]['Combo'].currentText()))
-            else:
-                rx = 'c_{t}'.format(t=self.manual_values[3]['line_edit'].text())
-            sql = """insert into soil.manual(date_text, field, clay, humus, ph, rx, table_) 
-                VALUES ({d}, '{f}', '{clay}', '{humus}', '{ph}', '{rx}', '{tbl}')""".format(f=field, d=date_,
-                                                                                               clay=clay, humus=humus,
-                                                                                               ph=ph, rx=rx, tbl=table)
-            self.db.execute_sql(sql)
-            return True
-        crop = self.ITD.CBCrop.currentText()
-        if self.data_type == 'plant':
-            sql = """insert into plant.manual(field, crop, date_text, table_, variety) VALUES ('{f}', '{c}', {d}, '{t}', 
-                """.format(f=field, c=crop, d=date_, t=table)
-            if self.manual_values[0]['checkbox'].isChecked():
-                sql += "'None')"
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                sql += "'{t}')".format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                sql += "'c_{t}')".format(t=self.manual_values[0]['line_edit'].text())
-        elif self.data_type == 'ferti':
-            if self.manual_values[0]['checkbox'].isChecked():
-                variety = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                rate = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into ferti.manual(field, crop, table_, date_text,variety, rate) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
-                                                                      v=variety, r=rate, d=date_)
-        elif self.data_type == 'spray':
-            if self.manual_values[0]['checkbox'].isChecked():
-                variety = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                rate = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into spray.manual(field, crop, table_, date_text, variety, rate) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
-                                                                      v=variety, r=rate, d=date_)
-        elif self.data_type == 'harvest':
-            if self.manual_values[0]['checkbox'].isChecked():
-                yield_ = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                yield_ = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                yield_ = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                total_yield = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                total_yield = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into harvest.manual(field, crop, table_, date_text, yield, total_yield) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{y}', '{t_y}')""".format(f=field, c=crop, t=table, d=date_,
-                                                                        y=yield_, t_y=total_yield)
-        else:
-            ## Should never happen!
-            print('Unkown data source...')
-            return False
-        self.db.execute_sql(sql)
-        return True
-
     def trigger_insection(self):
         """Preparing the data, by setting the correct type (including the date and
         time format), creating a shp file and finally ensure that the
@@ -517,18 +374,7 @@ class InputTextHandler(object):
         self.tbl_name = check_text(self.ITD.CBField.currentText() + '_' + self.data_type + '_' + table_date)
         params['tbl_name'] = self.tbl_name
         if self.db.check_table_exists(self.tbl_name, self.data_type):
-            qm = QMessageBox()
-            res = qm.question(None, self.tr('Message'),
-                              self.tr(
-                                  "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                              qm.Yes, qm.No)
-            if res == qm.No:
-                return
-            else:
-                self.db.execute_sql("""DROP TABLE {schema}.{tbl};
-                                            DELETE FROM {schema}.manual
-        	                                WHERE table_ = '{tbl}';""".format(schema=self.data_type,
-                                                                              tbl=self.tbl_name))
+            return
         for i in range(self.add_to_param_row_count):
             params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
         self.focus_cols = params['focus_col']
@@ -536,7 +382,8 @@ class InputTextHandler(object):
             params['yield_row'] = params['focus_col'][0]
             params['max_yield'] = float(self.ITD.LEMaximumYield.text())
             params['min_yield'] = float(self.ITD.LEMinimumYield.text())
-        self.insert_manual_data(manual_date)
+        self.mff.insert_manual_data(manual_date, self.ITD.CBField.currentText(),
+                                    self.tbl_name, self.data_type)
         params['sep'] = self.sep
         params['tr'] = self.tr
         params['epsg'] = self.ITD.LEEPSG.text()
