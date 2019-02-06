@@ -107,8 +107,8 @@
        <rect>
         <x>310</x>
         <y>10</y>
-        <width>541</width>
-        <height>101</height>
+        <width>551</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="text">
@@ -124,6 +124,9 @@ geodatafarm@gmail.com</string>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
       <property name="openExternalLinks">
        <bool>true</bool>
@@ -3253,7 +3256,7 @@ of colors:</string>
        <rect>
         <x>20</x>
         <y>50</y>
-        <width>275</width>
+        <width>301</width>
         <height>20</height>
        </rect>
       </property>
@@ -3329,6 +3332,9 @@ of colors:</string>
        <string>Do you change some of the data of
 the selected layer in the canvas?
 Select the objects with QGIS default selector and click Edit attributes</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QPushButton" name="PBCreateGuide">
