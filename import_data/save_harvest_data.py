@@ -1,4 +1,5 @@
 from ..import_data.handle_text_data import InputTextHandler
+from ..import_data.handle_input_shp_data import InputShpHandler
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 
@@ -33,16 +34,8 @@ class SaveHarvesting:
             self.IH = dbFileHandler(self.iface, self.dock_widget)
             self.IH.start_up()
         elif self.dw.CBHvFileType.currentText() == self.tr('Shape file (.shp)'):
-            QMessageBox.information(None, "Error:", self.tr(
-                'Support for shapefiles are not implemented 100% yet'))
-            return
-            try:
-                feature = self.df.getFeatures().next()
-                polygon = feature.geometry().asPolygon()[0]
-            except:
-                polygon = None
-            self.ShpHandler = InputShpHandler(self.iface, self, polygon)
-            self.ShpHandler.add_input()
+            shp_file = InputShpHandler(self.parent, 'harvest', columns)
+            shp_file.run()
 
     def save_manual_data(self):
         """Saves the manual data."""
