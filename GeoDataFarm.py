@@ -414,6 +414,9 @@ class GeoDataFarm:
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
             self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
             self.save_planting = SavePlanting(self)
+            from .import_data.satellite_data import SatelliteData
+            self.satellite_data = SatelliteData(self)
+            self.satellite_data.set_widget_connections()
             self.save_planting.set_widget_connections()
             self.save_fertilizing = SaveFertilizing(self)
             self.save_fertilizing.set_widget_connections()

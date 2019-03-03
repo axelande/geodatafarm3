@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>961</width>
+      <width>1001</width>
       <height>621</height>
      </rect>
     </property>
@@ -3118,6 +3118,388 @@ geodatafarm@gmail.com</string>
       </widget>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_16">
+     <attribute name="title">
+      <string>EU satelitte</string>
+     </attribute>
+     <widget class="QLabel" name="label_22">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>791</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Though satellile it is possible to track the growth of biomass (by comparing different light spectrum).
+For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage.
+For farms in other european contries it possible to process an image here:
+You need to download the band 4 and 8 rasterbands from the EO Browser powered by Sential (free signup at their page).
+</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBListCropstat">
+      <property name="geometry">
+       <rect>
+        <x>830</x>
+        <y>30</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>cropsat.se</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBListEOBrowser">
+      <property name="geometry">
+       <rect>
+        <x>830</x>
+        <y>60</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>EO Browser</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_27">
+      <property name="geometry">
+       <rect>
+        <x>830</x>
+        <y>10</y>
+        <width>55</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Links:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_31">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>100</y>
+        <width>311</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Here is a small guide how to get the correct images:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBListGeoDataFarm">
+      <property name="geometry">
+       <rect>
+        <x>802</x>
+        <y>90</y>
+        <width>121</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>geodatafarm.com</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBSelectZipFile">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>140</y>
+        <width>111</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select zip file</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBUpdateFieldList">
+      <property name="geometry">
+       <rect>
+        <x>102</x>
+        <y>110</y>
+        <width>111</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Update field list</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="CBFieldList">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>110</y>
+        <width>131</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_32">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>120</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select field:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LVal_1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>220</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.1 [0.1-0.2] (10%)</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LVal_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>250</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.3 [0.2-0.4] (25%)</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LVal_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>280</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.5 [0.4-0.6] (25%)</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LVal_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>310</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.7 [0.6-0.8] (25%)</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LVal_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>340</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.9 [0.8-0.9] (15%)</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEVal_1">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>220</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>200</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEVal_2">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>250</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>180</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEVal_3">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>280</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>150</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEVal_4">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>310</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>120</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="LEVal_5">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>340</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>100</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBUpdateGraph">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>370</y>
+        <width>91</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Update graph</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBGenerateGuideFile">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>610</x>
+        <y>440</y>
+        <width>171</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Generate guide file</string>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>140</y>
+        <width>120</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Select index</string>
+      </property>
+      <widget class="QRadioButton" name="RBNdviIndex">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>95</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>NDVI</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="RBMsavi2Index">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>95</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>MSAVI2</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="QWGraphArea" native="true">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>170</y>
+        <width>341</width>
+        <height>291</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="CheckBPlanned">
+      <property name="geometry">
+       <rect>
+        <x>610</x>
+        <y>160</y>
+        <width>341</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Planned date of useage</string>
+      </property>
+     </widget>
+     <widget class="QCalendarWidget" name="CWPlannedDate">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>610</x>
+        <y>190</y>
+        <width>391</width>
+        <height>241</height>
+       </rect>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Loaded data sets</string>
@@ -3942,6 +4324,171 @@ If you are missing a report / something in a report please send a e-mail to geod
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>PBAddNewFarm</tabstop>
+  <tabstop>PBConnect2Farm</tabstop>
+  <tabstop>PBAddField</tabstop>
+  <tabstop>PBRemoveField</tabstop>
+  <tabstop>PBViewFields</tabstop>
+  <tabstop>LWFields</tabstop>
+  <tabstop>LECropName</tabstop>
+  <tabstop>PBAddCrop</tabstop>
+  <tabstop>PBRemoveCrop</tabstop>
+  <tabstop>LWCrops</tabstop>
+  <tabstop>tabWidget_2</tabstop>
+  <tabstop>CBPFileType</tabstop>
+  <tabstop>PBPAddFile</tabstop>
+  <tabstop>CBPField</tabstop>
+  <tabstop>CBPCrop</tabstop>
+  <tabstop>DEPlanting</tabstop>
+  <tabstop>LEPVarerity</tabstop>
+  <tabstop>LEPSpacing</tabstop>
+  <tabstop>LEPSeedRate</tabstop>
+  <tabstop>LEPSawDepth</tabstop>
+  <tabstop>LEPOther</tabstop>
+  <tabstop>PBPSaveManual</tabstop>
+  <tabstop>CBFFileType</tabstop>
+  <tabstop>PBFAddFile</tabstop>
+  <tabstop>CBFField</tabstop>
+  <tabstop>CBFCrop</tabstop>
+  <tabstop>DEFertilizing</tabstop>
+  <tabstop>LEFVarerity</tabstop>
+  <tabstop>LEFSeedRate</tabstop>
+  <tabstop>LEFSawDepth</tabstop>
+  <tabstop>LEFOther</tabstop>
+  <tabstop>PBFSaveManual</tabstop>
+  <tabstop>CBSpFileType</tabstop>
+  <tabstop>PBSpAddFile</tabstop>
+  <tabstop>CBSpField</tabstop>
+  <tabstop>CBSpCrop</tabstop>
+  <tabstop>DESpraying</tabstop>
+  <tabstop>LESpVarerity</tabstop>
+  <tabstop>LESpRate</tabstop>
+  <tabstop>LESpWindSpeed</tabstop>
+  <tabstop>LESpWindDir</tabstop>
+  <tabstop>LESpOther</tabstop>
+  <tabstop>PBSpSaveManual</tabstop>
+  <tabstop>CBOField</tabstop>
+  <tabstop>CBOCrop</tabstop>
+  <tabstop>DEOther</tabstop>
+  <tabstop>LEOtherName</tabstop>
+  <tabstop>LEOOption_1</tabstop>
+  <tabstop>LEOOption_2</tabstop>
+  <tabstop>LEOOption_3</tabstop>
+  <tabstop>LEOOption_4</tabstop>
+  <tabstop>LEOValue_1</tabstop>
+  <tabstop>LEOValue_2</tabstop>
+  <tabstop>LEOValue_3</tabstop>
+  <tabstop>LEOValue_4</tabstop>
+  <tabstop>LEOUnit_1</tabstop>
+  <tabstop>LEOUnit_2</tabstop>
+  <tabstop>LEOUnit_3</tabstop>
+  <tabstop>LEOUnit_4</tabstop>
+  <tabstop>LEOOther</tabstop>
+  <tabstop>PBSaveOther</tabstop>
+  <tabstop>CBHvFileType</tabstop>
+  <tabstop>PBHvAddFile</tabstop>
+  <tabstop>CBHvField</tabstop>
+  <tabstop>CBHvCrop</tabstop>
+  <tabstop>DEHarvest</tabstop>
+  <tabstop>LEHvTotalYield</tabstop>
+  <tabstop>LEHvYield</tabstop>
+  <tabstop>LEHvOther</tabstop>
+  <tabstop>PBHvSaveManual</tabstop>
+  <tabstop>CBPloField</tabstop>
+  <tabstop>DEPlowing</tabstop>
+  <tabstop>LEPloDepth</tabstop>
+  <tabstop>LEPloOther</tabstop>
+  <tabstop>PBPloSaveManual</tabstop>
+  <tabstop>CBHwField</tabstop>
+  <tabstop>DEHarowing</tabstop>
+  <tabstop>LEHwDepth</tabstop>
+  <tabstop>LEHwOther</tabstop>
+  <tabstop>PBHwSaveManual</tabstop>
+  <tabstop>LEPOther_8</tabstop>
+  <tabstop>CBIField</tabstop>
+  <tabstop>DEIrrigation</tabstop>
+  <tabstop>PBAddFieldToDB_9</tabstop>
+  <tabstop>LEPSpacing_8</tabstop>
+  <tabstop>PBOpenRD</tabstop>
+  <tabstop>CBSoFileType</tabstop>
+  <tabstop>PBSoAddFile</tabstop>
+  <tabstop>DESoil</tabstop>
+  <tabstop>CBSoField</tabstop>
+  <tabstop>LESoClay</tabstop>
+  <tabstop>LESoHumus</tabstop>
+  <tabstop>LESoPh</tabstop>
+  <tabstop>LESoRx</tabstop>
+  <tabstop>LEPOther_9</tabstop>
+  <tabstop>PBSoSaveManual</tabstop>
+  <tabstop>PBUpdateLists</tabstop>
+  <tabstop>LWHarvestTable</tabstop>
+  <tabstop>LWPlantingTable</tabstop>
+  <tabstop>LWSoilTable</tabstop>
+  <tabstop>LWSprayingTable</tabstop>
+  <tabstop>LWFertiTable</tabstop>
+  <tabstop>LWOtherTable</tabstop>
+  <tabstop>LWWeatherTable</tabstop>
+  <tabstop>radioButton</tabstop>
+  <tabstop>radioButton_2</tabstop>
+  <tabstop>DEYear</tabstop>
+  <tabstop>PBEditTables</tabstop>
+  <tabstop>PBAdd2Canvas</tabstop>
+  <tabstop>PBRunAnalyses</tabstop>
+  <tabstop>PBListCropstat</tabstop>
+  <tabstop>PBListEOBrowser</tabstop>
+  <tabstop>PBListGeoDataFarm</tabstop>
+  <tabstop>PBUpdateFieldList</tabstop>
+  <tabstop>CBFieldList</tabstop>
+  <tabstop>RBNdviIndex</tabstop>
+  <tabstop>RBMsavi2Index</tabstop>
+  <tabstop>PBSelectZipFile</tabstop>
+  <tabstop>LEVal_1</tabstop>
+  <tabstop>LEVal_2</tabstop>
+  <tabstop>LEVal_3</tabstop>
+  <tabstop>LEVal_4</tabstop>
+  <tabstop>LEVal_5</tabstop>
+  <tabstop>PBUpdateGraph</tabstop>
+  <tabstop>CheckBPlanned</tabstop>
+  <tabstop>CWPlannedDate</tabstop>
+  <tabstop>PBGenerateGuideFile</tabstop>
+  <tabstop>mMapLayerComboBox</tabstop>
+  <tabstop>RBNomalized</tabstop>
+  <tabstop>RBEvenly</tabstop>
+  <tabstop>LEMaxColor</tabstop>
+  <tabstop>LEMinColor</tabstop>
+  <tabstop>LEMaxNbrColor</tabstop>
+  <tabstop>PBReloadLayer</tabstop>
+  <tabstop>PBCreateGuide</tabstop>
+  <tabstop>PBMultiEdit</tabstop>
+  <tabstop>RBAllYear</tabstop>
+  <tabstop>RBSpecYear</tabstop>
+  <tabstop>DEReportYear</tabstop>
+  <tabstop>RBReportWithDetails</tabstop>
+  <tabstop>RBReportWithoutDetails</tabstop>
+  <tabstop>PBReportSelectFolder</tabstop>
+  <tabstop>PBReportPerOperation</tabstop>
+  <tabstop>PBReportPerField</tabstop>
+  <tabstop>PBReportPerCrop</tabstop>
+  <tabstop>CBPlanting</tabstop>
+  <tabstop>CBSpraying</tabstop>
+  <tabstop>CBFertilizing</tabstop>
+  <tabstop>CBOther</tabstop>
+  <tabstop>CBHarvest</tabstop>
+  <tabstop>CBPlowing</tabstop>
+  <tabstop>CBHarrowing</tabstop>
+  <tabstop>CBIrrigation</tabstop>
+  <tabstop>CBWeather</tabstop>
+  <tabstop>CBSoil</tabstop>
+  <tabstop>PBUpdatePlaning</tabstop>
+  <tabstop>TWPlan</tabstop>
+  <tabstop>LWPlanSummary</tabstop>
+  <tabstop>PBUpdateSummary</tabstop>
+  <tabstop>PBSavePlan</tabstop>
+  <tabstop>DEPlanYear</tabstop>
+  <tabstop>PBViewPlan</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
