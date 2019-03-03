@@ -66,6 +66,8 @@ class Analyze:
     def check_consistency(self):
         """Checks that the harvest tables is intersecting some of the input data
         If the data is an activity does it also check that the year is the same
+        TODO: Check that there are at least one input covering each harvest
+        table both with respect to location and time!
         """
         self.fill_dict_tables()
         self.overlapping_tables = {}
@@ -138,7 +140,7 @@ class Analyze:
                 for ac in self.ferti_tables.keys():
                     ac_year = self.db.execute_and_return("""select extract(year from date_) from ferti.{tbl} 
                                 limit 1""".format(
-                        tbl=self.ferti[ac][0]['tbl_name']))[0][0]
+                        tbl=self.ferti_tables[ac][0]['tbl_name']))[0][0]
                     if ac_year == ha_year:
                         sql = """select st_intersects(a.geom, b.geom) from 
                         (select st_extent(ac.polygon) geom from ferti.{a_tbl} ac) a,
