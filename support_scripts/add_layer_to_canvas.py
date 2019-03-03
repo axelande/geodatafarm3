@@ -17,15 +17,20 @@ class AddLayerToCanvas:
         """
         self.parent = parent
         self.dlg = AddToCanvas()
-        self.populate_widget()
+
         self.parameters = {}
         self.items_in_table = []
 
     def run(self):
         """Displays the widget and connects the button"""
-        self.dlg.show()
-        self.dlg.PBAddData.clicked.connect(self.add_selected)
-        self.dlg.exec_()
+        self.get_tables()
+        if len(self.parameters) == 1:
+            self.add_2_canvas(self.parameters[0])
+        else:
+            self.populate_widget()
+            self.dlg.show()
+            self.dlg.PBAddData.clicked.connect(self.add_selected)
+            self.dlg.exec_()
 
     def get_tables(self):
         """Fills the dict 'parameters' with an int as key and a dict as the value
@@ -71,12 +76,6 @@ class AddLayerToCanvas:
         to a ListWidget except if there is only one, then it is directly added to the
         canvas."""
         self.dlg.LWAttributes.clear()
-        self.get_tables()
-        if len(self.parameters) == 1:
-            self.add_2_canvas(self.parameters[0])
-            self.dlg.PBAddData.disconnect()
-            self.dlg.done(0)
-            return
         for nr in range(len(self.parameters)):
             target_field = self.parameters[nr]['index_col']
             tbl_name = self.parameters[nr]['tbl_name']
