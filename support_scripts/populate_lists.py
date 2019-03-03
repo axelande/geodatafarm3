@@ -18,11 +18,12 @@ class Populate:
         self.plugin_dir = parent.plugin_dir
         self.dw = parent.dock_widget
         self.db = parent.db
+        self.tr = parent.tr
         self.items_in_table = [[None, '', None], [None, '', None], [None, '', None], [None, '', None],
                                [None, '', None], [None, '', None], [None, '', None]]
         self.tables_in_db = [0, 0, 0, 0, 0, 0, 0]
-        self.fields = ['--- Select field ---']
-        self.crops = ['--- Select crop ---']
+        self.fields = [self.tr('--- Select field ---')]
+        self.crops = [self.tr('--- Select crop ---')]
         self.lw_list = [[self.dw.LWPlantingTable, 'plant'],
                    [self.dw.LWHarvestTable, 'harvest'],
                    [self.dw.LWSprayingTable, 'spray'],
@@ -32,7 +33,7 @@ class Populate:
                    [self.dw.LWWeatherTable, 'weather']]
         self.reload_fields()
         self.reload_crops()
-        self.update_table_list()
+        #self.update_table_list()
 
     def get_items_in_table(self):
         """Returns the list of list 'items in table'
@@ -76,7 +77,7 @@ class Populate:
                 lw.clear()
             for name in fields:
                 lw.addItem(str(name))
-        self.fields = ['--- Select field ---']
+        self.fields = [self.tr('--- Select field ---')]
         self.fields.extend(fields)
 
     def reload_crops(self, cmd_box=None):
@@ -102,7 +103,7 @@ class Populate:
                 lw.clear()
             for name in crops:
                 lw.addItem(str(name))
-        self.crops = ['--- Select Crop ---']
+        self.crops = [self.tr('--- Select crop ---')]
         self.crops.extend(crops)
 
     def update_table_list(self):
