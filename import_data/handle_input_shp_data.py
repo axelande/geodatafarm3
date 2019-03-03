@@ -15,7 +15,8 @@ from ..support_scripts import shapefile as shp
 from ..import_data.insert_manual_from_file import ManualFromFile
 q_info = QMessageBox.information
 
-
+#import pydevd
+#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class InputShpHandler:
     def __init__(self, parent_widget, schema, spec_columns):
         """A widget that enables the possibility to insert data from a text
@@ -311,7 +312,7 @@ class InputShpHandler:
         except Exception as e:
             return [False, e, traceback.format_exc()]
 
-    def get_dict_from_shp_data(self, fields, shapes):
+    def get_dict_from_shp_data(self, fields, shapes, data_as_point):
         """Creates the dict data_dict and a list field names from the fields,
         shapes.
 
@@ -328,7 +329,10 @@ class InputShpHandler:
             [False, e, traceback.format_exc()]
         """
         try:
-            data_dict = {"pos": [], 'field_row_id': []}
+            if data_as_point:
+                data_dict = {"pos": [], 'field_row_id': []}
+            else:
+                data_dict = {"polygon": [], 'field_row_id': []}
             field_names = []
             for name, type, int1, int2 in fields:
                 if name == 'DeletionFlag':
@@ -343,10 +347,21 @@ class InputShpHandler:
                         col = "'" + col + "'"
                     data_dict[field_names[i]].append(col)
                 if self.ISD.EPSG.text() == '4326':
-                    data_dict['pos'].append(
-                        "ST_PointFromText('POINT({p1} {p2})',4326 )".format(
-                            p1=shapes[k].shape.points[0][0],
-                            p2=shapes[k].shape.points[0][1]))
+                    if data_as_point:
+                        data_dict['pos'].append(
+                            "ST_PointFromText('POINT({p1} {p2})',4326 )".format(
+                                p1=shapes[k].shape.points[0][0],
+                                p2=shapes[k].shape.points[0][1]))
+                    else:
+                        p1 = shapes[k].shape.points[0][0]
+                        p2 = shapes[k].shape.points[0][1]
+                        text = "ST_GeomFromText('Polygon(("
+                        for x, y in shapes[k].shape.points:
+                            text += str(x) + ' ' + str(y) + ','
+                        text = text[:-1] + "))', 4326)"
+                        if x != p1 and y != p2:
+                            continue
+                        data_dict['polygon'].append(text)
                 else:
                     data_dict['pos'].append(
                         "ST_transform(ST_PointFromText('POINT({p1} {p2})',{epsg}),4326 )".format(
@@ -375,7 +390,7 @@ class InputShpHandler:
         if task != 'debug':
             task.setProgress(25)
         if not failure:
-            res = self.get_dict_from_shp_data(fields, shapes)
+            res = self.get_dict_from_shp_data(fields, shapes, data_as_points)
         if res[0] is False:
             failure = True
         elif res[1] and not failure:
@@ -393,6 +408,11 @@ class InputShpHandler:
                         found = True
                 if not found:
                     del data_dict[name]
+            if 'simple_date' in date_dict.keys():
+                data_dict['Date_'] = []
+                for i in range(len(data_dict['field_row_id'])):
+                    data_dict['Date_'].append("'" + str(date_dict['simple_date']) + "'")
+                field_names.append('Date_')
             key_list = list(data_dict.keys())
             sql_raw = "INSERT INTO {schema}.temp_table ({cols}) VALUES".format(
                 schema=self.schema,
@@ -409,13 +429,17 @@ class InputShpHandler:
                 self.db.execute_sql(sql)
             if task != 'debug':
                 task.setProgress(50)
+            if data_as_points:
+                geom_col = 'pos'
+            else:
+                geom_col = 'polygon'
             sql = """SELECT * INTO {schema}.{tbl} 
     from {schema}.temp_table
-    where st_intersects(pos, (select polygon 
+    where st_intersects({geom_col}, (select polygon 
                               from fields 
                               where field_name='{field}')
-                        )""".format(
-                    schema=self.schema, tbl=self.tbl_name, field=self.field)
+                        )""".format(schema=self.schema, tbl=self.tbl_name,
+                                    field=self.field, geom_col=geom_col)
             self.db.execute_sql(sql)
             if task != 'debug':
                 task.setProgress(70)
