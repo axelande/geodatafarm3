@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.2.2
+version=2.3.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -24,7 +24,7 @@ repository=https://github.com/axelande/geodatafarm3
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=Added support for shapefiles
+changelog=Added support for satellite images
 
 # Tags are comma separated with spaces allowed
 tags=Farm, data analysis, csv file reader
