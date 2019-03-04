@@ -42,7 +42,7 @@ class SatelliteData:
         self.dlg.PBListEOBrowser.clicked.connect(
             lambda: webbrowser.open('https://apps.sentinel-hub.com/eo-browser/'))
         self.dlg.PBListGeoDataFarm.clicked.connect(
-            lambda: webbrowser.open('http://www.geodatafarm.com'))
+            lambda: webbrowser.open('http://www.geodatafarm.com/satellite/'))
         self.dlg.CheckBPlanned.clicked.connect(self.change_calender_status)
         self.dlg.PBSelectZipFile.clicked.connect(self.select_zip_file)
         self.dlg.PBUpdateFieldList.clicked.connect(self.update_field_list)
