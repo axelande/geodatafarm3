@@ -3,7 +3,7 @@ import os
 import shutil
 from zipfile import ZipFile
 import numpy as np
-from osgeo import gdal
+from osgeo import gdal, ogr
 from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
@@ -311,9 +311,11 @@ class SatelliteData:
         """Removes the temporary folder (tmp_files123) from the path and
         disable some buttons."""
         shutil.rmtree(self.path)
+        self.dlg.CheckBPlanned.setChecked(False)
         self.dlg.PBUpdateGraph.setEnabled(False)
         self.dlg.PBGenerateGuideFile.setEnabled(False)
         self.dlg.CWPlannedDate.setEnabled(False)
+        self.show_calender = False
 
     def add_to_db(self):
         """Adds the guide file to the database with the expected date of usage.
@@ -335,7 +337,11 @@ class SatelliteData:
         ish.col_names = ['raster_value', 'Fertilizin']
         ish.col_types = [1, 1]
         ish.file_name_with_path = self.file_name
-        ish.ISD.EPSG.setText('4326')
+        ogr_file = ogr.Open(self.file_name, 1)
+        lyr = ogr_file.GetLayer()
+        epsg = lyr.GetSpatialRef().GetAttrValue("AUTHORITY", 1)
+        ish.ISD.EPSG.setText(epsg)
         ish.field = self.dlg.CBFieldList.currentText()
         ish.params_to_evaluate = ['Fertilizin']
         res = ish.import_data('debug', date_dict={'simple_date': s_date})
+        print(res)
