@@ -709,12 +709,12 @@ class Analyze:
         self.canvas = FigureCanvas(fig)
         self.dlg.mplvl.addWidget(self.canvas)
         self.canvas.draw()
-        self.dlg.TWValues.clear()
-        self.dlg.TWValues.setRowCount(len(filtered_data[0]))
-        self.dlg.TWValues.setColumnCount(3)
-        self.dlg.TWValues.setHorizontalHeaderItem(0, QTableWidgetItem(self.column_investigated.replace('_', ' ')))
-        self.dlg.TWValues.setHorizontalHeaderItem(1, QTableWidgetItem(self.tr('Average yield')))
-        self.dlg.TWValues.setHorizontalHeaderItem(2, QTableWidgetItem(self.tr('Yield samples')))
+        model = QtGui.QStandardItemModel()
+        model.setRowCount(len(filtered_data[0]))
+        model.setColumnCount(3)
+        model.setHorizontalHeaderItem(0, QtGui.QStandardItem(self.column_investigated.replace('_', ' ')))
+        model.setHorizontalHeaderItem(1, QtGui.QStandardItem(self.tr('Average yield')))
+        model.setHorizontalHeaderItem(2, QtGui.QStandardItem(self.tr('Yield samples')))
         for i, m_yield in enumerate(filtered_data[0]):
             try:
                 current_value = filtered_data[1][i].replace("'", "")
@@ -723,20 +723,18 @@ class Analyze:
                     current_value = round(filtered_data[1][i], 2)
                 except:
                     current_value = filtered_data[1][i]
-                    pass
-                pass
             current_count = filtered_data[2][i]
             m_yield = round(m_yield, 2)
-            item1 = QTableWidgetItem()
+            item1 = QtGui.QStandardItem()
             item1.setText(str(current_value))
-            item2 = QTableWidgetItem()
+            item2 = QtGui.QStandardItem()
             item2.setText(str(m_yield))
-            item3 = QTableWidgetItem()
+            item3 = QtGui.QStandardItem()
             item3.setText(str(current_count))
-            self.dlg.TWValues.setItem(i, 0, item1)
-            self.dlg.TWValues.setItem(i, 1, item2)
-            self.dlg.TWValues.setItem(i, 2, item3)
-
+            model.setItem(i, 0, item1)
+            model.setItem(i, 1, item2)
+            model.setItem(i, 2, item3)
+        self.dlg.TVValues.setModel(model)
 
 def sql_query(task, investigating_param, other_parameters, db,
               min_counts, limiting_polygon):

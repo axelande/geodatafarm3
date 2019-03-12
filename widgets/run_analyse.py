@@ -22,8 +22,9 @@
 """
 
 import os
-
-from PyQt5 import QtWidgets, uic
+import io
+import csv
+from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'Run_analyse_base.ui'))
@@ -38,4 +39,30 @@ class RunAnalyseDialog(QtWidgets.QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+
         self.setupUi(self)
+        self.TVValues.installEventFilter(self)
+
+    def eventFilter(self, source, event):
+        if (event.type() == QtCore.QEvent.KeyPress and
+            event.matches(QtGui.QKeySequence.Copy)):
+            self.copySelection()
+            return True
+        return super(RunAnalyseDialog, self).eventFilter(source, event)
+
+    def copySelection(self):
+        selection = self.TVValues.selectedIndexes()
+        if selection:
+            rows = sorted(index.row() for index in selection)
+            columns = sorted(index.column() for index in selection)
+            rowcount = rows[-1] - rows[0] + 1
+            colcount = columns[-1] - columns[0] + 1
+            table = [[''] * colcount for _ in range(rowcount)]
+            for index in selection:
+                row = index.row() - rows[0]
+                column = index.column() - columns[0]
+                table[row][column] = index.data()
+            stream = io.StringIO()
+            csv.writer(stream).writerows(table)
+            QtWidgets.qApp.clipboard().setText(stream.getvalue())
+

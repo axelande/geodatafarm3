@@ -146,16 +146,6 @@
     <string>10</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="TWValues">
-   <property name="geometry">
-    <rect>
-     <x>630</x>
-     <y>11</y>
-     <width>401</width>
-     <height>591</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="CBLimitArea">
    <property name="geometry">
     <rect>
@@ -180,6 +170,19 @@
    </property>
    <property name="text">
     <string>Select Area</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="TVValues">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>10</y>
+     <width>421</width>
+     <height>701</height>
+    </rect>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::MultiSelection</enum>
    </property>
   </widget>
  </widget>
