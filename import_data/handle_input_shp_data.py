@@ -4,7 +4,7 @@ from PyQt5 import QtCore
 import traceback
 from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView,
                              QMessageBox)
-from osgeo import osr
+from osgeo import osr, ogr
 import os
 from operator import xor
 # Import the code for the dialog
@@ -298,78 +298,47 @@ class InputShpHandler:
             [False, e, traceback.format_exc()]
         """
         try:
-            with shp.Reader(self.file_name_with_path) as shp_file:
-                # records = shpfile.records()
-                shapes = shp_file.shapeRecords()
-                fields = shp_file.fields
-                if shapes[0].shape.shapeType == 1:
-                    data_as_points = True
-                elif shapes[0].shape.shapeType == 5:
-                    data_as_points = False
-                else:
-                    return [False, self.tr('Unkown geometry type of the shape file type'), '']
-            return [True, shapes, fields, data_as_points]
-        except Exception as e:
-            return [False, e, traceback.format_exc()]
-
-    def get_dict_from_shp_data(self, fields, shapes, data_as_point):
-        """Creates the dict data_dict and a list field names from the fields,
-        shapes.
-
-        Parameters
-        ----------
-        fields: list
-        shapes: list
-
-        Returns
-        -------
-        if True
-            [True, data_dict, field_names]
-        else:
-            [False, e, traceback.format_exc()]
-        """
-        try:
-            if data_as_point:
-                data_dict = {"pos": [], 'field_row_id': []}
-            else:
-                data_dict = {"polygon": [], 'field_row_id': []}
-            field_names = []
-            for name, type, int1, int2 in fields:
-                if name == 'DeletionFlag':
-                    continue
-                field_names.append(name)
-                data_dict[name] = []
-            for k, row in enumerate(shapes):
-                for i, col in enumerate(row.record):
-                    if col == b'                    ':
-                        col = "' '"
-                    elif isinstance(col, str):
-                        col = "'" + col + "'"
-                    data_dict[field_names[i]].append(col)
-                if self.ISD.EPSG.text() == '4326':
-                    if data_as_point:
-                        data_dict['pos'].append(
-                            "ST_PointFromText('POINT({p1} {p2})',4326 )".format(
-                                p1=shapes[k].shape.points[0][0],
-                                p2=shapes[k].shape.points[0][1]))
+            ogr_file = ogr.Open(self.file_name_with_path, 1)
+            gk_lyr = ogr_file.GetLayer()
+            first = True
+            data_dict = {}
+            count = 0
+            for feature in gk_lyr:
+                geom = feature.GetGeometryRef()
+                if first:
+                    if geom.GetGeometryType() == 1:
+                        data_as_points = True
+                        geom_type = 'pos'
+                    elif geom.GetGeometryType() == 3:
+                        data_as_points = False
+                        geom_type = 'polygon'
                     else:
-                        p1 = shapes[k].shape.points[0][0]
-                        p2 = shapes[k].shape.points[0][1]
-                        text = "ST_GeomFromText('Polygon(("
-                        for x, y in shapes[k].shape.points:
-                            text += str(x) + ' ' + str(y) + ','
-                        text = text[:-1] + "))', 4326)"
-                        if x != p1 and y != p2:
-                            continue
-                        data_dict['polygon'].append(text)
+                        QMessageBox.information(None, self.tr('Error'),
+                                                self.tr('Unknown shapetype (not point or polygon)'))
+                        return [False, 'Wrong format', traceback.format_exc()]
+                    data_dict[geom_type] = []
+                    items = feature.items()
+                    for key in items.keys():
+                        data_dict[key[:10]] = []
+                    data_dict['field_row_id'] = []
+                    first = False
+                geom_wkt = geom.ExportToWkt()
+                if self.ISD.EPSG.text() == '4326':
+                    data_dict[geom_type].append("ST_geomfromtext('{p}', 4326)".format(p=geom_wkt))
                 else:
-                    data_dict['pos'].append(
-                        "ST_transform(ST_PointFromText('POINT({p1} {p2})',{epsg}),4326 )".format(
-                        p1=shapes[k].shape.points[0][0],
-                        p2=shapes[k].shape.points[0][1],
-                        epsg=self.ISD.EPSG.text()))
-                data_dict['field_row_id'].append(k)
-            return [True, data_dict, field_names]
+                    data_dict[geom_type].append("ST_transform(ST_geomfromtext('{p}',{epsg}), 4326)".format(p=geom_wkt, epsg=self.ISD.EPSG.text()))
+                items = feature.items()
+
+                for key in items.keys():
+                    if isinstance(items[key], str):
+                        col = "'" + items[key] + "'"
+                    else:
+                        col = items[key]
+                    data_dict[key[:10]].append(col)
+                count += 1
+                data_dict['field_row_id'].append(count)
+            del ogr_file
+            return [True, data_dict, data_as_points]
         except Exception as e:
             return [False, e, traceback.format_exc()]
 
@@ -383,36 +352,19 @@ class InputShpHandler:
         res = self.get_shp_data()
         if res[0] is False:
             failure = True
-        elif res[1] and not failure:
-            shapes = res[1]
-            fields = res[2]
-            data_as_points = res[3]
+        if not failure:
+            data_dict = res[1]
+            data_as_points = res[2]
         if task != 'debug':
             task.setProgress(25)
-        if not failure:
-            res = self.get_dict_from_shp_data(fields, shapes, data_as_points)
-        if res[0] is False:
-            failure = True
-        elif res[1] and not failure:
-            data_dict = res[1]
-            field_names = res[2]
         if not failure:
             cols = []
             for key in self.col_names:
                 cols.append(key.encode('ascii').decode('utf-8'))
-            for j, name in enumerate(field_names):
-                found = False
-                for col in cols:
-                    if col[:10] == name:
-                        data_dict[col] = data_dict.pop(name)
-                        found = True
-                if not found:
-                    del data_dict[name]
             if 'simple_date' in date_dict.keys():
                 data_dict['Date_'] = []
                 for i in range(len(data_dict['field_row_id'])):
                     data_dict['Date_'].append("'" + str(date_dict['simple_date']) + "'")
-                field_names.append('Date_')
             key_list = list(data_dict.keys())
             sql_raw = "INSERT INTO {schema}.temp_table ({cols}) VALUES".format(
                 schema=self.schema,
