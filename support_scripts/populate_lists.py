@@ -66,6 +66,14 @@ class Populate:
                        self.dw.CBHwField,
                        self.dw.CBIField,
                        self.dw.CBSoField]
+            fields = self.db.get_distinct('fields', 'field_name', 'public')
+            lw = self.dw.LWFields
+            lw.clear()
+            for field_name in fields:
+                _na = QApplication.translate("qadashboard", field_name[0], None)
+                item = QListWidgetItem(_na, self.dw.LWFields)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+                item.setCheckState(QtCore.Qt.Unchecked)
         else:
             cmd_box = [cmd_box]
         fields_ = self.db.execute_and_return("select field_name from fields order by field_name")
@@ -92,6 +100,14 @@ class Populate:
                        self.dw.CBSpCrop,
                        self.dw.CBOCrop,
                        self.dw.CBHvCrop]
+            crops = self.db.get_distinct('crops', 'crop_name', 'public')
+            lw = self.dw.LWCrops
+            lw.clear()
+            for crop_name in crops:
+                _nam = QApplication.translate("qadashboard", crop_name[0], None)
+                item = QListWidgetItem(_nam, self.dw.LWCrops)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+                item.setCheckState(QtCore.Qt.Unchecked)
         else:
             cmd_box = [cmd_box]
         crops_ = self.db.execute_and_return("select crop_name from crops order by crop_name")
@@ -127,28 +143,3 @@ class Populate:
             self.items_in_table[i][0] = lw.findItems('', QtCore.Qt.MatchContains)
             self.items_in_table[i][1] = schema
             self.items_in_table[i][2] = lw
-        lw = self.dw.LWCrops
-        lw.clear()
-        crops = self.db.get_distinct('crops', 'crop_name', 'public')
-        for crop_name in crops:
-            _name = QApplication.translate("qadashboard", crop_name[0], None)
-            item = QListWidgetItem(_name, self.dw.LWCrops)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
-        fields = self.db.get_distinct('fields', 'field_name', 'public')
-        lw = self.dw.LWFields
-        lw.clear()
-        for field_name in fields:
-            _name = QApplication.translate("qadashboard", field_name[0], None)
-            item = QListWidgetItem(_name, self.dw.LWFields)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
-
-        crops = self.db.get_distinct('crops', 'crop_name', 'public')
-        lw = self.dw.LWCrops
-        lw.clear()
-        for crop_name in crops:
-            _name = QApplication.translate("qadashboard", crop_name[0], None)
-            item = QListWidgetItem(_name, self.dw.LWCrops)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
