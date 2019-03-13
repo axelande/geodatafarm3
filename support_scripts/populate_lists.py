@@ -83,6 +83,7 @@ class Populate:
         for i, lw in enumerate(cmd_box):
             if len(self.fields) > 1:
                 lw.clear()
+            lw.addItem(self.tr('--- Select field ---'))
             for name in fields:
                 lw.addItem(str(name))
         self.fields = [self.tr('--- Select field ---')]
@@ -117,6 +118,7 @@ class Populate:
         for i, lw in enumerate(cmd_box):
             if len(self.crops) > 1:
                 lw.clear()
+            lw.addItem(self.tr('--- Select crop ---'))
             for name in crops:
                 lw.addItem(str(name))
         self.crops = [self.tr('--- Select crop ---')]
