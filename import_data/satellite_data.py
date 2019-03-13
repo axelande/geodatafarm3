@@ -263,9 +263,10 @@ class SatelliteData:
     def generate_guide_file(self):
         """Generates the guide file, if CheckBPlanned.isChecked then add_to_db
         is called. Finalising with calling on the cleanup function."""
+        #TODO: check if path is withour strange chars...
         path = self.path[:self.path.index('tmp_files123')]
         file_name = path + 'guide_file_{f}_{g}.shp'.format(
-                      f=self.dlg.CBFieldList.currentText(),
+                      f=check_text(self.dlg.CBFieldList.currentText()),
                       g=datetime.date(datetime.today()).isoformat())
         if os.path.isfile(file_name):
             msgBox = QMessageBox()
