@@ -58,7 +58,7 @@ class InputShpHandler:
         self.ISD.pButContinue.clicked.connect(self.prepare_data_to_be_inserted)
         self.ISD.pButInsertDataIntoDB.clicked.connect(self.prepare_shp_file)
         self.populate.reload_fields(self.ISD.CBField)
-        self.populate.reload_crops(self.ISD.CBCrops)
+        self.populate.reload_crops(self.ISD.CBCrop)
         self.ISD.exec_()
 
     def open_input_file(self):
