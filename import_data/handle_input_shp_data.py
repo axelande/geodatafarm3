@@ -241,11 +241,11 @@ class InputShpHandler:
                                     self.tbl_name, self.schema)
         task = QgsTask.fromFunction('Run import text data', self.import_data,
                                     date_dict, on_finished=self.show_data)
-        # self.tsk_mngr.addTask(task)
+        self.tsk_mngr.addTask(task)
 
         # Debug
-        res = self.import_data('debug', date_dict)
-        self.show_data('a', res)
+        #res = self.import_data('debug', date_dict)
+        #self.show_data('a', res)
 
     def create_tbl(self, date_dict):
         """Creates a "temp" table in the database
@@ -374,6 +374,7 @@ class InputShpHandler:
                 sql_raw += "({vals_str}), ".format(
                     vals_str=", ".join(str(e) for e in value))
             sql = sql_raw[:-2]
+            #print(sql)
             self.db.execute_sql(sql)
             if self.ISD.EPSG.text() != '4326':
                 sql = """Update {schema}.temp_table set pos=st_transform(pos,
@@ -392,6 +393,7 @@ class InputShpHandler:
                               where field_name='{field}')
                         )""".format(schema=self.schema, tbl=self.tbl_name,
                                     field=self.field, geom_col=geom_col)
+            #print(sql)
             self.db.execute_sql(sql)
             if task != 'debug':
                 task.setProgress(70)
