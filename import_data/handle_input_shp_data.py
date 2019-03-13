@@ -275,11 +275,11 @@ class InputShpHandler:
                     sql += "Date_ TIMESTAMP, "
                     date_inserted = True
                 if self.col_types[i] == 0:
-                    sql += str(col_name) + " INT, "
+                    sql += str(col_name)[:10] + " INT, "
                 if self.col_types[i] == 1:
-                    sql += str(col_name) + " REAL, "
+                    sql += str(col_name)[:10] + " REAL, "
                 if self.col_types[i] == 2:
-                    sql += str(col_name) + " TEXT, "
+                    sql += str(col_name)[:10] + " TEXT, "
             sql = sql[:-2]
             sql += ")"
             self.db.create_table(sql, '{schema}.temp_table'.format(schema=self.schema))
