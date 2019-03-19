@@ -177,6 +177,14 @@ class CreateGuideFile:
         float_type = False
         if self.CGF.CBDataType.currentText() == self.tr('Float (1.234)'):
             float_type = True
+        sql = "select pos, polygon from {tbl} limit 1".format(tbl=self.selected_table)
+        g = self.db.execute_and_return(sql)
+        if g[0][0] is not None:
+            geom1 = geom2 = 'pos'
+        elif g[0][1] is not None:
+            geom1 = 'polygon'
+            geom2 = 'ST_centroid(polygon)'
+
         sql = """WITH grid AS (
       SELECT 
         ROW_NUMBER() OVER () AS grid_id,
@@ -185,11 +193,11 @@ class CreateGuideFile:
         SELECT (
           ST_Dump(
             MAKEGRID_2D(
-              ST_SetSRID(st_buffer(ST_Extent(pos),
-                                   GREATEST(((select max(st_x(pos)) from {tbl}) - 
-                                        (select min(st_x(pos)) from {tbl})),
-                                       ((select max(st_y(pos)) from {tbl}) - 
-                                        (select min(st_y(pos)) from {tbl})))/4
+              ST_SetSRID(st_buffer(ST_Extent({g1}),
+                                   GREATEST(((select max(st_x({g2})) from {tbl}) - 
+                                        (select min(st_x({g2})) from {tbl})),
+                                       ((select max(st_y({g2})) from {tbl}) - 
+                                        (select min(st_y({g2})) from {tbl})))/4
                                   ),4326),{c_size},{c_size}))
              ).geom  from {tbl}
       ) m
@@ -205,14 +213,18 @@ class CreateGuideFile:
     --Selectes the polygons that are intersecting the orignal data
     select_data as (select polys
                    from rotated
-                   where st_intersects(ST_SetSRID((select ST_Extent(pos) from {tbl}), 4326),
-                                       polys))
+                   where st_intersects(ST_SetSRID((select ST_Extent({g1}) from {tbl}), 4326),
+                                       polys)),
     --Do the final selections and joining in some average data
-    select st_astext(ST_Transform(polys, {EPSG})), {eq} 
+    final as(select st_astext(ST_Transform(polys, {EPSG})), {eq} as val 
     from select_data
-    left join {tbl} on st_intersects(polys, pos)
-    group by polys;""".format(c_size=cell_size, eq=self.eq_text2,
-                              tbl=self.selected_table, EPSG=EPSG, rot=rotation)
+    left join {tbl} on st_intersects(polys, {g1})
+    group by polys)
+    select * 
+    from final 
+    where val is not null
+    """.format(c_size=cell_size, eq=self.eq_text2, tbl=self.selected_table,
+               EPSG=EPSG, rot=rotation, g1=geom1, g2=geom2)
         data = self.db.execute_and_return(sql)
         attribute_values = []
         driver = ogr.GetDriverByName('Esri Shapefile')
