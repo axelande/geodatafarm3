@@ -85,7 +85,7 @@ class CreateGuideFile:
         self.CGF.TWColumnNames.clear()
         params = self.db.get_all_columns(table=text.split('.')[1],
                                          schema=text.split('.')[0],
-                                         exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'poly', 'field_row_id'")
+                                         exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'")
         self.CGF.TWColumnNames.setRowCount(len(params))
         self.CGF.TWColumnNames.setColumnCount(1)
         self.CGF.TWColumnNames.setSelectionBehavior(
@@ -129,7 +129,7 @@ class CreateGuideFile:
         treated as "special" in the database"""
         row_count = self.nbr_selected_attr
         if self.CGF.TWSelected.selectedItems() is None:
-            QMessageBox.information(None, "Error:", message=self.tr('No row selected!'))
+            QMessageBox.information(None, "Error:", self.tr('No row selected!'))
             return
         for item in self.CGF.TWSelected.selectedItems():
             self.CGF.TWSelected.removeRow(item.row())
@@ -145,6 +145,9 @@ class CreateGuideFile:
         if row_count != 0:
             for i in range(row_count):
                 existing_values.append([i, self.CGF.TWSelected.item(i, 0).text()])
+        else:
+            QMessageBox.information(None, "Error:", self.tr('You need to select at least one row'))
+            return
         for i, attr_name in existing_values:
             eq_text2 = eq_text.replace('[{i}]'.format(i=i),
                                        'avg({n})'.format(n=attr_name))
@@ -156,7 +159,7 @@ class CreateGuideFile:
             data = self.db.execute_and_return(sql)
         except ProgrammingError:
             QMessageBox.information(None, "Error:",
-                                    message=self.tr('The selected data must be '
+                                    self.tr('The selected data must be '
                                                     'integers or floats!'))
             return
         self.CGF.LMaxVal.setText('Max value: {val}'.format(val=data[0][0]))
@@ -172,7 +175,7 @@ class CreateGuideFile:
         file_name = self.CGF.LEFileName.text()
         rotation = self.CGF.LERotation.text()
         float_type = False
-        if self.CGF.CBDataType.currentText() == 'Float (1.234)':
+        if self.CGF.CBDataType.currentText() == self.tr('Float (1.234)'):
             float_type = True
         sql = """WITH grid AS (
       SELECT 
