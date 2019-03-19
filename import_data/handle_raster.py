@@ -1,5 +1,6 @@
 import os
 import gdal
+from osgeo import osr
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from functools import partial
 import subprocess
@@ -13,7 +14,7 @@ MESSAGE_CATEGORY = 'AlgRunnerTask'
 
 class ImportRaster:
     """With this module the user can add Raster data"""
-    def __init__(self, parent, date_dialog, schema):
+    def __init__(self, parent, date_dialog, field_dialog, schema):
         """
 
         Parameters
@@ -25,6 +26,7 @@ class ImportRaster:
         self.tsk_mngr = parent.tsk_mngr
         self.plugin_dir = parent.plugin_dir
         self.date_dialog = date_dialog
+        self.field_dialog = field_dialog
         self.schema = schema
         self.parent = parent
         self.s_tbl = ''
@@ -96,6 +98,9 @@ class ImportRaster:
                   'FIELD': 'raster_value'}
         alg = QgsApplication.processingRegistry().algorithmById(
                                       u'gdal:polygonize')
+        d = gdal.Open(input_)
+        proj = osr.SpatialReference(wkt=d.GetProjection())
+        self.epsg = proj.GetAttrValue('AUTHORITY', 1)
         context = QgsProcessingContext()
         task = QgsProcessingAlgRunnerTask(alg, params, context)
         task.executed.connect(partial(self.task_finished, context))
@@ -119,10 +124,21 @@ class ImportRaster:
             QgsMessageLog.logMessage('Task finished unsucessfully',
                                      MESSAGE_CATEGORY, Qgis.Warning)
         else:
-            task = QgsTask.fromFunction('Importing data to storage',
-                                        self.import_to_db,
-                                        on_finished=self.run_sql_commands)
-            self.tsk_mngr.addTask(task)
+            #task = QgsTask.fromFunction('Importing data to storage',
+            #                            self.import_to_db,
+            #                            on_finished=self.run_sql_commands)
+            #self.tsk_mngr.addTask(task)
+            from ..import_data.handle_input_shp_data import InputShpHandler
+            ish = InputShpHandler(self.parent, schema=self.schema, spec_columns=[])
+            ish.tbl_name = self.file_name
+            ish.col_names = ['raster_val']
+            ish.col_types = [1]
+            ish.file_name_with_path = self.plugin_dir + '/temp.shp'
+            ish.ISD.EPSG.setText(self.epsg)
+            ish.field = self.field_dialog.currentText()
+            ish.params_to_evaluate = ['raster_val']
+            res = ish.import_data('debug', date_dict={'simple_date': self.date_dialog.text()})
+            # print(res)
 
     def import_to_db(self, task):
         """Imports the shapefile with a ogr2ogr command in a shell script

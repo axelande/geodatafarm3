@@ -38,7 +38,7 @@ class SavePlanting:
             shp_file = InputShpHandler(self.parent, 'planting', columns)
             shp_file.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
-            ir = ImportRaster(self.parent, self.dw.DEPlanting, 'plant')
+            ir = ImportRaster(self.parent, self.dw.DEPlanting, self.dw.CBPField, 'plant')
             ir.run()
 
     def save_manual_data(self):

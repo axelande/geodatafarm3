@@ -38,8 +38,9 @@ class SaveSpraying:
             shp_file = InputShpHandler(self.parent, 'spraying', columns)
             shp_file.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
-            ir = ImportRaster(self.parent, self.dw.DESpraying, 'spray')
-            ir.run()
+            if self.check_input(variety_check=False):
+                ir = ImportRaster(self.parent, self.dw.DESpraying, self.dw.CBSpField, 'spray')
+                ir.run()
 
     def save_manual_data(self):
         """Saves the manual data."""
@@ -83,8 +84,12 @@ class SaveSpraying:
         self.dw.LESpWindDir.setText('')
         self.dw.LESpOther.setPlainText('')
 
-    def check_input(self):
+    def check_input(self, variety_check=True):
         """Some simple checks that ensure that the basic data is filled in.
+
+        Parameters
+        ----------
+        variety_check: bool
 
         Returns
         -------
@@ -99,7 +104,7 @@ class SaveSpraying:
         if self.dw.DESpraying.text() == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
-        if self.dw.LESpVarerity.text == '':
+        if variety_check and self.dw.LESpVarerity.text == '':
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('A variety  has to be set in order to save the data'))
             return False

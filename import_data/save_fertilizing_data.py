@@ -29,7 +29,7 @@ class SaveFertilizing:
             add_f = InputTextHandler(self.parent, 'ferti', columns=columns)
             add_f.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
-            ir = ImportRaster(self.parent, self.dw.DEFertilizing, 'ferti')
+            ir = ImportRaster(self.parent, self.dw.DEFertilizing, self.dw.CBFField, 'ferti')
             ir.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Databasefile (.db)'):
             QMessageBox.information(None, "Error:", self.tr(
