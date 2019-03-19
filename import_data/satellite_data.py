@@ -285,7 +285,7 @@ class SatelliteData:
                 return
         params = {'INPUT': self.path + "raster_output.tif", 'BAND': 1,
                   'OUTPUT': file_name,
-                  'FIELD': 'raster_value'}
+                  'FIELD': 'indexValue'}
         alg_name = 'gdal:polygonize'
         processing.run(alg_name, params)
         vl = QgsVectorLayer(file_name, 'ferti_layert', 'ogr')
@@ -335,7 +335,7 @@ class SatelliteData:
             return
         ish = InputShpHandler(self.parent, schema='ferti', spec_columns=[])
         ish.tbl_name = tbl
-        ish.col_names = ['raster_value', 'Fertilizin']
+        ish.col_names = ['indexValue', 'Fertilizin']
         ish.col_types = [1, 1]
         ish.file_name_with_path = self.file_name
         ogr_file = ogr.Open(self.file_name, 1)
@@ -343,6 +343,6 @@ class SatelliteData:
         epsg = lyr.GetSpatialRef().GetAttrValue("AUTHORITY", 1)
         ish.ISD.EPSG.setText(epsg)
         ish.field = self.dlg.CBFieldList.currentText()
-        ish.params_to_evaluate = ['Fertilizin']
+        ish.params_to_evaluate = ['indexValue', 'Fertilizin']
         res = ish.import_data('debug', date_dict={'simple_date': s_date})
-        print(res)
+        #print(res)
