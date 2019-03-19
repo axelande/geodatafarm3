@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="sv_SE" sourcelanguage="en">
+<!DOCTYPE TS><TS version="2.0" language="sv_SE" sourcelanguage="en">
 <context>
     <name>AddField</name>
     <message>
@@ -207,17 +206,17 @@ excisterande databas</translation>
         <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="161"/>
+        <location filename="../support_scripts/create_guiding_file.py" line="164"/>
         <source>The selected data must be integers or floats!</source>
         <translation>Den valda datan måste vara heltal eller decimaltal!</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="255"/>
+        <location filename="../support_scripts/create_guiding_file.py" line="270"/>
         <source>Help:</source>
         <translation>Hjälp:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="255"/>
+        <location filename="../support_scripts/create_guiding_file.py" line="270"/>
         <source>Here you create a guide file.
 1. Start with select which data you want to base the guide file on in the top left corner.
 2. Select which of the attributes you want to use as base of calculation.
@@ -240,6 +239,16 @@ excisterande databas</translation>
 8. Cell storleken, är hur stora celler som du vill att styrfilen ska ha, EPSG är vilket koordinat system, låt det vara 4326 om du är osäker!
 9. Vill du kan du även välja att rotera griddet
 10. Till sist är det bara att trycka &apos;Skapa styrfil&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="152"/>
+        <source>You need to select at least one row</source>
+        <translation>Du måste välja minst en rad</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="181"/>
+        <source>Float (1.234)</source>
+        <translation>Decimaltal (1,234)</translation>
     </message>
 </context>
 <context>
@@ -1558,22 +1567,22 @@ following column</source>
 <context>
     <name>ImportRaster</name>
     <message>
-        <location filename="../import_data/handle_raster.py" line="74"/>
+        <location filename="../import_data/handle_raster.py" line="76"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_raster.py" line="74"/>
+        <location filename="../import_data/handle_raster.py" line="76"/>
         <source>In order to save the data you must select a date</source>
         <translation>För att spara datan måste du välja ett datum</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_raster.py" line="87"/>
+        <location filename="../import_data/handle_raster.py" line="89"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_raster.py" line="87"/>
+        <location filename="../import_data/handle_raster.py" line="89"/>
         <source>Unable to open the raster file.</source>
         <translation>Det gick inte att öppna raster filen.</translation>
     </message>
@@ -1791,54 +1800,49 @@ följande kolumn</translation>
 <context>
     <name>InputShpHandler</name>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="197"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="192"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="197"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="192"/>
         <source>The projection is probably wrong, please change from 4326</source>
         <translation>Projektionen är troligen fel, var god ändra från 4326</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="95"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="90"/>
         <source>No shapes was found in the file
 </source>
         <translation>Ingen data kunde hittas i filen
 </translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="165"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="160"/>
         <source>No row selected!</source>
         <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="187"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="182"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="188"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="183"/>
         <source>In order to save the data you must select a field</source>
         <translation>För att kunna spara data måste du välja ett fält</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="503"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="452"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="231"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="226"/>
         <source>The date format didn&apos;t match the selected format, please change</source>
         <translation>Datumet matachade inte formatet, var god att byt</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="314"/>
-        <source>Unkown geometry type of the shape file type</source>
-        <translation>Okänd gemoetry typ i shape filen</translation>
-    </message>
-    <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="495"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="444"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -1847,9 +1851,14 @@ följande kolumn</translation>
 Traceback: {t}</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_input_shp_data.py" line="503"/>
+        <location filename="../import_data/handle_input_shp_data.py" line="452"/>
         <source>No data were found in the field, are you sure that the data is in the correct field?</source>
         <translation>Ingen data kunde hittas i fältet, är du säker på att det var rätt fält och kordinatsystem?</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_input_shp_data.py" line="315"/>
+        <source>Unknown shapetype (not point or polygon)</source>
+        <translation>Okänd form (ej punkt eller polygon)</translation>
     </message>
 </context>
 <context>
@@ -2004,18 +2013,13 @@ Are you sure that id, username and password was correct?</source>
 <context>
     <name>Populate</name>
     <message>
-        <location filename="../support_scripts/populate_lists.py" line="80"/>
+        <location filename="../support_scripts/populate_lists.py" line="89"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../support_scripts/populate_lists.py" line="26"/>
+        <location filename="../support_scripts/populate_lists.py" line="124"/>
         <source>--- Select crop ---</source>
-        <translation>--- Välj gröda ---</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/populate_lists.py" line="106"/>
-        <source>--- Select Crop ---</source>
         <translation>--- Välj gröda ---</translation>
     </message>
 </context>
@@ -2239,12 +2243,12 @@ inträffade, här: {t}</translation>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="../widgets/Run_analyse_base.ui" line="169"/>
+        <location filename="../widgets/Run_analyse_base.ui" line="159"/>
         <source>Limit the area</source>
         <translation>Begränsa arean</translation>
     </message>
     <message>
-        <location filename="../widgets/Run_analyse_base.ui" line="182"/>
+        <location filename="../widgets/Run_analyse_base.ui" line="172"/>
         <source>Select Area</source>
         <translation>Välj område</translation>
     </message>
@@ -2262,32 +2266,32 @@ inträffade, här: {t}</translation>
         <translation>Anting saknas rasterband 4 eller 8 från ZIP filen.</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="273"/>
+        <location filename="../import_data/satellite_data.py" line="274"/>
         <source>You have all ready created a guide file for this field today, do you want to replace it?</source>
         <translation>Du har redan skapat en styrfil för detta fältet idag, vill du skriva över den?</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="326"/>
+        <location filename="../import_data/satellite_data.py" line="329"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="327"/>
+        <location filename="../import_data/satellite_data.py" line="330"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="283"/>
+        <location filename="../import_data/satellite_data.py" line="284"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="283"/>
+        <location filename="../import_data/satellite_data.py" line="284"/>
         <source>The file could not automaticlly be removed, please try to do it manually and create the guide file again</source>
         <translation>Styrfilen kunde inte automatiskt plockas bort, prova och gör det manuellt och skapa styrfilen på nytt</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="325"/>
+        <location filename="../import_data/satellite_data.py" line="328"/>
         <source>Are you planning to use it today?</source>
         <translation>Tänker du använda styrfilen idag?</translation>
     </message>
@@ -2826,57 +2830,57 @@ inträffade, här: {t}</translation>
         <translation>Shape fil (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="69"/>
+        <location filename="../import_data/save_spraying_data.py" line="70"/>
         <source>Success</source>
         <translation>Klar</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="69"/>
+        <location filename="../import_data/save_spraying_data.py" line="70"/>
         <source>The data was stored correctly</source>
         <translation>Datan sparades korrekt</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="71"/>
+        <location filename="../import_data/save_spraying_data.py" line="72"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="71"/>
+        <location filename="../import_data/save_spraying_data.py" line="72"/>
         <source>Following error occurred: {m}</source>
         <translation>Följande fel inträffade: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="93"/>
+        <location filename="../import_data/save_spraying_data.py" line="98"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="103"/>
+        <location filename="../import_data/save_spraying_data.py" line="108"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="94"/>
+        <location filename="../import_data/save_spraying_data.py" line="99"/>
         <source>In order to save the data you must select a field</source>
         <translation>För att kunna spara data måste du välja ett fält</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="96"/>
+        <location filename="../import_data/save_spraying_data.py" line="101"/>
         <source>--- Select crop ---</source>
         <translation>--- Välj gröda ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="97"/>
+        <location filename="../import_data/save_spraying_data.py" line="102"/>
         <source>In order to save the data you must select a crop</source>
         <translation>För att spara datan måste du välja en gröda</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="100"/>
+        <location filename="../import_data/save_spraying_data.py" line="105"/>
         <source>In order to save the data you must select a date</source>
         <translation>För att spara datan måste du välja ett datum</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="103"/>
+        <location filename="../import_data/save_spraying_data.py" line="108"/>
         <source>A variety  has to be set in order to save the data</source>
         <translation>För att spara datan måste välja ett preparat</translation>
     </message>
