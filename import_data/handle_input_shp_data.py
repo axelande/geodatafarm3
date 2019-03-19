@@ -11,7 +11,6 @@ from operator import xor
 from ..widgets.import_shp_dialog import ImportShpDialog
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, check_date_format
-from ..support_scripts import shapefile as shp
 from ..import_data.insert_manual_from_file import ManualFromFile
 q_info = QMessageBox.information
 
@@ -81,33 +80,29 @@ class InputShpHandler:
         """A function that retrieves the name of the columns from the .csv file
         and returns a list with name"""
         self.ISD.TWColumnNames.clear()
-        shp_file = shp.Reader(self.file_name_with_path)
-        try:
-            if len(shp_file.shapes()[0].points) > 1:
-                self.isPolygon = True
-            else:
-                self.isPolygon = False
-        except Exception as e:
+        ogr_file = ogr.Open(self.file_name_with_path, 1)
+        gk_lyr = ogr_file.GetLayer()
+        if len(gk_lyr) == 0:
             q_info(None, self.tr("Error:"),
-                   self.tr('No shapes was found in the file\n') + str(e))
+                   self.tr('No shapes was found in the file\n'))
             return
         _types = []
-        for name, type_, length, precision in shp_file.fields:
-            if name == 'DeletionFlag':
-                continue
+        for i in range(gk_lyr[0].GetFieldCount()):
+            name = gk_lyr[0].GetFieldDefnRef(i).GetName()
+            type_ = gk_lyr[0].GetFieldDefnRef(1).GetTypeName()
             self.col_names.append(name)
             _types.append(type_)
-            if type_ == 'N':
+            if type_ == 'Integer':
                 self.col_types.append(0)
-            if type_ == 'F':
+            if type_ == 'Real':
                 self.col_types.append(1)
-            if type_ == 'C':
+            if type_ == 'String':
                 self.col_types.append(2)
-        temp_list = shp_file.iterRecords()
         self.sample_data = []
         sec_row = True
         c_i = 0
-        for row in temp_list:
+        for row in gk_lyr:
+            row = list(row.items().values())
             if sec_row:
                 second_row = row
                 sec_row = False
@@ -128,7 +123,7 @@ class InputShpHandler:
             self.ISD.TWColumnNames.setItem(i, 0, item1)
             self.ISD.TWColumnNames.setItem(i, 1, item2)
         self.column_count = i
-        shp_file.close()
+        del gk_lyr, ogr_file
 
     def add_to_param_list(self):
         """Adds the selected columns to the list of fields that should be
@@ -186,10 +181,10 @@ class InputShpHandler:
             return
         for i in range(self.column_count + 1):
             columns_to_add.append(self.ISD.TWColumnNames.item(i, 0).text())
-        shp_file = shp.Reader(self.file_name_with_path)
-        no_prj = self._find_prj()
-        if (self.ISD.EPSG.text() == '4326' and not
-                -180 < shp_file.shapeRecord(0).shape.points[0][0] < 180):
+        ogr_file = ogr.Open(self.file_name_with_path, 1)
+        lyr = ogr_file.GetLayer()
+        epsg = lyr.GetSpatialRef().GetAttrValue("AUTHORITY", 1)
+        if self.ISD.EPSG.text() != epsg:
             q_info(None, self.tr("Error:"),
                    self.tr('The projection is probably wrong, please change from 4326'))
             return
