@@ -97,7 +97,7 @@ class CreateFarm:
         self.add_schemas()
         self.add_tables(first_year)
         self.parent_widget.set_buttons()
-        self.parent_widget.populate.refresh(self.db)
+        self.parent_widget.populate.db = self.db
         self.parent_widget.populate.update_table_list()
         self.parent_widget.populate.reload_fields()
         self.parent_widget.populate.reload_crops()
