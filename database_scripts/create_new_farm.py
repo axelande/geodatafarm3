@@ -63,7 +63,7 @@ class CreateFarm:
                                                                                                      e=email_inp))
         if r is None:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
-                '- Is your computer online? \n- If you are sure that your computer please send an email to geo_farm@gmail.com'))
+                '- Is your computer online? \n- If you are sure that your computer please send an email to geofarm@gmail.com'))
             return
         r = r.text.split(',')
         if r[0] == 'false':
@@ -103,9 +103,11 @@ class CreateFarm:
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
 
-        with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
+        with open(self.plugin_dir +
+                  '\database_scripts\connection_data.ini', 'w') as f:
             f.write(username + ',' + password + ',' + farmname)
-        self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
+        self.parent_widget.dock_widget.LFarmName.setText(farmname +
+                                                         ' is set\nas your farm')
         self._connect_to_db()
         self.reset_db_connections()
         # This is important when no connection is active at startup

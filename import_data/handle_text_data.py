@@ -652,7 +652,7 @@ def insert_data_to_database(task, db, params):
             min_row_id = db.execute_and_return("select min(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
             max_row_id = db.execute_and_return("select max(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
             if min_row_id is None:
-                # If the user choose the wrong field this part cant be used...
+                # If the user choose the wrong field and this part cant be used.
                 return [True, no_miss_heading, some_wrong_len, sql]
             move_x = params['move_x']
             move_y = params['move_y']
