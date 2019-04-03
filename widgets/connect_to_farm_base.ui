@@ -120,7 +120,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Connect to a new farm database</string>
+    <string>Connect to an excisting database</string>
    </property>
   </widget>
   <widget class="QPushButton" name="PBConnectExisting">

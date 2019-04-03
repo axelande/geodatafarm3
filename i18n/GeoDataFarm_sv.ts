@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="sv_SE" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="sv_SE" sourcelanguage="en">
 <context>
     <name>AddField</name>
     <message>
@@ -148,8 +149,8 @@ När du har lagt till alla dina fält välj &quot;klar&quot;</translation>
     </message>
     <message>
         <location filename="../widgets/connect_to_farm_base.ui" line="123"/>
-        <source>Connect to a new farm database</source>
-        <translation>Anslut till en ny gård</translation>
+        <source>Connect to an excisting database</source>
+        <translation>Anslut till en excisterande databas</translation>
     </message>
     <message>
         <location filename="../widgets/connect_to_farm_base.ui" line="139"/>
@@ -162,33 +163,27 @@ excisterande databas</translation>
 <context>
     <name>CreateFarm</name>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="74"/>
+        <location filename="../database_scripts/create_new_farm.py" line="86"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="65"/>
-        <source>- Is your computer online? 
-- If you are sure that your computer please send an email to geo_farm@gmail.com</source>
-        <translation>Är din dator ansluten till internet? Om så är fallet skicka gärna ett e-mail till geodatafarm@gmail.com så hjälper jag dig</translation>
-    </message>
-    <message>
-        <location filename="../database_scripts/create_new_farm.py" line="70"/>
+        <location filename="../database_scripts/create_new_farm.py" line="82"/>
         <source>Farm name allready taken, please choose another name for your farm!</source>
         <translation>Gårdsnamnet är redan taget, var god välj ett annat namn på gården!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="74"/>
+        <location filename="../database_scripts/create_new_farm.py" line="86"/>
         <source>User name allready taken, please choose another name as user name!</source>
         <translation>Användarsnamnet är redan taget, var god välj ett annat namn aom användarnamn!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="93"/>
+        <location filename="../database_scripts/create_new_farm.py" line="105"/>
         <source>Done</source>
         <translation>Klar</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="93"/>
+        <location filename="../database_scripts/create_new_farm.py" line="105"/>
         <source>Database created</source>
         <translation>Databasen är skapad</translation>
     </message>
@@ -196,6 +191,43 @@ excisterande databas</translation>
         <location filename="../database_scripts/create_new_farm.py" line="51"/>
         <source>The first year must be less than 2030</source>
         <translation>Det första året måste vara lägre än 2030</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="54"/>
+        <source>name</source>
+        <translation>Namn</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="55"/>
+        <source>The user name must be different from &quot;name&quot;</source>
+        <translation>Ditt användarnmn måste vara skillt från &quot;Namn&quot;</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="58"/>
+        <source>your@email.com</source>
+        <translation>din@epostadress</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="59"/>
+        <source>The e-mail must be a real e-mail address</source>
+        <translation>Epost adressen måste vara en riktig adress</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="62"/>
+        <source>farmname</source>
+        <translation>Gårdsnamn</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="63"/>
+        <source>The farm name must be different from &quot;farmname&quot;</source>
+        <translation>Ditt gårdsnamn måste vara skillt från &quot;Gårdsnamn&quot;</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="77"/>
+        <source>- Is your computer online? 
+- If you are sure that please send an email to geodatafarm@gmail.com</source>
+        <translation>- Är din dator online?
+- Om du är säker, skicka ett e-mail till geodatafarm@gmail.com för vidare support</translation>
     </message>
 </context>
 <context>
@@ -429,27 +461,27 @@ benämn ditt attribut som [0], [1] etc.:</translation>
 <context>
     <name>DB</name>
     <message>
-        <location filename="../database_scripts/db.py" line="52"/>
+        <location filename="../database_scripts/db.py" line="70"/>
         <source> is set as your farm</source>
         <translation> är satt som din gård</translation>
     </message>
     <message>
-        <location filename="../database_scripts/db.py" line="73"/>
+        <location filename="../database_scripts/db.py" line="91"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../database_scripts/db.py" line="73"/>
+        <location filename="../database_scripts/db.py" line="91"/>
         <source>Error connecting to database on {host}. {e}</source>
         <translation>Fel vid anslutning till databasen on {host}. {e}</translation>
     </message>
     <message>
-        <location filename="../database_scripts/db.py" line="150"/>
+        <location filename="../database_scripts/db.py" line="168"/>
         <source>Message</source>
         <translation>Meddelande</translation>
     </message>
     <message>
-        <location filename="../database_scripts/db.py" line="150"/>
+        <location filename="../database_scripts/db.py" line="168"/>
         <source>The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)</source>
         <translation>Namnet på filen du försöker ladda in i databasen finns redan, vill du ersätta det? (Annars döp om filen och försök igen)</translation>
     </message>
@@ -2011,6 +2043,19 @@ Are you sure that id, username and password was correct?</source>
     </message>
 </context>
 <context>
+    <name>NoConnection</name>
+    <message>
+        <location filename="../database_scripts/db.py" line="26"/>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/db.py" line="26"/>
+        <source>No connection was found</source>
+        <translation>Ingen anslutning kunde skapas</translation>
+    </message>
+</context>
+<context>
     <name>Populate</name>
     <message>
         <location filename="../support_scripts/populate_lists.py" line="89"/>
@@ -2888,6 +2933,21 @@ inträffade, här: {t}</translation>
         <location filename="../import_data/save_spraying_data.py" line="40"/>
         <source>Georeferenced Raster (.tif; .geotif)</source>
         <translation>Georefererat raster (.tif; .geotif)</translation>
+    </message>
+</context>
+<context>
+    <name>SomeFailure</name>
+    <message>
+        <location filename="../database_scripts/db.py" line="17"/>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/db.py" line="17"/>
+        <source>Some failure occur, pleas send an e-mail to geodatafarm@gmail.com with the following message:
+</source>
+        <translation>Något fel uppstod, var god skicka följande fel till geodatafarm@gmail.com:
+</translation>
     </message>
 </context>
 <context>

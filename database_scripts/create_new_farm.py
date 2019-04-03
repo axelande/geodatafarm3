@@ -75,7 +75,7 @@ class CreateFarm:
                                                                                                      e=email_inp))
         if r is None:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
-                '- Is your computer online? \n- If you are sure that your computer please send an email to geofarm@gmail.com'))
+                '- Is your computer online? \n- If you are sure that please send an email to geodatafarm@gmail.com'))
             return
         r = r.text.split(',')
         if r[0] == 'false':
