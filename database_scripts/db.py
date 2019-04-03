@@ -9,6 +9,24 @@ class DBException(Exception):
     pass
 
 
+class SomeFailure:
+    def __init__(self, tr):
+        self.tr = tr
+
+    def display_failure(self, er):
+        QMessageBox.information(None, self.tr('Error'),
+                                self.tr('Some failure occur, pleas send an e-mail to geodatafarm@gmail.com with the following message:\n') + er)
+
+
+class NoConnection:
+    def __init__(self, tr):
+        self.tr = tr
+
+    def run_failure(self):
+        QMessageBox.information(None, self.tr('Error'),
+                                self.tr('No connection was found'))
+
+
 class DB:
     def __init__(self, dock_widget, path=None, tr=None):
         """The widget that is connects to the database
@@ -367,9 +385,17 @@ ORDER BY table_name""".format(schema=schema)
             text string with the sql statement
         """
         self._connect()
+        if self.conn is None:
+            nc = NoConnection(self.tr)
+            nc.run_failure()
+            return 'There was no connection established'
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(sql)
-        self.conn.commit()
+        try:
+            cur.execute(sql)
+            self.conn.commit()
+        except Exception as e:
+            sf = SomeFailure(self.tr)
+            sf.display_failure(e)
         self._close()
 
     def execute_and_return(self, sql):
@@ -386,9 +412,18 @@ ORDER BY table_name""".format(schema=schema)
             the data requested in the statement
         """
         self._connect()
+        if self.conn is None:
+            nc = NoConnection(self.tr)
+            nc.run_failure()
+            return 'There was no connection established'
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(sql)
-        data = cur.fetchall()
+        try:
+            cur.execute(sql)
+            data = cur.fetchall()
+        except Exception as e:
+            sf = SomeFailure(self.tr)
+            sf.display_failure(e)
+            data = 'There were an error..'
         self._close()
         return data
 
