@@ -51,6 +51,18 @@ class CreateFarm:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 'The first year must be less than 2030'))
             return
+        if username_inp == self.tr('name'):
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The user name must be different from "name"'))
+            return
+        if email_inp == self.tr('your@email.com'):
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The e-mail must be a real e-mail address'))
+            return
+        if farmname_inp == self.tr('farmname'):
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The farm name must be different from "farmname"'))
+            return
         username = check_text(username_inp)
         password = check_text(password_inp).encode('utf-8')
         farmname = check_text(farmname_inp)
