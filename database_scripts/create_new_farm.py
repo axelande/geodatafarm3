@@ -90,7 +90,8 @@ class CreateFarm:
         self.parent_widget.populate.reload_fields()
         self.parent_widget.populate.reload_crops()
         if insertion_ok:
-            QMessageBox.information(None, self.tr("Done"), self.tr('Database created'))
+            QMessageBox.information(None, self.tr("Done"),
+                                    self.tr('Database created'))
         self.CF.done(0)
 
     def connect_to_source(self):
