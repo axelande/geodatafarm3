@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.pool
 import psycopg2.extras
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
@@ -79,12 +80,16 @@ class DB:
         """
         if self.conn is None:
             try:
-                self.conn = psycopg2.connect(
+                pool = psycopg2.pool.SimpleConnectionPool(1, 20,
                     host=self.dbhost,
                     database=self.dbname,
                     user=self.dbuser,
                     password=self.dbpass
                     )
+                if not pool:
+                    QMessageBox.information(None, self.tr('Error'),
+                                            self.tr('Could not make a stable connection to the GeoDataBase server'))
+                self.conn = pool.getconn()
                 self.conn.set_isolation_level(0)
                 return True
             except psycopg2.OperationalError as e:
