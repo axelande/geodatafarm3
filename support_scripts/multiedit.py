@@ -29,6 +29,10 @@ class MultiEdit:
     def do_checks(self):
         """Checks that all is ready to be updated"""
         delimchars = "#"
+        if self.layer is None:
+            QMessageBox.information(None, self.tr("Error"),
+                                    self.tr("Please select a layer"))
+            return
         if self.layer.type() == QgsMapLayer.VectorLayer:
             if self.layer.type() == QgsMapLayer.VectorLayer:
                 provider = self.layer.dataProvider()
