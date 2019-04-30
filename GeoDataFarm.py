@@ -36,6 +36,7 @@ import os
 import sys
 import subprocess
 import platform
+import webbrowser
 from .resources import *
 plugin_dir = os.path.dirname(__file__)
 
@@ -90,6 +91,7 @@ from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint
 from .support_scripts.populate_lists import Populate
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
+from .support_scripts.fix_rows import RowFixer
 
 
 class GeoDataFarm:
@@ -404,6 +406,9 @@ class GeoDataFarm:
         create_farm = CreateFarm(self, False)
         create_farm.run()
 
+    def fix_rows(self):
+        RowFixer(self)
+
     def set_buttons(self):
         """Since most functions are dependent on that a database connections
         exist the buttons are set when a connection is set. If new connections
@@ -443,8 +448,10 @@ class GeoDataFarm:
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
+            self.dock_widget.PBFixRows.clicked.connect(self.fix_rows)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
+            self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
 
     def run(self):
         """Run method that loads and starts the plugin"""

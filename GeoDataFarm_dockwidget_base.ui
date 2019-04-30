@@ -296,6 +296,19 @@ geodatafarm@gmail.com</string>
        </rect>
       </property>
      </widget>
+     <widget class="QPushButton" name="PBWebbpage">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>110</y>
+        <width>201</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>GeoDataFarms webpage</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_5">
      <attribute name="title">
@@ -3809,6 +3822,58 @@ create a guide file?</string>
        <string>Edit data</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_40">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>320</y>
+        <width>201</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Fix rows</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_41">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>340</y>
+        <width>411</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>This script converts the delaunay triangle polygons automatically 
+ generated and convert them into rows.</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="PBFixRows">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>420</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+      <property name="text">
+       <string>Fix Rows</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -4328,6 +4393,7 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>tabWidget</tabstop>
   <tabstop>PBAddNewFarm</tabstop>
   <tabstop>PBConnect2Farm</tabstop>
+  <tabstop>PBWebbpage</tabstop>
   <tabstop>PBAddField</tabstop>
   <tabstop>PBRemoveField</tabstop>
   <tabstop>PBViewFields</tabstop>
@@ -4488,6 +4554,170 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBSavePlan</tabstop>
   <tabstop>DEPlanYear</tabstop>
   <tabstop>PBViewPlan</tabstop>
+  <tabstop>PBFixRows</tabstop>
+  <tabstop>PBAddNewFarm_2</tabstop>
+  <tabstop>PBConnect2Farm_2</tabstop>
+  <tabstop>PBAddField_2</tabstop>
+  <tabstop>PBRemoveField_2</tabstop>
+  <tabstop>LWFields_2</tabstop>
+  <tabstop>LWCrops_2</tabstop>
+  <tabstop>PBAddCrop_2</tabstop>
+  <tabstop>PBRemoveCrop_2</tabstop>
+  <tabstop>LECropName_2</tabstop>
+  <tabstop>PBViewFields_2</tabstop>
+  <tabstop>tabWidget_4</tabstop>
+  <tabstop>CBPField_2</tabstop>
+  <tabstop>PBPSaveManual_2</tabstop>
+  <tabstop>PBPAddFile_2</tabstop>
+  <tabstop>CBPFileType_2</tabstop>
+  <tabstop>CBPCrop_2</tabstop>
+  <tabstop>DEPlanting_2</tabstop>
+  <tabstop>LEPSpacing_2</tabstop>
+  <tabstop>LEPSeedRate_2</tabstop>
+  <tabstop>LEPSawDepth_2</tabstop>
+  <tabstop>LEPOther_2</tabstop>
+  <tabstop>LEPVarerity_2</tabstop>
+  <tabstop>LEFSeedRate_2</tabstop>
+  <tabstop>PBFAddFile_2</tabstop>
+  <tabstop>CBFCrop_2</tabstop>
+  <tabstop>LEFOther_2</tabstop>
+  <tabstop>DEFertilizing_2</tabstop>
+  <tabstop>CBFField_2</tabstop>
+  <tabstop>PBFSaveManual_2</tabstop>
+  <tabstop>LEFSawDepth_2</tabstop>
+  <tabstop>CBFFileType_2</tabstop>
+  <tabstop>LEFVarerity_2</tabstop>
+  <tabstop>LESpRate_2</tabstop>
+  <tabstop>PBSpAddFile_2</tabstop>
+  <tabstop>CBSpCrop_2</tabstop>
+  <tabstop>LESpOther_2</tabstop>
+  <tabstop>DESpraying_2</tabstop>
+  <tabstop>CBSpField_2</tabstop>
+  <tabstop>LESpVarerity_2</tabstop>
+  <tabstop>PBSpSaveManual_2</tabstop>
+  <tabstop>LESpWindSpeed_2</tabstop>
+  <tabstop>CBSpFileType_2</tabstop>
+  <tabstop>LESpWindDir_2</tabstop>
+  <tabstop>CBOCrop_2</tabstop>
+  <tabstop>LEOOther_2</tabstop>
+  <tabstop>DEOther_2</tabstop>
+  <tabstop>CBOField_2</tabstop>
+  <tabstop>PBSaveOther_2</tabstop>
+  <tabstop>LEOValue_5</tabstop>
+  <tabstop>LEOtherName_2</tabstop>
+  <tabstop>LEOOption_5</tabstop>
+  <tabstop>LEOOption_6</tabstop>
+  <tabstop>LEOOption_7</tabstop>
+  <tabstop>LEOOption_8</tabstop>
+  <tabstop>LEOValue_6</tabstop>
+  <tabstop>LEOValue_7</tabstop>
+  <tabstop>LEOValue_8</tabstop>
+  <tabstop>LEOUnit_5</tabstop>
+  <tabstop>LEOUnit_6</tabstop>
+  <tabstop>LEOUnit_7</tabstop>
+  <tabstop>LEOUnit_8</tabstop>
+  <tabstop>LEHvYield_2</tabstop>
+  <tabstop>PBHvAddFile_2</tabstop>
+  <tabstop>CBHvCrop_2</tabstop>
+  <tabstop>LEHvOther_2</tabstop>
+  <tabstop>DEHarvest_2</tabstop>
+  <tabstop>CBHvField_2</tabstop>
+  <tabstop>LEHvTotalYield_2</tabstop>
+  <tabstop>PBHvSaveManual_2</tabstop>
+  <tabstop>CBHvFileType_2</tabstop>
+  <tabstop>LEPloOther_2</tabstop>
+  <tabstop>DEPlowing_2</tabstop>
+  <tabstop>CBPloField_2</tabstop>
+  <tabstop>PBPloSaveManual_2</tabstop>
+  <tabstop>LEPloDepth_2</tabstop>
+  <tabstop>LEHwOther_2</tabstop>
+  <tabstop>CBHwField_2</tabstop>
+  <tabstop>DEHarowing_2</tabstop>
+  <tabstop>PBHwSaveManual_2</tabstop>
+  <tabstop>LEHwDepth_2</tabstop>
+  <tabstop>LEPOther_10</tabstop>
+  <tabstop>CBIField_2</tabstop>
+  <tabstop>DEIrrigation_2</tabstop>
+  <tabstop>PBAddFieldToDB_10</tabstop>
+  <tabstop>LEPSpacing_9</tabstop>
+  <tabstop>PBOpenRD_2</tabstop>
+  <tabstop>LEPOther_11</tabstop>
+  <tabstop>CBSoField_2</tabstop>
+  <tabstop>DESoil_2</tabstop>
+  <tabstop>CBSoFileType_2</tabstop>
+  <tabstop>PBSoAddFile_2</tabstop>
+  <tabstop>PBSoSaveManual_2</tabstop>
+  <tabstop>LESoPh_2</tabstop>
+  <tabstop>LESoClay_2</tabstop>
+  <tabstop>LESoHumus_2</tabstop>
+  <tabstop>LESoRx_2</tabstop>
+  <tabstop>LWPlantingTable_2</tabstop>
+  <tabstop>LWHarvestTable_2</tabstop>
+  <tabstop>LWSoilTable_2</tabstop>
+  <tabstop>PBUpdateLists_2</tabstop>
+  <tabstop>PBAdd2Canvas_2</tabstop>
+  <tabstop>PBRunAnalyses_2</tabstop>
+  <tabstop>PBEditTables_2</tabstop>
+  <tabstop>LWSprayingTable_2</tabstop>
+  <tabstop>LWFertiTable_2</tabstop>
+  <tabstop>LWOtherTable_2</tabstop>
+  <tabstop>LWWeatherTable_2</tabstop>
+  <tabstop>radioButton_3</tabstop>
+  <tabstop>radioButton_4</tabstop>
+  <tabstop>DEYear_2</tabstop>
+  <tabstop>PBListCropstat_2</tabstop>
+  <tabstop>PBListEOBrowser_2</tabstop>
+  <tabstop>PBListGeoDataFarm_2</tabstop>
+  <tabstop>PBSelectZipFile_2</tabstop>
+  <tabstop>PBUpdateFieldList_2</tabstop>
+  <tabstop>CBFieldList_2</tabstop>
+  <tabstop>LEVal_6</tabstop>
+  <tabstop>LEVal_7</tabstop>
+  <tabstop>LEVal_8</tabstop>
+  <tabstop>LEVal_9</tabstop>
+  <tabstop>LEVal_10</tabstop>
+  <tabstop>PBUpdateGraph_2</tabstop>
+  <tabstop>PBGenerateGuideFile_2</tabstop>
+  <tabstop>RBNdviIndex_2</tabstop>
+  <tabstop>RBMsavi2Index_2</tabstop>
+  <tabstop>CheckBPlanned_2</tabstop>
+  <tabstop>CWPlannedDate_2</tabstop>
+  <tabstop>RBNomalized_2</tabstop>
+  <tabstop>RBEvenly_2</tabstop>
+  <tabstop>LEMinColor_2</tabstop>
+  <tabstop>LEMaxColor_2</tabstop>
+  <tabstop>PBReloadLayer_2</tabstop>
+  <tabstop>mMapLayerComboBox_2</tabstop>
+  <tabstop>LEMaxNbrColor_2</tabstop>
+  <tabstop>PBCreateGuide_2</tabstop>
+  <tabstop>PBMultiEdit_2</tabstop>
+  <tabstop>PBFixRows_2</tabstop>
+  <tabstop>PBReportPerOperation_2</tabstop>
+  <tabstop>RBReportWithDetails_2</tabstop>
+  <tabstop>RBReportWithoutDetails_2</tabstop>
+  <tabstop>PBReportSelectFolder_2</tabstop>
+  <tabstop>PBReportPerField_2</tabstop>
+  <tabstop>PBReportPerCrop_2</tabstop>
+  <tabstop>RBAllYear_2</tabstop>
+  <tabstop>RBSpecYear_2</tabstop>
+  <tabstop>DEReportYear_2</tabstop>
+  <tabstop>CBPlanting_2</tabstop>
+  <tabstop>CBSpraying_2</tabstop>
+  <tabstop>CBFertilizing_2</tabstop>
+  <tabstop>CBHarvest_2</tabstop>
+  <tabstop>CBPlowing_2</tabstop>
+  <tabstop>CBHarrowing_2</tabstop>
+  <tabstop>CBSoil_2</tabstop>
+  <tabstop>CBOther_2</tabstop>
+  <tabstop>CBIrrigation_2</tabstop>
+  <tabstop>CBWeather_2</tabstop>
+  <tabstop>TWPlan_2</tabstop>
+  <tabstop>PBUpdatePlaning_2</tabstop>
+  <tabstop>PBSavePlan_2</tabstop>
+  <tabstop>PBUpdateSummary_2</tabstop>
+  <tabstop>LWPlanSummary_2</tabstop>
+  <tabstop>PBViewPlan_2</tabstop>
+  <tabstop>DEPlanYear_2</tabstop>
  </tabstops>
  <resources/>
  <connections/>
