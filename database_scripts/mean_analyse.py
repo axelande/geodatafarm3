@@ -251,7 +251,6 @@ class Analyze:
         analyse_params = {}
         temp1 = []
         temp2 = []
-        # TODO: Handle None values
         distinct = self.db.get_distinct(tbl, parameter_to_eval, schema)
         for value, count in distinct:
             temp1.append(value)
@@ -271,6 +270,15 @@ class Analyze:
         nbr: int
 
         """
+        if None in analyse_params['distinct_values']:
+            QtWidgets.QLabel('Include No Data:', qbox).move(434, 15)
+            cb_none = QtWidgets.QCheckBox('', qbox)
+            cb_none.move(464, 34)
+            cb_none.setChecked(True)
+            analyse_params['distinct_values'].remove(None)
+            self.layout_dict[col]['None'] = cb_none
+        else:
+            self.layout_dict[col]['None'] = False
         self.layout_dict[col]['type'] = 'checked'
         self.layout_dict[col]['checked'] = []
         self.layout_dict[col]['checked_items'] = []
@@ -311,16 +319,23 @@ class Analyze:
         nbr: int
 
         """
-        QtWidgets.QLabel('Min:', qbox).move(83, 34)
         if None in analyse_params['distinct_values']:
+            QtWidgets.QLabel('Include No Data:', qbox).move(434, 15)
+            cb_none = QtWidgets.QCheckBox('', qbox)
+            cb_none.move(464, 34)
+            cb_none.setChecked(True)
             analyse_params['distinct_values'].remove(None)
+            self.layout_dict[col]['None'] = cb_none
+        else:
+            self.layout_dict[col]['None'] = False
+        QtWidgets.QLabel('Min:', qbox).move(83, 34)
         min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(108, 32)
         org_min = QtWidgets.QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
         org_min.move(112, 15)
         QtWidgets.QLabel('Max:', qbox).move(263, 34)
         max_value = QtWidgets.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
-        max_value.move(288, 32)
+        max_value.move(290, 32)
         org_max = QtWidgets.QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
         org_max.move(292, 15)
         self.layout_dict[col]['type'] = 'max_min'
@@ -584,6 +599,13 @@ class Analyze:
                 table = self.layout_dict[col]['tbl'][tbl_nr]
                 schema = self.layout_dict[col]['schema'][tbl_nr]
                 data_type = self.layout_dict[col]['type']
+                if self.layout_dict[col]['None']:
+                    if self.layout_dict[col]['None'].checkState() == 2:
+                        find_none = True
+                    else:
+                        find_none = False
+                else:
+                    find_none = False
                 ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
                 s_t = '{schema}.{table}'.format(schema=schema, table=table)
                 if s_t not in prefixes.keys():
@@ -600,6 +622,7 @@ class Analyze:
                     investigating_param[ha][s_t] = {}
                     investigating_param[ha][s_t]['prefix'] = prefixes[s_t]
                     investigating_param[ha][s_t]['col'] = col
+                    investigating_param[ha][s_t]['None'] = find_none
                     i_col = col
                     analyse_params = self.get_initial_distinct_values(col,
                                                                       table,
@@ -617,7 +640,9 @@ class Analyze:
                         other_parameters[ha][s_t] = {}
 
                     other_parameters[ha][s_t]['prefix'] = prefixes[s_t]
+
                     other_parameters[ha][s_t][col] = {}
+                    other_parameters[ha][s_t][col]['None'] = find_none
                     if self.layout_dict[col]['type'] == 'max_min':
                         other_parameters[ha][s_t][col]['type'] = 'max_min'
                         other_parameters[ha][s_t][col]['min'] = self.layout_dict[col]['min']
@@ -803,6 +828,8 @@ def sql_query(task, investigating_param, other_parameters, db,
                         for attr in other_parameters[ha][oth_key].items():
                             if attr[0] == 'prefix':
                                 continue
+                            if attr[1]['None']:
+                                sql += '(('
                             if attr[1]['type'] == 'max_min':
                                 sql += """{pre}.{attr} >= {txt} AND
                                 """.format(pre=pre, attr=attr[0], txt=attr[1]['min'])
@@ -811,6 +838,9 @@ def sql_query(task, investigating_param, other_parameters, db,
                             if attr[1]['type'] == 'checked':
                                 sql += """{pre}.{attr} in ({txt}) AND
                                 """.format(pre=pre, attr=attr[0], txt=attr[1]['check_text'])
+                            if attr[1]['None']:
+                                sql = sql[:sql.rfind('AND')] + """) OR {pre}.{attr} is Null) AND 
+                                """.format(pre=pre, attr=attr[0])
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue

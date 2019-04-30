@@ -137,6 +137,8 @@ class CreateLayer:
             distinct_values = []
             distinct_count = []
             for value, count in distinct:
+                if value is None:
+                    continue
                 distinct_values.append(value)
                 distinct_count.append(count)
             if len(distinct_values) > 20:
