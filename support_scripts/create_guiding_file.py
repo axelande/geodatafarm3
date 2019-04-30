@@ -95,7 +95,6 @@ class CreateGuideFile:
             item1 = QTableWidgetItem('{row}'.format(row=row[0]))
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
             self.CGF.TWColumnNames.setItem(i, 0, item1)
-        self.number_of_attr = i
 
     def add_to_param_list(self):
         """Adds the selected columns to the list of fields that should be
