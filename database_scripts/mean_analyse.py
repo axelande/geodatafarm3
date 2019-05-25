@@ -583,7 +583,7 @@ class Analyze:
                 self.add_field.field = None
             except:
                 QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'No coordinates where found, did you mark the field on the canvas?'))
+                'No coordinates were found, did you mark the field on the canvas?'))
                 return
             limiting_polygon = feature.geometry().asWkt()
             self.search_area = limiting_polygon
