@@ -2,6 +2,7 @@ from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
+from ..support_scripts.__init__ import TR
 
 
 class Populate:
@@ -18,7 +19,8 @@ class Populate:
         self.plugin_dir = parent.plugin_dir
         self.dw = parent.dock_widget
         self.db = parent.db
-        self.tr = parent.tr
+        translate = TR('Populate')
+        self.tr = translate.tr
         self.items_in_table = [[None, '', None], [None, '', None], [None, '', None], [None, '', None],
                                [None, '', None], [None, '', None], [None, '', None]]
         self.tables_in_db = [0, 0, 0, 0, 0, 0, 0]

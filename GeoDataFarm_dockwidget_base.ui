@@ -23,6 +23,9 @@
       <height>621</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="English" country="UnitedKingdom"/>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -71,7 +74,7 @@
        <locale language="English" country="UnitedKingdom"/>
       </property>
       <property name="text">
-       <string>Connect to an exicting farm</string>
+       <string>Connect to an exciting farm</string>
       </property>
      </widget>
      <widget class="QLabel" name="LFarmName">
@@ -111,13 +114,13 @@
         <height>131</height>
        </rect>
       </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
       <property name="text">
        <string>Welcome to GeoDataFarm!
-This plugin aims to help farmers, it was orignal built to view and analyse field data.
-Data in terms of log positions from farm equipment, like yield measurment.
-Since it is a complex plugin it is explained at: www.geodatafarm.com
-If you have any questions or suggestions please send me an e-mail
-geodatafarm@gmail.com</string>
+This plugin helps farmers to view and analyze field data. Log positions from farm equipment can be loaded in to the plugin and if yield logs and other data exist can yield variation be analyzed. This is a complex plugin and each step is explained at: www.geodatafarm.com
+If you have questions, experience any errors or have any suggestions do not hesitate send me an e-mail on geodatafarm@gmail.com</string>
       </property>
       <property name="textFormat">
        <enum>Qt::AutoText</enum>
@@ -127,6 +130,9 @@ geodatafarm@gmail.com</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
       <property name="openExternalLinks">
        <bool>true</bool>
@@ -212,9 +218,9 @@ geodatafarm@gmail.com</string>
      <widget class="QPushButton" name="PBAddCrop">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>402</x>
         <y>290</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -225,9 +231,9 @@ geodatafarm@gmail.com</string>
      <widget class="QPushButton" name="PBRemoveCrop">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>402</x>
         <y>330</y>
-        <width>93</width>
+        <width>111</width>
         <height>28</height>
        </rect>
       </property>
@@ -266,9 +272,9 @@ geodatafarm@gmail.com</string>
      <widget class="QLineEdit" name="LECropName">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>400</x>
         <y>260</y>
-        <width>101</width>
+        <width>121</width>
         <height>22</height>
        </rect>
       </property>
@@ -299,14 +305,15 @@ geodatafarm@gmail.com</string>
      <widget class="QPushButton" name="PBWebbpage">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>110</y>
+        <x>790</x>
+        <y>150</y>
         <width>201</width>
-        <height>28</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
-       <string>GeoDataFarms webpage</string>
+       <string>Help can be found at
+GeoDataFarms webpage</string>
       </property>
      </widget>
     </widget>
@@ -2213,7 +2220,7 @@ geodatafarm@gmail.com</string>
          <rect>
           <x>400</x>
           <y>160</y>
-          <width>181</width>
+          <width>231</width>
           <height>23</height>
          </rect>
         </property>
@@ -3060,7 +3067,7 @@ geodatafarm@gmail.com</string>
         <rect>
          <x>10</x>
          <y>0</y>
-         <width>95</width>
+         <width>111</width>
          <height>20</height>
         </rect>
        </property>
@@ -3077,9 +3084,9 @@ geodatafarm@gmail.com</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>140</x>
          <y>0</y>
-         <width>111</width>
+         <width>171</width>
          <height>20</height>
         </rect>
        </property>
@@ -3093,10 +3100,10 @@ geodatafarm@gmail.com</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>150</x>
          <y>40</y>
-         <width>111</width>
-         <height>16</height>
+         <width>151</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="text">
@@ -3109,7 +3116,7 @@ geodatafarm@gmail.com</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>150</x>
          <y>60</y>
          <width>110</width>
          <height>22</height>
@@ -3133,7 +3140,7 @@ geodatafarm@gmail.com</string>
     </widget>
     <widget class="QWidget" name="tab_16">
      <attribute name="title">
-      <string>EU satelitte</string>
+      <string>EU satellite</string>
      </attribute>
      <widget class="QLabel" name="label_22">
       <property name="geometry">
@@ -3194,14 +3201,17 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
      <widget class="QLabel" name="label_31">
       <property name="geometry">
        <rect>
-        <x>490</x>
+        <x>400</x>
         <y>100</y>
-        <width>311</width>
+        <width>401</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>Here is a small guide how to get the correct images:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QPushButton" name="PBListGeoDataFarm">
@@ -3225,7 +3235,7 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
        <rect>
         <x>240</x>
         <y>140</y>
-        <width>111</width>
+        <width>141</width>
         <height>28</height>
        </rect>
       </property>
@@ -3236,10 +3246,10 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
      <widget class="QPushButton" name="PBUpdateFieldList">
       <property name="geometry">
        <rect>
-        <x>102</x>
+        <x>90</x>
         <y>110</y>
-        <width>111</width>
-        <height>28</height>
+        <width>131</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -3249,9 +3259,9 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
      <widget class="QComboBox" name="CBFieldList">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>230</x>
         <y>110</y>
-        <width>131</width>
+        <width>161</width>
         <height>21</height>
        </rect>
       </property>
@@ -3259,8 +3269,8 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
      <widget class="QLabel" name="label_32">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>120</y>
+        <x>10</x>
+        <y>110</y>
         <width>81</width>
         <height>16</height>
        </rect>
@@ -3405,9 +3415,9 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
       </property>
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>130</x>
         <y>370</y>
-        <width>91</width>
+        <width>121</width>
         <height>28</height>
        </rect>
       </property>
@@ -3543,7 +3553,7 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>141</width>
+         <width>211</width>
          <height>17</height>
         </rect>
        </property>
@@ -3562,12 +3572,12 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
         <rect>
          <x>20</x>
          <y>40</y>
-         <width>171</width>
+         <width>211</width>
          <height>21</height>
         </rect>
        </property>
        <property name="text">
-        <string>Evenenly distrubuted intervals</string>
+        <string>Evenly distributed intervals</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -3582,7 +3592,7 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
        <rect>
         <x>20</x>
         <y>255</y>
-        <width>71</width>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -3594,9 +3604,9 @@ of colors:</string>
      <widget class="QLineEdit" name="LEMinColor">
       <property name="geometry">
        <rect>
-        <x>98</x>
+        <x>132</x>
         <y>219</y>
-        <width>195</width>
+        <width>161</width>
         <height>22</height>
        </rect>
       </property>
@@ -3604,9 +3614,9 @@ of colors:</string>
      <widget class="QLineEdit" name="LEMaxColor">
       <property name="geometry">
        <rect>
-        <x>98</x>
+        <x>132</x>
         <y>190</y>
-        <width>195</width>
+        <width>161</width>
         <height>22</height>
        </rect>
       </property>
@@ -3616,7 +3626,7 @@ of colors:</string>
        <rect>
         <x>20</x>
         <y>219</y>
-        <width>59</width>
+        <width>101</width>
         <height>22</height>
        </rect>
       </property>
@@ -3672,9 +3682,9 @@ of colors:</string>
      <widget class="QLineEdit" name="LEMaxNbrColor">
       <property name="geometry">
        <rect>
-        <x>98</x>
+        <x>132</x>
         <y>255</y>
-        <width>195</width>
+        <width>161</width>
         <height>22</height>
        </rect>
       </property>
@@ -3687,7 +3697,7 @@ of colors:</string>
        <rect>
         <x>20</x>
         <y>190</y>
-        <width>62</width>
+        <width>101</width>
         <height>22</height>
        </rect>
       </property>
@@ -3724,27 +3734,28 @@ of colors:</string>
        </rect>
       </property>
       <property name="text">
-       <string>Do you change some of the data of
-the selected layer in the canvas?
-Select the objects with QGIS default selector and click Edit attributes</string>
+       <string>Do you want to change some of the data of the selected layer in the canvas? Select the objects with QGIS default selector and click Edit attributes</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="PBCreateGuide">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>530</x>
         <y>100</y>
-        <width>130</width>
-        <height>23</height>
+        <width>161</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>23</height>
+        <height>31</height>
        </size>
       </property>
       <property name="locale">
@@ -3759,21 +3770,23 @@ Select the objects with QGIS default selector and click Edit attributes</string>
        <rect>
         <x>530</x>
         <y>60</y>
-        <width>261</width>
+        <width>401</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Based on data sets, do you want to
-create a guide file?</string>
+       <string>Based on data sets, do you want to create a guide file?</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="PBMultiEdit">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>530</x>
         <y>270</y>
-        <width>131</width>
+        <width>161</width>
         <height>31</height>
        </rect>
       </property>
@@ -3787,7 +3800,7 @@ create a guide file?</string>
      <widget class="QLabel" name="label_19">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>530</x>
         <y>40</y>
         <width>201</width>
         <height>16</height>
@@ -3825,7 +3838,7 @@ create a guide file?</string>
      <widget class="QLabel" name="label_40">
       <property name="geometry">
        <rect>
-        <x>520</x>
+        <x>530</x>
         <y>320</y>
         <width>201</width>
         <height>16</height>
@@ -3844,18 +3857,21 @@ create a guide file?</string>
      <widget class="QLabel" name="label_41">
       <property name="geometry">
        <rect>
-        <x>520</x>
+        <x>530</x>
         <y>340</y>
         <width>411</width>
         <height>61</height>
        </rect>
       </property>
       <property name="text">
-       <string>This script converts the delaunay triangle polygons automatically 
- generated and convert them into rows.</string>
+       <string>This script converts the delaunay triangle polygons (automatically 
+ generated) into row like polygons.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="PBFixRows">
@@ -3863,7 +3879,7 @@ create a guide file?</string>
        <rect>
         <x>530</x>
         <y>420</y>
-        <width>131</width>
+        <width>161</width>
         <height>31</height>
        </rect>
       </property>
@@ -4002,7 +4018,7 @@ create a guide file?</string>
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>121</width>
+         <width>141</width>
          <height>20</height>
         </rect>
        </property>
@@ -4013,9 +4029,9 @@ create a guide file?</string>
       <widget class="QDateEdit" name="DEReportYear">
        <property name="geometry">
         <rect>
-         <x>120</x>
+         <x>149</x>
          <y>40</y>
-         <width>110</width>
+         <width>81</width>
          <height>22</height>
         </rect>
        </property>
@@ -4314,7 +4330,7 @@ If you are missing a report / something in a report please send a e-mail to geod
        <rect>
         <x>300</x>
         <y>420</y>
-        <width>151</width>
+        <width>211</width>
         <height>28</height>
        </rect>
       </property>
@@ -4327,7 +4343,7 @@ If you are missing a report / something in a report please send a e-mail to geod
        <rect>
         <x>300</x>
         <y>390</y>
-        <width>151</width>
+        <width>211</width>
         <height>28</height>
        </rect>
       </property>
@@ -4350,7 +4366,7 @@ If you are missing a report / something in a report please send a e-mail to geod
        <rect>
         <x>430</x>
         <y>510</y>
-        <width>191</width>
+        <width>211</width>
         <height>28</height>
        </rect>
       </property>
@@ -4555,7 +4571,7 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>DEPlanYear</tabstop>
   <tabstop>PBViewPlan</tabstop>
   <tabstop>PBFixRows</tabstop>
-  </tabstops>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

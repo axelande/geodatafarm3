@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 from ..widgets.table_managment_dialog import TableMgmtDialog
+from ..support_scripts.__init__ import TR
 __author__ = 'Axel Horteborn'
 
 
@@ -13,7 +14,8 @@ class TableManagement:
         self.db = parent.db
         self.dock_widget = parent.dock_widget
         self.parent = parent
-        self.tr = parent.tr
+        translate = TR('TableManagement')
+        self.tr = translate.tr
         # Create the dialog (after translation) and keep reference
         self.TMD = TableMgmtDialog()
         self.tables_in_db = 0

@@ -8,6 +8,7 @@ from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,
                        QgsProcessingContext,
                        QgsMessageLog, Qgis)
 from ..support_scripts.create_layer import CreateLayer
+from ..support_scripts.__init__ import TR
 
 MESSAGE_CATEGORY = 'AlgRunnerTask'
 
@@ -22,7 +23,8 @@ class ImportRaster:
         parent: GeoDataFarm
         """
         self.db = parent.db
-        self.tr = parent.tr
+        translate = TR('ImportRaster')
+        self.tr = translate.tr
         self.tsk_mngr = parent.tsk_mngr
         self.plugin_dir = parent.plugin_dir
         self.date_dialog = date_dialog

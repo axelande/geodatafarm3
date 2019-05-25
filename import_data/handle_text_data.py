@@ -12,7 +12,8 @@ from datetime import datetime
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
-from ..support_scripts.__init__ import check_text, isfloat, isint, check_date_format
+from ..support_scripts.__init__ import (TR, check_text, isfloat, isint,
+                                        check_date_format)
 from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
@@ -37,15 +38,15 @@ class InputTextHandler(object):
         # Create the dialog (after translation) and keep reference
         self.ITD = ImportTextDialog()
         self.dock_widget = parent_widget.dock_widget
-        self.tr = parent_widget.tr
+        translate = TR('InputTextHandler')
+        self.tr = translate.tr
         self.plugin_dir = parent_widget.plugin_dir
         self.iface = parent_widget.iface
         self.populate = parent_widget.populate
         self.db = parent_widget.db
         self.parent_widget = parent_widget
         self.tsk_mngr = parent_widget.tsk_mngr
-        self.mff = ManualFromFile(parent_widget.db, parent_widget.tr, self.ITD,
-                                  columns)
+        self.mff = ManualFromFile(parent_widget.db, self.ITD, columns)
         self.rb_pressed = False
         self.fields_to_db = False
         self.combo = None

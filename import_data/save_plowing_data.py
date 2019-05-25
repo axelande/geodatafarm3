@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
+from ..support_scripts.__init__ import TR
 
 
 class SavePlowing:
@@ -11,7 +12,8 @@ class SavePlowing:
         parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
-        self.tr = parent.tr
+        translate = TR('SavePlowing')
+        self.tr = translate.tr
         self.parent = parent
 
     def set_widget_connections(self):

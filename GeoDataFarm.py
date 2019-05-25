@@ -88,7 +88,7 @@ from .support_scripts.create_guiding_file import CreateGuideFile
 from .support_scripts.generate_reports import RapportGen
 from .support_scripts.add_field import AddField
 from .support_scripts.multiedit import MultiEdit
-from .support_scripts.__init__ import isint
+from .support_scripts.__init__ import isint, TR
 from .support_scripts.populate_lists import Populate
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.fix_rows import RowFixer
@@ -112,7 +112,8 @@ class GeoDataFarm:
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
-
+        translate = TR()
+        self.tr = translate.tr
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -156,21 +157,6 @@ class GeoDataFarm:
         self.report_generator = None
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
-        We implement this ourselves since we do not inherit QObject.
-
-        Parameters
-        ----------
-        message: str, String for translation.
-
-        Returns
-        -------
-        QString
-            Translated version of message.
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('GeoDataFarm', message)
 
     def add_action(self, icon_path, text, callback, enabled_flag=True,
                    add_to_menu=True, add_to_toolbar=True, status_tip=None,
@@ -366,10 +352,10 @@ class GeoDataFarm:
 
     def get_database_connection(self):
         """Connects to the database and create the db object"""
-        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
+        self.db = DB(self.dock_widget, path=self.plugin_dir)
         connected = self.db.get_conn()
         if not connected:
-            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of improvments or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
+            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
 
@@ -386,7 +372,7 @@ class GeoDataFarm:
             self.db.execute_sql(sql)
         except IntegrityError:
             QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Crop name all ready exist, please select a new name'))
+                                    self.tr('Crop name already exist, please select a new name'))
             return
         _name = QApplication.translate("qadashboard", crop_name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWCrops)

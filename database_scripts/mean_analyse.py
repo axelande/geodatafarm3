@@ -10,7 +10,7 @@ import time
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from ..widgets.run_analyse import RunAnalyseDialog
-from ..support_scripts.__init__ import isfloat, isint
+from ..support_scripts.__init__ import isfloat, isint, TR
 from ..support_scripts.add_field import AddField
 
 __author__ = 'Axel Horteborn'
@@ -34,7 +34,8 @@ class Analyze:
         self.dlg = RunAnalyseDialog()
         self.db = parent_widget.db
         self.tsk_mngr = parent_widget.tsk_mngr
-        self.tr = parent_widget.tr
+        translate = TR('Analyze')
+        self.tr = translate.tr
         self.iface = parent_widget.iface
         self.harvest_tables = {}
         self.plant_tables = {}

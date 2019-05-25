@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox
 import requests
 import hashlib
-from ..support_scripts.__init__ import check_text
+from ..support_scripts.__init__ import check_text, TR
 from .db import DB
 #from ..GeoDataFarm import GeoDataFarm
 __author__ = 'Axel Horteborn'
@@ -27,7 +27,8 @@ class CreateFarm:
             self.CF = ConnectFarmPopup()
             self.CF.PBConnectExisting.clicked.connect(self.connect_to_source)
         self.parent_widget = parent_widget
-        self.tr = parent_widget.tr
+        translate = TR('CreateFarm')
+        self.tr = translate.tr
         self.plugin_dir = parent_widget.plugin_dir
         self.dock_widget = parent_widget.dock_widget
         self.db = None
@@ -80,11 +81,11 @@ class CreateFarm:
         r = r.text.split(',')
         if r[0] == 'false':
             QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('Farm name allready taken, please choose another name for your farm!'))
+                                    self.tr('Farm name already taken, please choose another name for your farm!'))
             return
         elif r[1] == ' false':
             QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('User name allready taken, please choose another name as user name!'))
+                                    self.tr('User name already taken, please choose another name as user name!'))
             return
         else:
             insertion_ok = True
@@ -142,7 +143,7 @@ class CreateFarm:
 
     def _connect_to_db(self):
         """Simple function to connect to the new database"""
-        self.db = DB(self.dock_widget, path=self.plugin_dir, tr=self.tr)
+        self.db = DB(self.dock_widget, path=self.plugin_dir)
         connected = self.db.get_conn()
 
     def create_spec_functions(self):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TableMgmtDialogBase</class>
- <widget class="QDialog" name="TableMgmtDialogBase">
+ <class>TableMgmtDialog</class>
+ <widget class="QDialog" name="TableMgmtDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +37,7 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>101</width>
+     <width>191</width>
      <height>16</height>
     </rect>
    </property>
@@ -84,7 +84,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>290</y>
+     <y>310</y>
      <width>191</width>
      <height>23</height>
     </rect>
@@ -114,18 +114,21 @@
     <rect>
      <x>20</x>
      <y>270</y>
-     <width>361</width>
-     <height>16</height>
+     <width>501</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>*To rename any dataset or parameter make sure that only one is selected</string>
    </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QLineEdit" name="LEName">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>420</x>
      <y>340</y>
      <width>113</width>
      <height>20</height>
@@ -135,7 +138,7 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>340</x>
      <y>340</y>
      <width>71</width>
      <height>16</height>
@@ -168,7 +171,7 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>290</y>
+     <y>310</y>
      <width>191</width>
      <height>23</height>
     </rect>
@@ -216,7 +219,7 @@
     <rect>
      <x>180</x>
      <y>340</y>
-     <width>121</width>
+     <width>151</width>
      <height>20</height>
     </rect>
    </property>
@@ -265,7 +268,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>TableMgmtDialogBase</receiver>
+   <receiver>TableMgmtDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -281,7 +284,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>TableMgmtDialogBase</receiver>
+   <receiver>TableMgmtDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

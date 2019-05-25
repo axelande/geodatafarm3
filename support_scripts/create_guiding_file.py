@@ -7,8 +7,8 @@ from operator import xor
 from osgeo import osr, ogr
 from psycopg2 import ProgrammingError
 from ..widgets.create_guide_file import CreateGuideFileDialog
-from ..database_scripts.db import DB
 from ..support_scripts.create_layer import CreateLayer
+from ..support_scripts.__init__ import TR
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
@@ -25,7 +25,8 @@ class CreateGuideFile:
         self.plugin_dir = parent_widget.plugin_dir
         self.CGF = CreateGuideFileDialog()
         self.grid_layer = None
-        self.tr = parent_widget.tr
+        translate = TR('CreateGuideFile')
+        self.tr = translate.tr
         self.dock_widget = parent_widget.dock_widget
         self.db = parent_widget.db
         self.tables_in_tw_cb = 0

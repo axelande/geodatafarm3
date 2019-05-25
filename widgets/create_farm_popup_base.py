@@ -92,5 +92,5 @@ class Ui_ImportInputDialogBase(object):
         self.label_14.setText(_translate("ImportInputDialogBase", "(e-mail is only used to recover database)", None))
         self.label_9.setText(_translate("ImportInputDialogBase", "Create a new farm database", None))
         self.pButInsertDataIntoDB_2.setText(_translate("ImportInputDialogBase", "Connect to \n"
-"excisting database", None))
+"existing database", None))
 

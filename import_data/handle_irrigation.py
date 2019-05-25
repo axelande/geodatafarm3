@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMessageBox
 # Import the code for the dialog
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
-from ..support_scripts.__init__ import check_text
+from ..support_scripts.__init__ import check_text, TR
 __author__ = 'Axel Horteborn'
 
 
@@ -11,7 +11,8 @@ class IrrigationHandler:
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
         self.db = parent_widget.db
-        self.tr = parent_widget.tr
+        translate = TR('IrrigationHandler')
+        self.tr = translate.tr
         self.col_types = None
         self.add_to_Param_row_count = 0
         self.params_to_evaluate = []

@@ -1,5 +1,27 @@
 from string import ascii_letters, digits as str_digits
 from datetime import datetime
+from PyQt5.QtCore import QCoreApplication
+
+
+class TR:
+    def __init__(self, class_name='GeoDataFarm'):
+        self.class_name =class_name
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+        We implement this ourselves since we do not inherit QObject.
+
+        Parameters
+        ----------
+        message: str, String for translation.
+
+        Returns
+        -------
+        QString
+            Translated version of message.
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QCoreApplication.translate(self.class_name, message)
 
 
 def check_text(text):

@@ -3,6 +3,7 @@ from ..import_data.handle_raster import ImportRaster
 from ..import_data.handle_input_shp_data import InputShpHandler
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
+from ..support_scripts.__init__ import TR
 
 
 class SaveSoil:
@@ -14,7 +15,8 @@ class SaveSoil:
         parent: GeoDataFarm
         """
         self.dw = parent.dock_widget
-        self.tr = parent.tr
+        translate = TR('SaveSoil')
+        self.tr = translate.tr
         self.parent = parent
 
     def set_widget_connections(self):

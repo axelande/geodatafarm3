@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMessageBox
 from qgis.core import QgsTask
 import traceback
 from ..widgets.fix_rows import FixRowsDialog
+from ..support_scripts.__init__ import TR
 
 
 class RowFixer:
@@ -17,7 +18,8 @@ class RowFixer:
         self: initiate_update
         """
         self.FRD = FixRowsDialog()
-        self.tr = parent.tr
+        translate = TR('RowFixer')
+        self.tr = translate.tr
         self.db = parent.db
         self.tsk_mngr = parent.tsk_mngr
         self.fill_cb()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportInputDialogBase</class>
- <widget class="QDialog" name="ImportInputDialogBase">
+ <class>CreateFarmDialog</class>
+ <widget class="QDialog" name="CreateFarmDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -170,7 +170,7 @@
     <rect>
      <x>40</x>
      <y>0</y>
-     <width>151</width>
+     <width>191</width>
      <height>16</height>
     </rect>
    </property>
@@ -197,7 +197,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>ImportInputDialogBase</receiver>
+   <receiver>CreateFarmDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -213,7 +213,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>ImportInputDialogBase</receiver>
+   <receiver>CreateFarmDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

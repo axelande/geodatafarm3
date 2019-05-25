@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportTextDialogBase</class>
- <widget class="QDialog" name="ImportTextDialogBase">
+ <class>ImportTextDialogo</class>
+ <widget class="QDialog" name="ImportTextDialogo">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -776,7 +776,7 @@ following column</string>
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>ImportTextDialogBase</receiver>
+   <receiver>ImportTextDialogo</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -792,7 +792,7 @@ following column</string>
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>ImportTextDialogBase</receiver>
+   <receiver>ImportTextDialogo</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

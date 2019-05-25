@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from psycopg2 import IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
+from ..support_scripts.__init__ import TR
 import traceback
 import time
 #import pydevd
@@ -67,7 +68,8 @@ class AddField:
         self.iface = parent_widget.iface
         self.tsk_mngr = parent_widget.tsk_mngr
         self.db = parent_widget.db
-        self.tr = parent_widget.tr
+        translate = TR('AddField')
+        self.tr = translate.tr
         self.dock_widget = parent_widget.dock_widget
         self.parent = parent_widget
         self.AFD = AddFieldFileDialog()
@@ -201,7 +203,7 @@ class AddField:
             QgsProject.instance().removeMapLayers([self.field.id()])
         except:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'No coordinates where found, did you mark the field on the canvas?'))
+                'No coordinates were found, did you mark the field on the canvas?'))
             return
         polygon = feature.geometry().asWkt()
         name = self.AFD.LEFieldName.text()
@@ -215,7 +217,7 @@ class AddField:
             self.db.execute_sql(sql)
         except IntegrityError:
             QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Field name all ready exist, please select a new name'))
+                                    self.tr('Field name already exist, please select a new name'))
             return
         except InternalError as e:
             QMessageBox.information(None, self.tr('Error:'),

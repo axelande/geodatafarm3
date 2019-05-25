@@ -8,7 +8,7 @@ from qgis.core import QgsMapLayer
 from os import R_OK
 import sys
 from ..widgets.multiedit_dialog import MultiEditDialog
-
+from ..support_scripts.__init__ import TR
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/forms")
 
 
@@ -19,7 +19,8 @@ class MultiEdit:
     def __init__(self, parent):
         """Initiate the plugin and calls on do_checks"""
         self.MED = MultiEditDialog()
-        self.tr = parent.tr
+        translate = TR('MultiEdit')
+        self.tr = translate.tr
         self.iface = parent.iface
         self.db = parent.db
         self.layer = self.iface.mapCanvas().currentLayer()

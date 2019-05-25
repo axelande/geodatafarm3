@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportInputDialogBase</class>
- <widget class="QDialog" name="ImportInputDialogBase">
+ <class>ImportShpDialog</class>
+ <widget class="QDialog" name="ImportShpDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +37,7 @@
     <rect>
      <x>11</x>
      <y>10</y>
-     <width>101</width>
+     <width>141</width>
      <height>23</height>
     </rect>
    </property>
@@ -197,9 +197,9 @@
   <widget class="QComboBox" name="CBField">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>10</y>
-     <width>277</width>
+     <width>261</width>
      <height>22</height>
     </rect>
    </property>
@@ -215,9 +215,9 @@
   <widget class="QComboBox" name="CBCrop">
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>436</x>
      <y>10</y>
-     <width>277</width>
+     <width>271</width>
      <height>22</height>
     </rect>
    </property>
@@ -417,7 +417,7 @@ following column</string>
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>ImportInputDialogBase</receiver>
+   <receiver>ImportShpDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -433,7 +433,7 @@ following column</string>
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>ImportInputDialogBase</receiver>
+   <receiver>ImportShpDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

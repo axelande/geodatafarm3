@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import QgsTask
 from functools import partial
 import traceback
+from ..support_scripts.__init__ import TR
 width, height = A4
 styles = getSampleStyleSheet()
 styleH = styles['Heading1']
@@ -17,7 +18,7 @@ styleN = styles['Normal']
 
 
 class MyDocTemplate(BaseDocTemplate):
-    def __init__(self, filename, tr, plugin_dir, growing_year, cur_date, **kw):
+    def __init__(self, filename, plugin_dir, growing_year, cur_date, **kw):
         """Generate a basic A4 pdf document
 
         Parameters
@@ -36,7 +37,8 @@ class MyDocTemplate(BaseDocTemplate):
         """
         BaseDocTemplate.__init__(self, filename, **kw)
         self.allowSplitting = 0
-        self.tr = tr
+        translate = TR('MyDocTemplate')
+        self.tr = translate.tr
         self.plugin_dir = plugin_dir
         frame = Frame(self.leftMargin, self.bottomMargin, self.width, self.height - 2 * cm, id='normal')
         template = PageTemplate(id='test', frames=frame, onPage=partial(self.header,
@@ -75,7 +77,8 @@ class RapportGen:
         ----------
         parent: GeoDataFarm
         """
-        self.tr = parent.tr
+        translate = TR('RapportGen')
+        self.tr = translate.tr
         self.db = parent.db
         self.dw = parent.dock_widget
         self.plugin_dir = parent.plugin_dir

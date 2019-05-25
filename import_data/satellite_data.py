@@ -15,7 +15,7 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsExpression, QgsField)
 from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalculator, QgsZonalStatistics
 import processing
-from ..support_scripts import check_text
+from ..support_scripts import check_text, TR
 from ..import_data.handle_input_shp_data import InputShpHandler
 
 
@@ -23,7 +23,8 @@ class SatelliteData:
     def __init__(self, parent):
         self.parent = parent
         self.dlg = parent.dock_widget
-        self.tr = parent.tr
+        translate = TR('SatelliteData')
+        self.tr = translate.tr
         self.path = ''
         self.canvas = None
         self.show_calender = False
@@ -270,7 +271,7 @@ class SatelliteData:
                       g=datetime.date(datetime.today()).isoformat())
         if os.path.isfile(file_name):
             msgBox = QMessageBox()
-            msgBox.setText(self.tr('You have all ready created a guide file for this field today, do you want to replace it?'))
+            msgBox.setText(self.tr('You have already created a guide file for this field today, do you want to replace it?'))
             msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
             msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
             res = msgBox.exec_()
@@ -281,7 +282,7 @@ class SatelliteData:
                     os.remove(file_name[:-3] + ending)
             except PermissionError:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('The file could not automaticlly be removed, please try to do it manually and create the guide file again'))
+                                        self.tr('The file could not automatically be removed, please try to do it manually and create the guide file again'))
                 return
         params = {'INPUT': self.path + "raster_output.tif", 'BAND': 1,
                   'OUTPUT': file_name,

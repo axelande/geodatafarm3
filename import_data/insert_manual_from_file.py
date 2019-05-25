@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import QLabel, QLineEdit, QComboBox, QCheckBox
 from ..support_scripts import check_text
+from ..support_scripts.__init__ import TR
 
 
 class ManualFromFile:
-    def __init__(self, db, tr, widget, spec_columns):
+    def __init__(self, db, widget, spec_columns):
         """Adds Manual data from file
 
         Parameters
@@ -13,7 +14,8 @@ class ManualFromFile:
         widget: QtWidget, must contain following element: CBCrop, GLSpecific
         """
         self.db = db
-        self.tr = tr
+        translate = TR('ManualFromFile')
+        self.tr = translate.tr
         self.manual_values = {}
         self.spec_columns = spec_columns
         self.widget = widget

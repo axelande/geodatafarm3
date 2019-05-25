@@ -3,6 +3,7 @@ import psycopg2.pool
 import psycopg2.extras
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
+from ..support_scripts.__init__ import TR
 __author__ = 'Axel Horteborn'
 
 
@@ -11,12 +12,13 @@ class DBException(Exception):
 
 
 class SomeFailure:
-    def __init__(self, tr):
-        self.tr = tr
+    def __init__(self):
+        translate = TR('SomeFailure')
+        self.tr = translate.tr
 
     def display_failure(self, er):
         QMessageBox.information(None, self.tr('Error'),
-                                self.tr('Some failure occur, pleas send an e-mail to geodatafarm@gmail.com with the following message:\n') + er)
+                                self.tr('Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:\n') + er)
 
 
 class NoConnection:
@@ -29,7 +31,7 @@ class NoConnection:
 
 
 class DB:
-    def __init__(self, dock_widget, path=None, tr=None):
+    def __init__(self, dock_widget, path=None):
         """The widget that is connects to the database
         Parameters
         ----------
@@ -49,7 +51,8 @@ class DB:
         self.dbname = None
         self.dbuser = None
         self.dbpass = None
-        self.tr = tr
+        translate = TR('DB')
+        self.tr = translate.tr
 
     def get_conn(self):
         """A function that checks if the database is created and sets then the
@@ -88,7 +91,7 @@ class DB:
                     )
                 if not pool:
                     QMessageBox.information(None, self.tr('Error'),
-                                            self.tr('Could not make a stable connection to the GeoDataBase server'))
+                                            self.tr('Could not make a stable connection to the GeoDataFarm server'))
                 self.conn = pool.getconn()
                 self.conn.set_isolation_level(0)
                 return True
@@ -396,7 +399,7 @@ ORDER BY table_name""".format(schema=schema)
             cur.execute(sql)
             self.conn.commit()
         except Exception as e:
-            sf = SomeFailure(self.tr)
+            sf = SomeFailure()
             sf.display_failure(e)
         self._close()
 
@@ -423,7 +426,7 @@ ORDER BY table_name""".format(schema=schema)
             cur.execute(sql)
             data = cur.fetchall()
         except Exception as e:
-            sf = SomeFailure(self.tr)
+            sf = SomeFailure()
             sf.display_failure(e)
             data = 'There were an error..'
         self._close()

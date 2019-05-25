@@ -10,7 +10,7 @@ from operator import xor
 # Import the code for the dialog
 from ..widgets.import_shp_dialog import ImportShpDialog
 from ..support_scripts.create_layer import CreateLayer
-from ..support_scripts.__init__ import check_text, check_date_format
+from ..support_scripts.__init__ import check_text, check_date_format, TR
 from ..import_data.insert_manual_from_file import ManualFromFile
 q_info = QMessageBox.information
 
@@ -30,12 +30,12 @@ class InputShpHandler:
         # Create the dialog (after translation) and keep reference
         self.ISD = ImportShpDialog()
         self.db = parent_widget.db
-        self.tr = parent_widget.tr
+        translate = TR('InputShpHandler')
+        self.tr = translate.tr
         self.tsk_mngr = parent_widget.tsk_mngr
         self.dock_widget = parent_widget.dock_widget
         self.populate = parent_widget.populate
-        self.mff = ManualFromFile(parent_widget.db, parent_widget.tr, self.ISD,
-                                  spec_columns)
+        self.mff = ManualFromFile(parent_widget.db, self.ISD, spec_columns)
         self.CreateLayer = CreateLayer(self.db)
         self._q_replace_db_data = parent_widget._q_replace_db_data
         self.schema = schema

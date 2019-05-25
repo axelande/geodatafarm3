@@ -1,6 +1,7 @@
 from datetime import datetime
 from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from ..support_scripts.create_layer import CreateLayer, add_background
+from ..support_scripts.__init__ import TR
 
 
 class PlanAhead:
@@ -8,7 +9,8 @@ class PlanAhead:
     def __init__(self, parent):
         self.parent = parent
         self.db = parent.db
-        self.tr = parent.tr
+        translate = TR('PlanAhead')
+        self.tr = translate.tr
         self.create_layer = CreateLayer(self.db)
 
     def set_widget_connections(self):
