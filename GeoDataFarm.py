@@ -294,9 +294,11 @@ class GeoDataFarm:
                     names.append([schema, item.text()])
         if harvest_file and input_file:
             analyse = Analyze(self, names)
-            analyse.check_consistency()
-            analyse.default_layout()
-            analyse.run()
+            if analyse.check_consistency():
+                analyse.default_layout()
+                analyse.run()
+            else:
+                return
         else:
             QMessageBox.information(None, self.tr("Error:"),
                                     self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))

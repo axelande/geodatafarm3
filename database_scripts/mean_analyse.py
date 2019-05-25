@@ -67,7 +67,6 @@ class Analyze:
     def check_consistency(self):
         """Checks that the harvest tables is intersecting some of the input data
         If the data is an activity does it also check that the year is the same
-        TODO: Check that there are at least one input covering each harvest
         table both with respect to location and time!
         """
         self.fill_dict_tables()
@@ -77,6 +76,7 @@ class Analyze:
             ha_year = self.db.execute_and_return("""select extract(year from date_) from harvest.{tbl} 
                         limit 1""".format(
                 tbl=self.harvest_tables[ha][0]['tbl_name']))[0][0]
+            overlapping_nbr = overlapping
             if len(self.plant_tables) > 0:
                 for ac in self.plant_tables.keys():
                     ac_year = self.db.execute_and_return("""select extract(year from date_) from plant.{tbl} 
@@ -218,6 +218,13 @@ class Analyze:
                                 self.overlapping_tables[overlapping][
                                     'ac'].append(
                                     self.weather_tables[ac][ac_key])
+
+            if overlapping_nbr == overlapping:
+                QMessageBox.information(None, self.tr('Error'),
+                self.tr('All selected harvest table did not have a second '
+                        'table to be analysed against'))
+                return False
+        return True
 
     def fill_dict_tables(self):
         """Fills the dict tables"""
