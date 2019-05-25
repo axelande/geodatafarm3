@@ -190,6 +190,25 @@ class RowFixer:
             and old_t.field_row_id=org.field_row_id
             """.format(s_t=schema_table, max_rows=max_rows, row=row, course=course)
             self.db.execute_sql(sql)
+            sql = """with f_sel as (select new_row_id, st_x(pos), st_y(pos), {course}
+            from {s_t}
+            where new_row_id is not Null),
+            s_sel as (select new_row_id, avg(course) as av_course, min(st_x) as min_x, max(st_x) as max_x, min(st_y) as min_y, max(st_y) as max_y
+            from f_sel 
+            group by new_row_id),
+            northsouth as (select case when ((select av_course from s_sel limit 1) between 45 and 135) or ((select av_course from s_sel limit 1) between 225 and 315) then false
+            else true end as ns),
+            t_sel as (select new_row_id
+            from s_sel, northsouth
+            order by case when ns is true then min_x end asc, case when ns is false then max_y end desc),
+            fo_sel as (select ROW_NUMBER() OVER() as up_nbr, new_row_id
+            from t_sel)
+            update {s_t} u1
+            set new_row_id = up_nbr
+            from fo_sel
+            where u1.new_row_id = fo_sel.new_row_id
+            """.format(s_t=schema_table, course=course)
+            self.db.execute_sql(sql)
             return [True]
         except Exception as e:
             return [False, e, traceback.format_exc()]
