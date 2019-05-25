@@ -26,11 +26,12 @@ class PlanAhead:
         temp = self.db.execute_and_return("""SELECT column_name 
             FROM information_schema.columns
             WHERE table_schema = 'public'
-              AND table_name   = 'fields'""")
+              AND table_name   = 'fields'
+              """)
         for col in temp:
             if col[0][0] == '_':
                 _years += ', ' + col[0]
-        fields = self.db.execute_and_return("select field_name {y} from fields".format(y=_years))
+        fields = self.db.execute_and_return("select field_name {y} from fields order by field_name".format(y=_years))
         year_now = datetime.now().year
         valid_years = []
         for year in _years.split(', ')[1:]:
@@ -66,8 +67,6 @@ class PlanAhead:
                     cell = self.parent.dock_widget.TWPlan.cellWidget(row, col)
                     index = cell.findText(crops[field][year])
                     cell.setCurrentIndex(index)
-                else:
-                    print(crops[field][year])
 
     def update_sum(self):
         """Update the yearly summary for current and last year"""
@@ -84,9 +83,7 @@ class PlanAhead:
         from year1
         full outer join year2 on year2._{y2}=year1._{y1}
         """.format(y1=(year_now - 1), y2=year_now)
-        print(sql)
         data = self.db.execute_and_return(sql)
-        print(data)
         formated_row = []
         for row in data:
             formated_row.append('{name}: {y2} ({y1})'.format(name=row[0], y1=row[1],
@@ -104,18 +101,18 @@ class PlanAhead:
                                     self.tr('No data is available to save.'))
         nbr_cols = table.columnCount()
         for row in range(nbr_rows):
-            row_change = False
             sql = """UPDATE "fields" set """
             for col in range(nbr_cols):
                 item = table.cellWidget(row, col)
                 if item.currentText() != self.tr('Select crop'):
-                    row_change = True
                     col_name = '_' + table.horizontalHeaderItem(col).text()
                     sql += "{c}='{t}', ".format(c=col_name, t=item.currentText())
-            if row_change:
-                row_name = table.verticalHeaderItem(row).text()
-                sql = sql[:-2] + " where field_name='{c}'".format(c=row_name)
-                self.db.execute_sql(sql)
+                else:
+                    col_name = '_' + table.horizontalHeaderItem(col).text()
+                    sql += "{c}=Null, ".format(c=col_name)
+            row_name = table.verticalHeaderItem(row).text()
+            sql = sql[:-2] + " where field_name='{c}'".format(c=row_name)
+            self.db.execute_sql(sql)
 
     def view_year(self):
         """Add a background map to the canvas."""
