@@ -382,6 +382,14 @@ class GeoDataFarm:
         item.setCheckState(QtCore.Qt.Unchecked)
         self.populate.reload_crops()
 
+    def remove_crop_name(self):
+        for i in range(self.dock_widget.LWCrops.count()):
+            item = self.dock_widget.LWCrops.item(i)
+            if item.checkState() == 2:
+                sql = "delete from crops where crop_name = '{n}'".format(n=item.text())
+                self.db.execute_sql(sql)
+        self.populate.reload_crops()
+
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
@@ -432,6 +440,7 @@ class GeoDataFarm:
             self.save_soil = SaveSoil(self)
             self.save_soil.set_widget_connections()
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
+            self.dock_widget.PBRemoveCrop.clicked.connect(self.remove_crop_name)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
