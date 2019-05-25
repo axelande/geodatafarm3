@@ -287,6 +287,8 @@ class Analyze:
             self.layout_dict[col]['None'] = cb_none
         else:
             self.layout_dict[col]['None'] = False
+        if len(analyse_params['distinct_values']) == 0:
+            analyse_params['distinct_values'] = ['None']
         self.layout_dict[col]['type'] = 'checked'
         self.layout_dict[col]['checked'] = []
         self.layout_dict[col]['checked_items'] = []
@@ -336,6 +338,8 @@ class Analyze:
             self.layout_dict[col]['None'] = cb_none
         else:
             self.layout_dict[col]['None'] = False
+        if len(analyse_params['distinct_values']) == 0:
+            analyse_params['distinct_values'] = [0, 1]
         QtWidgets.QLabel('Min:', qbox).move(83, 34)
         min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(108, 32)
