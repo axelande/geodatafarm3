@@ -488,6 +488,10 @@ class Analyze:
                     if isinstance(analyse_params['distinct_values'][0], str):
                         self._set_checkbox_layout(qbox, analyse_params,
                                                   table['index_col'], nbr)
+                    elif (len(analyse_params['distinct_values']) == 1 and
+                          analyse_params['distinct_values'][0] is None):
+                        self._set_checkbox_layout(qbox, analyse_params,
+                                                  table['index_col'], nbr)
                     else:
                         self._set_number_layout(qbox, analyse_params,
                                                 table['index_col'], nbr)
