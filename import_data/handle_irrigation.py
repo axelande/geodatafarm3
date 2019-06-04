@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
+from datetime import datetime
 # Import the code for the dialog
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
@@ -66,6 +67,13 @@ class IrrigationHandler:
         Returns
         -------
         """
+        from_date = datetime.strptime(self.IIR.CWFrom.selectedDate().toString("yyyy-MM-dd"), '%Y-%m-%d')
+        to_date = datetime.strptime(self.IIR.CWTo.selectedDate().toString("yyyy-MM-dd"), '%Y-%m-%d')
+        if from_date >= to_date:
+            QMessageBox.information(None, "Error:",
+                                    self.tr(
+                                        'The "to date" must be larger than the "from date"'))
+            return
         if not hasattr(self, 'dancer'):
             self._connect()
         operations = self.dancer.get_operation_data()
@@ -76,15 +84,18 @@ class IrrigationHandler:
         for data in operations:
             if data['finished'] is None:
                 continue
-            finished = """{y}-{mo}-{d} {h}:{mi}:{sec}""".format(y=data['finished']['year'], mo=data['finished']['month'], d=data['finished']['day'], h=data['finished']['hour'], mi=data['finished']['minute'], sec=data['finished']['second'])
-            if finished < '{year}-01-01'.format(year=self.IIR.DECreateYear.text()):
+            finished = """{y}-{mo}-{d}""".format(y=data['finished']['year'], mo=data['finished']['month'], d=data['finished']['day'])
+            fin = datetime.strptime(finished, '%Y-%m-%d')
+            before_start = fin - from_date
+            after_last = to_date - fin
+            if before_start.days < 0:
                 continue
-            if finished > '{year}-01-01'.format(year=int(self.IIR.DECreateYear.text()) + 1):
+            if after_last.days < 0:
                 continue
             line = 'LINESTRING({long1} {lat1}, {long2} {lat2})'.format(long1=data["destination"]["lng"], lat1=data["destination"]["lat"], long2=data["origin"]["lng"], lat2=data["origin"]["lat"])
             sql = """Update weather.irrigation_{year}
             set irrigation_mm = irrigation_mm + {p}
             where st_intersects(polygon, ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),
                                                   30, 'endcap=flat join=round')::geometry)
-            """.format(line=line, p=data["precipitation"], year=self.IIR.DECreateYear.text())#, d=finished)
+            """.format(line=line, p=data["precipitation"], year=finished[:4])
             self.db.execute_sql(sql)
