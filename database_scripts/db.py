@@ -309,6 +309,8 @@ ORDER BY table_name""".format(schema=schema)
         and t.relkind = 'r'
         and t.relname = '{table}'
         and n.nspname in ('{schema}')
+        and attisdropped is False 
+        and attstattarget < 0
         and a.attname not in ({exclude})
         group by t.relname,
         a.attname order by a.attname""".format(table=table, schema=schema,
