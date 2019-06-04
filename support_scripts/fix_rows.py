@@ -190,6 +190,22 @@ class RowFixer:
             and old_t.field_row_id=org.field_row_id
             """.format(s_t=schema_table, max_rows=max_rows, row=row, course=course)
             self.db.execute_sql(sql)
+            sql = """with data as(select field_row_id, pos, new_row_id, lag(pos) OVER(partition BY new_row_id ORDER BY field_row_id ASC) as pos2, lag(field_row_id) OVER(partition BY new_row_id ORDER BY field_row_id ASC) as id2
+            from {s_t})
+            Select new_row_id, field_row_id, st_distance(pos::geography,pos2::geography), id2 
+            from data 
+            where st_distance(pos::geography,pos2::geography) > 35 and new_row_id is not Null""".format(
+                s_t=schema_table)
+            data = self.db.execute_and_return(sql)
+            max_id = self.db.execute_and_return(
+                "select max(new_row_id) from {s_t}".format(s_t=schema_table))[0][0]
+            for row_id, tbl_id, dist, tbl_id2 in data:
+                max_id += 1
+                sql = """Update {s_t}
+                set new_row_id = {nbr}
+                where new_row_id = {r_id} and field_row_id >= {t_id}""".format(
+                    s_t=schema_table, nbr=max_id, r_id=row_id, t_id=tbl_id)
+                self.db.execute_sql(sql)
             sql = """with f_sel as (select new_row_id, st_x(pos), st_y(pos), {course}
             from {s_t}
             where new_row_id is not Null),
