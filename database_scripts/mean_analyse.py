@@ -279,9 +279,9 @@ class Analyze:
 
         """
         if None in analyse_params['distinct_values']:
-            QtWidgets.QLabel('Include No Data:', qbox).move(434, 15)
+            QtWidgets.QLabel('Include No Data:', qbox).move(380, 15)
             cb_none = QtWidgets.QCheckBox('', qbox)
-            cb_none.move(464, 34)
+            cb_none.move(434, 34)
             cb_none.setChecked(True)
             analyse_params['distinct_values'].remove(None)
             self.layout_dict[col]['None'] = cb_none
@@ -330,9 +330,9 @@ class Analyze:
 
         """
         if None in analyse_params['distinct_values']:
-            QtWidgets.QLabel('Include No Data:', qbox).move(434, 15)
+            QtWidgets.QLabel('Include No Data:', qbox).move(380, 15)
             cb_none = QtWidgets.QCheckBox('', qbox)
-            cb_none.move(464, 34)
+            cb_none.move(434, 34)
             cb_none.setChecked(True)
             analyse_params['distinct_values'].remove(None)
             self.layout_dict[col]['None'] = cb_none
@@ -340,14 +340,16 @@ class Analyze:
             self.layout_dict[col]['None'] = False
         if len(analyse_params['distinct_values']) == 0:
             analyse_params['distinct_values'] = [0, 1]
-        QtWidgets.QLabel('Min:', qbox).move(83, 34)
+        QtWidgets.QLabel('Min:', qbox).move(93, 34)
         min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
-        min_value.move(108, 32)
+        min_value.move(118, 32)
+        min_value.setFixedWidth(80)
         org_min = QtWidgets.QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
-        org_min.move(112, 15)
+        org_min.move(120, 15)
         QtWidgets.QLabel('Max:', qbox).move(263, 34)
         max_value = QtWidgets.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
-        max_value.move(290, 32)
+        max_value.move(295, 32)
+        max_value.setFixedWidth(80)
         org_max = QtWidgets.QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
         org_max.move(292, 15)
         self.layout_dict[col]['type'] = 'max_min'

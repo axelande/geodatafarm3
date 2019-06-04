@@ -58,12 +58,12 @@ class ManualFromFile:
             widget.GLSpecific.addWidget(combo, i, 1)
             line = QLineEdit()
             line.setEnabled(False)
-            line.setFixedWidth(110)
+            line.setFixedWidth(220)
             self.manual_values[i]['line_edit'] = line
             widget.GLSpecific.addWidget(line, i, 2)
             check = QCheckBox(text=self.tr('Not Applicable'))
             check.setEnabled(False)
-            check.setFixedWidth(110)
+            check.setFixedWidth(220)
             self.manual_values[i]['checkbox'] = check
             widget.GLSpecific.addWidget(check, i, 3)
 

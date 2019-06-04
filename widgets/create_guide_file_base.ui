@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
-    <height>483</height>
+    <width>861</width>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,420 +16,272 @@
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>
   </property>
-  <widget class="QLabel" name="label_5">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>350</y>
-     <width>91</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Cell size (m):</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
+     <x>10</x>
      <y>10</y>
-     <width>201</width>
-     <height>16</height>
+     <width>841</width>
+     <height>511</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Data source:</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="TEEquation">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>110</y>
-     <width>181</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="plainText">
-    <string>100 +  [0] *2 </string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>380</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>EPSG:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBUpdate">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>190</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Update</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="LMaxVal">
-   <property name="geometry">
-    <rect>
-     <x>440</x>
-     <y>230</y>
-     <width>141</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Max value: Not selected</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEEPSG">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>380</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>4326</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="CBDataType">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>350</y>
-     <width>141</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Integer (1)</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Float (1.234)</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>201</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Attribute:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_7">
-   <property name="geometry">
-    <rect>
-     <x>420</x>
-     <y>60</y>
-     <width>241</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Write your equation here, 
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Data source:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="PBHelp">
+      <property name="text">
+       <string>Help</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QComboBox" name="CBDataSource">
+      <item>
+       <property name="text">
+        <string>-- Select base file --</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="3">
+       <widget class="QPlainTextEdit" name="TEEquation">
+        <property name="plainText">
+         <string>100 +  [0] *2 </string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QPushButton" name="PBUpdate">
+        <property name="text">
+         <string>Update</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLabel" name="LMaxVal">
+        <property name="text">
+         <string>Max value: Not selected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Attribute:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="PBAddParam">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>--&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="PBRemParam">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>&lt;--</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Write your equation here, 
 denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LECellSize">
-   <property name="geometry">
-    <rect>
-     <x>451</x>
-     <y>350</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>25</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="CBDataSource">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>30</y>
-     <width>201</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>-- Select base file --</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QPushButton" name="PBAddParam">
-   <property name="geometry">
-    <rect>
-     <x>181</x>
-     <y>139</y>
-     <width>31</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="locale">
-    <locale language="English" country="UnitedKingdom"/>
-   </property>
-   <property name="text">
-    <string>--&gt;</string>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="TWSelected">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>80</y>
-     <width>141</width>
-     <height>221</height>
-    </rect>
-   </property>
-   <property name="locale">
-    <locale language="English" country="UnitedKingdom"/>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="TWColumnNames">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>80</y>
-     <width>161</width>
-     <height>221</height>
-    </rect>
-   </property>
-   <property name="locale">
-    <locale language="English" country="UnitedKingdom"/>
-   </property>
-   <property name="editTriggers">
-    <set>QAbstractItemView::AnyKeyPressed</set>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBRemParam">
-   <property name="geometry">
-    <rect>
-     <x>181</x>
-     <y>189</y>
-     <width>31</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="locale">
-    <locale language="English" country="UnitedKingdom"/>
-   </property>
-   <property name="text">
-    <string>&lt;--</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>310</y>
-     <width>651</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>330</y>
-     <width>201</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Store to a file:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_12">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>350</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Data type:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="LMinVal">
-   <property name="geometry">
-    <rect>
-     <x>440</x>
-     <y>250</y>
-     <width>141</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Min value: Not selected</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEAttrName">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>380</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Setting_distance</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_6">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>380</y>
-     <width>101</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>New attr name:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBSelectOutput">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>440</y>
-     <width>111</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Select Outputpath</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBCreateFile">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>440</y>
-     <width>111</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Create Guide File</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="LOutputPath">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>440</y>
-     <width>141</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Path not selected</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_13">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>410</y>
-     <width>71</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>File name</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LEFileName">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>410</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>guide_file</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_14">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>410</y>
-     <width>101</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Rotation: (deg):</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="LERotation">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>410</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="PBHelp">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>10</y>
-     <width>93</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Help</string>
-   </property>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="LMinVal">
+        <property name="text">
+         <string>Min value: Not selected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" rowspan="4">
+       <widget class="QTableWidget" name="TWSelected">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="4">
+       <widget class="QTableWidget" name="TWColumnNames">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::AnyKeyPressed</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Store to a file:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Rotation: (deg):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>EPSG:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>File name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="CBDataType">
+        <item>
+         <property name="text">
+          <string>Integer (1)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Float (1.234)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Cell size (m):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="LEAttrName">
+        <property name="text">
+         <string>Setting_distance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLineEdit" name="LERotation">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Data type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="LECellSize">
+        <property name="text">
+         <string>25</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="LEFileName">
+        <property name="text">
+         <string>guide_file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="LEEPSG">
+        <property name="text">
+         <string>4326</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>New attr name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="PBSelectOutput">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Select Outputpath</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="LOutputPath">
+        <property name="text">
+         <string>Path not selected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QPushButton" name="PBCreateFile">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Create Guide File</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
