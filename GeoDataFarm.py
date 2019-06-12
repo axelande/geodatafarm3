@@ -274,16 +274,15 @@ class GeoDataFarm:
 
     def run_analyse(self):
         """Gathers the parameters and start the analyse dialog"""
-        # TODO: Check that the lw are updated..
         names = []
-        schemas = []
         harvest_file = False
         input_file = False
         self.items_in_table = self.populate.get_items_in_table()
         self.lw_list = self.populate.get_lw_list()
         for i, (lw, schema) in enumerate(self.lw_list):
             for item in self.items_in_table[i][0]:
-                if item.checkState() == 2:
+                if (item.checkState() == 2 and
+                        self.db.check_table_exists(item.text(), schema, False)):
                     if schema == 'harvest':
                         harvest_file = True
                     if schema == 'plant' or schema == 'soil' or schema == 'spray' or schema == 'ferti' or schema == 'weather':
@@ -367,9 +366,9 @@ class GeoDataFarm:
             return
         sql = """Insert into crops (crop_name) 
                 VALUES ('{name}')""".format(name=crop_name)
-        try:
-            self.db.execute_sql(sql)
-        except IntegrityError:
+        r_value = self.db.execute_sql(sql, return_failure=True)
+        if r_value is IntegrityError:
+
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('Crop name already exist, please select a new name'))
             return

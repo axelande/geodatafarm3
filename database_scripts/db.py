@@ -1,6 +1,8 @@
 import psycopg2
 import psycopg2.pool
 import psycopg2.extras
+import traceback
+import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
 from ..support_scripts.__init__ import TR
@@ -18,7 +20,7 @@ class SomeFailure:
 
     def display_failure(self, er):
         QMessageBox.information(None, self.tr('Error'),
-                                self.tr('Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:\n') + er)
+                                self.tr('Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:\n') + str(er))
 
 
 class NoConnection:
@@ -150,7 +152,7 @@ class DB:
                                     str(uri.uri()))
         return vlayer
 
-    def check_table_exists(self, table_name, schema):
+    def check_table_exists(self, table_name, schema, ask_replace=True):
         """Checks if a table already exists, if it exists, the user can choose
         if it wants to reset the table. Returns False the table doesn't exists
         or have been dropped.
@@ -159,6 +161,7 @@ class DB:
         ----------
         table_name: str
         schema: str
+        ask_replace: bool, default True
 
         Returns
         -------
@@ -172,20 +175,23 @@ class DB:
             """.format(tbl=table_name.replace('\'', '\'\''), s=schema)
         res = self.execute_and_return(sql)
         if res[0][0] > 0:
-            qm = QMessageBox()
-            res = qm.question(None, self.tr('Message'),
-                              self.tr(
-                                  "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                              qm.Yes, qm.No)
-            if res == qm.No:
-                return True
+            if ask_replace:
+                qm = QMessageBox()
+                res = qm.question(None, self.tr('Message'),
+                                  self.tr(
+                                      "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                                  qm.Yes, qm.No)
+                if res == qm.No:
+                    return True
+                else:
+                    self.execute_sql("""DROP TABLE {schema}.{tbl};
+                                                       DELETE FROM {schema}.manual
+                                                       WHERE table_ = '{tbl}';
+                                                       """.format(
+                        schema=schema,
+                        tbl=table_name))
             else:
-                self.execute_sql("""DROP TABLE {schema}.{tbl};
-                                                   DELETE FROM {schema}.manual
-                                                   WHERE table_ = '{tbl}';
-                                                   """.format(
-                    schema=schema,
-                    tbl=table_name))
+                return True
         return False
 
     def create_table(self, sql, tbl_name):
@@ -384,12 +390,14 @@ ORDER BY table_name""".format(schema=schema)
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self, sql):
+    def execute_sql(self, sql, return_failure=False):
         """
         Parameters
         ----------
         sql: str
             text string with the sql statement
+        return_failure: bool, optional default False
+            If True returns if failure
         """
         self._connect()
         if self.conn is None:
@@ -401,8 +409,13 @@ ORDER BY table_name""".format(schema=schema)
             cur.execute(sql)
             self.conn.commit()
         except Exception as e:
-            sf = SomeFailure()
-            sf.display_failure(e)
+            if return_failure:
+                type_, value_, traceback_ = sys.exc_info()
+                print(type_, value_, traceback_)
+                return type_
+            else:
+                sf = SomeFailure()
+                sf.display_failure(e)
         self._close()
 
     def execute_and_return(self, sql):
