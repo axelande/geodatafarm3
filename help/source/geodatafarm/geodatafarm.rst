@@ -1,21 +1,13 @@
 geodatafarm package
 ===================
 
-
-Module contents
----------------
-
-.. automodule:: geodatafarm
-
-
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
-   modules
-   geodatafarm.main_file
-   geodatafarm.database_scripts
-   geodatafarm.import_data
-   geodatafarm.support_scripts
+   main_file
+   database_scripts
+   import_data
+   support_scripts

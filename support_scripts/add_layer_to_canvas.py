@@ -10,6 +10,7 @@ class AddLayerToCanvas:
     def __init__(self, parent):
         """The function adds AddToCanvas class on self.dlg
         The function populate_widget is run with this function.
+
         Parameters
         ----------
         parent: object
@@ -50,16 +51,17 @@ class AddLayerToCanvas:
                 ins += 1
                 self.parameters[ins] = temp_d[key]
 
-    def add_2_canvas(self, parameter):
+    def add_2_canvas(self, data):
         """Adds the parameter to the canvas
+
         Parameters
         ----------
-        parameter: dict
+        data: dict
             A dict containing index_col, tbl_name, schema
         """
-        target_field = parameter['index_col']
-        tbl_name = parameter['tbl_name']
-        schema = parameter['schema']
+        target_field = data['index_col']
+        tbl_name = data['tbl_name']
+        schema = data['schema']
         if schema == 'harvest':
             layer = self.parent.db.add_postgis_layer(tbl_name.lower(),
                                                    geom_col='pos', schema='harvest',
