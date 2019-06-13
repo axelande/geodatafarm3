@@ -458,11 +458,8 @@ ORDER BY table_name""".format(schema=schema)
         """
         self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_schema_name))
         try:
-            # TODO Check that this is ok
             schema = tbl_schema_name.split('.')[0]
             tbl = tbl_schema_name.split('.')[1]
-            field = tbl.split('_')[0]
-            date = 'c_' + tbl.split('_')[-3] + '-' + tbl.split('_')[-2] + '-' + tbl.split('_')[-1]
             sql = "DELETE FROM {s}.manual WHERE table_='{tbl}'".format(s=schema, tbl=tbl)
             self.execute_sql(sql)
         except:
