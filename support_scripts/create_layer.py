@@ -5,6 +5,7 @@ from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsVectorLayerSimpleLabeling, QgsRasterLayer, QgsCoordinateReferenceSystem, \
     QgsRectangle
 from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtWidgets import QMessageBox
 import numpy as np
 import matplotlib.pyplot as plt
 from ..support_scripts.RG import rg
@@ -86,7 +87,7 @@ def add_background():
 
 
 def hist_edges_equal(x, nbin):
-    """Histogram with equal number of points in each bin
+    """Histogram with equal number of points in each bin, inspired by:
      https://stackoverflow.com/questions/39418380/histogram-with-equal-number-of-points-in-each-bin
 
     Parameters
@@ -128,9 +129,10 @@ class CreateLayer:
         max_v: float
         steps: int
         """
+        str_values = False
         if min_v is not None and max_v is not None:
             distinct_values = list(np.arange(min_v, max_v, steps))
-        else:
+        elif not str_values:
             distinct = self.db.get_distinct(tbl_name, field, schema)
             if len(distinct) == 1:
                 return
@@ -149,9 +151,10 @@ class CreateLayer:
                 if temp_list[-1] != distinct_values[-1]:
                     temp_list.append(distinct_values[-1])
                 distinct_values = temp_list
+        if isinstance(distinct_values[0], str):
+            str_values = True
         colors = self._create_colors(len(distinct_values))
-        # TODO: fix for str values!
-        if len(distinct_values) > 19:
+        if len(distinct_values) > 19 and not str_values:
             range_list = []
             for i in range(len(distinct_values) - 1):
                 red, green, blue = colors[i]
@@ -310,13 +313,16 @@ class CreateLayer:
         """Applies the new min and max and repaints the layer with new colors"""
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
-        # TODO: AttributeError: 'QgsSingleSymbolRenderer' object has no attribute 'classAttribute'
-        field = layer.renderer().classAttribute()
-        min_user_val = float(self.dock_widget.LEMinColor.text())
-        max_user_val = float(self.dock_widget.LEMaxColor.text())
-        max_nbr_user_val = float(self.dock_widget.LEMaxNbrColor.text())
-        v2_step = int((max_user_val - min_user_val) / max_nbr_user_val)
-        self._apply_symbology_fixed_divisions(layer, field, None, None,
-                                              min_user_val, max_user_val,
-                                              v2_step)
-        layer.triggerRepaint()
+        if layer.renderer().type() == 'graduatedSymbol':
+            field = layer.renderer().classAttribute()
+            min_user_val = float(self.dock_widget.LEMinColor.text())
+            max_user_val = float(self.dock_widget.LEMaxColor.text())
+            max_nbr_user_val = float(self.dock_widget.LEMaxNbrColor.text())
+            v2_step = int((max_user_val - min_user_val) / max_nbr_user_val)
+            self._apply_symbology_fixed_divisions(layer, field, None, None,
+                                                  min_user_val, max_user_val,
+                                                  v2_step)
+            layer.triggerRepaint()
+        else:
+            QMessageBox.information(None, self.tr("Error:"),
+                                    self.tr('Only ranged layers on the map can be altered here.'))

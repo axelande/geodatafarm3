@@ -258,14 +258,13 @@ class GeoDataFarm:
 
     def reload_range(self):
         """Reload the range of the lowest and highest value of the layer"""
-        # TODO: Fix this function!
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
         if layer is not None:
             try:
-                lv = layer.rendererV2().ranges()[0].lowerValue()
-                hv = layer.rendererV2().ranges()[-1].upperValue()
-                nbr_cat = len(layer.rendererV2().ranges())
+                lv = layer.renderer().ranges()[0].lowerValue()
+                hv = layer.renderer().ranges()[-1].upperValue()
+                nbr_cat = len(layer.renderer().ranges())
                 self.dock_widget.LEMinColor.setText(str(lv))
                 self.dock_widget.LEMaxColor.setText(str(hv))
                 self.dock_widget.LEMaxNbrColor.setText(str(nbr_cat))
