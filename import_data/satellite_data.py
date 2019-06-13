@@ -15,6 +15,7 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsExpression, QgsField)
 from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalculator, QgsZonalStatistics
 import processing
+from qgis.core import QgsProcessingException
 from ..support_scripts import check_text, TR
 from ..import_data.handle_input_shp_data import InputShpHandler
 
@@ -264,7 +265,6 @@ class SatelliteData:
     def generate_guide_file(self):
         """Generates the guide file, if CheckBPlanned.isChecked then add_to_db
         is called. Finalising with calling on the cleanup function."""
-        #TODO: check if path is withour strange chars...
         path = self.path[:self.path.index('tmp_files123')]
         file_name = path + 'guide_file_{f}_{g}.shp'.format(
                       f=check_text(self.dlg.CBFieldList.currentText()),
@@ -288,26 +288,32 @@ class SatelliteData:
                   'OUTPUT': file_name,
                   'FIELD': 'indexValue'}
         alg_name = 'gdal:polygonize'
-        processing.run(alg_name, params)
-        vl = QgsVectorLayer(file_name, 'ferti_layert', 'ogr')
-        vl.startEditing()
-        ferti_field = QgsField('Fertilizin', QVariant.Int)
-        vl.dataProvider().addAttributes([ferti_field])
-        vl.updateFields()
-        idx = vl.dataProvider().fieldNameIndex('Fertilizin')
+        try:
+            processing.run(alg_name, params)
+            vl = QgsVectorLayer(file_name, 'ferti_layert', 'ogr')
+            vl.startEditing()
+            ferti_field = QgsField('Fertilizin', QVariant.Int)
+            vl.dataProvider().addAttributes([ferti_field])
+            vl.updateFields()
+            idx = vl.dataProvider().fieldNameIndex('Fertilizin')
 
-        for f in vl.getFeatures():
-            val = f.attributes()[0]
-            if type(val) is not int:
-                break
-            ferti = int(np.interp(val, self.x_values, self.y_values))
-            vl.changeAttributeValue(f.id(), idx, ferti)
-        vl.commitChanges()
-        del vl
-        self.file_name = file_name
-        if self.dlg.CheckBPlanned.isChecked():
-            self.add_to_db()
-        self.cleanup()
+            for f in vl.getFeatures():
+                val = f.attributes()[0]
+                if type(val) is not int:
+                    break
+                ferti = int(np.interp(val, self.x_values, self.y_values))
+                vl.changeAttributeValue(f.id(), idx, ferti)
+            vl.commitChanges()
+            del vl
+            self.file_name = file_name
+            if self.dlg.CheckBPlanned.isChecked():
+                self.add_to_db()
+            self.cleanup()
+        except QgsProcessingException:
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'Currently QGIS does not allow you to have any non English '
+                'character in the directory path or filename'))
+            return
 
     def cleanup(self):
         """Removes the temporary folder (tmp_files123) from the path and
