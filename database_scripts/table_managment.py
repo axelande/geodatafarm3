@@ -23,7 +23,6 @@ class TableManagement:
         self.current_table = None
         self.current_schema = None
         self.params_in_table = None
-        # TODO: check this
         self.items_in_table = []
 
     def run(self):
@@ -40,7 +39,6 @@ class TableManagement:
 
     def merge_tbls(self):
         """Merging two data sets into one."""
-        # TODO: remove all polygons and create new polygons.
         tables_to_merge = []
         new_name = self.TMD.LEName.text()
         new_type = self.TMD.CBDataType.currentText()
