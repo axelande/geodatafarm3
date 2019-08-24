@@ -410,21 +410,24 @@ ORDER BY table_name""".format(schema=schema)
             self.conn.commit()
         except Exception as e:
             if return_failure:
-                type_, value_, traceback_ = sys.exc_info()
-                print(type_, value_, traceback_)
-                return type_
+                error_type, value_, traceback_ = sys.exc_info()
+                return [False, error_type, e]
             else:
                 sf = SomeFailure()
                 sf.display_failure(e)
         self._close()
+        if return_failure:
+            return [True, 'suc']
 
-    def execute_and_return(self, sql):
+    def execute_and_return(self, sql, return_failure=False):
         """Execute and returns an SQL statement
 
         Parameters
         ----------
         sql: str
             text string with the sql statement
+        return_failure: bool
+            if the error should be returned instead of showed to the user
 
         Returns
         -------
@@ -441,8 +444,13 @@ ORDER BY table_name""".format(schema=schema)
             cur.execute(sql)
             data = cur.fetchall()
         except Exception as e:
-            sf = SomeFailure()
-            sf.display_failure(e)
+            if return_failure:
+                error_type, value_, traceback_ = sys.exc_info()
+                self._close()
+                return [False, error_type, e]
+            else:
+                sf = SomeFailure()
+                sf.display_failure(e)
             data = 'There were an error..'
         self._close()
         return data
