@@ -18,6 +18,26 @@ from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
 
+def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, min_yield):
+    if len(row) != len(heading_row) and len(row) < 3:
+        return True
+    try:
+        if float(row[heading_row.index(n_coord)]) < 0.1 or float(
+                row[heading_row.index(e_coord)]) < 0.1:
+            return True
+    except ValueError:
+        return True
+    if yield_col:
+        try:
+            if float(row[heading_row.index(yield_col)]) > max_yield:
+                return True
+            elif float(row[heading_row.index(yield_col)]) < min_yield:
+                return True
+        except ValueError:
+            return True
+    return False
+
+
 class InputTextHandler(object):
     def __init__(self, parent_widget, data_type, columns=None):
         """A widget that enables the possibility to insert data from a text
@@ -491,6 +511,10 @@ def insert_data_to_database(task, db, params):
             yield_row = params['yield_row']
             max_yield = params['max_yield']
             min_yield = params['min_yield']
+        else:
+            yield_row = False
+            max_yield = 1
+            min_yield = 0
         date_row = params['date_row']
         if date_row != '':
             date_format = params['date_format']
@@ -506,6 +530,8 @@ def insert_data_to_database(task, db, params):
         lat_lon_inserted = False
         date_inserted = False
         for i, col_name in enumerate(heading_row):
+            if isint(col_name[0]):
+                col_name = '_' + col_name
             if not lat_lon_inserted and (
                     col_name == longitude_col or col_name == latitude_col):
                 sql += "pos geometry(POINT, 4326),"
@@ -537,7 +563,7 @@ def insert_data_to_database(task, db, params):
         insert_org_sql = inserting_text
         db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
         if task != 'debug':
-            task.setProgress(5)
+            task.setProgress(2)
         count_db_insert = 0
         with open(file_name_with_path, encoding=encoding) as f:
             read_all = f.readlines()
@@ -554,17 +580,10 @@ def insert_data_to_database(task, db, params):
                         heading_row.append(only_char)
                     first_row = False
                     continue
-                elif len(row) != len(heading_row) and len(row) < 3:
-                    some_wrong_len += 1
-                    continue
-                if float(row[heading_row.index(latitude_col)]) < 0.1 or float(
-                        row[heading_row.index(longitude_col)]) < 0.1:
-                    continue
-                if schema == 'harvest':
-                    if float(row[heading_row.index(yield_row)]) > max_yield:
-                        continue
-                    elif float(row[heading_row.index(yield_row)]) < min_yield:
-                        continue
+                if check_row_failed(row, heading_row, latitude_col, longitude_col, yield_row,
+                                    max_yield, min_yield):
+                            some_wrong_len += 1
+                            continue
                 if task != 'debug':
                     task.setProgress(2 + row_count / len(read_all) * 45)
                 date_inserted = False
