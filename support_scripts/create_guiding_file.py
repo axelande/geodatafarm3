@@ -178,13 +178,15 @@ class CreateGuideFile:
         if self.CGF.CBDataType.currentText() == self.tr('Float (1.234)'):
             float_type = True
         sql = "select pos, polygon from {tbl} limit 1".format(tbl=self.selected_table)
-        g = self.db.execute_and_return(sql)
+        try:
+            g = self.db.execute_and_return(sql)
+        except:
+            g = {0: {0: 'Use pos'}}
         if g[0][0] is not None:
             geom1 = geom2 = 'pos'
         elif g[0][1] is not None:
             geom1 = 'polygon'
             geom2 = 'ST_centroid(polygon)'
-
         sql = """WITH grid AS (
       SELECT 
         ROW_NUMBER() OVER () AS grid_id,
