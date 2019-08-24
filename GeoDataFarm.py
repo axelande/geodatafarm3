@@ -17,6 +17,7 @@ it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE.
 ***************************************************************************
 
 """
+# TODO: ensure that no calls to the database within tasks handel errors correctly
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 # Initialize Qt resources from file resources.py
@@ -79,6 +80,7 @@ from .import_data.save_harvest_data import SaveHarvesting
 from .import_data.save_plowing_data import SavePlowing
 from .import_data.save_harrowing_data import SaveHarrowing
 from .import_data.save_soil_data import SaveSoil
+from .import_data.convert_harvest_to_area import ConvertToAreas
 from .database_scripts.table_managment import TableManagement
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
@@ -89,6 +91,7 @@ from .support_scripts.__init__ import isint, TR
 from .support_scripts.populate_lists import Populate
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.fix_rows import RowFixer
+from .import_data.satellite_data import SatelliteData
 
 
 class GeoDataFarm:
@@ -400,6 +403,10 @@ class GeoDataFarm:
     def fix_rows(self):
         RowFixer(self)
 
+    def run_interpolate_harvest(self):
+        cta = ConvertToAreas(self)
+        cta.run()
+
     def set_buttons(self):
         """Since most functions are dependent on that a database connections
         exist the buttons are set when a connection is set. If new connections
@@ -410,7 +417,6 @@ class GeoDataFarm:
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
             self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
             self.save_planting = SavePlanting(self)
-            from .import_data.satellite_data import SatelliteData
             self.satellite_data = SatelliteData(self)
             self.satellite_data.set_widget_connections()
             self.save_planting.set_widget_connections()
@@ -444,6 +450,7 @@ class GeoDataFarm:
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
             self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
+            self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
     def run(self):
         """Run method that loads and starts the plugin"""
