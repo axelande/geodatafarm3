@@ -112,6 +112,12 @@ existing database</string>
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>farm_name</tabstop>
+  <tabstop>user_name</tabstop>
+  <tabstop>pass_word</tabstop>
+  <tabstop>PBConnectExisting</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -1304,7 +1304,7 @@ GeoDataFarms webpage</string>
                 </font>
                </property>
                <property name="text">
-                <string>File input:</string>
+                <string>Row data input:</string>
                </property>
               </widget>
              </item>
@@ -1369,6 +1369,23 @@ GeoDataFarms webpage</string>
               <widget class="QLabel" name="label_58">
                <property name="text">
                 <string>Date:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QPushButton" name="PBHvInterpolateData">
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
+               <property name="text">
+                <string>Import combiner text data</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Import harvest data and interpolate the yield inbetween the data points:</string>
                </property>
               </widget>
              </item>
@@ -3817,6 +3834,63 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>CBWeather</tabstop>
   <tabstop>CBSoil</tabstop>
   <tabstop>PBUpdatePlaning</tabstop>
+  <tabstop>PBAddNewFarm</tabstop>
+  <tabstop>PBConnect2Farm</tabstop>
+  <tabstop>PBViewFields</tabstop>
+  <tabstop>PBAddField</tabstop>
+  <tabstop>PBRemoveField</tabstop>
+  <tabstop>LWFields</tabstop>
+  <tabstop>LECropName</tabstop>
+  <tabstop>PBAddCrop</tabstop>
+  <tabstop>PBRemoveCrop</tabstop>
+  <tabstop>LWCrops</tabstop>
+  <tabstop>PBWebbpage</tabstop>
+  <tabstop>CBFField</tabstop>
+  <tabstop>CBFFileType</tabstop>
+  <tabstop>CBSpFileType</tabstop>
+  <tabstop>DEOther</tabstop>
+  <tabstop>LEOtherName</tabstop>
+  <tabstop>CBOCrop</tabstop>
+  <tabstop>DEHarvest</tabstop>
+  <tabstop>DEPlowing</tabstop>
+  <tabstop>DEHarowing</tabstop>
+  <tabstop>PBOpenRD</tabstop>
+  <tabstop>PBRunAnalyses</tabstop>
+  <tabstop>LEVal_2</tabstop>
+  <tabstop>PBListCropstat</tabstop>
+  <tabstop>PBUpdateFieldList</tabstop>
+  <tabstop>PBListGeoDataFarm</tabstop>
+  <tabstop>LEVal_1</tabstop>
+  <tabstop>CheckBPlanned</tabstop>
+  <tabstop>CWPlannedDate</tabstop>
+  <tabstop>PBListEOBrowser</tabstop>
+  <tabstop>LEVal_3</tabstop>
+  <tabstop>PBSelectZipFile</tabstop>
+  <tabstop>LEVal_5</tabstop>
+  <tabstop>PBGenerateGuideFile</tabstop>
+  <tabstop>PBUpdateGraph</tabstop>
+  <tabstop>CBFieldList</tabstop>
+  <tabstop>mMapLayerComboBox</tabstop>
+  <tabstop>LEMinColor</tabstop>
+  <tabstop>LEMaxNbrColor</tabstop>
+  <tabstop>LEMaxColor</tabstop>
+  <tabstop>PBReloadLayer</tabstop>
+  <tabstop>PBCreateGuide</tabstop>
+  <tabstop>PBMultiEdit</tabstop>
+  <tabstop>PBFixRows</tabstop>
+  <tabstop>PBReportPerField</tabstop>
+  <tabstop>RBReportWithDetails</tabstop>
+  <tabstop>PBReportPerCrop</tabstop>
+  <tabstop>PBReportPerOperation</tabstop>
+  <tabstop>RBReportWithoutDetails</tabstop>
+  <tabstop>PBReportSelectFolder</tabstop>
+  <tabstop>PBSavePlan</tabstop>
+  <tabstop>PBViewPlan</tabstop>
+  <tabstop>PBUpdateSummary</tabstop>
+  <tabstop>LWPlanSummary</tabstop>
+  <tabstop>TWPlan</tabstop>
+  <tabstop>DEPlanYear</tabstop>
+  <tabstop>PBHvInterpolateData</tabstop>
  </tabstops>
  <resources/>
  <connections/>
