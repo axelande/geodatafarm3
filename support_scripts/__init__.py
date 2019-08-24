@@ -120,3 +120,9 @@ def check_date_format(sample, column, format_):
         return [True, sec_data]
     except ValueError:
         return [False]
+
+
+def error_in_sign(sign):
+    if sign in ['+', '-', '*', '/']:
+        return False
+    return True
