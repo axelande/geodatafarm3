@@ -157,18 +157,23 @@ class ManualFromFile:
             VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
                                                                       v=variety, r=rate, d=date_)
         elif data_type == 'harvest':
-            if self.manual_values[0]['checkbox'].isChecked():
-                yield_ = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                yield_ = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+            if 0 in self.manual_values.keys():
+                if self.manual_values[0]['checkbox'].isChecked():
+                    yield_ = 'None'
+                elif self.manual_values[0]['Combo'].currentText() != '':
+                    yield_ = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
+                else:
+                    yield_ = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
+                if self.manual_values[1]['checkbox'].isChecked():
+                    total_yield = 'None'
+                elif self.manual_values[1]['Combo'].currentText() != '':
+                    total_yield = '{t}'.format(
+                        t=check_text(self.manual_values[1]['Combo'].currentText()))
+                else:
+                    total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
             else:
-                yield_ = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                total_yield = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                total_yield = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+                yield_ = 'yield'
+                total_yield = ''
             sql = """insert into harvest.manual(field, crop, table_, date_text, yield, total_yield) 
             VALUES ('{f}', '{c}', '{t}', {d}, '{y}', '{t_y}')""".format(f=field, c=crop, t=table, d=date_,
                                                                         y=yield_, t_y=total_yield)
