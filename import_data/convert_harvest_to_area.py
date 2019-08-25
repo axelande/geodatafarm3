@@ -125,6 +125,7 @@ class ConvertToAreas:
         if self.IIHD.RBOwnSep.isChecked():
             self.sep = self.IIHD.LEOwnSep.text().encode('utf-8')
         self.set_column_list()
+        self.prepare_last_choices()
 
     def set_column_list(self):
         """A function that retrieves the name of the columns from the text file
