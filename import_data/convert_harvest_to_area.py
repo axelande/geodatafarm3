@@ -1,20 +1,16 @@
+import webbrowser
 from qgis.core import QgsTask
 import traceback
-import numpy as np
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, \
-                             QMessageBox)
+from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, QMessageBox)
 import re
 import math
-import time
 from operator import xor, itemgetter
-from datetime import datetime
 # Import the code for the dialog
 from ..widgets.import_interpolate_harvest_dialog import ImportInterpolateHarvestDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
-from ..support_scripts import (TR, check_text, isfloat, isint,
-                             check_date_format, error_in_sign)
+from ..support_scripts import (TR, check_text, isfloat, isint, error_in_sign)
 from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
@@ -38,8 +34,6 @@ def check_row_failed(row, heading_row, param):
     return False
 
 
-#import pydevd
-#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class ConvertToAreas:
     def __init__(self, parent):
         self.db = parent.db
@@ -57,7 +51,7 @@ class ConvertToAreas:
         self.IIHD.show()
         self.IIHD.PBAddInputFile.clicked.connect(self.open_input_file)
         self.IIHD.PBSave.clicked.connect(self.run_import_step1)
-        self.IIHD.PBHelp.clicked.connect(self.help_text)
+        self.IIHD.PBHelp.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/combiner_harvest/'))
         self.IIHD.RBComma.clicked.connect(self.change_sep)
         self.IIHD.RBSemi.clicked.connect(self.change_sep)
         self.IIHD.RBTab.clicked.connect(self.change_sep)
@@ -82,9 +76,6 @@ class ConvertToAreas:
         self.set_sep_radio_but()
         self.set_column_list()
         self.prepare_last_choices()
-
-    def help_text(self):
-        pass
 
     def set_sep_radio_but(self):
         """Sets the radioButton indicating the separator of the file"""
