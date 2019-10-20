@@ -583,6 +583,25 @@ def create_table(db, schema, heading_row, latitude_col, longitude_col, date_row,
     insert_org_sql = inserting_text
     db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
     return inserting_text, insert_org_sql
+
+
+def create_polygons(db, schema, tbl_name, field):
+    sql = """drop table if exists {schema}.temp_tbl2;
+        WITH voronoi_temp2 AS (
+        SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
+        FROM {schema}.{tbl})
+        SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
+        FROM voronoi_temp2;
+        create index temp_index on {schema}.temp_tbl2 Using gist(geom);
+        update {schema}.{tbl}
+        SET polygon = st_multi(ST_Intersection(geom, (select polygon 
+            from fields where field_name = '{field}')))
+        FROM {schema}.temp_tbl2
+        WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
+    db.execute_sql(sql)
+    db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
+
+
 def insert_data_to_database(task, db, params):
     """Walks though the text files and adds data to the database
     Parameters
@@ -721,22 +740,8 @@ def insert_data_to_database(task, db, params):
         if task != 'debug':
             task.setProgress(70)
         if schema != 'harvest':
-            sql = """drop table if exists {schema}.temp_tbl2;
-        WITH voronoi_temp2 AS (
-        SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
-        FROM {schema}.{tbl})
-        SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
-        FROM voronoi_temp2;
-        create index temp_index on {schema}.temp_tbl2 Using gist(geom);
-        update {schema}.{tbl}
-        SET polygon = st_multi(ST_Intersection(geom, (select polygon 
-            from fields where field_name = '{field}')))
-        FROM {schema}.temp_tbl2
-        WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
-            db.execute_sql(sql)
-            db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
-
         db.create_indexes(tbl_name, focus_col, schema)
+            create_polygons(db, schema, tbl_name, field)
         if params['move']:
             suc = move_points(db, params['move_x'], params['move_y'], tbl_name, task)
             if not suc[0]:
