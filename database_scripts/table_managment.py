@@ -33,6 +33,7 @@ class TableManagement:
         self.TMD.pButChangeParam.clicked.connect(self.edit_param_name)
         self.TMD.pButAdd_Param.clicked.connect(self.retrieve_params)
         self.TMD.pButSave.clicked.connect(self.save_table)
+        self.TMD.pButSplitRows.clicked.connect(self.split_rows)
         self.update_table_list()
         self.TMD.show()
         self.TMD.exec_()
@@ -237,3 +238,96 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 model.removeRow(qIndex.row())
                 self.tables_in_db -= 1
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
+
+    def split_rows(self):
+        # TODO: Test if this works :)
+        """Spilts the harvest data on multiple rows."""
+        suc, s_table = self.check_multiple()
+        if not suc:
+            return
+        schema, tbl = s_table.split('.')
+        if schema != 'harvest':
+            QMessageBox(None, self.tr('Error'),
+                        self.tr('This option is only possible for harvest tables'))
+            return
+        nbr_rows = int(self.TMD.CBNbrRows.currentText())
+        spacing = float(self.TMD.SBRowDistance.text().replace(',', '.'))
+        if nbr_rows == 2:
+            move_d = [spacing / 2, spacing]
+        elif nbr_rows == 4:
+            move_d = [spacing + spacing / 2, spacing, spacing * 2, spacing * 3]
+        else:  # nbr_rows == 6
+            move_d = [2 * spacing + spacing / 2, spacing, spacing * 2,
+                      spacing * 3, spacing * 4, spacing * 5]
+        split_yield = self.TMD.CBSplitYield.isChecked()
+        sql = "select min(field_row_id) from harvest.{tbl}".format(tbl=tbl)
+        min_row_id = self.db.execute_and_return(sql)[0][0]
+        sql = "select max(field_row_id) from harvest.{tbl}".format(tbl=tbl)
+        max_row_id = self.db.execute_and_return(sql)[0][0]
+        org_min = min_row_id
+        org_max = max_row_id
+        if min_row_id is None:
+            # If the user choose the wrong field and this part cant be used.
+            return [False, 'Wrong field']
+        for row_nbr in range(nbr_rows):
+            if row_nbr == 0:
+                bearing = 270
+            else:
+                min_row_id, max_row_id = self.duplicate_first_row(org_min, org_max, tbl)
+                bearing = 90
+            distance = move_d[row_nbr]
+            for i in range(min_row_id, max_row_id, 2000):
+                sql = """
+                        WITH first_selected as
+                            (SELECT field_row_id, pos, st_azimuth(pos,
+                                (SELECT pos
+                                FROM {tbl} new
+                                WHERE org.field_row_id+1=new.field_row_id)
+                                ) as bearing
+                            FROM {tbl} org
+                        where org.field_row_id >= {i1} - 3
+                        and org.field_row_id < {i3} + 3
+                        ),
+                        sub_section as(SELECT field_row_id, st_project(pos::geography, 
+                                                                       {dist}, 
+                                                                       (select atan2(avg(sin(bearing)), avg(cos(bearing))) 
+                                                                        from first_selected fs 
+                                                                        where fs.field_row_id > (ss.field_row_id -3) 
+                                                                        and fs.field_row_id < (ss.field_row_id +3)
+                                                                        ) + radians({p_bearing})
+                                                                      )::geometry as new_pos
+                        FROM first_selected ss
+                        )
+                        update {tbl}
+                        set pos=new_pos
+                        from sub_section
+                        where {tbl}.field_row_id = sub_section.field_row_id
+                        and {tbl}.field_row_id >= {i1}
+                        and {tbl}.field_row_id < {i3}""".format(tbl='harvest.' + tbl, i1=i,
+                                                                i2=i + 1,
+                                                                i3=i + 2000, dist=distance,
+                                                                p_bearing=bearing)
+                # print(sql)
+                self.db.execute_sql(sql)
+
+    def duplicate_first_row(self, org_min, org_max, table, schema='harvest'):
+        """Duplicates the original data table and returns the first and last row_id"""
+        sql_max_row = "select max(field_row_id) from {s}.{t}".format(s=schema, t=table)
+        current_max = self.db.execute_and_return(sql_max_row)[0][0]
+        columns_ = self.db.get_all_columns(table, schema)
+        columns = []
+        for row in columns_:
+            columns.append(row[0])
+        c1 = ','.join(columns)
+        c2 = ','.join(columns)
+        c2 = c2.replace('field_row_id', 'ROW_NUMBER() OVER () + {n}'.format(n=current_max+1))
+        sql = """INSERT into {s}.{t}({c1})
+        SELECT {c2}
+        FROM {s}.{t}
+        where field_row_id >= {min_r} AND field_row_id <= {max_r}
+        """.format(s=schema, t=table, min_r=org_min, max_r=org_max, c1=c1, c2=c2)
+        self.db.execute_sql(sql)
+        now_max = self.db.execute_and_return(sql_max_row)[0][0]
+        return current_max + 1, now_max
+
+

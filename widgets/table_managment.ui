@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
-    <height>453</height>
+    <width>801</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,63 +18,29 @@
     <rect>
      <x>13</x>
      <y>11</y>
-     <width>751</width>
-     <height>431</height>
+     <width>781</width>
+     <height>531</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="7" column="0">
+    <item row="1" column="1">
+     <widget class="QPushButton" name="pButAdd_Param">
+      <property name="text">
+       <string>Edit
+--&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" rowspan="2">
+     <widget class="QListWidget" name="SATables"/>
+    </item>
+    <item row="9" column="0">
      <widget class="QPushButton" name="pButRemove">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="text">
        <string>Remove selected datasets</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="3">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>*To rename any dataset or parameter make sure that only one is selected</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Datasets in database</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="pButSave">
-      <property name="text">
-       <string>Save
-&lt;--</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Parameters in dataset that could be analysed:</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="pButChangeTbl">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Change dataset name</string>
       </property>
      </widget>
     </item>
@@ -88,38 +54,48 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="2">
-     <widget class="QDialogButtonBox" name="button_box">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Close</set>
-      </property>
-      <property name="centerButtons">
-       <bool>false</bool>
+    <item row="8" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>New name:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="LEName">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2" rowspan="2">
+     <widget class="QListWidget" name="SAParams">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>250</height>
+       </size>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
-     <widget class="QPushButton" name="pButCombine">
+    <item row="4" column="0">
+     <widget class="QPushButton" name="pButChangeTbl">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>Combine multiple datasets</string>
+       <string>Change dataset name</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pButAdd_Param">
-      <property name="text">
-       <string>Edit
---&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
+    <item row="8" column="1">
      <widget class="QComboBox" name="CBDataType">
       <property name="locale">
        <locale language="English" country="UnitedKingdom"/>
@@ -161,17 +137,97 @@
       </item>
      </widget>
     </item>
-    <item row="6" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_4">
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Parameters in dataset that could be analysed:</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QPushButton" name="pButCombine">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Combine multiple datasets</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" colspan="3">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="3" column="0">
+       <widget class="QPushButton" name="pButSplitRows">
         <property name="text">
-         <string>New name:</string>
+         <string>Split the harvest data</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="LEName"/>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="CBSplitYield">
+        <property name="text">
+         <string>Split the yield to each row</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="CBNbrRows">
+        <item>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Number of rows to split on:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="SBRowDistance">
+        <property name="value">
+         <double>0.800000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Row distance:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Split one harvest data points to multiple rows</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -188,18 +244,56 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" rowspan="2">
-     <widget class="QListWidget" name="SATables"/>
-    </item>
-    <item row="1" column="2" rowspan="2">
-     <widget class="QListWidget" name="SAParams">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>250</height>
-       </size>
+    <item row="9" column="2">
+     <widget class="QDialogButtonBox" name="button_box">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Close</set>
+      </property>
+      <property name="centerButtons">
+       <bool>false</bool>
       </property>
      </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Datasets in database</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="3">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>*To rename any dataset or parameter make sure that only one is selected</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="pButSave">
+      <property name="text">
+       <string>Save
+&lt;--</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
