@@ -543,6 +543,46 @@ def move_points(db, move_x, move_y, tbl_name, task):
         return [False, e]
 
 
+def create_table(db, schema, heading_row, latitude_col, longitude_col, date_row, all_same_date, column_types):
+    inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
+    sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
+        schema=schema)
+    lat_lon_inserted = False
+    date_inserted = False
+    for i, col_name in enumerate(heading_row):
+        if isint(col_name[0]):
+            col_name = '_' + col_name
+        if not lat_lon_inserted and (
+                col_name == longitude_col or col_name == latitude_col):
+            sql += "pos geometry(POINT, 4326),"
+            if schema != 'harvest':
+                sql += " polygon geometry(MULTIPOLYGON, 4326), "
+            inserting_text += 'pos, '
+            lat_lon_inserted = True
+        if lat_lon_inserted and (
+                col_name == longitude_col or col_name == latitude_col):
+            continue
+        if col_name == date_row:
+            sql += "Date_ TIMESTAMP, "
+            inserting_text += 'Date_, '
+            continue
+        elif all_same_date and not date_inserted:
+            sql += "Date_ TIMESTAMP, "
+            inserting_text += 'Date_, '
+            date_inserted = True
+        if column_types[i] == 0:
+            sql += str(col_name) + " INT, "
+        elif column_types[i] == 1:
+            sql += str(col_name) + " REAL, "
+        elif column_types[i] == 2:
+            sql += str(col_name) + " text, "
+        inserting_text += str(col_name) + ', '
+    sql = sql[:-2]
+    sql += ")"
+    inserting_text = inserting_text[:-2] + ') VALUES '
+    insert_org_sql = inserting_text
+    db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+    return inserting_text, insert_org_sql
 def insert_data_to_database(task, db, params):
     """Walks though the text files and adds data to the database
     Parameters
@@ -585,43 +625,7 @@ def insert_data_to_database(task, db, params):
         focus_col = params['focus_col']
         if isint(tbl_name[0]):
             tbl_name = '_' + tbl_name
-        inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
-        sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(schema=schema)
-        lat_lon_inserted = False
-        date_inserted = False
-        for i, col_name in enumerate(heading_row):
-            if isint(col_name[0]):
-                col_name = '_' + col_name
-            if not lat_lon_inserted and (
-                    col_name == longitude_col or col_name == latitude_col):
-                sql += "pos geometry(POINT, 4326),"
-                if schema != 'harvest':
-                    sql += " polygon geometry(MULTIPOLYGON, 4326), "
-                inserting_text += 'pos, '
-                lat_lon_inserted = True
-            if lat_lon_inserted and (
-                    col_name == longitude_col or col_name == latitude_col):
-                continue
-            if col_name == date_row:
-                sql += "Date_ TIMESTAMP, "
-                inserting_text += 'Date_, '
-                continue
-            elif all_same_date and not date_inserted:
-                sql += "Date_ TIMESTAMP, "
-                inserting_text += 'Date_, '
-                date_inserted = True
-            if column_types[i] == 0:
-                sql += str(col_name) + " INT, "
-            elif column_types[i] == 1:
-                sql += str(col_name) + " REAL, "
-            elif column_types[i] == 2:
-                sql += str(col_name) + " text, "
-            inserting_text += str(col_name) + ', '
-        sql = sql[:-2]
-        sql += ")"
-        inserting_text = inserting_text[:-2] + ') VALUES '
-        insert_org_sql = inserting_text
-        db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+        inserting_text, insert_org_sql = create_table(db, schema, params['heading_row'], latitude_col, longitude_col, date_row, all_same_date, column_types)
         if task != 'debug':
             task.setProgress(2)
         count_db_insert = 0
