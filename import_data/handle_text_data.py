@@ -19,26 +19,6 @@ from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
 
-def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, min_yield):
-    if len(row) != len(heading_row) and len(row) < 3:
-        return True
-    try:
-        if float(row[heading_row.index(n_coord)]) < 0.1 or float(
-                row[heading_row.index(e_coord)]) < 0.1:
-            return True
-    except ValueError:
-        return True
-    if yield_col:
-        try:
-            if float(row[heading_row.index(yield_col)]) > max_yield:
-                return True
-            elif float(row[heading_row.index(yield_col)]) < min_yield:
-                return True
-        except ValueError:
-            return True
-    return False
-
-
 class InputTextHandler(object):
     def __init__(self, parent_widget, data_type, columns=None):
         """A widget that enables the possibility to insert data from a text
@@ -484,6 +464,26 @@ class InputTextHandler(object):
         self.ITD.RBTab.clicked.disconnect()
         self.ITD.RBOwnSep.clicked.disconnect()
         self.ITD.done(0)
+
+
+def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, min_yield):
+    if len(row) != len(heading_row) and len(row) < 3:
+        return True
+    try:
+        if float(row[heading_row.index(n_coord)]) < 0.1 or float(
+                row[heading_row.index(e_coord)]) < 0.1:
+            return True
+    except ValueError:
+        return True
+    if yield_col:
+        try:
+            if float(row[heading_row.index(yield_col)]) > max_yield:
+                return True
+            elif float(row[heading_row.index(yield_col)]) < min_yield:
+                return True
+        except ValueError:
+            return True
+    return False
 
 
 def insert_data_to_database(task, db, params):
