@@ -740,8 +740,8 @@ def insert_data_to_database(task, db, params):
         if task != 'debug':
             task.setProgress(70)
         if schema != 'harvest':
-        db.create_indexes(tbl_name, focus_col, schema)
             create_polygons(db, schema, tbl_name, field)
+        db.create_indexes(tbl_name, focus_col, schema, primary_key=False)
         if params['move']:
             suc = move_points(db, params['move_x'], params['move_y'], tbl_name, task)
             if not suc[0]:
