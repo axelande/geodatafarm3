@@ -1,3 +1,4 @@
+import webbrowser
 from qgis.core import QgsTask
 import traceback
 from PyQt5 import QtCore
@@ -87,6 +88,8 @@ class InputTextHandler(object):
         buttons to their function"""
         self.ITD.show()
         self.ITD.PBAddInputFile.clicked.connect(self.open_input_file)
+        self.ITD.PBHelp.clicked.connect(
+            lambda: webbrowser.open('http://www.geodatafarm.com/add_data/'))
         self.ITD.PBAddParam.clicked.connect(self.add_to_param_list)
         self.ITD.PBRemParam.clicked.connect(self.remove_from_param_list)
         self.ITD.PBInsertDataIntoDB.clicked.connect(self.trigger_insection)
