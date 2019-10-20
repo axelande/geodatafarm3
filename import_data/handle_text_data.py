@@ -620,7 +620,6 @@ def insert_data_to_database(task, db, params):
         schema = params['schema']
         tbl_name = params['tbl_name']
         column_types = params['column_types']
-        heading_row = params['heading_row']
         encoding = params['encoding']
         file_name_with_path = params['file_name_with_path']
         field = params['field']
@@ -639,7 +638,6 @@ def insert_data_to_database(task, db, params):
             date_format = params['date_format']
         all_same_date = params['all_same_date']
         sep = params['sep']
-        tr = params['tr']
         epsg = params['epsg']
         focus_col = params['focus_col']
         if isint(tbl_name[0]):
@@ -728,7 +726,7 @@ def insert_data_to_database(task, db, params):
         from {schema}.temp_table
         where st_intersects(pos, (select polygon 
         from fields where field_name = '{field}'))
-        """.format(schema=schema, tbl=tbl_name,field=field)
+        """.format(schema=schema, tbl=tbl_name, field=field)
         time.sleep(0.1)
         if task != 'debug':
             task.setProgress(50)
