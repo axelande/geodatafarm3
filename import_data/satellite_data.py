@@ -99,7 +99,9 @@ class SatelliteData:
                 'Either is raster band 4 or 8 missing from the ZIP file.'))
             return
         self.do_base_calculation(band4, band8)
-        self.update_texts()
+        if not self.update_texts():
+            self.cleanup()
+            return
         self.dlg.PBUpdateGraph.setEnabled(True)
         self.dlg.PBGenerateGuideFile.setEnabled(True)
         self.update_graph()
@@ -188,6 +190,10 @@ class SatelliteData:
         rarray = np.array(ds.GetRasterBand(1).ReadAsArray())
         rarray = rarray[~np.isnan(rarray)]
         rarray = rarray[0.01 < rarray]
+        if len(rarray) == 0:
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'There is no data in that file, is the day cloud free?'))
+            return False
         min_value = round(float(rarray.min()))
         max_value = round(float(rarray.max()))
         interval = (max_value - min_value) / 5
@@ -238,6 +244,7 @@ class SatelliteData:
         self.dlg.LVal_5.setText(text)
         self.x_values.append(max_value)
         self.rarray = rarray
+        return True
 
     def update_graph(self):
         """Updates the graph according to index values and the set fertilizer
