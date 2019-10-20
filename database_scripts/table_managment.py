@@ -61,7 +61,7 @@ class TableManagement:
         if new_schema == self.tr('-Select data type -'):
             QMessageBox.information(None, self.tr("Error:"), self.tr('You have to decide what type of data it is'))
             return
-        if new_name in self.db.get_tables_in_db():
+        if new_name in self.db.get_tables_in_db(new_schema):
             QMessageBox.information(None, self.tr("Error:"), self.tr('You need a new name'))
             return
         c = 0
