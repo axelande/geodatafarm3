@@ -66,10 +66,10 @@ class CreateGuideFile:
         for schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
-                if name[0] in ["temp_polygon", 'manual', 'harrowing_manual',
+                if name in ["temp_polygon", 'manual', 'harrowing_manual',
                                'plowing_manual']:
                     continue
-                names.append(schema + '.' + str(name[0]))
+                names.append(schema + '.' + str(name))
         self.CGF.CBDataSource.addItems(names)
         self.CGF.CBDataSource.activated[str].connect(self.possible_attr)
 

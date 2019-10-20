@@ -224,9 +224,9 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         for lw, schema in lw_list:
             table_names = self.db.get_tables_in_db(schema)
             for name in table_names:
-                if str(name[0]) in ['harrowing_manual', 'plowing_manual', 'manual']:
+                if str(name) in ['harrowing_manual', 'plowing_manual', 'manual']:
                     continue
-                item_name = schema + '.' + str(name[0])
+                item_name = schema + '.' + str(name)
                 testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
                 item = QListWidgetItem(testcase_name, self.TMD.SATables)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)

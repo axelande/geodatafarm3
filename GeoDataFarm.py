@@ -310,12 +310,9 @@ class GeoDataFarm:
             tbl_name = tbl
         else:
             tbl_name = str(self.IH.file_name)
-        tbls = []
-        for row in tables_in_db:
-            tbls.append(str(row[0]))
         if isint(tbl_name[0]):
             tbl_name = '_' + tbl_name
-        if tbl_name in tbls:
+        if tbl_name in tables_in_db:
             qm = QMessageBox()
             ret = qm.question(None, 'Message',
                               self.tr("The name of the data set already exist in your database, would you like to replace it?"),

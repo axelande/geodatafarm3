@@ -135,11 +135,10 @@ class Populate:
                 lw.clear()
             self.tables_in_db[i] = 0
             for name in table_names:
-                if name[0] in ["spatial_ref_sys", "pointcloud_formats",
+                if name in ["spatial_ref_sys", "pointcloud_formats",
                                "temp_polygon", "manual", "plowing_manual", "harrowing_manual"]:
                     continue
-                item_name = str(name[0])
-                _name = QApplication.translate("qadashboard", item_name, None)
+                _name = QApplication.translate("qadashboard", name, None)
                 item = QListWidgetItem(_name, lw)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
                 item.setCheckState(QtCore.Qt.Unchecked)

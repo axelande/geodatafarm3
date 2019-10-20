@@ -259,11 +259,14 @@ class DB:
             A list of tables in the database
         """
         sql = """select table_name 
-from information_schema.tables 
-where table_schema = '{schema}' and table_type = 'BASE TABLE'
-ORDER BY table_name""".format(schema=schema)
+        from information_schema.tables 
+        where table_schema = '{schema}' and table_type = 'BASE TABLE'
+        ORDER BY table_name""".format(schema=schema)
         table_names = self.execute_and_return(sql)
-        return table_names
+        names = []
+        for name in table_names:
+            names.append(name[0])
+        return names
 
     def get_distinct(self, table, column, schema):
         """Get distinct values from a schema.table
