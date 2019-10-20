@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>898</width>
+    <width>910</width>
     <height>781</height>
    </rect>
   </property>
@@ -18,14 +18,14 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>881</width>
+     <width>889</width>
      <height>761</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QPushButton" name="PBAddInputFile">
         <property name="locale">
          <locale language="English" country="UnitedKingdom"/>
@@ -35,7 +35,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QComboBox" name="CBField">
         <property name="locale">
          <locale language="English" country="UnitedKingdom"/>
@@ -47,7 +47,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QComboBox" name="CBCrop">
         <property name="locale">
          <locale language="English" country="UnitedKingdom"/>
@@ -58,6 +58,33 @@
          </property>
         </item>
        </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBHelp">
+          <property name="locale">
+           <locale language="English" country="UnitedKingdom"/>
+          </property>
+          <property name="text">
+           <string>Help</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -209,18 +236,8 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="1">
-       <widget class="QPushButton" name="PBAddParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>--&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <spacer name="verticalSpacer">
+      <item row="4" column="1">
+       <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -232,41 +249,8 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="PBRemParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>&lt;--</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Columns in the file:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="LParams">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Parameters that could be analysed:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <spacer name="verticalSpacer_2">
+      <item row="1" column="1">
+       <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -291,6 +275,49 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="PBRemParam">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>&lt;--</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="PBAddParam">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>--&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="LParams">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>Parameters that could be analysed:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>Columns in the file:</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" rowspan="4">
        <widget class="QTableWidget" name="TWColumnNames">
         <property name="minimumSize">
@@ -311,8 +338,21 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QComboBox" name="ComBNorth">
+      <item row="0" column="0" colspan="4">
+       <widget class="QPushButton" name="PBContinue">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>Continue</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="ComBEast">
         <property name="locale">
          <locale language="English" country="UnitedKingdom"/>
         </property>
@@ -321,13 +361,49 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="6">
-       <widget class="QLineEdit" name="LEMaximumYield">
+      <item row="0" column="5">
+       <widget class="QLabel" name="LMinYield">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>99999</string>
+         <string>Minimum yield:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_13">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>E:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <widget class="QLineEdit" name="LEMoveX">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLabel" name="LMoveY">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Move (cc) forward:</string>
         </property>
        </widget>
       </item>
@@ -344,23 +420,71 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="7">
-       <widget class="QLabel" name="LMoveY">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Move Y:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_13">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_12">
         <property name="locale">
          <locale language="English" country="UnitedKingdom"/>
         </property>
         <property name="text">
-         <string>E:</string>
+         <string>N:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLineEdit" name="LEMinimumYield">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>10000</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="8">
+       <widget class="QLineEdit" name="LEMoveY">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLineEdit" name="LEMaximumYield">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>99999</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="ComBNorth">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -374,86 +498,13 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>N:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QComboBox" name="ComBEast">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="8">
-       <widget class="QLineEdit" name="LEMoveY">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>0.0</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="8">
-       <widget class="QLineEdit" name="LEMoveX">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>0.0</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="7">
        <widget class="QLabel" name="LMoveX">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Move X:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6">
-       <widget class="QLineEdit" name="LEMinimumYield">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>10000</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QLabel" name="LMinYield">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Minimum yield:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QPushButton" name="PBContinue">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Continue</string>
+         <string>Move (cc) left:</string>
         </property>
        </widget>
       </item>
