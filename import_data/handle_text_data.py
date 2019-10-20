@@ -715,6 +715,9 @@ def insert_data_to_database(task, db, params):
             task.setProgress(50)
         db.execute_sql(sql)
         db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
+        suc = db.reset_row_id(schema, tbl_name)
+        if not suc[0]:
+            return suc
         if task != 'debug':
             task.setProgress(70)
         if schema != 'harvest':
