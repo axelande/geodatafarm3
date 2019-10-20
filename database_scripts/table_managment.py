@@ -84,16 +84,29 @@ class TableManagement:
         self.TMD.CBDataType.setCurrentIndex(0)
         self.update_table_list()
 
-    def retrieve_params(self):
-        """This function is trigged by "edit" table, and basically fills the left list widget,
-        all attributes that have a index get selected by default."""
+    def check_multiple(self):
+        """Checks if multiple table is selected
+
+        Returns
+        -------
+        Bool, False if more than one row is selected
+        str, schema.table_name"""
         c = 0
         for item in self.items_in_table:
             if item.checkState() == 2:
                 c += 1
                 table = item.text()
         if c != 1:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('You can only have one dataset selected'))
+            QMessageBox.information(None, self.tr("Error:"),
+                                    self.tr('You can only have one dataset selected'))
+            return False, 'failed'
+        return True, table
+
+    def retrieve_params(self):
+        """This function is trigged by "edit" table, and basically fills the left list widget,
+        all attributes that have a index get selected by default."""
+        suc, table = self.check_multiple()
+        if suc is False:
             return
         self.current_schema, self.current_table = table.split('.')
         if self.params_in_list != 0:
