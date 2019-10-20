@@ -473,6 +473,18 @@ ORDER BY table_name""".format(schema=schema)
         except:
             pass
 
+    def reset_row_id(self, schema, tbl):
+        sql = """ALTER TABLE {schema}.{tbl} drop constraint if exists pkey_{schema}_{tbl};
+        with a as(select field_row_id as a_old, ROW_NUMBER() OVER() as a_row from {schema}.{tbl})
+        UPDATE {schema}.{tbl} b
+        SET field_row_id= a_row
+        from a
+        where field_row_id=a_old;
+        ALTER TABLE {schema}.{tbl} add constraint pkey_{schema}_{tbl} primary key (field_row_id);
+        """.format(schema=schema, tbl=tbl)
+        lis = self.execute_sql(sql, return_failure=True)
+        return lis
+
     def test_connection(self):
         """Tests to open the connection and then closes it again
         Returns
