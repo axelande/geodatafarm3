@@ -229,6 +229,25 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="2">
+       <widget class="QComboBox" name="CBColumns">
+        <item>
+         <property name="text">
+          <string>--- Select yield column ---</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="pButGetYieldCol">
+        <property name="locale">
+         <locale language="English" country="Uganda"/>
+        </property>
+        <property name="text">
+         <string>Get yield columns</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="5" column="0">
@@ -298,6 +317,24 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>SATables</tabstop>
+  <tabstop>pButAdd_Param</tabstop>
+  <tabstop>SAParams</tabstop>
+  <tabstop>pButSave</tabstop>
+  <tabstop>pButChangeTbl</tabstop>
+  <tabstop>pButChangeParam</tabstop>
+  <tabstop>CBNbrRows</tabstop>
+  <tabstop>SBRowDistance</tabstop>
+  <tabstop>CBSplitYield</tabstop>
+  <tabstop>pButGetYieldCol</tabstop>
+  <tabstop>CBColumns</tabstop>
+  <tabstop>pButSplitRows</tabstop>
+  <tabstop>CBDataType</tabstop>
+  <tabstop>LEName</tabstop>
+  <tabstop>pButCombine</tabstop>
+  <tabstop>pButRemove</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
