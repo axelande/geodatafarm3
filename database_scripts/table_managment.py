@@ -33,6 +33,7 @@ class TableManagement:
         self.TMD.pButChangeParam.clicked.connect(self.edit_param_name)
         self.TMD.pButAdd_Param.clicked.connect(self.retrieve_params)
         self.TMD.pButSave.clicked.connect(self.save_table)
+        self.TMD.pButGetYieldCol.clicked.connect(self.update_column_list)
         self.TMD.pButSplitRows.clicked.connect(self.split_rows)
         self.update_table_list()
         self.TMD.show()
@@ -253,11 +254,18 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
 
     def split_rows(self):
-        # TODO: Test if this works :)
-        """Spilts the harvest data on multiple rows."""
+        """Spilt the harvest data to multiple rows."""
         suc, s_table = self.check_multiple()
         if not suc:
             return
+        split_yield = self.TMD.CBSplitYield.isChecked()
+        if split_yield:
+            yield_row = self.TMD.CBColumns.currentText()
+            if yield_row == self.tr('--- Select yield column ---'):
+                QMessageBox(None, self.tr('Error'),
+                            self.tr('In order to split the yield you need to specify the yield column'))
+                return
+
         schema, tbl = s_table.split('.')
         if schema != 'harvest':
             QMessageBox(None, self.tr('Error'),
@@ -272,7 +280,6 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         else:  # nbr_rows == 6
             move_d = [2 * spacing + spacing / 2, spacing, spacing * 2,
                       spacing * 3, spacing * 4, spacing * 5]
-        split_yield = self.TMD.CBSplitYield.isChecked()
         sql = "select min(field_row_id) from harvest.{tbl}".format(tbl=tbl)
         min_row_id = self.db.execute_and_return(sql)[0][0]
         sql = "select max(field_row_id) from harvest.{tbl}".format(tbl=tbl)
@@ -322,6 +329,22 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                                                                 p_bearing=bearing)
                 # print(sql)
                 self.db.execute_sql(sql)
+            if split_yield:
+                sql = f"""UPDATE {schema}.{tbl}
+	            SET {yield_row} = {yield_row} / {nbr_rows}"""
+                self.db.execute_sql(sql)
+
+    def update_column_list(self):
+        suc, s_table = self.check_multiple()
+        if not suc:
+            return
+        schema, tbl = s_table.split('.')
+        columns = self.db.get_all_columns(tbl, schema, "'field_row_id'")
+        lw = self.TMD.CBColumns
+        lw.clear()
+        lw.addItem(self.tr('--- Select yield column ---'))
+        for name in columns:
+            lw.addItem(str(name[0]))
 
     def duplicate_first_row(self, org_min, org_max, table, schema='harvest'):
         """Duplicates the original data table and returns the first and last row_id"""
