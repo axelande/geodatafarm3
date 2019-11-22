@@ -204,62 +204,62 @@ vorhandene Datenbank</translation>
 <context>
     <name>ConvertToAreas</name>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="262"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="254"/>
         <source>--- Select field ---</source>
         <translation type="unfinished">--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="325"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="317"/>
         <source>Error:</source>
         <translation type="unfinished">Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="263"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="255"/>
         <source>In order to save the data you must select a field</source>
         <translation type="unfinished">Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="268"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="260"/>
         <source>--- Select crop ---</source>
         <translation type="unfinished">--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="269"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="261"/>
         <source>In order to save the data you must select a crop</source>
         <translation type="unfinished">Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="287"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="279"/>
         <source>Yield and move values must be integer or a float number {e}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="310"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="302"/>
         <source>Sign must be &quot;+&quot;, &quot;-&quot;, &quot;*&quot; or &quot;/&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="299"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="291"/>
         <source>Yield value must be an integer or a float number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="315"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="307"/>
         <source>Moisture value must be an integer or a float number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="325"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="317"/>
         <source>Harvester width must be an integer or a float number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="553"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="545"/>
         <source>Error</source>
         <translation type="unfinished">Error</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="537"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="529"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -268,7 +268,7 @@ vorhandene Datenbank</translation>
 Rückverfolgung: {t}</translation>
     </message>
     <message>
-        <location filename="../import_data/convert_harvest_to_area.py" line="553"/>
+        <location filename="../import_data/convert_harvest_to_area.py" line="545"/>
         <source>Following error occurred: {m}</source>
         <translation type="unfinished">Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
@@ -783,7 +783,7 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="374"/>
+        <location filename="../GeoDataFarm.py" line="371"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
@@ -793,22 +793,22 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="320"/>
+        <location filename="../GeoDataFarm.py" line="317"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Der Name des Datensatzes ist bereits in Ihrer Datenbank vorhanden. Möchten Sie ihn ersetzen?</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="358"/>
+        <location filename="../GeoDataFarm.py" line="355"/>
         <source>Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don&apos;t understand some parts please do send a e-mail to me at geodatafarm@gmail.com</source>
         <translation>Willkommen bei GeoDataFarm. Dieses Plugin befindet sich noch in der Entwicklung. Wenn Sie Verbesserungsvorschläge haben oder einige Teile nicht verstehen, senden Sie mir bitte eine E-Mail an geodatafarm@gmail.com</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="366"/>
+        <location filename="../GeoDataFarm.py" line="363"/>
         <source>Crop name must be filled in.</source>
         <translation>Der Name der Ernte muss ausgefüllt werden.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="374"/>
+        <location filename="../GeoDataFarm.py" line="371"/>
         <source>Crop name already exist, please select a new name</source>
         <translation>Der Name des Ernteguts ist fertig, bitte wählen Sie einen neuen Namen</translation>
     </message>
@@ -2029,119 +2029,119 @@ folgende Spalte</translation>
         <translation>Eingabedatei hinzufügen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="251"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="317"/>
         <source>Columns in the file:</source>
         <translation>Spalten in der Datei:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="261"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="304"/>
         <source>Parameters that could be analysed:</source>
         <translation>Parameter, die analysiert werden könnten:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="241"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="284"/>
         <source>&lt;--</source>
         <translation>&lt;--</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="218"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="294"/>
         <source>--&gt;</source>
         <translation>--&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="626"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="677"/>
         <source>Save data</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="456"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="350"/>
         <source>Continue</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="510"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="561"/>
         <source>Date is not in the file</source>
         <translation>Datum ist nicht in der Datei</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="480"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="531"/>
         <source>Date format:</source>
         <translation>Datumsformat:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="493"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="544"/>
         <source>Date stored in 
 following column</source>
         <translation>Datum gespeichert in
 folgende Spalte</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="82"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="109"/>
         <source>4326</source>
         <translation>4326</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="92"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="119"/>
         <source>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632, SWEREF99 TM = 3006 etc.</source>
         <translation>WGS 84 = 4326, RT90 2.5 gon V = 3021, UTM zone 32N = 32632 etc.</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="383"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="429"/>
         <source>N:</source>
         <translation>N:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="363"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="380"/>
         <source>E:</source>
         <translation>E:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="128"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="155"/>
         <source>Comma</source>
         <translation>Komma</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="144"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="171"/>
         <source>Semicolon</source>
         <translation>Semikolon</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="160"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="187"/>
         <source>Tab</source>
         <translation>Tab</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="176"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="203"/>
         <source>Separator</source>
         <translation>Separator</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="192"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="219"/>
         <source>Other:</source>
         <translation>Andere:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="72"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="99"/>
         <source>EPGS Coordinate system:</source>
         <translation>EPSG-Koordinatensystem:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="330"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="477"/>
         <source>99999</source>
         <translation>99999</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="433"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="445"/>
         <source>10000</source>
         <translation>10000</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="443"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="370"/>
         <source>Minimum yield:</source>
         <translation>Mindestertrag:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="373"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="497"/>
         <source>Maximum yield:</source>
         <translation>MaximalerErtrag:</translation>
     </message>
@@ -2156,74 +2156,79 @@ folgende Spalte</translation>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="527"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="578"/>
         <source>%Y-%m-%d %H:%M:%S</source>
         <translation>%Y-%m-%d %H:%M:%S</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="532"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="583"/>
         <source>%Y-%m-%d %H:%M</source>
         <translation>%Y-%m-%d %H:%M</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="537"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="588"/>
         <source>%Y-%m-%d</source>
         <translation>%Y-%m-%d</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="542"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="593"/>
         <source>%y%m%d</source>
         <translation>%y%m%d</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="547"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="598"/>
         <source>%Y-%m</source>
         <translation>%Y-%m</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="552"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="603"/>
         <source>%m/%d/%Y %H:%M:%S</source>
         <translation>%m/%d/%Y %H:%M:%S</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="557"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="608"/>
         <source>%m/%d/%y</source>
         <translation>%m/%d/%y</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="562"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="613"/>
         <source>%Y/%m/%d %H:%M:%S</source>
         <translation>%m/%d/%Y %H:%M:%S</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="567"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="618"/>
         <source>%y/%m/%d</source>
         <translation>%y/%m/%d</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="468"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="519"/>
         <source>Either select a column, fill in a static value or leave it</source>
         <translation>Wählen entweder eine Spalte aus, einem statischen Wert oder lassen Sie ihn</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="584"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="635"/>
         <source>Abbreviations</source>
         <translation>Abkürzungen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="413"/>
+        <location filename="../widgets/import_text_dialog_base.ui" line="461"/>
         <source>0.0</source>
         <translation>0.0</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="353"/>
-        <source>Move Y:</source>
-        <translation>Bewegung Y:</translation>
+        <location filename="../widgets/import_text_dialog_base.ui" line="83"/>
+        <source>Help</source>
+        <translation type="unfinished">Hilfe</translation>
     </message>
     <message>
-        <location filename="../widgets/import_text_dialog_base.ui" line="423"/>
-        <source>Move X:</source>
-        <translation>Bewegung X:</translation>
+        <location filename="../widgets/import_text_dialog_base.ui" line="406"/>
+        <source>Move (cc) forward:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_text_dialog_base.ui" line="507"/>
+        <source>Move (cc) left:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2293,12 +2298,12 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>InputTextHandler</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="118"/>
+        <location filename="../import_data/handle_text_data.py" line="101"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="118"/>
+        <location filename="../import_data/handle_text_data.py" line="101"/>
         <source>%Y = Year (2010)
 %y = Year (98)
 %m = Month
@@ -2317,47 +2322,47 @@ If you are missing any formats please contact geodatafarm@gmail.com</source>
 Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gmail.com</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="141"/>
+        <location filename="../import_data/handle_text_data.py" line="124"/>
         <source>harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="315"/>
+        <location filename="../import_data/handle_text_data.py" line="298"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="142"/>
+        <location filename="../import_data/handle_text_data.py" line="125"/>
         <source>You can only select one yield column!</source>
         <translation>Sie können nur eine Ertragsspalte auswählen!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="161"/>
+        <location filename="../import_data/handle_text_data.py" line="144"/>
         <source>No row selected!</source>
         <translation>Keine Zeile ausgewählt!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="312"/>
+        <location filename="../import_data/handle_text_data.py" line="295"/>
         <source>There needs to be a column called latitude (wgs84) or you need to change the EPSG system</source>
         <translation>Es muss eine Spalte mit dem Namen Latitude (wgs84) vorhanden sein oder Sie müssen das EPSG-System ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="315"/>
+        <location filename="../import_data/handle_text_data.py" line="298"/>
         <source>There needs to be a column called longitude (wgs84) or you need to change the EPSG system</source>
         <translation>Es muss eine Spalte mit dem Namen Longtitude (wgs84) vorhanden sein oder Sie müssen das EPSG-System ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="456"/>
+        <location filename="../import_data/handle_text_data.py" line="439"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="385"/>
+        <location filename="../import_data/handle_text_data.py" line="368"/>
         <source>The date format didn&apos;t match the selected format, please change</source>
         <translation>Das Datumsformat stimmte nicht mit dem ausgewählten Format überein, bitte ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="440"/>
+        <location filename="../import_data/handle_text_data.py" line="423"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -2366,17 +2371,17 @@ Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gm
 Rückverfolgung: {t}</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="445"/>
+        <location filename="../import_data/handle_text_data.py" line="428"/>
         <source>Information:</source>
         <translation>Information:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="445"/>
+        <location filename="../import_data/handle_text_data.py" line="428"/>
         <source> rows were skipped since the row did not match the heading.</source>
         <translation> zeilen wurden übersprungen, da die Zeile nicht mit der Überschrift übereinstimmt.</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="456"/>
+        <location filename="../import_data/handle_text_data.py" line="439"/>
         <source>No data were found in the field, are you sure that the data is in the correct field?</source>
         <translation>Es wurden keine Daten im Feld gefunden. Sind Sie sicher, dass die Daten im richtigen Feld sind?</translation>
     </message>
@@ -2737,7 +2742,7 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>SatelliteData</name>
     <message>
-        <location filename="../import_data/satellite_data.py" line="314"/>
+        <location filename="../import_data/satellite_data.py" line="321"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
@@ -2747,38 +2752,43 @@ Rückverfolgung: {t}</translation>
         <translation>Entweder fehlt das Rasterband 4 oder 8 in der ZIP-Datei.</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="275"/>
+        <location filename="../import_data/satellite_data.py" line="282"/>
         <source>You have already created a guide file for this field today, do you want to replace it?</source>
         <translation>Sie haben heute alle eine Leitfadendatei für dieses Feld erstellt. Möchten Sie diese ersetzen?</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="336"/>
+        <location filename="../import_data/satellite_data.py" line="343"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="337"/>
+        <location filename="../import_data/satellite_data.py" line="344"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="285"/>
+        <location filename="../import_data/satellite_data.py" line="292"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="285"/>
+        <location filename="../import_data/satellite_data.py" line="292"/>
         <source>The file could not automatically be removed, please try to do it manually and create the guide file again</source>
         <translation>Die Datei konnte nicht automatisch entfernt werden. Bitte versuchen Sie es manuell und erstellen Sie die Leitfadendatei erneut</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="335"/>
+        <location filename="../import_data/satellite_data.py" line="342"/>
         <source>Are you planning to use it today?</source>
         <translation>Planen Sie es heute zu verwenden?</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="314"/>
+        <location filename="../import_data/satellite_data.py" line="321"/>
         <source>Currently QGIS does not allow you to have any non English character in the directory path or filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="195"/>
+        <source>There is no data in that file, is the day cloud free?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3394,104 +3404,124 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>TableManagement</name>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="45"/>
+        <location filename="../database_scripts/table_managment.py" line="47"/>
         <source>plant</source>
         <translation>Pflanzen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="47"/>
+        <location filename="../database_scripts/table_managment.py" line="49"/>
         <source>fertilize</source>
         <translation>Befruchten</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="49"/>
+        <location filename="../database_scripts/table_managment.py" line="51"/>
         <source>spray</source>
         <translation>Sprühen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="51"/>
+        <location filename="../database_scripts/table_managment.py" line="53"/>
         <source>other</source>
         <translation>Andere</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="53"/>
+        <location filename="../database_scripts/table_managment.py" line="55"/>
         <source>harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="55"/>
+        <location filename="../database_scripts/table_managment.py" line="57"/>
         <source>soil</source>
         <translation>Boden</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="95"/>
+        <location filename="../database_scripts/table_managment.py" line="101"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="58"/>
+        <location filename="../database_scripts/table_managment.py" line="60"/>
         <source>You need to fill in a new name</source>
         <translation>Sie müssen einen neuen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="60"/>
+        <location filename="../database_scripts/table_managment.py" line="62"/>
         <source>-Select data type -</source>
         <translation>-Wählen Sie den Datentyp -</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="61"/>
+        <location filename="../database_scripts/table_managment.py" line="63"/>
         <source>You have to decide what type of data it is</source>
         <translation>Sie müssen entscheiden, um welche Art von Daten es sich handelt</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="64"/>
+        <location filename="../database_scripts/table_managment.py" line="66"/>
         <source>You need a new name</source>
         <translation>Du brauchst einen neuen Namen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="72"/>
+        <location filename="../database_scripts/table_managment.py" line="74"/>
         <source>You need at least 2 dataset when merging</source>
         <translation>Zum Zusammenführen benötigen Sie mindestens 2 Datensätz</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="95"/>
+        <location filename="../database_scripts/table_managment.py" line="101"/>
         <source>You can only have one dataset selected</source>
         <translation>Es kann nur ein Datensatz ausgewählt werden</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="171"/>
+        <location filename="../database_scripts/table_managment.py" line="186"/>
         <source>Data set name</source>
         <translation>Datensätze Name</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="184"/>
+        <location filename="../database_scripts/table_managment.py" line="199"/>
         <source>What do you want to rename </source>
         <translation>Was möchtest du umbenennen </translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="184"/>
+        <location filename="../database_scripts/table_managment.py" line="199"/>
         <source> to?</source>
         <translation> zu?</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="184"/>
+        <location filename="../database_scripts/table_managment.py" line="199"/>
         <source>Parameter name</source>
         <translation>Parametername</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="226"/>
+        <location filename="../database_scripts/table_managment.py" line="241"/>
         <source>Do you really want to remove the selected tables from the database?</source>
         <translation>Möchten Sie die ausgewählten Tabellen wirklich aus der Datenbank entfernen?</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="227"/>
+        <location filename="../database_scripts/table_managment.py" line="242"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="228"/>
+        <location filename="../database_scripts/table_managment.py" line="243"/>
         <source>No</source>
         <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="340"/>
+        <source>--- Select yield column ---</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="269"/>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="264"/>
+        <source>In order to split the yield you need to specify the yield column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/table_managment.py" line="269"/>
+        <source>This option is only possible for harvest tables</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3502,93 +3532,143 @@ Rückverfolgung: {t}</translation>
         <translation>Datensätze bearbeiten</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="49"/>
+        <location filename="../widgets/table_managment.ui" line="282"/>
         <source>Datasets in database</source>
         <translation>Datensätze in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="117"/>
+        <location filename="../widgets/table_managment.ui" line="29"/>
         <source>Edit
 --&gt;</source>
         <translation>Edieren
 --&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="77"/>
+        <location filename="../widgets/table_managment.ui" line="94"/>
         <source>Change dataset name</source>
         <translation>Ändern Sie den Datensatznamen</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="110"/>
+        <location filename="../widgets/table_managment.ui" line="156"/>
         <source>Combine multiple datasets</source>
         <translation>Kombinieren Datensätze</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="39"/>
+        <location filename="../widgets/table_managment.ui" line="289"/>
         <source>*To rename any dataset or parameter make sure that only one is selected</source>
         <translation>* Um einen Datensatz oder Parameter umzubenennen, stellen Sie sicher, dass nur einer ausgewählt ist</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="169"/>
+        <location filename="../widgets/table_managment.ui" line="62"/>
         <source>New name:</source>
         <translation>Neuer Name:</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="32"/>
+        <location filename="../widgets/table_managment.ui" line="43"/>
         <source>Remove selected datasets</source>
         <translation>Ausgewählte Datensätze</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="87"/>
+        <location filename="../widgets/table_managment.ui" line="53"/>
         <source>Change parameter name</source>
         <translation>Ändern den Parameternamen</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="56"/>
+        <location filename="../widgets/table_managment.ui" line="299"/>
         <source>Save
 &lt;--</source>
         <translation>Speichern
 &lt;---</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="129"/>
+        <location filename="../widgets/table_managment.ui" line="105"/>
         <source>-Select data type -</source>
         <translation>-Wählen Sie den Datentyp -</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="134"/>
+        <location filename="../widgets/table_managment.ui" line="110"/>
         <source>plant</source>
         <translation>Pflanzen</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="139"/>
+        <location filename="../widgets/table_managment.ui" line="115"/>
         <source>fertilize</source>
         <translation>Befruchten</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="144"/>
+        <location filename="../widgets/table_managment.ui" line="120"/>
         <source>spray</source>
         <translation>Sprühen</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="149"/>
+        <location filename="../widgets/table_managment.ui" line="125"/>
         <source>other</source>
         <translation>Andere</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="154"/>
+        <location filename="../widgets/table_managment.ui" line="130"/>
         <source>harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="159"/>
+        <location filename="../widgets/table_managment.ui" line="135"/>
         <source>soil</source>
         <translation>Boden</translation>
     </message>
     <message>
-        <location filename="../widgets/table_managment.ui" line="64"/>
+        <location filename="../widgets/table_managment.ui" line="143"/>
         <source>Parameters in dataset that could be analysed:</source>
         <translation>Parameter im Datensatz, die analysiert werden könnten:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="165"/>
+        <source>Split the harvest data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="172"/>
+        <source>Split the yield to each row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="180"/>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="185"/>
+        <source>4</source>
+        <translation type="unfinished">4</translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="190"/>
+        <source>6</source>
+        <translation type="unfinished">6</translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="198"/>
+        <source>Number of rows to split on:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="215"/>
+        <source>Row distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="225"/>
+        <source>Split one harvest data points to multiple rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="236"/>
+        <source>--- Select yield column ---</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/table_managment.ui" line="247"/>
+        <source>Get yield columns</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
