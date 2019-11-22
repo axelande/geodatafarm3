@@ -92,7 +92,7 @@ class InputTextHandler(object):
             self.ITD.LEMoveX.setEnabled(True)
             self.ITD.LEMoveY.setEnabled(True)
         if self.data_type == 'soil':
-            self.ITD.CBCrop.setEnable(False)
+            self.ITD.CBCrop.setEnabled(False)
         self.ITD.exec_()
 
     def show_abbreviations(self):
