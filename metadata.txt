@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.6.0
+version=2.7.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,10 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.7.0
+  - [feature] added support for multiple harvest rows.
+  - [fix] changed some help functionality to point to the homepage directly
+  - [fix] various minor bug fixes
   Version 2.6.0
   - [feature] Added support for interpolating harvest data from a combiner
   - [fix] solved some bugs connected to the report building
