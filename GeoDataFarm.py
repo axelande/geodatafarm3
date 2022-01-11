@@ -37,7 +37,7 @@ import platform
 import webbrowser
 from .resources import *
 plugin_dir = os.path.dirname(__file__)
-
+# TODO get the links to work to geodatafarms webpage prior to createing a farm.
 try:
     import matplotlib
 except ModuleNotFoundError:
@@ -388,8 +388,11 @@ class GeoDataFarm:
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
-        create_farm = CreateFarm(self, True)
-        create_farm.run()
+        from .import_data.handle_iso11783 import Iso11783
+        iso = Iso11783(self)
+        iso.open_input_folder()
+        #create_farm = CreateFarm(self, True)
+        #create_farm.run()
 
     def connect_to_farm(self):
         """Connects the docked widget with the CreateFarm script and starts

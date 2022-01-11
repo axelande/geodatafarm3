@@ -1223,6 +1223,11 @@ GeoDataFarms webpage</string>
                </item>
                <item>
                 <property name="text">
+                 <string>Iso Bin XML files</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
                  <string>Shape file (.shp)</string>
                 </property>
                </item>

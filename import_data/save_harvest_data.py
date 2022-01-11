@@ -1,4 +1,5 @@
 from ..import_data.handle_text_data import InputTextHandler
+from ..import_data.handle_iso11783 import Iso11783
 from ..import_data.handle_input_shp_data import InputShpHandler
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
@@ -28,6 +29,9 @@ class SaveHarvesting:
         columns = [self.tr('Yield'), self.tr('Total yield')]
         if self.dw.CBHvFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'harvest', columns=columns)
+            add_f.run()
+        elif self.dw.CBHvFileType.currentText() == self.tr('Iso Bin XML files'):
+            add_f = Iso11783(self.parent, 'harvest')
             add_f.run()
         elif self.dw.CBHvFileType.currentText() == self.tr('Databasefile (.db)'):
             QMessageBox.information(None, "Error:", self.tr(
