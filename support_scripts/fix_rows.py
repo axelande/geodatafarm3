@@ -127,8 +127,8 @@ class RowFixer:
         try:
             schema_table = self.FRD.CBDataSource.currentText()
             max_rows = self.FRD.CBMaxRows.currentText()
-            row = self.FRD.CBRow.currentText()
-            course = self.FRD.CBCourse.currentText()
+            row = self.FRD.CBRow.currentText()  # The column with row_number from planting machine
+            course = self.FRD.CBCourse.currentText()  # The course in degrees
             sql = """alter table {s_t}
                 add column new_row_id int;
             with dat as(SELECT field_row_id, pos, {course} as course, {row} as row_nbr

@@ -5,7 +5,10 @@ import traceback
 import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
-from ..support_scripts.__init__ import TR
+try:
+    from ..support_scripts.__init__ import TR
+except ValueError:
+    from support_scripts.__init__ import TR
 __author__ = 'Axel Horteborn'
 
 
@@ -393,7 +396,7 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self, sql, return_failure=False):
+    def execute_sql(self, sql, return_failure=False, return_row_count=False):
         """
         Parameters
         ----------
@@ -411,6 +414,7 @@ class DB:
         try:
             cur.execute(sql)
             self.conn.commit()
+            row_count = cur.rowcount
         except Exception as e:
             if return_failure:
                 error_type, value_, traceback_ = sys.exc_info()
@@ -420,7 +424,10 @@ class DB:
                 sf.display_failure(e)
         self._close()
         if return_failure:
-            return [True, 'suc']
+            if return_row_count:
+                return [True, 'suc', row_count]
+            else:
+                return [True, 'suc']
 
     def execute_and_return(self, sql, return_failure=False):
         """Execute and returns an SQL statement
@@ -476,7 +483,7 @@ class DB:
         except:
             pass
 
-    def reset_row_id(self, schema, tbl):
+    def reset_row_id(self, schema, tbl) -> list:
         sql = """ALTER TABLE {schema}.{tbl} drop constraint if exists pkey_{schema}_{tbl};
         with a as(select field_row_id as a_old, ROW_NUMBER() OVER() as a_row from {schema}.{tbl})
         UPDATE {schema}.{tbl} b
@@ -485,8 +492,8 @@ class DB:
         where field_row_id=a_old;
         ALTER TABLE {schema}.{tbl} add constraint pkey_{schema}_{tbl} primary key (field_row_id);
         """.format(schema=schema, tbl=tbl)
-        lis = self.execute_sql(sql, return_failure=True)
-        return lis
+        fail = self.execute_sql(sql, return_failure=True)
+        return [fail]
 
     def test_connection(self):
         """Tests to open the connection and then closes it again

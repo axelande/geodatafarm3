@@ -52,3 +52,4 @@ help/build/
 .idea/
 resources.py
 connection_data.ini
+test_data/*

@@ -543,7 +543,7 @@ def move_points(db, move_x, move_y, tbl_name, task):
         return [False, e]
 
 
-def create_table(db, schema, heading_row, latitude_col, longitude_col, date_row, all_same_date, column_types):
+def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date, column_types):
     inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
     sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
         schema=schema)

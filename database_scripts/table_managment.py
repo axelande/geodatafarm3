@@ -161,11 +161,9 @@ class TableManagement:
             self.db.execute_sql("""create index {index}_{schema}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
         for index in remove_index_for:
             self.db.execute_sql("DROP INDEX IF EXISTS {schema}.{index}_{schema}_{tbl}".format(index=index, tbl=table, schema=schema))
-        try:
+        if schema != 'harvest':
             self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(polygon) """.format(tbl=table, schema=schema))
-        except:
-            pass
         try:
             self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, schema=schema))
