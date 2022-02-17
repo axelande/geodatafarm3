@@ -89,7 +89,7 @@ class InputShpHandler:
         _types = []
         for i in range(gk_lyr[0].GetFieldCount()):
             name = gk_lyr[0].GetFieldDefnRef(i).GetName()
-            type_ = gk_lyr[0].GetFieldDefnRef(1).GetTypeName()
+            type_ = gk_lyr[0].GetFieldDefnRef(i).GetTypeName()
             self.col_names.append(name)
             _types.append(type_)
             if type_ == 'Integer':
@@ -317,6 +317,10 @@ class InputShpHandler:
                         data_dict[key[:10]] = []
                     data_dict['field_row_id'] = []
                     first = False
+                if geom.GetGeometryType() == 6:
+                    QMessageBox.information(None, self.tr('Error'),
+                                            self.tr('Some shapes are of multipolygon type please convert them to single polygons.'))
+                    return [False, 'Wrong format', traceback.format_exc()]
                 geom_wkt = geom.ExportToWkt()
                 if self.ISD.EPSG.text() == '4326':
                     data_dict[geom_type].append("ST_geomfromtext('{p}', 4326)".format(p=geom_wkt))
