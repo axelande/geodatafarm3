@@ -10,6 +10,7 @@ import time
 from operator import xor, itemgetter
 from datetime import datetime
 # Import the code for the dialog
+from ..database_scripts.db import DB
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
@@ -44,7 +45,7 @@ class InputTextHandler(object):
         self.plugin_dir = parent_widget.plugin_dir
         self.iface = parent_widget.iface
         self.populate = parent_widget.populate
-        self.db = parent_widget.db
+        self.db: DB = parent_widget.db
         self.parent_widget = parent_widget
         self.tsk_mngr = parent_widget.tsk_mngr
         self.mff = ManualFromFile(parent_widget.db, self.ITD, columns)
@@ -486,6 +487,19 @@ def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, m
     return False
 
 
+def create_course_column(db, schema):
+    sql = f"""Alter table {schema}.temp_table
+    ADD COLUMN course float;
+    update {schema}.temp_table a
+    set course = azm
+    FROM   (
+      SELECT degrees(ST_Azimuth(pos, LEAD(pos) OVER(ORDER BY field_row_id))) AS azm, field_row_id
+      FROM   {schema}.temp_table
+    ) q
+    where a.field_row_id = q.field_row_id"""
+    db.execute_sql(sql)
+
+
 def move_points(db, move_x, move_y, tbl_name, task):
     try:
         # TODO: Check what happens when calling a non existing table
@@ -605,7 +619,7 @@ def create_polygons(db, schema, tbl_name, field):
     db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
 
 
-def insert_data_to_database(task, db, params):
+def insert_data_to_database(task, db: DB, params: dict):
     """Walks though the text files and adds data to the database
     Parameters
     ----------
@@ -724,7 +738,8 @@ def insert_data_to_database(task, db, params):
         no_miss_heading = True
         if some_wrong_len > 0:
             no_miss_heading = False
-
+        if 'course' not in heading_row and 'Course' not in heading_row:
+            create_course_column(db, schema)
         sql = """SELECT * INTO {schema}.{tbl} 
         from {schema}.temp_table
         where st_intersects(pos, (select polygon 
@@ -734,6 +749,7 @@ def insert_data_to_database(task, db, params):
         if task != 'debug':
             task.setProgress(50)
         db.execute_sql(sql)
+
         db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
         suc = db.reset_row_id(schema, tbl_name)
         if not suc[0]:

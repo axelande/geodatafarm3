@@ -241,7 +241,10 @@ class CreateGuideFile:
         defn = layer.GetLayerDefn()
         for poly, value in data:
             feat = ogr.Feature(defn)
-            feat.SetField(attr_name[:10], value)
+            if float_type:
+                feat.SetField(attr_name[:10], value)
+            else:
+                feat.SetField(attr_name[:10], int(value))
             geom = ogr.CreateGeometryFromWkt(poly)
             feat.SetGeometry(geom)
             layer.CreateFeature(feat)
