@@ -1,0 +1,6 @@
+{ "Name": "ColourRange",
+  "A": {"Attribute_name":"MinimumValue", "Use":"r", "Type": "xs:long", "length": "-2^31 - 2^31", "comment":"ColourRange minimum value.\nThe value is included in the\nrange."},
+  "B": {"Attribute_name":"MaximumValue", "Use":"r", "Type": "xs:long", "length": "-2^31 - 2^31", "comment":"ColourRange maximum value.\nThe value is included in the\nrange."},
+  "C": {"Attribute_name":"Colour", "Use":"r", "Type": "xs:unsignedByte", "length": "0 to 254", "comment":"ColourRange colour\nFormat: palette according to\nISO 11783-6 colour definition"},
+  "includes": {}
+}

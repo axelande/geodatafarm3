@@ -1,0 +1,13 @@
+{ "Name": "Product",
+  "A": {"Attribute_name":"ProductId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment":"Unique identifier of product\nFormat: (PDT|PDT-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"ProductDesignator", "Use":"r", "Type": "xs:string", "length": "max 32", "comment":"Product designator/name"},
+  "C": {"Attribute_name":"ProductGroupIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"PGP", "length": "min 4 max 14", "comment":"Reference to XML element Product-\nGroup\nFormat: (PGP|PGP-)([0–9])+"},
+  "D": {"Attribute_name":"ValuePresentationIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"VPN", "length": "min 4 max 14", "comment":"Reference to XML element ValuePresentation\nFormat: (VPN|VPN-)([0–9])+"},
+  "E": {"Attribute_name":"QuantityDDI", "Use":"o", "Type": "xs:hexBinary", "length": "000016 to FFFF16", "comment":"Unique number, which defines the\nDDI (specified in ISO 11783-11) of\nthe quantity"},
+  "F": {"Attribute_name":"ProductType", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "Single (defualt)", "Mixture", "TemporaryMixture"], "length": "1 to 3", "comment":"Type of product definition\n1 = Single (default)\n2 = Mixture\n3 = TemporaryMixture"},
+  "G": {"Attribute_name":"MixtureRecipeQuantity", "Use":"o", "Type": "xs:long", "length": "0 to 2^31", "comment":"Contains the resultant quantity of\nthe mixtures’ recipe components"},
+  "H": {"Attribute_name":"DensityMassPerVolume", "Use":"o", "Type": "xs:long", "length": "0 to 2^31", "comment":"Product density in mg/l, corresponds\nto DDI 121"},
+  "I": {"Attribute_name":"DensityMassPerCount", "Use":"o", "Type": "xs:long", "length": "0 to 2^31", "comment":"Product density in mg/1000, corresponds\nto DDI 122"},
+  "J": {"Attribute_name":"DensityVolumePerCount", "Use":"o", "Type": "xs:long", "length": "0 to 2^31", "comment":"Product density in ml/1000, corresponds\nto DDI 123"},
+  "includes": {"PRM": {"Use": "o"}}
+}

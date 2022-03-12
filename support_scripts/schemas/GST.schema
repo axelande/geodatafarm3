@@ -1,0 +1,9 @@
+{
+  "Name": "GuidanceShift",
+  "A":{"Attribute_name":"GuidanceGroupIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"GGP", "length": "4 to 14", "comment": "Reference to XML element Guidance-\nGroup\nFormat: (GGP|GGP-)([0–9])+\nRecords generated on MICS have\nnegative IDs\nNote: either a GuidanceGroup or\na GuidancePattern reference is\nrequired"},
+  "B":{"Attribute_name":"GuidancePatternIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"GPN", "length": "4 to 14", "comment": "Reference to XML element Guidance-\nPattern\nFormat: (GPN|GPN-)([0–9])+\nRecords generated on MICS have\nnegative IDs\nNote: either a GuidanceGroup or\na GuidancePattern reference is\nrequired"},
+  "C":{"Attribute_name":"GuidanceEastShift", "Use":"o", "Type": "xs:signedLong", "length": "-2^31 to 2^31", "comment": "Guidance shift information in mm\non the projected tangent plane with\npoint A as reference."},
+  "D":{"Attribute_name":"GuidanceGroupIdRef", "Use":"o", "Type": "xs:signedLong", "length": "-2^31 to 2^31", "comment": "Guidance shift information in mm\non the projected tangent plane with\npoint A as reference."},
+  "E":{"Attribute_name":"PropagationOffset", "Use":"o", "Type": "xs:signedLong", "length": "-2^31 to 2^31", "comment": "The propagation offset in mm. The\npropagation offset is perpendicular to\nthe direction of the guidance pattern.\nA positive value offsets to the right\nside of the guidance pattern, a negative\nvalue offsets to the left side of the\nguidance pattern."},
+  "includes": {"ASP": {"Use": "o"}}
+}

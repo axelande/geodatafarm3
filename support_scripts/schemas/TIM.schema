@@ -1,0 +1,7 @@
+{"Name": "Time",
+ "A": {"Attribute_name":"Start", "Use":"r", "Type": "<L", "length": "max 29", "comment":"Time of start. Format: yyyy-mm-ddThh:mm:ss:sss plus optional time zone"},
+ "B": {"Attribute_name":"Stop", "Use":"or", "Type": "xs:datetime", "length": "max 29", "comment":"Time of end. Format: yyyy-mm-ddThh:mm:ss:sss plus optional time zone"},
+ "C": {"Attribute_name":"Duration", "Use":"or", "Type": "xs:unsignedLong", "length": "0 to 2^32 -2", "comment":"Time between start and stop in number of seconds"},
+ "D": {"Attribute_name":"Type", "Use":"or", "Type": "xs:NMToken", "nm_list": ["","Planned","Preliminary","","Effective","Ineffective","Repair","Clearing","Powered Down"], "length": "1,2, 4-8", "comment":"Type of the specified or recorded time, possible valuesc: 1 = Planned 2 = Preliminary 4 = Effective 5 = Ineffective 6 = Repair 7 = Clearing 8 = Powered Down"},
+ "includes": {"PTN": {"Use": "o"}, "DLV": {"Use": "o"}}
+}

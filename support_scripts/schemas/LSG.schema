@@ -1,0 +1,9 @@
+{"Name": "LineString",
+"A": {"Attribute_name":"LineStringType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["", "PolygonExterior", "PolygonInterior", "TramLine", "SamplingRoute", "GuidancePattern", "Drainage","Fence", "Flag","Obstacle"], "length": "1 - 9", "comment":"Type of the LineString possible values: 1 = PolygonExterior, 2 = PolygonInterior, 3 = TramLine, 4 = SamplingRoute, 5 = GuidancePattern, 6 = Drainage, 7 = Fence, 8 = Flag, 9 = Obstacle, any kind of obstacle, e.g. Used to generate a warning when"},
+"B": {"Attribute_name":"LineStringDesignator", "Use":"o", "Type": "xs:string", "length": "max 32", "comment":"LineString name or comment"},
+"C": {"Attribute_name":"LineStringWidth", "Use":"o", "Type": "xs:unsignedLong", "length": "0 - 2^32", "comment":"Width of the LineString in mm. This is the width in real world units, i.e. as measured on a Partfield. For LineStringType 5 (GuidancePattern), the LineString-Width represents the swathe width that separates the adjacent paths of the guidance pattern."},
+"D": {"Attribute_name":"LineStringLength", "Use":"o", "Type": "xs:unsignedLong", "length": "0 - 2^32", "comment":"Length of the LineString in mm. This is the length in real world units, i.e. as measured on a Partfield."},
+"E": {"Attribute_name":"LineStringColour", "Use":"o", "Type": "xs:unsigned-Byte", "length": "0 - 254", "comment":"Colour of the LineString Format: palette like ISO 11783-6"},
+"F": {"Attribute_name":"LineStringId", "Use":"o", "Type": "xs:ID", "length": "4 - 14", "comment":"Unique identifier of LineString Format: (LSG|LSG-)([0–9])+ Records generated on MICS have negative IDs"},
+"includes": {"PNT":{"Use":"r"}}
+}

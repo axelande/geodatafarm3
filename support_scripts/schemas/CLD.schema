@@ -1,0 +1,5 @@
+{ "Name": "ColourLegend",
+  "A": {"Attribute_name":"ColourLegendId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment":"Unique identifier of ColourLegend\nFormat: (CLD|CLD-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"DefaultColour", "Use":"o", "Type": "xs:unsignedByte", "length": "0 to 254", "comment":"Default colour of the ColourLegend\nFormat: palette like ISO 11783-6"},
+  "includes": {"CRG": {"Use": "r"}}
+}

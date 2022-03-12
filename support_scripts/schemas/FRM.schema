@@ -1,0 +1,12 @@
+{ "Name": "Farm",
+  "A": {"Attribute_name":"FarmId","Use":"r", "Type": "xs:UnsignedShort", "length": "min. 4 to max 14", "comment": "Unique identifier of Farm\nFormat: (FRM|FRM-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"FarmDesignator","Use":"r", "Type": "xs:string", "length": "max 32", "comment": "Farm designator/name"},
+  "C": {"Attribute_name":"FarmStreet","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "Street"},
+  "D": {"Attribute_name":"FarmPOBox","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "PO Box"},
+  "E": {"Attribute_name":"FarmPostalCode","Use":"o", "Type": "xs:string", "length": "max 10", "comment": "Postal code"},
+  "F": {"Attribute_name":"FarmCity","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "City"},
+  "G": {"Attribute_name":"FarmState","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "State or county"},
+  "H": {"Attribute_name":"FarmCountry","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "Country"},
+  "I": {"Attribute_name":"CustomerIdRef","Use":"o", "Type": "xs:IDREF", "Ref_id": "CTR", "length": "max 32", "comment": "Reference to XML element customer\nFormat: (CTR|CTR-)([0–9])+"},
+  "includes": {}
+}

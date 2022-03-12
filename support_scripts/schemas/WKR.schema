@@ -1,0 +1,17 @@
+{
+  "Name": "Worker",
+  "A":{"Attribute_name":"WorkerId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of worker\nFormat: (WKR|WKR-)([0–9])+\nRecords generated on MICS have negative\nIDs"},
+  "B":{"Attribute_name":"WorkerLastName", "Use":"r", "Type": "xs:string", "length": "max 32.", "comment": "Last name"},
+  "C":{"Attribute_name":"WorkerFirstName", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "First name"},
+  "D":{"Attribute_name":"WorkerStreet", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Street"},
+  "E":{"Attribute_name":"WorkerPOBox", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Postbox"},
+  "F":{"Attribute_name":"WorkerPostalCode", "Use":"o", "Type": "xs:string", "length": "max 10.", "comment": "Postal code"},
+  "G":{"Attribute_name":"WorkerCity", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "City"},
+  "H":{"Attribute_name":"WorkerState", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "State, province"},
+  "I":{"Attribute_name":"WorkerCountry", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Country"},
+  "J":{"Attribute_name":"WorkerPhone", "Use":"o", "Type": "xs:string", "length": "max 20.", "comment": "Telephone number"},
+  "K":{"Attribute_name":"WorkerMobile", "Use":"o", "Type": "xs:string", "length": "max 20.", "comment": "Mobile phone number"},
+  "L":{"Attribute_name":"WorkerLicenseNumber", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Worker-specific licence number"},
+  "M":{"Attribute_name":"WorkerEmail", "Use":"o", "Type": "xs:string", "length": "max 64.", "comment": "E-mail"},
+  "includes": {}
+  }

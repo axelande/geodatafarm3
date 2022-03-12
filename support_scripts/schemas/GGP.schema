@@ -1,0 +1,6 @@
+{
+  "Name": "GuidanceGroup",
+  "A":{"Attribute_name":"GuidanceGroupId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of GuidanceGroup\nFormat: (GGP|GGP-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"GuidanceGroupDesignator", "Use":"o", "Type": "xs:string", "length": "max. 32", "comment": "Designator of GuidanceGroup"},
+  "includes": {"GPN": {"Use": "r"}}
+}

@@ -1,0 +1,10 @@
+{
+  "Name": "DataLogValue",
+  "A": {"Attribute_name":"ProcessDataDDI", "Use":"r", "Type": "xs:hexBinary", "length": "000016 to FFFF16", "comment":"Unique number which defines the processDataVariable (as specified by iso 11783-11)"},
+  "B": {"Attribute_name":"ProcessDataValue", "Use":"r", "Type": "xs:long", "length": "-2^31 to 2^31-1", "comment":"Value"},
+  "C": {"Attribute_name":"DeviceElementIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DET", "length": "min 4 max 14", "comment":"Reference to DeviceElement Format: (DET|DET-)(0-9)+"},
+  "D": {"Attribute_name":"DataLogPGN", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to 2^18-1", "comment":"Parameter Group to log a value from"},
+  "E": {"Attribute_name":"DataLogPGNStartBit", "Use":"o", "Type": "xs:unsignedByte", "length": "0 to 63", "comment":"First bit of the value to log from a parameter group. 0 is the least significant bit of Byte 1 in the data field of a data frame (zero based bit index). The start bit is included in the value and becomes the least significant bit."},
+  "F": {"Attribute_name":"DataLogPGNStopBit", "Use":"o", "Type": "xs:unsignedByte", "length": "0 to 63", "comment":"Stop bit of the value to log from a parameter group. The stop bit is included in the value and becomes the most significant bit"},
+  "includes": {}
+}

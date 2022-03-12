@@ -1,0 +1,7 @@
+{"Name": "AllocationStamp",
+ "A": {"Attribute_name":"Start", "Use":"r", "Type": "xs:datetime", "length": "max 29", "comment":"Time of start. Format: yyyy-mm-ddThh:mm:ss:sss plus optional time zone"},
+ "B": {"Attribute_name":"Stop", "Use":"or", "Type": "xs:datetime", "length": "max 29", "comment":"Time of end. Format: yyyy-mm-ddThh:mm:ss:sss plus optional time zone"},
+ "C": {"Attribute_name":"Duration", "Use":"or", "Type": "xs:unsignedLong", "length": "0 to 2^32 -2", "comment":"Time between start and stop in number of seconds"},
+ "D": {"Attribute_name":"Type", "Use":"r", "Type": "xs:NMToken", "length": "1,4", "nm_list": ["planned", "effective"], "comment":"Type of AllocationStamp, possible valuesc: 1 = Planned 4 = Effective"},
+ "includes": {"PTN": {"Use": "o"}}
+}

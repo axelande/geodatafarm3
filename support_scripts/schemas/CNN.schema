@@ -1,0 +1,8 @@
+{
+  "Name": "Connection",
+  "A":{"Attribute_name":"DeviceIdRef_0", "Use":"r", "Type": "xs:IDREF", "Ref_id":"DVC", "length": "4 to 14", "comment": "Reference to XML element\nDevice\nFormat: (DVC|DVC-)([0–9])+"},
+  "B":{"Attribute_name":"DeviceElementIdRef_0", "Use":"r", "Type": "xs:IDREF", "Ref_id":"DET", "length": "4 to 14", "comment": "Reference to XML element DeviceElement\nFormat: (DET|DET-)([0–9])+"},
+  "C":{"Attribute_name":"DeviceIdRef_1", "Use":"r", "Type": "xs:IDREF", "Ref_id":"DVC","length": "4 to 14", "comment": "Reference to XML element\nDevice\nFormat: (DVC|DVC-)([0–9])+"},
+  "D":{"Attribute_name":"DeviceElementIdRef_1", "Use":"r", "Type": "xs:IDREF", "Ref_id":"DET", "length": "4 to 14", "comment": "Reference to XML element DeviceElement\nFormat: (DET|DET-)([0–9])+"},
+  "includes": {}
+  }

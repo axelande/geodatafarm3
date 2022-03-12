@@ -1,0 +1,10 @@
+{"Name": "DeviceElement",
+"A": {"Attribute_name":"DeviceElementId", "Use":"r", "Type": "xs:ID", "length": "min 4 to max 14", "comment":"Unique identifier of DeviceElement Format: (DET|DET-)([0–9])+ Records generated on MICS have negative IDs"},
+"B": {"Attribute_name":"DeviceElementObjectId", "Use":"r", "Type": "i4", "length": "1 to 65534", "comment":"Object ID unique inside a device descriptor"},
+"C": {"Attribute_name":"DeviceElementType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["device", "function", "bin", "section", "unit", "connector", "navigation"], "length": "1 to 7", "comment":"Selection of type: 1 = device 2 = function 3 = bin 4 = section 5 = unit 6 = connector 7 = navigation"},
+"E": {"Attribute_name":"DeviceElementDesignator", "Use":"o", "Type": "xs:string", "length": "max 32", "comment":"Designator of element"},
+"F": {"Attribute_name":"DeviceElementNumber", "Use":"r", "Type": "xs:UnsignedShort", "length": "0 to 4095", "comment":"Unique number of the element, refers to ProcessDataVariable element numbering"},
+"G": {"Attribute_name":"ParentObjectId", "Use":"r", "Type": "xs:UnsignedShort", "length": "0 to 65534", "comment":"Object ID of parent DeviceElement or Device"},
+   "includes": {"DOR": {"Use": "o"}}
+
+}

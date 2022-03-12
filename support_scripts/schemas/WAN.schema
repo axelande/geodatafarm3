@@ -1,0 +1,5 @@
+{
+  "Name": "WorkerAllocation",
+  "A":{"Attribute_name":"WorkerIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"WKR", "length": "4 to 14", "comment": "Reference to XML element Worker\nFormat: (WKR|WKR-)([0–9])+"},
+  "includes": {"ASP": {"Use": "o"}}
+  }

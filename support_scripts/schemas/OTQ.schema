@@ -1,0 +1,6 @@
+{
+  "Name": "OperationTechnique",
+  "A":{"Attribute_name":"OperationTechniqueId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of Operation-\nTechnique\nFormat: (OTQ|OTQ-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B": {"Attribute_name":"OperationTechniqueDesignator", "Use":"r", "Type": "xs:string", "length": "max 32", "comment": "Designator of OperationTechnique"},
+   "includes": {}
+}

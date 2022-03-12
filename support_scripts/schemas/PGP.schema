@@ -1,0 +1,6 @@
+{ "Name": "ProductGroup",
+  "A": {"Attribute_name":"ProductGroupId", "Use":"r", "Type": "xs:ID","length": "min. 4 to max. 14", "comment":"Unique identifier of Product-\nGroup\nFormat: (PGP|PGP-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B": {"Attribute_name":"ProductGroupDesignator", "Use":"r", "Type": "xs:string", "length": "max 32.", "comment":"ProductGroup designator/\nname"},
+  "C": {"Attribute_name":"ProductGroupType", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "ProductGroup (default)", "CropType"], "length": "1 to 2", "comment":"Type of ProductGroup\n1 = ProductGroup (default),\ncontains products\n2 = CropType, contains crop\nvarieties"},
+  "includes": {}
+}

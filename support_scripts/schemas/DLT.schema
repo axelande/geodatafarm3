@@ -1,0 +1,16 @@
+{"Name": "DataLogTrigger",
+"A": {"Attribute_name":"DataLogDDI", "Use":"r", "Type": "xs:HexBinary", "length": "000016 to FFFF15", "comment":"Unique number"},
+"B": {"Attribute_name":"DataLogMethod", "Use":"r", "Type": "xs:unsigned-Byte", "length": "1 to 31", "comment":"1: time interval, 2: distance interval, 4=threshold limits, 8= on change, 16 = total"},
+"C": {"Attribute_name":"DataLogDistanceInterval", "Use":"o", "Type": "2f", "length": "0 to 1000000", "comment": "Distance in mm"},
+"D": {"Attribute_name":"DataLogTimeInterval", "Use":"o", "Type": "2f", "length": "000016 to FFFF15", "comment":"Unique number"},
+"E": {"Attribute_name":"DataLogThresholdMinimum", "Use":"o", "Type": "2f", "length": "-2^31+1 to 2^31-1", "comment":"Threshold limit "},
+"F": {"Attribute_name":"DataLogThresholdMaximum", "Use":"o", "Type": "2f", "length": "-2^31+1 to 2^31-1", "comment":"Threshold limit "},
+"G": {"Attribute_name":"DataLogThresholdChange ",  "Use":"o", "Type": "2f", "length": "-2^31+1 to 2^31-1", "comment":"Change threshold to activate the data log, 0 stops measure"},
+"H": {"Attribute_name":"DeviceElementIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DET", "length": "min. 4 to max. 14", "comment":"Reference to XML element ValuePresentation (DET|DET-)([0-9])"},
+"I": {"Attribute_name":"ValuePresentationIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DET", "length": "min. 4 to max. 14", "comment":"Reference to XML element ValuePresentation (DET|DET-)([0-9])"},
+"J": {"Attribute_name":"DataLogPGN", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to 2^18-1", "comment":"Parameter group to log a value from"},
+"K": {"Attribute_name":"DataLogPGNStartBit", "Use":"o", "Type": "xs:unsignedByte", "length": "0 to 63", "comment":"First bit of the value to log from a parameter group. 0 specifies the least significant bit of Byte 1 in the data field of a data frame (zero based bit index). The start bit is in the value and becomes the least significant bit."},
+"L": {"Attribute_name":"DataLogPGNStopBit ", "Use":"o", "Type": "xs:unsignedByte", "length": "0 to 63", "comment":"Stop byte of the value to log from a group parameter group. The stop bit is included in the value and becomes the most significant bit."},
+   "includes": {}
+
+}

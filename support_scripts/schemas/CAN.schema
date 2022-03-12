@@ -1,0 +1,7 @@
+{
+  "Name": "CommentAllocation",
+  "A":{"Attribute_name":"CodedCommentIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id": "CCT", "length": "4 to 14", "comment": "Reference to XML element Coded-\nComment\nFormat: (CCT|CCT-)([0–9])+"},
+  "B":{"Attribute_name":"CodedCommentListValueIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id": "CCL", "length": "4 to 14", "comment": "Reference to XML element Coded-\nCommentListValue\nFormat: (CCL|CCL-)([0–9])+"},
+  "C":{"Attribute_name":"FreeCommentText", "Use":"o", "Type": "xs:string", "length": "max 32", "comment": "Operator-definable free comment\ntext"},
+  "includes": {"ASP": {"Use": "o"}}
+}
