@@ -543,7 +543,8 @@ def move_points(db, move_x, move_y, tbl_name, task):
         return [False, e]
 
 
-def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date, column_types):
+def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date,
+                 column_types, column_units=None):
     inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
     sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
         schema=schema)
@@ -552,6 +553,8 @@ def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, 
     for i, col_name in enumerate(heading_row):
         if isint(col_name[0]):
             col_name = '_' + col_name
+        if column_units is not None:
+            col_name = col_name + column_units[i]
         if not lat_lon_inserted and (
                 col_name == longitude_col or col_name == latitude_col):
             sql += "pos geometry(POINT, 4326),"
