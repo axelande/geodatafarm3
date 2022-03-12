@@ -1,0 +1,6 @@
+{"Name": "DeviceAllocation",
+"A":{"Attribute_name":"ClientNameValue ","Use":"o", "Type": "xs:hexBinary", "length": "000016 to FFFFFFFFFFFF15", "comment": "Name of client service (see ISO 11783-5) the task is planned for or was processed with."},
+"B": {"Attribute_name":"ClientNameMask", "Use":"o", "Type": "xs:hexBinary", "length": "000016 to FFFFFFFFFFFF15", "comment": "Bit-Mask, which is to be Used for a logical AND operation to ClientNameValue, to allow more then one specific device for the task. bit value = 1 =  > relevant bit of the ClientNameValue bit value = 0 =  > bit of the Client NameValue is not relevant"},
+"C": {"Attribute_name":"DeviceIdRef ", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DVC", "length": "min 4 to max 14", "comment": "Reference to XML element Device Format (DVC|DVC-)([0-9])+"},
+ "includes": {"ASP": {"Use": "o"}}
+}

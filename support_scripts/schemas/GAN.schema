@@ -1,0 +1,5 @@
+{
+  "Name": "GuidanceAllocation",
+  "A":{"Attribute_name":"GuidanceGroupIdRef", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Reference to XML element Guidance-\nGroup\nFormat: (GGP|GGP-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "includes": {"ASP": {"Use": "r"}, "GST": {"Use": "o"}}
+}

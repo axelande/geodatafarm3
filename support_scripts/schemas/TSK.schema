@@ -1,0 +1,16 @@
+{ "Name": "Task",
+  "A":{"Attribute_name":"TaskId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Format:Unique identifier of task Format: (TSK|TSK-)([0–9])+ Records generated on MICS have negative IDs"},
+  "B": {"Attribute_name":"TaskDesignator", "Use":"o", "Type": "xs:string", "length": "max. 32", "comment": "Task designator/name"},
+  "C":{"Attribute_name":"CustomerIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CTR", "length": "4 to 14", "comment": "Format:Unique identifier of customer Format: (CTR|CTR-)([0–9])+ Records generated on MICS have negative IDs"},
+  "D":{"Attribute_name":"FarmIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"FRM", "length": "4 to 14", "comment": "Format:Unique identifier of farm Format: (FRM|FRM-)([0–9])+ Records generated on MICS have negative IDs"},
+  "E":{"Attribute_name":"PartfieldIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"PFD", "length": "4 to 14", "comment": "Format:Unique identifier of partfield Format: (PFD|PFD-)([0–9])+ Records generated on MICS have negative IDs"},
+  "F":{"Attribute_name":"ResponsibleWorkerIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"WKR", "length": "4 to 14", "comment": "Format:Unique identifier of worker Format: (WKR|WKR-)([0–9])+ Records generated on MICS have negative IDs"},
+  "G": {"Attribute_name":"TaskStatus", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["", "planned", "running", "paused",  "completed", "template", "canceled"], "length": "1 to 6", "comment": "Status of the task, possible values: 1 = planned 2 = running 3 = paUsed 4 = completed 5 = template 6 = canceled"},
+  "H":{"Attribute_name":"DefaultTreatmentZoneCode", "Use":"o", "Type": "xs:unsignedByte", "length": "0 - 254", "comment": "Reference to XML element TreatmentZone"},
+  "I":{"Attribute_name":"PositionLostTreatmentZonenCode", "Use":"o", "Type": "xs:unsignedByte", "length": "0 - 254", "comment": "Reference to XML element TreatmentZone"},
+  "J":{"Attribute_name":"OutOfFieldTreatmentZoneCode", "Use":"o", "Type": "xs:unsignedByte", "length": "0 - 254", "comment": "Reference to XML element TreatmentZone"},
+  "includes": {"TZN": {"Use": "o"}, "TIM": {"Use": "o"}, "OTP": {"Use": "o"}, "WAN": {"Use": "o"}, "DAN": {"Use": "o"},
+    "CNN": {"Use": "o"}, "PAN": {"Use": "o"},"DLT": {"Use": "o"},"CAN": {"Use": "o"},"TLG": {"Use": "o"},"GRD": {"Use": "o"},
+    "CAT": {"Use": "o"}, "GAN": {"Use": "o"}
+  }
+}

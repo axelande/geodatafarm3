@@ -1,0 +1,7 @@
+{
+  "Name": "GuidancePattern",
+  "A":{"Attribute_name":"GuidancePatternId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of GuidanceGroup\nFormat: (GGP|GGP-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"GuidancePatternDesignator", "Use":"o", "Type": "xs:string", "length": "max. 32", "comment": "Designator of GuidancePattern"},
+  "C": {"Attribute_name":"GuidancePatternType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["AB", "A+", "Curve", "Pivot", "Spiral"], "length": "1 - 5", "comment":"Selection of type:\n1 = AB\n2 = A+\n3 = Curve\n4 = Pivot\n5 = Spiral"},
+  "includes": {"LSG": {"Use": "r"}}
+}

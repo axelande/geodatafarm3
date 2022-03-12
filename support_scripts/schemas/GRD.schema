@@ -1,0 +1,13 @@
+{"Name": "Grid",
+ "A": {"Attribute_name":"GridMinimumNorthPosition", "Use":"r", "Type": "xs:decimal", "length": "-90 - 90", "comment":"Minimum north position of the grid Format WGS84"},
+ "B": {"Attribute_name":"GridMinimumEastPosition", "Use":"r", "Type": "xs:decimal", "length": "-180 - 180", "comment":"Minimum east position of the grid Format WGS84"},
+ "C": {"Attribute_name":"GridCellNorthSize", "Use":"r", "Type": "xs:double", "length": "0 - 1", "comment":"North direction gridcell size Format WGS84"},
+ "D": {"Attribute_name":"GridCellEastSize", "Use":"r", "Type": "xs:double", "length": "0 - 1", "comment":"East direction gridcell size Format WGS84"},
+ "E": {"Attribute_name":"GridMaximumColumn", "Use":"r", "Type": "xs:unsigned-Long", "length": "0 - 2^32", "comment":"Number of the gridcells in east direction"},
+ "F": {"Attribute_name":"GridMaximumRow", "Use":"r", "Type": "xs:unsigned-Long", "length": "0 - 2^32", "comment":"Number of the gridcells in east direction"},
+ "G": {"Attribute_name":"Filename", "Use":"r", "Type": "xs:ID", "length": "8", "comment":"Unique name of gridcell file Format: GRD[0–9][0–9][0–9][0–9][0–9]"},
+ "H": {"Attribute_name":"Filelength", "Use":"o", "Type": "xs:unsigned-Long", "length": "0 - 2^32", "comment":"Length of gridcell file in number of bytes"},
+ "I": {"Attribute_name":"GridType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["",  "Grid type 1", "Grid type 2"], "length": "1 - 2", "comment":"Grid type specification: 1 = grid type 1, 2 = grid type 2"},
+ "J": {"Attribute_name":"TreatmentZoneCode", "Use":"o", "Type": "xs:ref_code_child", "Ref_id":"TZN", "length": "0 - 254", "comment":"Grid type 2 TreatmentZoneCode"},
+  "includes": {}
+}

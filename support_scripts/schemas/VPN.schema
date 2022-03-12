@@ -1,0 +1,9 @@
+{ "Name": "ValuePresentation",
+  "A": {"Attribute_name":"ValuePresentationId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment":"Unique identifier of ValuePresentation\nFormat: (VPN|VPN-)([0–9])+"},
+  "B": {"Attribute_name":"Offset", "Use":"r", "Type": "xs:long", "length": "-2^31 to 2^31", "comment":"Offset to be applied to the value for presentation"},
+  "C": {"Attribute_name":"Scale","Use":"r", "Type": "2f", "length": "0.000000001 to 100000000.0", "comment": "Scale to be applied to the value for presentation"},
+  "D": {"Attribute_name":"NumberOfDecimals","Use":"r", "Type": "xs:UnsignedByte", "length": "0 to 7", "comment": "Number of decimals to be presented after the decimal separator."},
+  "E": {"Attribute_name":"UnitDesignator","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "Optional unit designator string."},
+  "F": {"Attribute_name":"ColourLegendIdRef","Use":"o", "Type": "xs:IDREF", "Ref_id": "CLD","length": "min. 4 to max. 14", "comment": "Reference to XML element ColourLegend\nFormat: (CLD|CLD-)([0–9])+"},
+  "includes": {}
+}

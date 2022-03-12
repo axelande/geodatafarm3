@@ -1,0 +1,8 @@
+{"Name": "DeviceProperty",
+ "A": {"Attribute_name":"DevicePropertyObjectId", "Use":"r", "Type": "xs:ref_code_parent", "length": "1 - 65534", "comment":"Unique number inside a single device"},
+ "B": {"Attribute_name":"DevicePropertyDDI", "Use":"r", "Type": "xs:hexBinary", "length": "000016 to FFFF16", "comment":"Unique number which\ndefines the property (specified\nin ISO 11783-11)"},
+ "C": {"Attribute_name":"DevicePropertyValue", "Use":"r", "Type": "xs:long", "length": "−2^31 to (2^31−1)", "comment":"Property value"},
+  "D": {"Attribute_name":"DevicePropertyDesignator", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment":"Optional designator for\nproperty"},
+  "E": {"Attribute_name":"DeviceValuePresentationObjectId", "Use":"o", "Type": "xs:unsignedShort", "length": "1 to 65534", "comment":"Object ID of DeviceValuePresentation"},
+ "includes": {}
+}

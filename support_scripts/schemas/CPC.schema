@@ -1,0 +1,6 @@
+{
+  "Name": "CulturalPractice",
+  "A":{"Attribute_name":"CulturalPracticeId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of Cultural-\nPractice\nFormat: (CPC|CPC-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B": {"Attribute_name":"CulturalPracticeDesignator", "Use":"r", "Type": "xs:string", "length": "max 32", "comment": "Designator of the CulturalPractice"},
+   "includes": {"OTR": {"Use": "o"}}
+}

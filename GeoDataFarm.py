@@ -37,45 +37,9 @@ import platform
 import webbrowser
 from .resources import *
 plugin_dir = os.path.dirname(__file__)
-
-
-def try_install_package(package):
-    print('installing ' + package)
-    if platform.system() == 'Windows':
-        subprocess.call([sys.exec_prefix + '/python', "-m", 'pip', 'install', package])
-    else:
-        subprocess.call(['python3', '-m', 'pip', 'install', package])
-
-
-try:
-    import matplotlib
-except ModuleNotFoundError:
-    try_install_package('matplotlib')
-    try:
-        import matplotlib
-    except ModuleNotFoundError:
-        QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
-GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install matplotlib" and "pip install reportlab"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
-If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
-        sys.exit()
-
-
-try:
-    import reportlab
-except ModuleNotFoundError:
-    try_install_package('reportlab')
-    try:
-        import reportlab
-    except ModuleNotFoundError:
-        QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
-GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install matplotlib" and "pip install reportlab"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
-If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
-        sys.exit()
-
+# TODO get the links to work to geodatafarms webpage prior to createing a farm.
+from .support_scripts.init_checks import check_and_install_requirements
+check_and_install_requirements()
 
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.db import DB
@@ -399,8 +363,11 @@ class GeoDataFarm:
     def clicked_create_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
-        create_farm = CreateFarm(self, True)
-        create_farm.run()
+        from .import_data.handle_iso11783 import Iso11783
+        iso = Iso11783(self)
+        iso.open_input_folder()
+        #create_farm = CreateFarm(self, True)
+        #create_farm.run()
 
     def connect_to_farm(self):
         """Connects the docked widget with the CreateFarm script and starts

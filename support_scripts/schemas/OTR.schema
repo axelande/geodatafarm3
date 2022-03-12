@@ -1,0 +1,5 @@
+{
+  "Name": "OperationTechniqueReference",
+  "A":{"Attribute_name":"OperationTechniqueIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id": "OTQ", "length": "4 to 14", "comment": "Reference to XML element OperationTechnique\nFormat: (OTQ|OTQ-)([0–9])+"},
+  "includes": {}
+}

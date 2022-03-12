@@ -1,0 +1,7 @@
+{"Name": "Position",
+ "A": {"Attribute_name":"PositionNorth", "Use":"r", "Type": "2f", "length": "-90 to 90", "comment":"GPS Position in WGS84"},
+ "B": {"Attribute_name":"PositionEast", "Use":"r", "Type": "2f", "length": "-180 to 180", "comment":"GPS Position in WGS84"},
+ "C": {"Attribute_name":"PositionUp", "Use":"o", "Type": "2f", "length": "-2^31 to 2^31-1", "comment":"GPS Position altitude in WGS84 ellipsoid in mm"},
+ "D": {"Attribute_name":"PositionStatus", "Use":"r", "Type": "xs:NMToken", "nm_list": ["no GPS fix","GNSS fix", "DGNSS fix", "Precise GNSS, no deliberate degradation (such as SA), and higher resolution code (P-code) and frequencies are Used to correct atmospheric delays",  "RTK fixed integer", "RTK float", "Est(DR)mode", "Manual input", "Simulate mode", "", "", "","", "","Error", "PositionStatus value is not available"], "length": "0 to 15", "comment":"Position status. Definition references NMEA2000 MethodGNSS parameter. 0 = no GPS fix 1 = GNSS fix 2 = DGNSS fix 3 = Precise GNSS, no deliberate degradation (such as SA), and higher resolution code (P-code) and 2 frequencies are Used to correct atmospheric delays 4 = RTK fixed integer 5 = RTK float 6 = Est(DR)mode 7 = Manual input 8 = Simulate mode 9–13 = Reserved 14 = Error 15 = PositionStatus value is not available"},
+ "includes": {}
+}

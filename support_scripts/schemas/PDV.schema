@@ -1,0 +1,10 @@
+{"Name": "ProcessDataVariable",
+ "A": {"Attribute_name":"ProcessDataDDI", "Use":"r", "Type": "xs::hexBinary", "length": "000016 to FFFF16", "comment":"Unique number which defines\nthe process data DDI (specified in\nISO 11783-11)"},
+ "B": {"Attribute_name":"ProcessDataValue", "Use":"o", "Type": "xs:long", "length": "−2^31 - (2^31−1)", "comment":"Contains the value of the process data\nDDI"},
+ "C": {"Attribute_name":"ProductIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"PDT", "length": "4 - 14", "comment":"Reference to XML element Product\nFormat: (PDT|PDT-)([0–9])"},
+  "D": {"Attribute_name":"DeviceElementIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DET", "length": "4 - 14", "comment":"Reference to XML element DeviceElement\nFormat: (DET|DET-)([0–9])"},
+  "E": {"Attribute_name":"ValuePresentationIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"VPN", "length": "4 - 14", "comment":"Reference to XML element ValuePresentation\nFormat: (VPN|VPN-)([0–9])"},
+  "F": {"Attribute_name":"ActualCulturalPracticeValue", "Use":"o", "Type": "xs:long", "length": "−2^31 - (2^31−1)", "comment":"Contains the value of the ActualCulturalPractice\nDDI that this process data\nare planned for or assigned to."},
+  "G": {"Attribute_name":"ElementTypeInstanceValue", "Use":"o", "Type": "xs:long", "length": "−2^31 - (2^31−1)", "comment":"Contains the value of the ElementTypeInstance\nDDI that this process data\nare planned for or assigned to."},
+"includes": {"PDV": {"Use": "o"}}
+}

@@ -1,0 +1,17 @@
+{
+  "Name": "Customer",
+  "A":{"Attribute_name":"CustomerId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of customer\nFormat: (CTR|CTR-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B":{"Attribute_name":"CustomerLastName", "Use":"r", "Type": "xs:string", "length": "max 32.", "comment": "Last name"},
+  "C":{"Attribute_name":"CustomerFirstName", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "First name"},
+  "D":{"Attribute_name":"CustomerStreet", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Street"},
+  "E":{"Attribute_name":"CustomerPOBox", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Postbox"},
+  "F":{"Attribute_name":"CustomerPostalCode", "Use":"o", "Type": "xs:string", "length": "max 10.", "comment": "Postal code"},
+  "G":{"Attribute_name":"CustomerCity", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "City"},
+  "H":{"Attribute_name":"CustomerState", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "State, province"},
+  "I":{"Attribute_name":"CustomerCountry", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Country"},
+  "J":{"Attribute_name":"CustomerPhone", "Use":"o", "Type": "xs:string", "length": "max 20.", "comment": "Telephone number"},
+  "K":{"Attribute_name":"CustomerMobile", "Use":"o", "Type": "xs:string", "length": "max 20.", "comment": "Mobile phone number"},
+  "L":{"Attribute_name":"CustomerFax", "Use":"o", "Type": "xs:string", "length": "max 32.", "comment": "Fax number"},
+  "M":{"Attribute_name":"CustomerEmail", "Use":"o", "Type": "xs:string", "length": "max 64.", "comment": "E-mail"},
+  "includes": {}
+  }

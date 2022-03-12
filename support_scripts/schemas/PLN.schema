@@ -1,0 +1,8 @@
+{"Name": "Polygon",
+ "A": {"Attribute_name":"PolygonType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["","Partfield Boundary","TreatmentZone","WaterSurface","Building","Road","Obstacle","Flag","Other","Mainfield","Headland","BufferZone","Windbreak"], "length": "1 - 12", "comment":"Type of the polygon,\npossible values:\n1 = Partfield Boundary\n2 = TreatmentZone\n3 = WaterSurface\n4 = Building\n5 = Road\n6 = Obstacle\n7 = Flag\n8 = Other\n9 = Mainfield, main area of the\nfield Used for cultivationsa\n10 = Headland, area of the\nfield Used for turning, usually\nplanted in another direction\nthan the main field area. Definition\nand example of main\nfield area is Partfield boundary\nminus obstacles, water surface,\nheadlandsa\n11 = BufferZone, area of the\nfield that has to be treated differently\ndue to environmental\nregulationsa\n12 = Windbreak, surrounding\nof a field with the purpose to"},
+ "B": {"Attribute_name":"PolygonDesignator", "Use":"o", "Type": "xs:String", "length": "max 32", "comment":"Name of the polygon, description or comment"},
+ "C": {"Attribute_name":"PolygonArea", "Use":"o", "Type": "xs:unsignedLong", "length": "0 - 2^32", "comment":"Polygon area in m2"},
+ "D": {"Attribute_name":"PolygonColour", "Use":"o", "Type": "xs:unsignedByte", "length": "0 - 254", "comment":"Colour of the polygon\nFormat: palette like\nISO 11783-6"},
+ "E": {"Attribute_name":"PolygonId", "Use":"o", "Type": "xs:ID", "length": "4 - 14", "comment":"Unique identifier of polygon Format: (PLN|PLN-)([0–9])+ Records generated on MICS have negative IDs"},
+ "includes": {"LSG": {"Use": "r"}}
+}

@@ -1,0 +1,12 @@
+{"Name": "Partfield",
+ "A": {"Attribute_name":"PartfieldId", "Use":"r", "Type": "xs:ID", "length": "4 - 14", "comment":"Unique identifier of partfield Format: (PFD|PFD-)([0–9])+ Records generated on MICS have negative IDs"},
+ "B": {"Attribute_name":"PartfieldCode", "Use":"o", "Type": "xs:string", "length": "max 32", "comment":"Partfield number from the FMIS"},
+ "C": {"Attribute_name":"PartfieldDesignator", "Use":"r", "Type": "xs:string", "length": "max 32", "comment":"Partfield designator/name"},
+ "D": {"Attribute_name":"PartfieldArea", "Use":"r", "Type": "xs:unsigned-Long", "length": "0 - 2^32", "comment":"Size of the partfield in m2"},
+ "E": {"Attribute_name":"CustomerIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CTR", "length": "4 - 14", "comment":"Reference to XML element Customer Format: (CTR|CTR-)([0–9])+"},
+ "F": {"Attribute_name":"FarmIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"FRM", "length": "4 - 14", "comment":"Reference to XML element Farm Format: (FRM|FRM-)([0–9])+"},
+ "G": {"Attribute_name":"CropTypeIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CTP", "length": "4 - 14", "comment":"Reference to XML element CropType Format: (CTP|CTP-)([0–9])+"},
+ "H": {"Attribute_name":"CropVarietyIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CVT", "length": "4 - 14", "comment":"Reference to XML element CropVariety Format: (CVT|CVT-)([0–9])+"},
+ "I": {"Attribute_name":"FieldIdRef", "Use":"0", "Type": "xs:IDREF", "Ref_id":"PFD", "length": "4 - 14", "comment":"Unique identifier of Partfield, Used as parent Partfield Format: (PFD|PFD-)([0–9])+ Records generated on MICS have negative IDs"},
+ "includes": {"PLN": {"Use": "o"}, "LSG": {"Use": "o"}, "PTN": {"Use": "o"}, "GGP": {"Use": "o"}}
+}

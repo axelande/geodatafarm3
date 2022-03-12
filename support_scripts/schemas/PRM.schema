@@ -1,0 +1,5 @@
+{ "Name": "ProductRelation",
+  "A": {"Attribute_name":"ProductIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"PDT","length": "min. 4 to max. 14", "comment":"Unique identifier of product\nFormat: (PDT|PDT-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "B": {"Attribute_name":"QuantityValue", "Use":"r", "Type": "xs:long", "length": "0 to 2^31", "comment":"Contains the portion of the mixture"},
+  "includes": {}
+}

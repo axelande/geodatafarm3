@@ -36,6 +36,7 @@ def check_row_failed(row, heading_row, param):
 
 class ConvertToAreas:
     def __init__(self, parent):
+        """This class uses a text file as input and interpolate the harvest from a combiner."""
         self.db = parent.db
         self.populate = parent.populate
         self.tsk_mngr = parent.tsk_mngr

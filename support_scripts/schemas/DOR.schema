@@ -1,0 +1,4 @@
+{"Name": "DeviceObjectReference",
+ "A": {"Attribute_name":"DeviceObjectId", "Use":"r", "Type": "xs:UnsignedShort", "length": "1 to 65534", "comment":"Object ID of DeviceProccessData or DeviceProperty"},
+ "includes":  {}
+}

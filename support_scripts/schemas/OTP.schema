@@ -1,0 +1,6 @@
+{
+  "Name": "OperTechPractice",
+  "A":{"Attribute_name":"CulturalPracticeIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"CPC", "length": "4 to 14", "comment": "Reference to XML element CulturalPractice\nFormat: (CPC|CPC-)([0–9])+"},
+  "B": {"Attribute_name":"OperationTechniqueIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"OTQ", "length": "4 to 14", "comment": "Reference to XML element OperationTechnique\nFormat: (OTQ|OTQ-)([0–9])+"},
+  "includes": {}
+}

@@ -1,0 +1,6 @@
+{"Name": "TreatmentZone",
+"A": {"Attribute_name":"TreatmentZoneCode", "Use":"r", "Type": "xs:ref_code_parent", "length": "0 to 254", "comment":"Unique TreatmentZoneCode inside a task"},
+"B": {"Attribute_name":"TreatmentZoneDesignator", "Use":"o", "Type": "xs:string", "length": "max 32", "comment":"Name of TreatmentZone"},
+"C": {"Attribute_name":"TreatmentZoneColour", "Use":"o", "Type": "xs:unsigned-Byte", "length": "0 to 254", "comment":"Colour of TreatmentZone Format: palette like ISO 11783-6"},
+"includes": {"PLN": {"Use": "o"}, "PDV": {"Use": "o"}}
+}

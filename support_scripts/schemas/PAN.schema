@@ -1,0 +1,10 @@
+{
+  "Name": "ProductAllocation",
+  "A":{"Attribute_name":"ProductIdRef", "Use":"r", "Type": "xs:IDREF", "Ref_id":"PDT", "length": "4 to 14", "comment": "Reference to XML element Product\nFormat: (PDT|PDT-)([0–9])+"},
+  "B":{"Attribute_name":"QuantityDDI", "Use":"o", "Type": "xs:hexBinary", "length": "000016 to FFFF16", "comment": "Unique number which defines\nthe quantity (specified in\nISO 11783-11)"},
+  "C":{"Attribute_name":"QuantityValue", "Use":"o", "Type": "xs:long", "length": "0 - 2^32", "comment": "Value for the quantity of the\nproduct transferred (for filling or\nemptying) or the quantity of the\nproduct in a bin (for remainder)"},
+  "D":{"Attribute_name":"TransferMode", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["Filling", "Emptying","Remaindera"], "length": "1 - 3", "comment": "Type of transfer:\n1 = Filling\n2 = Emptying\n3 = Remaindera"},
+  "E":{"Attribute_name":"DeviceElementIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"DET", "length": "4 to 14", "comment": "Reference to XML element DeviceElement\nFormat: (DET|DET-)([0–9])+"},
+  "F":{"Attribute_name":"ValuePresentationIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"VPN", "length": "4 to 14", "comment": "Reference to ValuePresentation\nFormat: (VPN|VPN-)([0–9])+"},
+  "includes": {"ASP": {"Use": "o"}}
+  }

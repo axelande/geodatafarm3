@@ -1,0 +1,6 @@
+{"Name": "Timelog",
+ "A": {"Attribute_name":"Filename", "Use":"r", "Type": "xs:ID", "length": "8", "comment":"Unique name of TimeLog file Format: TLG[0-9][0-9][0-9][0-9][0-9]"},
+ "B": {"Attribute_name":"Filelength", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to (32^2-2)", "comment":"Length of TimeLog file in number of bytes"},
+ "C": {"Attribute_name":"TimeLogType", "Use":"r", "Type": "xs:NMToken", "nm_list": ["binary timelog file type 1"], "length": "1", "comment":"1 = binary timelog file type 1"},
+ "includes": {}
+}

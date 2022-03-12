@@ -1,5 +1,5 @@
 import os
-import gdal
+from osgeo import gdal
 from osgeo import osr
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from functools import partial
