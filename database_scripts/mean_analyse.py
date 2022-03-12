@@ -190,9 +190,7 @@ class Analyze:
                             self.overlapping_tables[overlapping]['so'].append(self.soil_tables[so][so_key])
             if len(self.weather_tables) > 0:
                 for ac in self.weather_tables.keys():
-                    ac_year = 2018#self.db.execute_and_return("""select extract(year from date_) from weather.{tbl}
-                                #limit 1""".format(
-                        #tbl=self.weather_tables[ac][0]['tbl_name']))[0][0]
+                    ac_year = int(self.weather_tables[ac][0]['tbl_name'][-4:])
                     if ac_year == ha_year:
                         sql = """select st_intersects(a.geom, b.geom) from 
                         (select st_extent(ac.polygon) geom from weather.{a_tbl} ac) a,
