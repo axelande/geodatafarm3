@@ -1,19 +1,21 @@
 # Author Axel Hörteborn
 from datetime import datetime, timedelta
-import json
+from pathlib import Path
 import xml.etree.ElementTree as ET
+
 import numpy as np
 import pandas as pd
-#from tqdm import tqdm
+
+from ..__init__ import TR
 from .sorting_utils import find_by_key
 from .cython_agri import read_static_binary_data, cython_read_dlvs
-import os
-from pathlib import Path
 
 
 class PyAgriculture:
-    def __init__(self, path):
+    def __init__(self, path, parent):
         self.path = path
+        translate = TR('Agriculture')
+        self.tr = translate.tr
         self.tasks = []
         self.task_dicts = {}
         self.task_infos = []
@@ -32,7 +34,7 @@ class PyAgriculture:
             self.path += '/'
         if not Path(self.path + 'TaskData.xml').is_file():
             print(self.path + 'TaskData.xml')
-            raise FileNotFoundError('The specified path does not contain a taskdata.xml file')
+            raise FileNotFoundError(self.tr('The specified path does not contain a taskdata.xml file'))
 
     @staticmethod
     def _add_from_root_or_child(r_or_c, task_data_dict: dict) -> list:
@@ -88,7 +90,6 @@ class PyAgriculture:
     def add_dlv(self, dlv_e: ET.Element):
         if dlv_e.attrib["B"] == "":
             self.dlvs.append(dlv_e.attrib.copy())
-            earlier_added = 0
             if dlv_e.attrib["A"] not in self.dlv_idx.keys():
                 self.dlv_idx[dlv_e.attrib["A"]] = len(list(self.dlv_idx))
 
@@ -107,7 +108,7 @@ class PyAgriculture:
                     branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
                 except FileNotFoundError:
                     if not continue_on_fail:
-                        raise FileNotFoundError(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found.")
+                        raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
                     else:
                         continue
                 tlg_dict = self.add_children({}, branch.getroot())
@@ -134,7 +135,7 @@ class PyAgriculture:
                     branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
                 except FileNotFoundError:
                     if not continue_on_fail:
-                        raise FileNotFoundError(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found.")
+                        raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
                     else:
                         continue
                 #if i < 50 or i > 108:
@@ -165,7 +166,7 @@ class PyAgriculture:
 
     def set_ptn_data(self, tlg_dict: dict) -> None:
         if 'PTN' not in tlg_dict.keys():
-            raise BaseException('Point data does not exist in all TLG files..')
+            raise BaseException(self.tr('Point data does not exist in all TLG files..'))
         dtypes = [('millisFromMidnight', np.dtype('uint32')),
                   ('days', np.dtype('uint16')),
                   ('pos north', np.dtype('int32')),
@@ -286,10 +287,6 @@ class PyAgriculture:
         while read_point < len(binary_data):
             # The first part of each "row" contains of static data, a timestamp and some satellite data.
             if self.read_with_cython:
-                #read_static = line_profiler.LineProfiler(read_static_binary_data)
-                #read_dlv = line_profiler.LineProfiler(cython_read_dlvs)
-                from cython_agri import read_static_binary_data
-                #read_static_binary_data = profile(read_static_binary_data)
                 data_row, nr_dlvs, nr_static = read_static_binary_data(data_row, read_point, binary_data, tlg_dict,
                                                                        self.dt, self.start_date)
                 read_point += self.static_bytes
@@ -307,7 +304,6 @@ class PyAgriculture:
             if most_important is None:
                 to_tlg_df.append(data_row[:])
                 continue
-            #to_tlg_df.append(data_row[:])
             if data_row[df_columns.index(most_important)] is not None:
                 to_tlg_df.append(data_row[:])
                 if reset_columns:
@@ -369,35 +365,3 @@ class PyAgriculture:
             if isinstance(task, pd.DataFrame):
                 self.tasks[j][column] = task[column] * 1.12085
                 self.tasks[j].rename({'dry yield (lb/ac)': 'dry yield (kg/ha)'}, axis='columns', inplace=True)
-
-
-if __name__ == '__main__':
-    #py_agri = PyAgriculture('C:/dev/Loggdata/potatis2021/')
-    #py_agri = PyAgriculture(r'C:\dev\Loggdata\tröskdata2021')
-    #py_agri = PyAgriculture('../godning/')
-    #py_agri = PyAgriculture('C:\\Users\\axa\\Downloads\\190906_154054_exported_TaskData0_8\\TASKDATA\\')
-    py_agri = PyAgriculture('../Combiner/TaskData/')
-    #py_agri = PyAgriculture('../skord2021/horte1/')
-    import time
-    t0 = time.time()
-    py_agri.gather_data(continue_on_fail=False)
-    print('reading data took : ' + str(round(time.time()-t0)))
-    print('Got all data')
-    from pandas import ExcelWriter
-
-    writer = ExcelWriter('../skord2021/old.xlsx')
-    t0 = time.time()
-    for i, task in enumerate(py_agri.tasks):
-        print(i, task)
-    df_tasks = pd.concat(py_agri.tasks)
-    df_tasks.to_csv('../skord2020.csv')
-    print('saving data took : ' + str(round(time.time() - t0)))
-    #for i in tqdm(range(len(py_agri.tasks))):
-    #    if isinstance(py_agri.tasks[i], pd.DataFrame):
-    #        try:
-    #            py_agri.tasks[i].to_excel(writer, 'Sheet' + str(i))
-    #        except:
-    #            pass
-    #writer.save()
-    #print(py_agri.tasks)
-    #print(len(py_agri.tasks))

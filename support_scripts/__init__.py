@@ -42,6 +42,8 @@ def check_text(text):
             only_char += letter
         elif letter in str_digits:
             only_char += letter
+        elif letter == '%':
+            only_char += 'pct'
         elif letter == ' ':
             only_char += '_'
         else:
