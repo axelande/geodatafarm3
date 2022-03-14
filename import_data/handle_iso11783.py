@@ -68,8 +68,6 @@ class Iso11783:
         task_names = {}
         for task_nr, data_set in enumerate(self.py_agri.tasks):  # type: pd.DataFrame
             try:
-                print('data set')
-                print(data_set)
                 mid_rw = int(len(data_set) / 2)
                 lat = data_set.iloc[mid_rw]['latitude']
                 lon = data_set.iloc[mid_rw]['longitude']
@@ -168,7 +166,9 @@ class Iso11783:
             existing_values.append(self.IXB.TWtoParam.item(i, 0).text())
         for i, item in enumerate(self.IXB.TWColumnNames.selectedItems()):
             if item.column() == 0 and item.text() not in existing_values:
-                items_to_add.append(item.text())
+                index = self.IXB.TWColumnNames.selectedIndexes()[i].row()
+                items_to_add.append(item.text() +
+                                    f'_{check_text(self.IXB.TWColumnNames.cellWidget(index, 4).currentText())}_')
         for i, item in enumerate(items_to_add):
             self.IXB.TWtoParam.setRowCount(rows_in_table + i + 1)
             item1 = QtWidgets.QTableWidgetItem(item)
@@ -271,7 +271,6 @@ class Iso11783:
         if new_unit == 'F':
             new_value = 'F'
         if new_value is not None:
-            print(new_value)
             self.IXB.TWColumnNames.item(index, 5).setText(str(new_value))
 
     @staticmethod
@@ -322,7 +321,7 @@ class Iso11783:
         idxs = []
         rows_in_table = self.IXB.TWtoParam.rowCount()
         for i in range(rows_in_table):
-            focus_col.append(self.IXB.TWtoParam.item(i, 0).text())
+            focus_col.append(check_text(self.IXB.TWtoParam.item(i, 0).text()))
         found = False
         for tbl_idx, check_idx,  cbox in self.checkboxes2:
             if cbox.checkState() == 2:
@@ -340,7 +339,7 @@ class Iso11783:
                                                       self.tr('You need to select a crop'))
                     return [False]
                 crops.append(crop)
-                focus_cols.append(check_text(focus_col))
+                focus_cols.append(focus_col)
                 idxs.append(tbl_idx)
         if not found:
             QtWidgets.QMessageBox.information(None, self.tr("Error:"),
@@ -375,7 +374,7 @@ class Iso11783:
                 col_types.append(0)
             elif dtype == np.float64:
                 col_types.append(1)
-            elif dtype == np.str:
+            elif dtype == np.str_:
                 col_types.append(2)
             else:
                 col_types.append(2)
@@ -471,7 +470,8 @@ def insert_data(tr, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_na
     if schema != 'harvest':
         create_polygons(db, schema, tbl_name, field)
     db.execute_sql(f"DROP TABLE {schema}.temp_table")
-    db.create_indexes(tbl_name, focus_col, schema, primary_key=False)
+    for col in focus_col:
+        db.create_indexes(tbl_name, col, schema, primary_key=False)
 
 
 class App:

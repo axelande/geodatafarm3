@@ -12,7 +12,7 @@ from .cython_agri import read_static_binary_data, cython_read_dlvs
 
 
 class PyAgriculture:
-    def __init__(self, path, parent):
+    def __init__(self, path):
         self.path = path
         translate = TR('Agriculture')
         self.tr = translate.tr

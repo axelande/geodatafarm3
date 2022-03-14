@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>903</width>
-    <height>773</height>
+    <width>909</width>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>-10</y>
+     <y>10</y>
      <width>889</width>
-     <height>1041</height>
+     <height>581</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -27,52 +27,39 @@
      <enum>QLayout::SetMinimumSize</enum>
     </property>
     <item>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinimumSize</enum>
-      </property>
-      <property name="horizontalSpacing">
-       <number>2</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>0</number>
-      </property>
-      <item row="3" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="PBAddInputFolder">
-          <property name="locale">
-           <locale language="English" country="UnitedKingdom"/>
-          </property>
-          <property name="text">
-           <string>Select taskdata folder</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="PBHelp">
-          <property name="locale">
-           <locale language="English" country="UnitedKingdom"/>
-          </property>
-          <property name="text">
-           <string>Help</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="PBAddInputFolder">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>Select taskdata folder</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="PBHelp">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>Help</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -204,7 +191,7 @@ may take a while</string>
        <widget class="QTableWidget" name="TWColumnNames">
         <property name="minimumSize">
          <size>
-          <width>580</width>
+          <width>620</width>
           <height>250</height>
          </size>
         </property>
