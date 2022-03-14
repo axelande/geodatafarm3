@@ -25,6 +25,8 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.8.0
+  - [feature] Import of isoxml files is now possible with the plugin
   Version 2.7.3
   - [bug] fixed bugs with shapefiles and guide files
   Version 2.7.2
