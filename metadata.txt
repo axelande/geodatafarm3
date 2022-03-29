@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.8.1
+version=2.8.2
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,9 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.8.2
+  - [feature] added a functionality to remove data rows
+  - [bug] fixed minor bug in ISOtask where a debug save was in use
   Version 2.8.1
   - [bug] fixed minor bug so users can create new farms.
   Version 2.8.0
