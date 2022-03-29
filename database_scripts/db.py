@@ -249,7 +249,7 @@ class DB:
             print('Failed when trying to create indexes')
             print(e)
 
-    def get_tables_in_db(self, schema):
+    def get_tables_in_db(self, schema) -> list:
         """Get the tables in schema
 
         Parameters
@@ -295,7 +295,7 @@ class DB:
             checked_values.append([col, count])
         return checked_values
 
-    def get_all_columns(self, table, schema, exclude="''"):
+    def get_all_columns(self, table, schema, exclude="''") -> list:
         """Get all columns of a table
 
         Parameters

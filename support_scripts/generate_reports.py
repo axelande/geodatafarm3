@@ -88,9 +88,9 @@ class RapportGen:
 
     def set_widget_connections(self):
         """A simple function that sets the buttons on the report tab"""
-        self.parent.dock_widget.PBReportPerOperation.clicked.connect(self.report_per_operation)
-        self.parent.dock_widget.PBReportPerField.clicked.connect(self.report_per_field)
-        self.parent.dock_widget.PBReportSelectFolder.clicked.connect(self.select_folder)
+        self.dw.PBReportPerOperation.clicked.connect(self.report_per_operation)
+        self.dw.PBReportPerField.clicked.connect(self.report_per_field)
+        self.dw.PBReportSelectFolder.clicked.connect(self.select_folder)
 
     def select_folder(self):
         """A function that lets the user select the folder for the
