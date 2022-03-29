@@ -4,12 +4,12 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="469"/>
+        <location filename="../import_data/handle_iso11783.py" line="465"/>
         <source>Warning:</source>
         <translation>Varning:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="469"/>
+        <location filename="../import_data/handle_iso11783.py" line="465"/>
         <source>No data was found on that field.</source>
         <translation>Ingen data hittades i det fältet.</translation>
     </message>
@@ -658,6 +658,147 @@ benämn ditt attribut som [0], [1] etc.:</translation>
     </message>
 </context>
 <context>
+    <name>DropUnReal</name>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="63"/>
+        <source>- select dataset -</source>
+        <translation>-Välj data -</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="39"/>
+        <source>- Select type -</source>
+        <translation>-Välj typ av data -</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="41"/>
+        <source>plant</source>
+        <translation>sådd</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="43"/>
+        <source>fertilize</source>
+        <translation>gödning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="45"/>
+        <source>spray</source>
+        <translation>sprutning</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="47"/>
+        <source>other</source>
+        <translation>andra</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="49"/>
+        <source>harvest</source>
+        <translation>Skörd data</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="51"/>
+        <source>soil</source>
+        <translation>Jord data</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="53"/>
+        <source>weather</source>
+        <translation>Väder</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/drop_unreal.py" line="74"/>
+        <source>- select attribute -</source>
+        <translation>- välj attribut -</translation>
+    </message>
+</context>
+<context>
+    <name>DropUnRealForm</name>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="14"/>
+        <source>Drop unreal rows</source>
+        <translation>Ta bort orealistiska värden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="62"/>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="67"/>
+        <source>&lt;=</source>
+        <translation>&lt;=</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="72"/>
+        <source>=</source>
+        <translation>=</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="77"/>
+        <source>&gt;=</source>
+        <translation>&gt;=</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="82"/>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="99"/>
+        <source>- Select type -</source>
+        <translation>-Välj typ av data -</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="104"/>
+        <source>plant</source>
+        <translation>sådd</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="109"/>
+        <source>fertilize</source>
+        <translation>gödning</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="114"/>
+        <source>spray</source>
+        <translation>sprutning</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="119"/>
+        <source>other</source>
+        <translation>andra</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="124"/>
+        <source>harvest</source>
+        <translation>Skörd data</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="129"/>
+        <source>soil</source>
+        <translation>Jord data</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="134"/>
+        <source>weather</source>
+        <translation>Väder</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="163"/>
+        <source>Select attribute:</source>
+        <translation>Välj attribut:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="175"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="../widgets/drop_un_real.ui" line="182"/>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+</context>
+<context>
     <name>FixRowGeometry</name>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="161"/>
@@ -784,42 +925,42 @@ mig gärna på geodatafarm@gmail.com</translation>
 <context>
     <name>GeoDataFarm</name>
     <message>
-        <location filename="../GeoDataFarm.py" line="218"/>
+        <location filename="../GeoDataFarm.py" line="219"/>
         <source>&amp;GeoFarm</source>
         <translation>&amp;GeoFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="202"/>
+        <location filename="../GeoDataFarm.py" line="203"/>
         <source>GeoDataFarm</source>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="292"/>
+        <location filename="../GeoDataFarm.py" line="293"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Namnet finns redan, vill du ersätta den datan?</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="276"/>
+        <location filename="../GeoDataFarm.py" line="277"/>
         <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
         <translation>Du måste välja åtminstånde en aktivitet eller jorddata och en skörde data.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="346"/>
+        <location filename="../GeoDataFarm.py" line="351"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="338"/>
+        <location filename="../GeoDataFarm.py" line="343"/>
         <source>Crop name must be filled in.</source>
         <translation>Namn på gröda måste vara ifyllt.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="346"/>
+        <location filename="../GeoDataFarm.py" line="351"/>
         <source>Crop name already exist, please select a new name</source>
         <translation>Namn på gröda exciterar redan, välj ett nytt namn</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="330"/>
+        <location filename="../GeoDataFarm.py" line="335"/>
         <source>Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don&apos;t understand some parts please do send a e-mail to me at geodatafarm@gmail.com</source>
         <translation>Välkommen till GeoDataFarm, detta är ett plugin som utvecklas, om du har några frågor eller förbätringsförslag skicka gärna dem till geodatafarm@gmail.com</translation>
     </message>
@@ -928,7 +1069,7 @@ of colors:</source>
         <translation>Skapa styrfil</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3408"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3475"/>
         <source>Irrigation</source>
         <translation>Bevattning</translation>
     </message>
@@ -988,7 +1129,7 @@ of colors:</source>
         <translation>Lägg till data</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3274"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3341"/>
         <source>Planting</source>
         <translation>Sådd</translation>
     </message>
@@ -1058,7 +1199,7 @@ of colors:</source>
         <translation>Import från fil:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3306"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3373"/>
         <source>Fertilizing</source>
         <translation>Gödning</translation>
     </message>
@@ -1073,7 +1214,7 @@ of colors:</source>
         <translation>Preparat:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3290"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3357"/>
         <source>Spraying</source>
         <translation>Sprutning</translation>
     </message>
@@ -1103,7 +1244,7 @@ of colors:</source>
         <translation>Vind riktning:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3389"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3456"/>
         <source>Other</source>
         <translation>Övrigt</translation>
     </message>
@@ -1138,7 +1279,7 @@ of colors:</source>
         <translation>ton</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3338"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3405"/>
         <source>Plowing</source>
         <translation>Plöjning</translation>
     </message>
@@ -1153,7 +1294,7 @@ of colors:</source>
         <translation>Djup:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3354"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3421"/>
         <source>Harrowing</source>
         <translation>Harvning</translation>
     </message>
@@ -1173,7 +1314,7 @@ of colors:</source>
         <translation>Giva:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3427"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3494"/>
         <source>Weather</source>
         <translation>Väder</translation>
     </message>
@@ -1183,7 +1324,7 @@ of colors:</source>
         <translation>Stöd för att hantera väderdata kommer komma</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3370"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3437"/>
         <source>Soil</source>
         <translation>Jord</translation>
     </message>
@@ -1238,12 +1379,12 @@ of colors:</source>
         <translation>Väder data listor:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3480"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3547"/>
         <source>All years</source>
         <translation>Alla år</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3496"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3563"/>
         <source>Specific year</source>
         <translation>Specifict år</translation>
     </message>
@@ -1253,77 +1394,77 @@ of colors:</source>
         <translation>Välj år</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3691"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3758"/>
         <source>yyyy</source>
         <translation>yyyy</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3191"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3258"/>
         <source>Reports</source>
         <translation>Rapporter</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3438"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3505"/>
         <source>List all operations per operation</source>
         <translation>Lista alla operationer per operation</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3232"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3299"/>
         <source>With details</source>
         <translation>Med detaljer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3445"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3512"/>
         <source>Without details</source>
         <translation>Utan detaljer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3455"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3522"/>
         <source>Select Folder</source>
         <translation>Välj mapp</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3222"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3289"/>
         <source>List all operations per field</source>
         <translation>Lista alla operationer per fält</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3255"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3322"/>
         <source>List all operations per crop</source>
         <translation>Lista alla opertioner per gröda</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3550"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3617"/>
         <source>Plan ahead</source>
         <translation>Planera framåt</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3571"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3638"/>
         <source>Plan summary</source>
         <translation>Summering av plan</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3627"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3694"/>
         <source>Make your plan ahead</source>
         <translation>Gör din planering frammöver</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3620"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3687"/>
         <source>Update fields and crops</source>
         <translation>Updatera fält och grödor</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3600"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3667"/>
         <source>Save planning</source>
         <translation>Spara planering</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3640"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3707"/>
         <source>Update summary</source>
         <translation>Uppdatera summering</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3613"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3680"/>
         <source>View year on canvas</source>
         <translation>Se årets planering på kartan</translation>
     </message>
@@ -1363,12 +1504,12 @@ of colors:</source>
         <translation>Ledningstal (rx):</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3262"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3329"/>
         <source>Select operations</source>
         <translation>Välj operationer</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3322"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3389"/>
         <source>Harvest</source>
         <translation>Skörd</translation>
     </message>
@@ -1408,12 +1549,12 @@ of colors:</source>
         <translation>Ändra data</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3541"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3608"/>
         <source>Generate reports</source>
         <translation>Generera rapporter</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3527"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3594"/>
         <source>Here you can generate reports of the imported data.
 If you are missing a report / something in a report please send a e-mail to geodatafarm@gmail.com</source>
         <translation>Här kan du genera rapporter på den data som du har importerat.
@@ -1562,17 +1703,17 @@ GeoDataFarms webpage</source>
 GeoDataFarms hemsida</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3156"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3223"/>
         <source>Fix rows</source>
         <translation>Fixa rader</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3180"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3247"/>
         <source>Fix Rows</source>
         <translation>Gör om till rader</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3163"/>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3230"/>
         <source>This script converts the delaunay triangle polygons (automatically 
  generated) into row like polygons.</source>
         <translation>Det här scriptet konveraterar delanuay trianglarna (som 
@@ -1638,6 +1779,16 @@ Du behöver ladda ner rasterband 4 och 8 från EO Browser (gratis registrering p
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1226"/>
         <source>Iso Bin XML files</source>
         <translation>xml och binär filer</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3197"/>
+        <source>Drop unrealistic values</source>
+        <translation>Ta bort orealistiska värden</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="3181"/>
+        <source>Completely remove data points with unrealistic values (based on an attribute)</source>
+        <translation>Radera data punkter med orealistiska värden (baserat på ett attribut)</translation>
     </message>
 </context>
 <context>
@@ -2042,22 +2193,22 @@ följande kolumn</translation>
         <translation>Indata fil</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="238"/>
+        <location filename="../widgets/import_xml_bin.ui" line="225"/>
         <source>Columns in the file:</source>
         <translation>Kolumner i filen:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="186"/>
+        <location filename="../widgets/import_xml_bin.ui" line="173"/>
         <source>Parameters that could be analysed:</source>
         <translation>Parameterar som kan bli analyserade:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="248"/>
+        <location filename="../widgets/import_xml_bin.ui" line="235"/>
         <source>&lt;--</source>
         <translation>&lt;--</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="199"/>
+        <location filename="../widgets/import_xml_bin.ui" line="186"/>
         <source>--&gt;</source>
         <translation>--&gt;</translation>
     </message>
@@ -2229,7 +2380,7 @@ följande kolumn</translation>
         <translation>0.0</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="71"/>
+        <location filename="../widgets/import_xml_bin.ui" line="60"/>
         <source>Help</source>
         <translation>Hjälp</translation>
     </message>
@@ -2244,12 +2395,12 @@ följande kolumn</translation>
         <translation>Flytta (cc) till vänster:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="48"/>
+        <location filename="../widgets/import_xml_bin.ui" line="37"/>
         <source>Select taskdata folder</source>
         <translation>Välj taskdata mapp</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="97"/>
+        <location filename="../widgets/import_xml_bin.ui" line="84"/>
         <source>Adding tasks and
 checking their field
 may take a while</source>
@@ -2260,17 +2411,17 @@ detta kan ta en
 stund</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="122"/>
+        <location filename="../widgets/import_xml_bin.ui" line="109"/>
         <source>Find thier field</source>
         <translation>Läs in och hitta</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="296"/>
+        <location filename="../widgets/import_xml_bin.ui" line="283"/>
         <source>Store data</source>
         <translation>Spara data</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="283"/>
+        <location filename="../widgets/import_xml_bin.ui" line="270"/>
         <source>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</source>
         <translation>När du har kontrollerat att allt ser bra ut (att kolumnerna har rätt enhet och skalning) tryck &quot;Spara data&quot;, detta kan lite tid</translation>
     </message>
@@ -2455,42 +2606,42 @@ Are you sure that id, username and password was correct?</source>
         <translation>Öppna mapp</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="95"/>
+        <location filename="../import_data/handle_iso11783.py" line="93"/>
         <source>Get more info</source>
         <translation>Hämta data</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="95"/>
+        <location filename="../import_data/handle_iso11783.py" line="93"/>
         <source>Task name</source>
         <translation>Uppgift namn</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="346"/>
+        <location filename="../import_data/handle_iso11783.py" line="345"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="346"/>
+        <location filename="../import_data/handle_iso11783.py" line="345"/>
         <source>You need to select at least one of the tasks</source>
         <translation>Du måste välja minst en uppgift</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="126"/>
+        <location filename="../import_data/handle_iso11783.py" line="124"/>
         <source>To include</source>
         <translation>Att inkludera</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="126"/>
+        <location filename="../import_data/handle_iso11783.py" line="124"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="126"/>
+        <location filename="../import_data/handle_iso11783.py" line="124"/>
         <source>Field</source>
         <translation>Fält</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="126"/>
+        <location filename="../import_data/handle_iso11783.py" line="124"/>
         <source>Crops</source>
         <translation>Gröda</translation>
     </message>
@@ -2530,27 +2681,27 @@ Are you sure that id, username and password was correct?</source>
         <translation>Skala</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="332"/>
+        <location filename="../import_data/handle_iso11783.py" line="331"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="339"/>
+        <location filename="../import_data/handle_iso11783.py" line="338"/>
         <source>You need to select a crop</source>
         <translation>Du måste välja en gröda</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="338"/>
+        <location filename="../import_data/handle_iso11783.py" line="337"/>
         <source>--- Select crop ---</source>
         <translation>--- Välj gröda ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="364"/>
+        <location filename="../import_data/handle_iso11783.py" line="363"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="364"/>
+        <location filename="../import_data/handle_iso11783.py" line="363"/>
         <source>The number must only contain numbers and .</source>
         <translation>Skalan får bara innehålla siffror och decimaler separeras med en .</translation>
     </message>
