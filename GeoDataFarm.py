@@ -61,6 +61,7 @@ from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
 from .support_scripts.generate_reports import RapportGen
 from .support_scripts.add_field import AddField
+from .support_scripts.drop_unreal import DropUnReal
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.__init__ import isint, TR
 from .support_scripts.populate_lists import Populate
@@ -312,6 +313,10 @@ class GeoDataFarm:
         me = MultiEdit(self)
         me.show()
 
+    def drop_unreal(self):
+        du = DropUnReal(self)
+        du.show()
+
     def import_irrigation(self):
         """Opens the irrigation handler widget"""
         irr = IrrigationHandler(self)
@@ -415,6 +420,7 @@ class GeoDataFarm:
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
             self.dock_widget.PBRemoveCrop.clicked.connect(self.remove_crop_name)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
+            self.dock_widget.PBDropUnReal.clicked.connect(self.drop_unreal)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
