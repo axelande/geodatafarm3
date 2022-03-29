@@ -402,23 +402,20 @@ class Iso11783:
         crops = prep_data[2]
         dates = prep_data[3]
         focus_cols = prep_data[4]
-        idxs = prep_data[5]
         df = pd.concat(self.tasks)
         success = self.scale_dfs(df)
         if not success[0]:
             return False
-        df = success[1]
-        df.to_csv('c:\\dev\\skord2020.csv')
         for i, field in enumerate(fields):
             crop = crops[i]
             date = dates[i]
             columns = []
+            table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
             for col in df.columns:
                 columns.append(check_text(col))
             insert_sql, _ = create_table(self.db, self.data_type, columns, 'latitude', 'longitude', 'time_stamp', '',
                                          col_types, column_units=col_units)
-            insert_data(self.tr, self.db, df, self.data_type, insert_sql,
-                        f'{check_text(field)}_{check_text(crop)}_{check_text(date)}', field, focus_cols, col_types)
+            insert_data(self.tr, self.db, df, self.data_type, insert_sql, table, field, focus_cols, col_types)
         self.close()
 
 
