@@ -197,7 +197,7 @@ class DB:
                 return True
         return False
 
-    def create_table(self, sql, tbl_name):
+    def create_table(self, sql, tbl_name, drop_if_exist=True):
         """Create s table, if table exists the table is dropped.
 
         Parameters
@@ -206,8 +206,11 @@ class DB:
             With the sql statement to create the table
         tbl_name: str
             table name
+        drop_if_exist: bool
+            If drop exist leave it as True
         """
-        self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
+        if drop_if_exist:
+            self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
         self.execute_sql(sql)
 
     def create_indexes(self, tbl_name, params_to_eval, schema,
@@ -227,9 +230,9 @@ class DB:
             default True -> create a primary key over field_row_id
         """
         try:
-            self.execute_sql("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')))
+            self.execute_sql("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
             self.execute_sql("""create index gist_{schema}_{tbl2}
-        on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
+        on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
             if schema != 'harvest':
                 self.execute_sql("""DROP INDEX IF EXISTS gist2_{schema}_{tbl2}""".format(
                     schema=schema, tbl2=tbl_name.replace('.', '_')))
@@ -237,11 +240,11 @@ class DB:
                     on {schema}.{tbl} using gist(polygon) """.format(schema=schema,
                                                                  tbl=tbl_name,
                                                                  tbl2=tbl_name.replace(
-                                                                     '.', '_')))
+                                                                     '.', '_')), disregard_failure=True)
             for parm in params_to_eval:
-                self.execute_sql("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')))
+                self.execute_sql("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
                 self.execute_sql("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
-        using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')))
+        using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
             if primary_key:
                 self.execute_sql("""ALTER TABLE {schema}.{tbl}
         ADD CONSTRAINT pkey_{schema}_{tbl} PRIMARY KEY (field_row_id);""".format(tbl=tbl_name, schema=schema))
@@ -396,7 +399,7 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self, sql, return_failure=False, return_row_count=False):
+    def execute_sql(self, sql, return_failure=False, return_row_count=False, disregard_failure=False):
         """
         Parameters
         ----------
@@ -404,6 +407,8 @@ class DB:
             text string with the sql statement
         return_failure: bool, optional default False
             If True returns if failure
+        disregard_failure: bool, optional default False
+            If True disregards failures and don't print etc.
         """
         self._connect()
         if self.conn is None:
@@ -419,6 +424,8 @@ class DB:
             if return_failure:
                 error_type, value_, traceback_ = sys.exc_info()
                 return [False, error_type, e]
+            elif disregard_failure:
+                pass
             else:
                 sf = SomeFailure()
                 sf.display_failure(e)

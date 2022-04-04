@@ -558,7 +558,7 @@ def move_points(db, move_x, move_y, tbl_name, task):
 
 
 def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date,
-                 column_types, column_units=None):
+                 column_types, column_units=None, table='', ask_replace=True):
     inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
     sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
         schema=schema)
@@ -598,7 +598,8 @@ def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, 
     sql += ")"
     inserting_text = inserting_text[:-2] + ') VALUES '
     insert_org_sql = inserting_text
-    db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+    if not db.check_table_exists(schema=schema, table_name=table, ask_replace=ask_replace):
+        db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
     return inserting_text, insert_org_sql
 
 
@@ -659,7 +660,8 @@ def insert_data_to_database(task, db: DB, params: dict):
         focus_col = params['focus_col']
         if isint(tbl_name[0]):
             tbl_name = '_' + tbl_name
-        inserting_text, insert_org_sql = create_table(db, schema, params['heading_row'], latitude_col, longitude_col, date_row, all_same_date, column_types)
+        inserting_text, insert_org_sql = create_table(db, schema, params['heading_row'], latitude_col, longitude_col,
+                                                      date_row, all_same_date, column_types, table=tbl_name)
         if task != 'debug':
             task.setProgress(2)
         count_db_insert = 0

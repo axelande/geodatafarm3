@@ -165,7 +165,8 @@ class TableManagement:
             self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(polygon) """.format(tbl=table, schema=schema))
         try:
-            self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
+            if schema != 'weather':
+                self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
 create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, schema=schema))
         except:
             pass

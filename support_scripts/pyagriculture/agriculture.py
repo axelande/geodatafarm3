@@ -106,7 +106,7 @@ class PyAgriculture:
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
                 try:
                     branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
-                except FileNotFoundError:
+                except (FileNotFoundError, ET.ParseError):
                     if not continue_on_fail:
                         raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
                     else:
@@ -133,7 +133,7 @@ class PyAgriculture:
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
                 try:
                     branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
-                except FileNotFoundError:
+                except (FileNotFoundError, ET.ParseError):
                     if not continue_on_fail:
                         raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
                     else:

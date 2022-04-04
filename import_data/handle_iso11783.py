@@ -414,7 +414,7 @@ class Iso11783:
             for col in df.columns:
                 columns.append(check_text(col))
             insert_sql, _ = create_table(self.db, self.data_type, columns, 'latitude', 'longitude', 'time_stamp', '',
-                                         col_types, column_units=col_units)
+                                         col_types, column_units=col_units, table=table, ask_replace=False)
             insert_data(self.tr, self.db, df, self.data_type, insert_sql, table, field, focus_cols, col_types)
         self.close()
 
