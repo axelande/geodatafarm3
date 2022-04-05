@@ -42,10 +42,11 @@ from .support_scripts.init_checks import check_and_install_requirements
 check_and_install_requirements()
 
 # Import the code for the dock_widget and the subwidgets
+from .database_scripts.create_new_farm import CreateFarm
 from .database_scripts.db import DB
 from .database_scripts.mean_analyse import Analyze
 from .database_scripts.plan_ahead import PlanAhead
-from .database_scripts.create_new_farm import CreateFarm
+from .database_scripts.table_managment import TableManagement
 from .import_data.handle_irrigation import IrrigationHandler
 from .import_data.save_planting_data import SavePlanting
 from .import_data.save_fertilizing_data import SaveFertilizing
@@ -56,19 +57,18 @@ from .import_data.save_plowing_data import SavePlowing
 from .import_data.save_harrowing_data import SaveHarrowing
 from .import_data.save_soil_data import SaveSoil
 from .import_data.convert_harvest_to_area import ConvertToAreas
-from .database_scripts.table_managment import TableManagement
+from .import_data.satellite_data import SatelliteData
+from .support_scripts.__init__ import isint, TR
+from .support_scripts.add_field import AddField
+from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
-from .support_scripts.generate_reports import RapportGen
-from .support_scripts.add_field import AddField
-from .support_scripts.drop_unreal import DropUnReal
-from .support_scripts.multiedit import MultiEdit
-from .support_scripts.__init__ import isint, TR
-from .support_scripts.populate_lists import Populate
-from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.fix_rows import RowFixer
-from .import_data.satellite_data import SatelliteData
-
+from .support_scripts.drop_unreal import DropUnReal
+from .support_scripts.generate_reports import RapportGen
+from .support_scripts.multiedit import MultiEdit
+from .support_scripts.populate_lists import Populate
+from .support_scripts.rescale_values import RescaleValues
 
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
@@ -317,6 +317,10 @@ class GeoDataFarm:
         du = DropUnReal(self)
         du.show()
 
+    def rescale_values(self):
+        rv = RescaleValues(self)
+        rv.show()
+
     def import_irrigation(self):
         """Opens the irrigation handler widget"""
         irr = IrrigationHandler(self)
@@ -421,6 +425,7 @@ class GeoDataFarm:
             self.dock_widget.PBRemoveCrop.clicked.connect(self.remove_crop_name)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBDropUnReal.clicked.connect(self.drop_unreal)
+            self.dock_widget.PBRescaleValues.clicked.connect(self.rescale_values)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
             self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
