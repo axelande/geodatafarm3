@@ -7,7 +7,7 @@ from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from PyQt5.QtWidgets import QMessageBox
 try:
     from ..support_scripts.__init__ import TR
-except ValueError:
+except ImportError:
     from support_scripts.__init__ import TR
 __author__ = 'Axel Horteborn'
 

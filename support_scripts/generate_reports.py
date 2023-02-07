@@ -247,6 +247,7 @@ class RapportGen:
                                     self.tr('Following error occurred: {m}'.format(m=values[1])))
             return
         operation_dict = values[1]
+        print(operation_dict)
         cur_date = date.today().isoformat()
         growing_year = self.dw.DEReportYear.text()
         doc = MyDocTemplate(self.report_name, self.tr, self.plugin_dir, growing_year, cur_date)
@@ -321,6 +322,7 @@ class RapportGen:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('No data where found for that year'))
             return
+        print(1)
         for field in field_dict.keys():
             story.append(Paragraph(field, styleH))
             for i, heading in enumerate(field_dict[field]['headings']):
@@ -331,7 +333,9 @@ class RapportGen:
                 table.setStyle(TableStyle([('FONTSIZE', (0, 0), (l_heading, 0), 12)]))
                 story.append(table)
         try:
+            print(2)
             doc.multiBuild(story)
+            print(3)
         except OSError:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('You must close the file in order to create it again'))
@@ -372,160 +376,90 @@ class RapportGen:
                 temp_ans = temp_ans[0][0]
             return temp_ans
 
-        def get_data(dat: dict, schema: str):
-            return_list = []
-            if 'date' in dat.keys():
-                if dat['date'][:2] == 'c_':
-                    _date_ = dat['date'][2:]
-                else:
-                    sql = """ select array_agg(distinct({d}::date)) from {s}.{t}""".format(
-                        d=dat['date'], t=dat['tbl'], s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    _date_ = ''
-                    temp_date = get_temp_ans(sql, True)
-                    if temp_date is not None and temp_date:
-                        for temp in temp_date:
-                            _date_ += temp.isoformat() + ', '
-                    _date_ = Paragraph(_date_[:-2], styleN)
-                return_list.append(_date_)
-            if 'variety' in dat.keys():
-                if dat['variety'][:2] == 'c_':
-                    _variety_ = dat['variety'][2:]
-                elif dat['variety'] == 'None':
-                    _variety_ = ''
-                else:
-                    sql = """ select array_agg(distinct({v})) from {s}.{t}""".format(v=dat['variety'],
-                                                                                     t=dat['tbl'],
-                                                                                     s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_var = get_temp_ans(sql, True)
-                    if temp_var is not None and temp_var:
-                        _variety_ = Paragraph(str(temp_var)[1:-1], styleN)
-                    else:
-                        _variety_ = ''
-                return_list.append(_variety_)
-            if 'field' in dat.keys():
-                field = Paragraph(dat['field'], styleN)
-                return_list.append(field)
-            if 'crop' in dat.keys():
-                crop = Paragraph(dat['crop'], styleN)
-                return_list.append(crop)
-            if 'rate' in dat.keys():
-                if dat['rate'][:2] == 'c_':
-                    _rate_ = dat['rate'][2:]
-                elif dat['rate'] == 'None':
-                    _rate_ = ''
-                else:
-                    sql = """ select array_agg(distinct({r})) from {s}.{t}""".format(r=dat['rate'],
-                                                                                     t=dat['tbl'],
-                                                                                     s=schema)
-                    if data['year'] is not None:
-                        sql += " where extract(year from date_) = {y}".format(y=data['year'])
-                    temp_rate = get_temp_ans(sql, True)
-                    if temp_rate is not None and temp_rate:
-                        _rate_ = Paragraph(str(temp_rate)[1:-1], styleN)
-                    else:
-                        _rate_ = ''
-                return_list.append(_rate_)
-            if 'yield' in dat.keys():
-                if dat['yield'][:2] == 'c_':
-                    _yield_ = dat['yield'][2:]
-                elif dat['yield'] == 'None':
-                    _yield_ = ''
-                else:
-                    sql = " select round(avg({v})*100)/100::double precision from harvest.{t}".format(v=dat['yield'], t=dat['tbl'])
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_yield = get_temp_ans(sql, False)
-                    if temp_yield is not None and temp_yield:
-                        _yield_ = Paragraph(str(temp_yield)[1:-1], styleN)
-                    else:
-                        _yield_ = ''
-                return_list.append(_yield_)
-            if 'total_yield' in dat.keys():
-                if dat['total_yield'][:2] == 'c_':
-                    _total_yield_ = dat['total_yield'][2:]
-                elif dat['total_yield'] == 'None':
-                    _total_yield_ = ''
-                else:
-                    sql = """ select round(avg({v})*100)/100::double precision from harvest.{t} """.format(
-                        v=dat['total_yield'], t=table_)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_t_yield = get_temp_ans(sql, False)
-                    if temp_t_yield is not None and temp_t_yield:
-                        _total_yield_ = Paragraph(str(temp_t_yield)[1:-1], styleN)
-                    else:
-                        _total_yield_ = ''
-                return_list.append(_total_yield_)
-            if 'clay' in dat.keys():
-                if dat['clay'][:2] == 'c_':
-                    _clay_ = dat['clay'][2:]
-                elif dat['clay'] == 'None':
-                    _clay_ = ''
-                else:
-                    sql = """ select round(avg({v})*100)/100::double precision 
-                    from {s}.{t}""".format(v=dat['clay'], t=dat['tbl'], s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_clay = get_temp_ans(sql, False)
-                    if temp_clay is not None and temp_clay:
-                        _clay_ = Paragraph(str(temp_clay), styleN)
-                    else:
-                        _clay_ = ''
-                return_list.append(_clay_)
-            if 'humus' in dat.keys():
-                if dat['humus'][:2] == 'c_':
-                    _humus_ = dat['humus'][2:]
-                elif dat['humus'] == 'None':
-                    _humus_ = ''
-                else:
-                    sql = """ select round(avg({r})*100)/100::double precision 
-                    from {s}.{t}""".format(r=dat['humus'], t=dat['tbl'], s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_hum = get_temp_ans(sql, False)
-                    if temp_hum is not None and temp_hum:
-                        _humus_ = Paragraph(str(temp_hum), styleN)
-                    else:
-                        _humus_ = ''
-                return_list.append(_humus_)
-            if 'ph' in dat.keys():
-                if dat['ph'][:2] == 'c_':
-                    _ph_ = dat['ph'][2:]
-                elif dat['ph'] == 'None':
-                    _ph_ = ''
-                else:
-                    sql = """ select round(avg({r})*100)/100::double precision from {s}.{t}""".format(
-                        r=dat['ph'], t=dat['tbl'], s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_ph = get_temp_ans(sql, False)
-                    if temp_ph is not None and temp_ph:
-                        _ph_ = Paragraph(str(temp_ph), styleN)
-                    else:
-                        _ph_ = ''
-                return_list.append(_ph_)
-            if 'rx' in dat.keys():
-                if dat['rx'][:2] == 'c_':
-                    _rx_ = dat['rx'][2:]
-                elif dat['rx'] == 'None':
-                    _rx_ = ''
-                else:
-                    sql = """ select round(avg({r})*100)/100::double precision from {s}.{t} """.format(
-                        r=dat['rx'], t=dat['tbl'], s=schema)
-                    if data['year'] is not None:
-                        sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-                    temp_rx = get_temp_ans(sql, False)
-                    if temp_rx is not None and temp_rx:
-                        _rx_ = Paragraph(str(temp_rx), styleN)
-                    else:
-                        _rx_ = ''
-                return_list.append(_rx_)
+        def retrieve_date(meta_data, schema, year) -> Paragraph:
+            if meta_data['date'][:2] == 'c_':
+                _date_ = meta_data['date'][2:]
+            else:
+                sql = f""" select array_agg(distinct({meta_data['date']}::date)) 
+    from {schema}.{meta_data['tbl']}"""
+                if year is not None:
+                    sql += f""" where extract(year from date_) = {year}"""
+                _date_ = ''
+                temp_date = get_temp_ans(sql, True)
+                if temp_date is not None and temp_date:
+                    for temp in temp_date:
+                        _date_ += temp.isoformat() + ', '
+                _date_ = Paragraph(_date_[:-2], styleN)
+            return _date_
 
+        def retrieve_distinct(parameter, table, schema, year) -> Paragraph:
+            if parameter[:2] == 'c_':
+                variable = parameter[2:]
+            elif parameter == 'None':
+                variable = ''
+            else:
+                sql = f""" select array_agg(distinct({parameter})) 
+from {schema}.{table}"""
+                if year is not None:
+                    sql += f""" where extract(year from date_) = {year}"""
+                temp_var = get_temp_ans(sql, True)
+                if temp_var is not None and temp_var:
+                    variable = Paragraph(str(temp_var)[1:-1], styleN)
+                else:
+                    variable = ''
+            return variable
+
+        def retrieve_avg(parameter, tbl, year, schema):
+            if parameter[:2] == 'c_':
+                variable = parameter[2:]
+            elif parameter == 'None':
+                variable = ''
+            else:
+                sql = f""" select round(avg({parameter})*100)/100::double precision 
+                from {schema}.{tbl}"""
+                if year is not None:
+                    sql += f""" where extract(year from date_) = {year}"""
+                temp_var = get_temp_ans(sql, False)
+                if temp_var is not None and temp_var:
+                    variable = Paragraph(str(temp_var), styleN)
+                else:
+                    variable = ''
+            return variable
+
+        def get_data(meta_data: dict, schema: str):
+            """Obtains the data from the server, meta_data is a dictionary with some information of what to obtain."""
+
+            return_list = []
+            if 'date' in meta_data.keys():
+                return_list.append(retrieve_date(meta_data, schema, data['year']))
+            if 'variety' in meta_data.keys():
+                return_list.append(retrieve_distinct(meta_data['variety'], meta_data['tbl'], schema, data['year']))
+            if 'field' in meta_data.keys():
+                field = Paragraph(meta_data['field'], styleN)
+                return_list.append(field)
+            if 'crop' in meta_data.keys():
+                crop = Paragraph(meta_data['crop'], styleN)
+                return_list.append(crop)
+            if 'rate' in meta_data.keys():
+                return_list.append(retrieve_distinct(meta_data['rate'], meta_data['tbl'], schema, data['year']))
+            if 'yield' in meta_data.keys():
+                return_list.append(retrieve_avg(meta_data['yield'], meta_data['tbl'], data['year'], schema))
+            if 'total_yield' in meta_data.keys():
+                if meta_data['total_yield'][:2] == 'c_':
+                    _total_yield_ = meta_data['total_yield'][2:]
+                else:
+                    _total_yield_ = ''
+                return_list.append(_total_yield_)
+            if 'clay' in meta_data.keys():
+                return_list.append(retrieve_avg(meta_data['clay'], meta_data['tbl'], data['year'], schema))
+            if 'humus' in meta_data.keys():
+                return_list.append(retrieve_avg(meta_data['humus'], meta_data['tbl'], data['year'], schema))
+            if 'ph' in dat.keys():
+                return_list.append(retrieve_avg(meta_data['ph'], meta_data['tbl'], data['year'], schema))
+            if 'rx' in dat.keys():
+                return_list.append(retrieve_avg(meta_data['rx'], meta_data['tbl'], data['year'], schema))
             return return_list
+
         try:
             # Planting
             if task != 'debug':

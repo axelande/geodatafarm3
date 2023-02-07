@@ -25,6 +25,9 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.8.3
+  - [bug] Fixed some minor bugs with ISO11783 import
+  - [feature] added functionality to rescale parameter
   Version 2.8.2
   - [feature] added a functionality to remove data rows
   - [bug] fixed minor bug in ISOtask where a debug save was in use

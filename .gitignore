@@ -53,3 +53,4 @@ help/build/
 resources.py
 connection_data.ini
 test_data/*
+zip_build/
