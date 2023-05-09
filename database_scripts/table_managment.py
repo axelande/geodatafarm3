@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from qgis.core import QgsTask
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 from ..widgets.table_managment_dialog import TableMgmtDialog
@@ -35,6 +36,7 @@ class TableManagement:
         self.TMD.pButSave.clicked.connect(self.save_table)
         self.TMD.pButGetYieldCol.clicked.connect(self.update_column_list)
         self.TMD.pButSplitRows.clicked.connect(self.split_rows)
+        self.TMD.PBMakeRows.clicked.connect(self.make_rows)
         self.update_table_list()
         self.TMD.show()
         self.TMD.exec_()
@@ -252,6 +254,40 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 self.tables_in_db -= 1
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
 
+    def make_rows(self):
+        suc, s_table = self.check_multiple()
+        if not suc:
+            return
+        schema, tbl = s_table.split('.')
+        if schema == 'harvest':
+            QMessageBox(None, self.tr('Error'),
+                        self.tr('This option is not possible for harvest tables'))
+            return
+        sql = f"select field_row_id, row, course from {schema}.{tbl} order by row, field_row_id"
+        row_courses = self.db.execute_and_return(sql, return_failure=False)
+        nr_rows = int(self.TMD.SBNumberOfRows.value())
+        max_dev = int(self.TMD.SBMaxAngleOffset.value())
+        avg_dist = float(self.TMD.SBAvgDistance.value())
+        distance_bet_rows = float(self.TMD.SBRowDistance_2.value()) / 2
+        stops = {}
+        for i in range(1, nr_rows + 1):
+            stops[i] = []
+
+        current_course = 0
+        for id_, row, course in row_courses:
+            if len(stops[row]) == 0:
+                stops[row].append(id_)
+                current_course = course
+                continue
+            if round(course/max_dev) != round(current_course/max_dev):
+                stops[row].append(id_)
+                current_course = course
+        for row in stops.keys():
+            stops[row].append(len(row_courses)+1)
+        task1 = QgsTask.fromFunction('Updating rows', make_rows, self.db, schema, tbl, avg_dist, distance_bet_rows, stops)
+        self.parent.tsk_mngr.addTask(task1)
+        
+
     def split_rows(self):
         """Spilt the harvest data to multiple rows."""
         suc, s_table = self.check_multiple()
@@ -366,3 +402,16 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         return current_max + 1, now_max
 
 
+def make_rows(db, schema, tbl, avg_dist, distance_bet_rows, stops):
+        for j, (row, stops_) in enumerate(stops.items()):
+            for i, stop in enumerate(stops_[:-1]):
+                sql = f"""with sel as(select st_buffer(st_makeline(pos order by field_row_id)::geography, {distance_bet_rows}) as outer_row
+        from {schema}.{tbl} 
+        where row={row} and field_row_id < {stops[row][i+1]} and field_row_id >={stop}
+        )
+        Update {schema}.{tbl}
+        set polygon=st_multi(st_intersection(st_buffer(pos::geography, {avg_dist}), outer_row)::geometry)
+        from sel
+        where row={row} and field_row_id < {stops[row][i+1]} and field_row_id >={stop}
+        """
+                db.execute_sql(sql)
