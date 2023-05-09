@@ -83,14 +83,14 @@ class Analyze:
                                 limit 1""".format(
                         tbl=self.plant_tables[ac][0]['tbl_name']))[0][0]
                     if ac_year == ha_year:
-                        sql = """select st_intersects(a.geom, b.geom) from 
-                        (select st_extent(ac.polygon) geom from plant.{a_tbl} ac) a,
-                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
+                        sql = """select sum(case when st_intersects(a.geom, b.geom) then 1 else 0 end)/count(a.geom)::double precision from 
+                        (select (ac.polygon) geom from plant.{a_tbl} ac) a,
+                        (select st_setsrid(st_extent(ha.pos), 4326) geom from harvest.{h_tbl} ha) b
                         """.format(
                             a_tbl=self.plant_tables[ac][0]['tbl_name'],
                             h_tbl=self.harvest_tables[ha][0]['tbl_name'])
                         overlaps = self.db.execute_and_return(sql)[0][0]
-                        if overlaps:
+                        if overlaps > 0.5:
                             overlapping += 1
                             self.overlapping_tables[overlapping] = {}
                             for ha_key in self.harvest_tables[ha].keys():
@@ -390,7 +390,10 @@ class Analyze:
             model = self.layout_dict[col]['model']
             param_label = self.layout_dict[col]['param_label']
             i = model.rowCount()
+            print(names)
             for name in names:
+                if name is None:
+                    continue
                 if name in name_text:
                     continue
                 i += 1
@@ -578,94 +581,8 @@ class Analyze:
         that runs the SQL query. On finish plot_data is called"""
         if self.canvas is not None:
             self.dlg.mplvl.removeWidget(self.canvas)
-        if self.dlg.CBLimitArea.isChecked() and self.search_area == '':
-            try:
-                self.iface.actionSaveActiveLayerEdits().trigger()
-                self.iface.actionToggleEditing().trigger()
-                feature = self.add_field.field.getFeature(1)
-                QgsProject.instance().removeMapLayer(self.add_field.field.id())
-                self.add_field.field = None
-            except:
-                QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'No coordinates were found, did you mark the field on the canvas?'))
-                return
-            limiting_polygon = feature.geometry().asWkt()
-            self.search_area = limiting_polygon
-        elif self.dlg.CBLimitArea.isChecked() and self.add_field.field is not None:
-            self.iface.actionSaveActiveLayerEdits().trigger()
-            self.iface.actionToggleEditing().trigger()
-            feature = self.add_field.field.getFeature(1)
-            QgsProject.instance().removeMapLayer(self.add_field.field.id())
-            self.add_field.field = None
-            limiting_polygon = feature.geometry().asWkt()
-            self.search_area = limiting_polygon
-        elif self.dlg.CBLimitArea.isChecked():
-            limiting_polygon = self.search_area
-        else:
-            limiting_polygon = None
-            self.search_area = ''
-        other_parameters = {}
-        investigating_param = {}
-        investigating_param['values'] = []
-        prefixes = {}
-        prefix_count = 0
-        for nbr, col in enumerate(self.layout_dict.keys()):
-            self.update_top_panel(nbr, col)
-            for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
-                table = self.layout_dict[col]['tbl'][tbl_nr]
-                schema = self.layout_dict[col]['schema'][tbl_nr]
-                data_type = self.layout_dict[col]['type']
-                if self.layout_dict[col]['None']:
-                    if self.layout_dict[col]['None'].checkState() == 2:
-                        find_none = True
-                    else:
-                        find_none = False
-                else:
-                    find_none = False
-                ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
-                s_t = '{schema}.{table}'.format(schema=schema, table=table)
-                if s_t not in prefixes.keys():
-                    prefix_count += 1
-                    prefixes[s_t] = 'a{prefix_count}'.format(prefix_count=prefix_count)
-                if self.cb[nbr].isChecked():
-                    column_investigated = col
-                    if ha not in investigating_param.keys():
-                        investigating_param[ha] = {}
-                        investigating_param[ha]['ha_col'] = \
-                        self.layout_dict[col]['harvest'][tbl_nr]['index_col']
-                    if s_t not in investigating_param[ha].keys():
-                        investigating_param[ha][s_t] = {}
-                    investigating_param[ha][s_t] = {}
-                    investigating_param[ha][s_t]['prefix'] = prefixes[s_t]
-                    investigating_param[ha][s_t]['col'] = col
-                    investigating_param[ha][s_t]['None'] = find_none
-                    i_col = col
-                    analyse_params = self.get_initial_distinct_values(col,
-                                                                      table,
-                                                                      schema)
-                    investigating_param['values'].extend(analyse_params['distinct_values'])
-                    # Can happens multiple times, hence shouldn't be a problem.
-                    if data_type == 'checked':
-                        investigating_param['checked'] = True
-                    else:
-                        investigating_param['checked'] = False
-                else:
-                    if ha not in other_parameters.keys():
-                        other_parameters[ha] = {}
-                    if s_t not in other_parameters[ha].keys():
-                        other_parameters[ha][s_t] = {}
-
-                    other_parameters[ha][s_t]['prefix'] = prefixes[s_t]
-
-                    other_parameters[ha][s_t][col] = {}
-                    other_parameters[ha][s_t][col]['None'] = find_none
-                    if self.layout_dict[col]['type'] == 'max_min':
-                        other_parameters[ha][s_t][col]['type'] = 'max_min'
-                        other_parameters[ha][s_t][col]['min'] = self.layout_dict[col]['min']
-                        other_parameters[ha][s_t][col]['max'] = self.layout_dict[col]['max']
-                    else:
-                        other_parameters[ha][s_t][col]['type'] = 'checked'
-                        other_parameters[ha][s_t][col]['check_text'] = "'"
+        limiting_polygon = self.get_search_area()
+        other_parameters, investigating_param, column_investigated, i_col = self.update_parameters()
         if not investigating_param['checked']:
             minvalue = float(self.layout_dict[i_col]['min'])
             maxvalue = float(self.layout_dict[i_col]['max'])
@@ -705,6 +622,100 @@ class Analyze:
         self.tsk_mngr.addTask(task1)
         #a = sql_query('debug', investigating_param, other_parameters, self.db, min_counts, limiting_polygon)
         #self.plot_data('a', a)
+
+    def update_parameters(self):
+        other_parameters = {}
+        investigating_param = {}
+        investigating_param['values'] = []
+        prefixes = {}
+        prefix_count = 0
+        print(self.layout_dict)
+        for nbr, col in enumerate(self.layout_dict.keys()):
+            self.update_top_panel(nbr, col)
+            for tbl_nr in range(len(self.layout_dict[col]['tbl'])):
+                table = self.layout_dict[col]['tbl'][tbl_nr]
+                schema = self.layout_dict[col]['schema'][tbl_nr]
+                data_type = self.layout_dict[col]['type']
+                if self.layout_dict[col]['None']:
+                    if self.layout_dict[col]['None'].checkState() == 2:
+                        find_none = True
+                    else:
+                        find_none = False
+                else:
+                    find_none = False
+                ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
+                s_t = '{schema}.{table}'.format(schema=schema, table=table)
+                if s_t not in prefixes.keys():
+                    prefix_count += 1
+                    prefixes[s_t] = 'a{prefix_count}'.format(prefix_count=prefix_count)
+                if self.cb[nbr].isChecked():
+                    column_investigated = col
+                    if ha not in investigating_param.keys():
+                        investigating_param[ha] = {}
+                        investigating_param[ha]['ha_col'] = self.layout_dict[col]['harvest'][tbl_nr]['index_col']
+                    if s_t not in investigating_param[ha].keys():
+                        investigating_param[ha][s_t] = {}
+                    investigating_param[ha][s_t] = {}
+                    investigating_param[ha][s_t]['prefix'] = prefixes[s_t]
+                    investigating_param[ha][s_t]['col'] = col
+                    investigating_param[ha][s_t]['None'] = find_none
+                    i_col = col
+                    analyse_params = self.get_initial_distinct_values(col,
+                                                                      table,
+                                                                      schema)
+                    investigating_param['values'].extend(analyse_params['distinct_values'])
+                    # Can happens multiple times, hence shouldn't be a problem.
+                    if data_type == 'checked':
+                        investigating_param['checked'] = True
+                    else:
+                        investigating_param['checked'] = False
+                else:
+                    if ha not in other_parameters.keys():
+                        other_parameters[ha] = {}
+                    if s_t not in other_parameters[ha].keys():
+                        other_parameters[ha][s_t] = {}
+
+                    other_parameters[ha][s_t]['prefix'] = prefixes[s_t]
+
+                    other_parameters[ha][s_t][col] = {}
+                    other_parameters[ha][s_t][col]['None'] = find_none
+                    if self.layout_dict[col]['type'] == 'max_min':
+                        other_parameters[ha][s_t][col]['type'] = 'max_min'
+                        other_parameters[ha][s_t][col]['min'] = self.layout_dict[col]['min']
+                        other_parameters[ha][s_t][col]['max'] = self.layout_dict[col]['max']
+                    else:
+                        other_parameters[ha][s_t][col]['type'] = 'checked'
+                        other_parameters[ha][s_t][col]['check_text'] = "'"
+        return other_parameters,investigating_param,column_investigated,i_col
+
+    def get_search_area(self):
+        if self.dlg.CBLimitArea.isChecked() and self.search_area == '':
+            try:
+                self.iface.actionSaveActiveLayerEdits().trigger()
+                self.iface.actionToggleEditing().trigger()
+                feature = self.add_field.field.getFeature(1)
+                QgsProject.instance().removeMapLayer(self.add_field.field.id())
+                self.add_field.field = None
+            except:
+                QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'No coordinates were found, did you mark the field on the canvas?'))
+                return
+            limiting_polygon = feature.geometry().asWkt()
+            self.search_area = limiting_polygon
+        elif self.dlg.CBLimitArea.isChecked() and self.add_field.field is not None:
+            self.iface.actionSaveActiveLayerEdits().trigger()
+            self.iface.actionToggleEditing().trigger()
+            feature = self.add_field.field.getFeature(1)
+            QgsProject.instance().removeMapLayer(self.add_field.field.id())
+            self.add_field.field = None
+            limiting_polygon = feature.geometry().asWkt()
+            self.search_area = limiting_polygon
+        elif self.dlg.CBLimitArea.isChecked():
+            limiting_polygon = self.search_area
+        else:
+            limiting_polygon = None
+            self.search_area = ''
+        return limiting_polygon
 
     def plot_data(self, result, values):
         """Plots the data from the sql query.
@@ -801,6 +812,8 @@ def sql_query(task, investigating_param, other_parameters, db,
             [bool, str, str]
     """
     try:
+        print(investigating_param)
+        print(other_parameters)
         mean_yields = [[], [], []]
         values = investigating_param['values']
         if investigating_param['checked']:
@@ -818,6 +831,8 @@ def sql_query(task, investigating_param, other_parameters, db,
                 all_ready_joined = []
                 if not type(investigating_param[ha]) == dict:
                     continue
+                if sql[-4:] == "AND ":
+                    sql = sql[:-4] + '), '
                 sql += """{ha} as(select COALESCE(avg({avg_val}),0) as yield, count(*)
                 FROM harvest.{ha} ha
                 """.format(ha=ha, avg_val=investigating_param[ha]['ha_col'])
@@ -866,7 +881,7 @@ def sql_query(task, investigating_param, other_parameters, db,
                         pre = investigating_param[ha][in_key]['prefix']
                         col = investigating_param[ha][in_key]['col']
                         if investigating_param['checked']:
-                            sql += "{pre}.{col} like {value}),".format(pre=pre, col=col, value=value)
+                            sql += "{pre}.{col} like {value} AND ".format(pre=pre, col=col, value=value)
                         elif investigating_param['hist']:
                             if len(values) != value_nbr:
                                 sql += """{pre}.{col} >= {value2} AND
@@ -876,6 +891,8 @@ def sql_query(task, investigating_param, other_parameters, db,
                                 {pre}.{col} <= {value}),""".format(pre=pre, col=col, value=value, value2=values[value_nbr - 1])
                         else:
                             sql += '{pre}.{col} = {value}),'.format(pre=pre, col=col, value=value)
+            if sql[-4:] == "AND ":
+                    sql = sql[:-4] + '),'
             sql = sql[:-1]
             sql += """
             SELECT case when("""
