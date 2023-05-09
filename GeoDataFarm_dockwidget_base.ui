@@ -612,6 +612,11 @@ GeoDataFarms webpage</string>
                </item>
                <item>
                 <property name="text">
+                 <string>Iso Bin XML files (.xml+.bin)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
                  <string>Shape file (.shp)</string>
                 </property>
                </item>
@@ -742,6 +747,11 @@ GeoDataFarms webpage</string>
                <item>
                 <property name="text">
                  <string>Text file (.csv; .txt)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Iso Bin XML files (.xml+.bin)</string>
                 </property>
                </item>
                <item>
@@ -920,6 +930,11 @@ GeoDataFarms webpage</string>
                <item>
                 <property name="text">
                  <string>Text file (.csv; .txt)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Iso Bin XML files (.xml+.bin)</string>
                 </property>
                </item>
                <item>
