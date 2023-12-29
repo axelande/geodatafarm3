@@ -1,7 +1,7 @@
 from qgis.core import QgsProject
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QListWidgetItem
-from ..support_scripts.create_layer import CreateLayer
+from ..support_scripts.create_layer import CreateLayer, add_background
 from ..widgets.add_to_canvas import AddToCanvas
 
 
@@ -25,6 +25,7 @@ class AddLayerToCanvas:
     def run(self):
         """Displays the widget and connects the button"""
         self.get_tables()
+        add_background()
         if len(self.parameters) == 1:
             self.add_2_canvas(self.parameters[0])
         else:

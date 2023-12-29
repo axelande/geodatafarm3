@@ -69,7 +69,7 @@ class SavePlanting:
         if self.check_input():
             field = self.dw.CBPField.currentText()
             crop = self.dw.CBPCrop.currentText()
-            date_ = self.dw.DEPlanting.text()
+            date_ = self.dw.DEPlanting.selectedDate().toString("yyyy-MM-dd")
             varerity  = self.dw.LEPVarerity.text()
             spacing = self.dw.LEPSpacing.text()
             seed_rate = self.dw.LEPSeedRate.text()
@@ -92,7 +92,6 @@ class SavePlanting:
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
                 self.dw.CBPField.setCurrentIndex(0)
                 self.dw.CBPCrop.setCurrentIndex(0)
-                self.dw.DEPlanting.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
                 self.dw.LEPVarerity.setText('')
                 self.dw.LEPSpacing.setText('')
                 self.dw.LEPSeedRate.setText('')
@@ -115,7 +114,7 @@ class SavePlanting:
         if self.dw.CBPCrop.currentText() == self.tr('--- Select crop ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a crop'))
             return False
-        if self.dw.DEPlanting.text() == '2000-01-01':
+        if self.dw.DEPlanting.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         if self.dw.LEPVarerity.text == '':

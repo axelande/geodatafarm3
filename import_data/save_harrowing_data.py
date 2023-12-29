@@ -25,9 +25,9 @@ class SaveHarrowing:
         """Saves the manual data."""
         if self.check_input():
             field = self.dw.CBHwField.currentText()
-            date_ = self.dw.DEHarrowing.text()
+            date_ = self.dw.DEHarrowing.selectedDate().toString("yyyy-MM-dd")
             depth = self.dw.LEHwDepth.text()
-            other = self.dw.LEPHwOther.toPlainText()
+            other = self.dw.LEHwOther.toPlainText()
             if depth == '':
                 depth = 'Null'
             if other == '':
@@ -46,7 +46,6 @@ class SaveHarrowing:
     def reset_widget(self):
         """Resets the widget to the default values"""
         self.dw.CBHwField.setCurrentIndex(0)
-        self.dw.DEHarrowing.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LEHwDepth.setText('')
         self.dw.LEHwOther.setPlainText('')
 
@@ -60,7 +59,7 @@ class SaveHarrowing:
         if self.dw.CBHwField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False
-        if self.dw.DEHarrowing.text() == '2000-01-01':
+        if self.dw.DEHarrowing.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         return True

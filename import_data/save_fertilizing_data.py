@@ -66,7 +66,7 @@ class SaveFertilizing:
         if self.check_input():
             field = self.dw.CBFField.currentText()
             crop = self.dw.CBFCrop.currentText()
-            date_ = self.dw.DEFertilizing.text()
+            date_ = self.dw.DEFertilizing.selectedDate().toString("yyyy-MM-dd")
             varerity = self.dw.LEFVarerity.text()
             rate = self.dw.LEFSeedRate.text()
             saw_depth = self.dw.LEFSawDepth.text()
@@ -92,7 +92,6 @@ class SaveFertilizing:
         """Resets the widget to the default values"""
         self.dw.CBFField.setCurrentIndex(0)
         self.dw.CBFCrop.setCurrentIndex(0)
-        self.dw.DEFertilizing.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LEFVarerity.setText('')
         self.dw.LEFSeedRate.setText('')
         self.dw.LEFSawDepth.setText('')
@@ -113,7 +112,7 @@ class SaveFertilizing:
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('In order to save the data you must select a crop'))
             return False
-        if self.dw.DEFertilizing.text() == '2000-01-01':
+        if self.dw.DEFertilizing.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('In order to save the data you must select a date'))
             return False

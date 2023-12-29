@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.9.0
+version=2.9.1
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,10 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.9.1
+  - [fix] Some improvements when adding a dataset.
+  - [fix] Reporting problems
+  - [feature] A new row creator mechanism was added
   Version 2.9.0
   - [feature] Added the possibliity to remake the default delanuy triangles to row polygons
   - [feature] Added ISO/XML output to planting, fertilizer and spraying input as well
@@ -72,6 +76,6 @@ icon=img\icon.png
 # experimental flag
 experimental=False
 # Plugin Dependencies
-plugin_dependencies=matplotlib, reportlab
+plugin_dependencies=matplotlib, reportlab, pandas, cython
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

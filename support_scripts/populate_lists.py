@@ -71,6 +71,8 @@ class Populate:
             fields = self.db.get_distinct('fields', 'field_name', 'public')
             lw = self.dw.LWFields
             lw.clear()
+            for box in cmd_box:
+                box.clear()
             for field_name in fields:
                 _na = QApplication.translate("qadashboard", field_name[0], None)
                 item = QListWidgetItem(_na, self.dw.LWFields)
@@ -106,6 +108,8 @@ class Populate:
             crops = self.db.get_distinct('crops', 'crop_name', 'public')
             lw = self.dw.LWCrops
             lw.clear()
+            for box in cmd_box:
+                box.clear()
             for crop_name in crops:
                 _nam = QApplication.translate("qadashboard", crop_name[0], None)
                 item = QListWidgetItem(_nam, self.dw.LWCrops)
@@ -138,6 +142,10 @@ class Populate:
                 if name in ["spatial_ref_sys", "pointcloud_formats",
                                "temp_polygon", "manual", "plowing_manual", "harrowing_manual"]:
                     continue
+                if self.dw.RBSpecificYear.isChecked():
+                    year = self.dw.DEYear.text()
+                    if schema != 'soil' and year not in name:
+                        continue
                 _name = QApplication.translate("qadashboard", name, None)
                 item = QListWidgetItem(_name, lw)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)

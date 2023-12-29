@@ -24,7 +24,7 @@ class SavePlowing:
         """Saves manual data."""
         if self.check_input():
             field = self.dw.CBPloField.currentText()
-            date_ = self.dw.DEPlowing.text()
+            date_ = self.dw.DEPlowing.selectedDate().toString("yyyy-MM-dd")
             depth = self.dw.LEPloDepth.text()
             other = self.dw.LEPloOther.toPlainText()
             if depth == '':
@@ -44,8 +44,7 @@ class SavePlowing:
 
     def reset_widget(self):
         """Resets the widget to the default values"""
-        self.dw.CBHwField.setCurrentIndex(0)
-        self.dw.DEPlowing.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
+        self.dw.CBPloField.setCurrentIndex(0)
         self.dw.LEPloDepth.setText('')
         self.dw.LEPloOther.setPlainText('')
 
@@ -56,10 +55,10 @@ class SavePlowing:
         -------
         bool
         """
-        if self.dw.CBHvField.currentText() == self.tr('--- Select field ---'):
+        if self.dw.CBPloField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False
-        if self.dw.DEPlowing.text() == '2000-01-01':
+        if self.dw.DEPlowing.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         return True

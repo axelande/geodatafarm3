@@ -30,7 +30,7 @@ class SaveOther:
             if crop == self.tr('--- Select crop ---'):
                 crop = 'Null'
             sql += "'{c}' as crop, ".format(c=crop)
-            date_ = self.dw.DEOther.text()
+            date_ = self.dw.DEOther.selectedDate().toString("yyyy-MM-dd")
             sql += "'{d}' as date_, ".format(d=date_)
             option1 = check_text(self.dw.LEOOption_1.text())
             if option1 != '':
@@ -97,7 +97,6 @@ class SaveOther:
         """Resets the widget to the default values"""
         self.dw.CBOField.setCurrentIndex(0)
         self.dw.CBOCrop.setCurrentIndex(0)
-        self.dw.DEOther.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LEOOption_1.setText('')
         self.dw.LEOValue_1.setText('')
         self.dw.LEOUnit_1.setText('')
@@ -123,7 +122,7 @@ class SaveOther:
         if self.dw.CBOField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False
-        if self.dw.DEOther.text() == '2000-01-01':
+        if self.dw.DEOther.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         return True

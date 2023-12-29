@@ -67,7 +67,7 @@ class SaveSpraying:
         if self.check_input():
             field = self.dw.CBSpField.currentText()
             crop = self.dw.CBSpCrop.currentText()
-            date_ = self.dw.DESpraying.text()
+            date_ = self.dw.DESpraying.selectedDate().toString("yyyy-MM-dd")
             varerity = self.dw.LESpVarerity.text()
             rate = self.dw.LESpRate.text()
             wind_speed = self.dw.LESpWindSpeed.text()
@@ -97,7 +97,6 @@ class SaveSpraying:
         """Resets the widget to the default values"""
         self.dw.CBSpField.setCurrentIndex(0)
         self.dw.CBSpCrop.setCurrentIndex(0)
-        self.dw.DESpraying.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LESpVarerity.setText('')
         self.dw.LESpRate.setText('')
         self.dw.LESpWindSpeed.setText('')
@@ -121,7 +120,7 @@ class SaveSpraying:
         if self.dw.CBSpCrop.currentText() == self.tr('--- Select crop ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a crop'))
             return False
-        if self.dw.DESpraying.text() == '2000-01-01':
+        if self.dw.DESpraying.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         if variety_check and self.dw.LESpVarerity.text == '':

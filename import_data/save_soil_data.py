@@ -47,7 +47,7 @@ class SaveSoil:
         """Saves the manual data."""
         if self.check_input():
             field = self.dw.CBSoField.currentText()
-            date_ = self.dw.DESoil.text()
+            date_ = self.dw.DESoil.selectedDate().toString("yyyy-MM-dd")
             clay = self.dw.LESoClay.text()
             humus = self.dw.LESoHumus.text()
             ph = self.dw.LESoPh.text()
@@ -77,7 +77,6 @@ class SaveSoil:
     def reset_widget(self):
         """Resets the widget to the default values"""
         self.dw.CBSoField.setCurrentIndex(0)
-        self.dw.DESoil.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LESoClay.setText('')
         self.dw.LESoHumus.setText('')
         self.dw.LESoPh.setText('')
@@ -94,7 +93,7 @@ class SaveSoil:
         if self.dw.CBSoField.currentText() == self.tr('--- Select field ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
             return False
-        if self.dw.DESoil.text() == '2000-01-01':
+        if self.dw.DESoil.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         return True

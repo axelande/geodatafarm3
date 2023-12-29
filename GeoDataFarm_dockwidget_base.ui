@@ -426,32 +426,36 @@ GeoDataFarms webpage</string>
               <x>9</x>
               <y>10</y>
               <width>961</width>
-              <height>471</height>
+              <height>496</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
-             <item row="1" column="1">
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="4" column="3">
-              <widget class="QLineEdit" name="LEPVarerity"/>
-             </item>
-             <item row="7" column="4">
-              <widget class="QLabel" name="label_13">
+             <item row="6" column="2">
+              <widget class="QLabel" name="label_10">
                <property name="text">
-                <string>cm</string>
+                <string>Spacing:</string>
                </property>
               </widget>
+             </item>
+             <item row="7" column="2">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>Seed  rate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLabel" name="label_103">
+               <property name="text">
+                <string>Variety:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="3">
+              <widget class="QPlainTextEdit" name="LEPOther"/>
+             </item>
+             <item row="5" column="3">
+              <widget class="QLineEdit" name="LEPVarerity"/>
              </item>
              <item row="0" column="2" colspan="2">
               <widget class="QLabel" name="label_107">
@@ -465,66 +469,20 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="3">
-              <widget class="QLineEdit" name="LEPSpacing"/>
-             </item>
              <item row="7" column="3">
-              <widget class="QLineEdit" name="LEPSawDepth"/>
-             </item>
-             <item row="6" column="2">
-              <widget class="QLabel" name="label_11">
-               <property name="text">
-                <string>Seed  rate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="2">
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>Spacing:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="3">
-              <widget class="QPlainTextEdit" name="LEPOther"/>
-             </item>
-             <item row="6" column="3">
               <widget class="QLineEdit" name="LEPSeedRate"/>
              </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="PBPAddFile">
-               <property name="locale">
-                <locale language="English" country="UnitedKingdom"/>
-               </property>
+             <item row="8" column="4">
+              <widget class="QLabel" name="label_13">
                <property name="text">
-                <string>Open the file and save it</string>
+                <string>cm</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="2">
-              <widget class="QLabel" name="label_103">
+             <item row="7" column="4">
+              <widget class="QLabel" name="label_14">
                <property name="text">
-                <string>Variety:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QLabel" name="label_105">
-               <property name="text">
-                <string>When:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="3">
-              <widget class="QPushButton" name="PBPSaveManual">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="locale">
-                <locale language="English" country="UnitedKingdom"/>
-               </property>
-               <property name="text">
-                <string>Save data</string>
+                <string>kg/ha</string>
                </property>
               </widget>
              </item>
@@ -540,10 +498,10 @@ GeoDataFarms webpage</string>
                </item>
               </widget>
              </item>
-             <item row="3" column="3">
-              <widget class="QDateEdit" name="DEPlanting"/>
+             <item row="6" column="3">
+              <widget class="QLineEdit" name="LEPSpacing"/>
              </item>
-             <item row="5" column="4">
+             <item row="6" column="4">
               <widget class="QLabel" name="label_15">
                <property name="text">
                 <string>cm</string>
@@ -551,47 +509,25 @@ GeoDataFarms webpage</string>
               </widget>
              </item>
              <item row="8" column="3">
-              <widget class="QLabel" name="label_16">
-               <property name="text">
-                <string>Other comments:</string>
-               </property>
-              </widget>
+              <widget class="QLineEdit" name="LEPSawDepth"/>
              </item>
-             <item row="1" column="2" colspan="2">
-              <widget class="QComboBox" name="CBPField">
+             <item row="11" column="3">
+              <widget class="QPushButton" name="PBPSaveManual">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
-               <item>
-                <property name="text">
-                 <string>--- Select field ---</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="7" column="2">
-              <widget class="QLabel" name="label_12">
                <property name="text">
-                <string>Saw depth:</string>
+                <string>Save data</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="4">
-              <widget class="QLabel" name="label_14">
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_105">
                <property name="text">
-                <string>kg/ha</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_108">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>File import:</string>
+                <string>When:</string>
                </property>
               </widget>
              </item>
@@ -632,6 +568,70 @@ GeoDataFarms webpage</string>
                </item>
               </widget>
              </item>
+             <item row="9" column="3">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>Other comments:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="2">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Saw depth:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_108">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>File import:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="PBPAddFile">
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
+               <property name="text">
+                <string>Open the file and save it</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="QComboBox" name="CBPField">
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
+               <item>
+                <property name="text">
+                 <string>--- Select field ---</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QCalendarWidget" name="DEPlanting"/>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -645,7 +645,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>961</width>
-              <height>441</height>
+              <height>451</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_8">
@@ -781,9 +781,6 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="3">
-              <widget class="QDateEdit" name="DEFertilizing"/>
-             </item>
              <item row="5" column="3">
               <widget class="QLineEdit" name="LEFVarerity"/>
              </item>
@@ -836,6 +833,9 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
+             <item row="4" column="3">
+              <widget class="QCalendarWidget" name="DEFertilizing"/>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -849,29 +849,47 @@ GeoDataFarms webpage</string>
               <x>11</x>
               <y>10</y>
               <width>961</width>
-              <height>431</height>
+              <height>477</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_9">
-             <item row="5" column="2">
-              <widget class="QLabel" name="label_30">
+             <item row="6" column="3">
+              <widget class="QLineEdit" name="LESpWindSpeed"/>
+             </item>
+             <item row="8" column="2">
+              <widget class="QLabel" name="label_36">
                <property name="text">
-                <string>Rate:</string>
+                <string>Other comments:</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="3">
-              <widget class="QLineEdit" name="LESpVarerity"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="PBSpAddFile">
+             <item row="2" column="3">
+              <widget class="QComboBox" name="CBSpCrop">
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
-               <property name="text">
-                <string>Open the file and save it</string>
-               </property>
+               <item>
+                <property name="text">
+                 <string>--- Select crop ---</string>
+                </property>
+               </item>
               </widget>
+             </item>
+             <item row="4" column="1">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="9" column="2" colspan="2">
+              <widget class="QPlainTextEdit" name="LESpOther"/>
              </item>
              <item row="6" column="4">
               <widget class="QLabel" name="label_33">
@@ -880,17 +898,62 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="3">
-              <widget class="QComboBox" name="CBSpField">
+             <item row="7" column="4">
+              <widget class="QLabel" name="label_100">
+               <property name="text">
+                <string>deg</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="2">
+              <widget class="QLabel" name="label_101">
+               <property name="text">
+                <string>Wind direction:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_37">
+               <property name="text">
+                <string>Varerity:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLineEdit" name="LESpVarerity"/>
+             </item>
+             <item row="5" column="3">
+              <widget class="QLineEdit" name="LESpRate"/>
+             </item>
+             <item row="10" column="2" colspan="2">
+              <widget class="QPushButton" name="PBSpSaveManual">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
-               <item>
-                <property name="text">
-                 <string>--- Select field ---</string>
-                </property>
-               </item>
+               <property name="text">
+                <string>Save data</string>
+               </property>
               </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLabel" name="label_30">
+               <property name="text">
+                <string>Rate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2">
+              <widget class="QLabel" name="label_38">
+               <property name="text">
+                <string>Wind speed:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="3">
+              <widget class="QLineEdit" name="LESpWindDir"/>
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_39">
@@ -905,14 +968,14 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="3">
-              <widget class="QComboBox" name="CBSpCrop">
+             <item row="1" column="3">
+              <widget class="QComboBox" name="CBSpField">
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
                <item>
                 <property name="text">
-                 <string>--- Select crop ---</string>
+                 <string>--- Select field ---</string>
                 </property>
                </item>
               </widget>
@@ -954,88 +1017,15 @@ GeoDataFarms webpage</string>
                </item>
               </widget>
              </item>
-             <item row="7" column="3">
-              <widget class="QLineEdit" name="LESpWindDir"/>
-             </item>
-             <item row="10" column="2" colspan="2">
-              <widget class="QPushButton" name="PBSpSaveManual">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="PBSpAddFile">
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
                <property name="text">
-                <string>Save data</string>
+                <string>Open the file and save it</string>
                </property>
               </widget>
-             </item>
-             <item row="8" column="2">
-              <widget class="QLabel" name="label_36">
-               <property name="text">
-                <string>Other comments:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="2" colspan="2">
-              <widget class="QPlainTextEdit" name="LESpOther"/>
-             </item>
-             <item row="6" column="3">
-              <widget class="QLineEdit" name="LESpWindSpeed"/>
-             </item>
-             <item row="4" column="2">
-              <widget class="QLabel" name="label_37">
-               <property name="text">
-                <string>Varerity:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="3">
-              <widget class="QLineEdit" name="LESpRate"/>
-             </item>
-             <item row="7" column="4">
-              <widget class="QLabel" name="label_100">
-               <property name="text">
-                <string>deg</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="4">
-              <widget class="QLabel" name="label_34">
-               <property name="text">
-                <string>kg/ha</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2">
-              <widget class="QLabel" name="label_38">
-               <property name="text">
-                <string>Wind speed:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="3">
-              <widget class="QDateEdit" name="DESpraying"/>
-             </item>
-             <item row="7" column="2">
-              <widget class="QLabel" name="label_101">
-               <property name="text">
-                <string>Wind direction:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
              <item row="0" column="2" colspan="2">
               <widget class="QLabel" name="label_35">
@@ -1050,6 +1040,23 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
+             <item row="5" column="4">
+              <widget class="QLabel" name="label_34">
+               <property name="text">
+                <string>kg/ha</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_59">
+               <property name="text">
+                <string>When:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QCalendarWidget" name="DESpraying"/>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -1063,7 +1070,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>511</width>
-              <height>461</height>
+              <height>503</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
@@ -1079,9 +1086,6 @@ GeoDataFarms webpage</string>
              </item>
              <item row="8" column="2">
               <widget class="QLineEdit" name="LEOUnit_3"/>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDateEdit" name="DEOther"/>
              </item>
              <item row="8" column="0">
               <widget class="QLineEdit" name="LEOOption_3"/>
@@ -1204,6 +1208,9 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
+             <item row="2" column="1">
+              <widget class="QCalendarWidget" name="DEOther"/>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -1221,6 +1228,16 @@ GeoDataFarms webpage</string>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_11">
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Import harvest data and interpolate the yield inbetween the data points:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="4">
+              <widget class="QLineEdit" name="LEHvTotalYield"/>
+             </item>
              <item row="1" column="0">
               <widget class="QComboBox" name="CBHvFileType">
                <property name="locale">
@@ -1253,7 +1270,42 @@ GeoDataFarms webpage</string>
                </item>
               </widget>
              </item>
-             <item row="2" column="2" colspan="2">
+             <item row="5" column="5">
+              <widget class="QLabel" name="label_54">
+               <property name="text">
+                <string>kg/ha</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLabel" name="label_50">
+               <property name="text">
+                <string>Yield:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_57">
+               <property name="text">
+                <string>Total yield:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="5">
+              <widget class="QLabel" name="label_51">
+               <property name="text">
+                <string>tonnes</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_58">
+               <property name="text">
+                <string>Date:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" colspan="3">
               <widget class="QComboBox" name="CBHvCrop">
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
@@ -1263,76 +1315,6 @@ GeoDataFarms webpage</string>
                  <string>--- Select crop ---</string>
                 </property>
                </item>
-              </widget>
-             </item>
-             <item row="7" column="2" colspan="2">
-              <widget class="QPlainTextEdit" name="LEHvOther"/>
-             </item>
-             <item row="5" column="3">
-              <widget class="QLineEdit" name="LEHvYield"/>
-             </item>
-             <item row="8" column="2" colspan="2">
-              <widget class="QPushButton" name="PBHvSaveManual">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="locale">
-                <locale language="English" country="UnitedKingdom"/>
-               </property>
-               <property name="text">
-                <string>Save data</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" colspan="2">
-              <widget class="QLabel" name="label_55">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                 <underline>false</underline>
-                </font>
-               </property>
-               <property name="text">
-                <string>Manual input:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2">
-              <widget class="QLabel" name="label_56">
-               <property name="text">
-                <string>Other comments:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" colspan="2">
-              <widget class="QComboBox" name="CBHvField">
-               <property name="locale">
-                <locale language="English" country="UnitedKingdom"/>
-               </property>
-               <item>
-                <property name="text">
-                 <string>--- Select field ---</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_52">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Row data input:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="4">
-              <widget class="QLabel" name="label_51">
-               <property name="text">
-                <string>tonnes</string>
-               </property>
               </widget>
              </item>
              <item row="0" column="1">
@@ -1348,48 +1330,35 @@ GeoDataFarms webpage</string>
                </property>
               </spacer>
              </item>
-             <item row="5" column="4">
-              <widget class="QLabel" name="label_54">
+             <item row="6" column="2">
+              <widget class="QLabel" name="label_56">
                <property name="text">
-                <string>kg/ha</string>
+                <string>Other comments:</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="PBHvAddFile">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_52">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Row data input:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="3">
+              <widget class="QComboBox" name="CBHvField">
                <property name="locale">
                 <locale language="English" country="UnitedKingdom"/>
                </property>
-               <property name="text">
-                <string>Open the file and save it</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="3">
-              <widget class="QLineEdit" name="LEHvTotalYield"/>
-             </item>
-             <item row="5" column="2">
-              <widget class="QLabel" name="label_50">
-               <property name="text">
-                <string>Yield:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="3">
-              <widget class="QDateEdit" name="DEHarvest"/>
-             </item>
-             <item row="4" column="2">
-              <widget class="QLabel" name="label_57">
-               <property name="text">
-                <string>Total yield:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QLabel" name="label_58">
-               <property name="text">
-                <string>Date:</string>
-               </property>
+               <item>
+                <property name="text">
+                 <string>--- Select field ---</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item row="4" column="0">
@@ -1402,12 +1371,50 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0" colspan="2">
-              <widget class="QLabel" name="label_43">
+             <item row="7" column="2" colspan="3">
+              <widget class="QPlainTextEdit" name="LEHvOther"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="PBHvAddFile">
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
                <property name="text">
-                <string>Import harvest data and interpolate the yield inbetween the data points:</string>
+                <string>Open the file and save it</string>
                </property>
               </widget>
+             </item>
+             <item row="5" column="4">
+              <widget class="QLineEdit" name="LEHvYield"/>
+             </item>
+             <item row="8" column="2" colspan="3">
+              <widget class="QPushButton" name="PBHvSaveManual">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
+               <property name="text">
+                <string>Save data</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" colspan="3">
+              <widget class="QLabel" name="label_55">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <underline>false</underline>
+                </font>
+               </property>
+               <property name="text">
+                <string>Manual input:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="4">
+              <widget class="QCalendarWidget" name="DEHarvest"/>
              </item>
             </layout>
            </widget>
@@ -1426,44 +1433,7 @@ GeoDataFarms webpage</string>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_12">
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_66">
-               <property name="text">
-                <string>Other comments:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLineEdit" name="LEPloDepth"/>
-             </item>
-             <item row="3" column="2">
-              <widget class="QLabel" name="label_63">
-               <property name="text">
-                <string>cm</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_68">
-               <property name="text">
-                <string>Depth:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDateEdit" name="DEPlowing"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_69">
-               <property name="text">
-                <string>Date:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0" colspan="2">
-              <widget class="QPlainTextEdit" name="LEPloOther"/>
-             </item>
-             <item row="6" column="0" colspan="2">
+             <item row="7" column="0" colspan="2">
               <widget class="QPushButton" name="PBPloSaveManual">
                <property name="enabled">
                 <bool>true</bool>
@@ -1476,15 +1446,23 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0" colspan="2">
-              <widget class="QLabel" name="label_62">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_63">
                <property name="text">
-                <string>Optional input</string>
+                <string>cm</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <widget class="QPlainTextEdit" name="LEPloOther"/>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="LEPloDepth"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_66">
+               <property name="text">
+                <string>Other comments:</string>
                </property>
               </widget>
              </item>
@@ -1499,6 +1477,35 @@ GeoDataFarms webpage</string>
                 </property>
                </item>
               </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_62">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Optional input</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_69">
+               <property name="text">
+                <string>Date:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_68">
+               <property name="text">
+                <string>Depth:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCalendarWidget" name="DEPlowing"/>
              </item>
             </layout>
            </widget>
@@ -1517,20 +1524,23 @@ GeoDataFarms webpage</string>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_13">
-             <item row="3" column="1">
-              <widget class="QLineEdit" name="LEHwDepth"/>
-             </item>
-             <item row="3" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="label_75">
                <property name="text">
                 <string>Depth:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
-              <widget class="QLabel" name="label_76">
+             <item row="9" column="0" colspan="2">
+              <widget class="QPushButton" name="PBHwSaveManual">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="locale">
+                <locale language="English" country="UnitedKingdom"/>
+               </property>
                <property name="text">
-                <string>cm</string>
+                <string>Save data</string>
                </property>
               </widget>
              </item>
@@ -1546,17 +1556,10 @@ GeoDataFarms webpage</string>
                </item>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QDateEdit" name="DEHarowing"/>
+             <item row="6" column="1">
+              <widget class="QLineEdit" name="LEHwDepth"/>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_78">
-               <property name="text">
-                <string>Date:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" colspan="2">
+             <item row="5" column="0" colspan="2">
               <widget class="QLabel" name="label_70">
                <property name="font">
                 <font>
@@ -1568,28 +1571,32 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="0" colspan="2">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_78">
+               <property name="text">
+                <string>Date:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2">
+              <widget class="QLabel" name="label_76">
+               <property name="text">
+                <string>cm</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0" colspan="2">
               <widget class="QPlainTextEdit" name="LEHwOther"/>
              </item>
-             <item row="4" column="0" colspan="2">
+             <item row="7" column="0" colspan="2">
               <widget class="QLabel" name="label_72">
                <property name="text">
                 <string>Other comments:</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0" colspan="2">
-              <widget class="QPushButton" name="PBHwSaveManual">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="locale">
-                <locale language="English" country="UnitedKingdom"/>
-               </property>
-               <property name="text">
-                <string>Save data</string>
-               </property>
-              </widget>
+             <item row="1" column="1">
+              <widget class="QCalendarWidget" name="DEHarrowing"/>
              </item>
             </layout>
            </widget>
@@ -1801,7 +1808,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>961</width>
-              <height>451</height>
+              <height>453</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_15">
@@ -1845,7 +1852,7 @@ GeoDataFarms webpage</string>
               </widget>
              </item>
              <item row="8" column="4">
-              <widget class="QPlainTextEdit" name="LEPOther_9"/>
+              <widget class="QPlainTextEdit" name="LESoOther"/>
              </item>
              <item row="3" column="5">
               <widget class="QLineEdit" name="LESoClay"/>
@@ -1892,9 +1899,6 @@ GeoDataFarms webpage</string>
                 <string>Manual input:</string>
                </property>
               </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QDateEdit" name="DESoil"/>
              </item>
              <item row="5" column="4">
               <widget class="QLabel" name="label_95">
@@ -2021,6 +2025,9 @@ GeoDataFarms webpage</string>
                </property>
               </widget>
              </item>
+             <item row="1" column="5">
+              <widget class="QCalendarWidget" name="DESoil"/>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -2105,7 +2112,7 @@ GeoDataFarms webpage</string>
              <property name="title">
               <string/>
              </property>
-             <widget class="QRadioButton" name="radioButton">
+             <widget class="QRadioButton" name="RBSelectAllYears">
               <property name="geometry">
                <rect>
                 <x>10</x>
@@ -2121,9 +2128,9 @@ GeoDataFarms webpage</string>
                <bool>true</bool>
               </property>
              </widget>
-             <widget class="QRadioButton" name="radioButton_2">
+             <widget class="QRadioButton" name="RBSpecificYear">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="geometry">
                <rect>
@@ -2139,7 +2146,7 @@ GeoDataFarms webpage</string>
              </widget>
              <widget class="QLabel" name="label_7">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="geometry">
                <rect>
@@ -2155,7 +2162,7 @@ GeoDataFarms webpage</string>
              </widget>
              <widget class="QDateEdit" name="DEYear">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="geometry">
                <rect>
@@ -2962,6 +2969,7 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
             <widget class="QLabel" name="label_9">
              <property name="font">
               <font>
+               <pointsize>8</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -3044,6 +3052,7 @@ of colors:</string>
                </property>
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3102,6 +3111,7 @@ of colors:</string>
                </property>
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3169,6 +3179,7 @@ of colors:</string>
                </property>
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3236,6 +3247,7 @@ of colors:</string>
                </property>
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3298,6 +3310,7 @@ For example if your total yield is off by 20% you can resize all yield values wi
               <widget class="QLabel" name="label_40">
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3660,13 +3673,20 @@ For example if your total yield is off by 20% you can resize all yield values wi
                 <hour>0</hour>
                 <minute>0</minute>
                 <second>0</second>
-                <year>2019</year>
+                <year>2023</year>
                 <month>1</month>
                 <day>1</day>
                </datetime>
               </property>
               <property name="displayFormat">
                <string>yyyy</string>
+              </property>
+              <property name="date">
+               <date>
+                <year>2023</year>
+                <month>1</month>
+                <day>1</day>
+               </date>
               </property>
              </widget>
             </widget>
@@ -3683,6 +3703,7 @@ If you are missing a report / something in a report please send a e-mail to geod
             <widget class="QLabel" name="label_17">
              <property name="font">
               <font>
+               <pointsize>8</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -3876,7 +3897,7 @@ If you are missing a report / something in a report please send a e-mail to geod
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -3886,7 +3907,6 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBPAddFile</tabstop>
   <tabstop>CBPField</tabstop>
   <tabstop>CBPCrop</tabstop>
-  <tabstop>DEPlanting</tabstop>
   <tabstop>LEPVarerity</tabstop>
   <tabstop>LEPSpacing</tabstop>
   <tabstop>LEPSeedRate</tabstop>
@@ -3895,7 +3915,6 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBPSaveManual</tabstop>
   <tabstop>PBFAddFile</tabstop>
   <tabstop>CBFCrop</tabstop>
-  <tabstop>DEFertilizing</tabstop>
   <tabstop>LEFVarerity</tabstop>
   <tabstop>LEFSeedRate</tabstop>
   <tabstop>LEFSawDepth</tabstop>
@@ -3904,7 +3923,6 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBSpAddFile</tabstop>
   <tabstop>CBSpField</tabstop>
   <tabstop>CBSpCrop</tabstop>
-  <tabstop>DESpraying</tabstop>
   <tabstop>LESpVarerity</tabstop>
   <tabstop>LESpRate</tabstop>
   <tabstop>LESpWindSpeed</tabstop>
@@ -3949,13 +3967,12 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>LEPSpacing_8</tabstop>
   <tabstop>CBSoFileType</tabstop>
   <tabstop>PBSoAddFile</tabstop>
-  <tabstop>DESoil</tabstop>
   <tabstop>CBSoField</tabstop>
   <tabstop>LESoClay</tabstop>
   <tabstop>LESoHumus</tabstop>
   <tabstop>LESoPh</tabstop>
   <tabstop>LESoRx</tabstop>
-  <tabstop>LEPOther_9</tabstop>
+  <tabstop>LESoOther</tabstop>
   <tabstop>PBSoSaveManual</tabstop>
   <tabstop>PBUpdateLists</tabstop>
   <tabstop>LWHarvestTable</tabstop>
@@ -3965,8 +3982,8 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>LWFertiTable</tabstop>
   <tabstop>LWOtherTable</tabstop>
   <tabstop>LWWeatherTable</tabstop>
-  <tabstop>radioButton</tabstop>
-  <tabstop>radioButton_2</tabstop>
+  <tabstop>RBSelectAllYears</tabstop>
+  <tabstop>RBSpecificYear</tabstop>
   <tabstop>DEYear</tabstop>
   <tabstop>PBEditTables</tabstop>
   <tabstop>PBAdd2Canvas</tabstop>
@@ -4003,12 +4020,8 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>CBFField</tabstop>
   <tabstop>CBFFileType</tabstop>
   <tabstop>CBSpFileType</tabstop>
-  <tabstop>DEOther</tabstop>
   <tabstop>LEOtherName</tabstop>
   <tabstop>CBOCrop</tabstop>
-  <tabstop>DEHarvest</tabstop>
-  <tabstop>DEPlowing</tabstop>
-  <tabstop>DEHarowing</tabstop>
   <tabstop>PBOpenRD</tabstop>
   <tabstop>PBRunAnalyses</tabstop>
   <tabstop>LEVal_2</tabstop>

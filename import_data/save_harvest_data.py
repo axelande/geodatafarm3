@@ -63,7 +63,7 @@ class SaveHarvesting:
         if self.check_input():
             field = self.dw.CBHvField.currentText()
             crop = self.dw.CBHvCrop.currentText()
-            date_ = self.dw.DEHarvesting.text()
+            date_ = self.dw.DEHarvest.selectedDate().toString("yyyy-MM-dd")
             total_yield = self.dw.LEHvTotalYield.text()
             yield_ = self.dw.LEHvTotalYield.text()
             other = self.dw.LEHvOther.toPlainText()
@@ -88,7 +88,6 @@ class SaveHarvesting:
         """Resets the widget to the default values"""
         self.dw.CBHvField.setCurrentIndex(0)
         self.dw.CBHvCrop.setCurrentIndex(0)
-        self.dw.DEHarvesting.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.dw.LEHvTotalYield.setText('')
         self.dw.LEHvYield.setText('')
         self.dw.LEHvOther.setPlainText('')
@@ -106,7 +105,7 @@ class SaveHarvesting:
         if self.dw.CBHvCrop.currentText() == self.tr('--- Select crop ---'):
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a crop'))
             return False
-        if self.dw.DEHvraying.text() == '2000-01-01':
+        if self.dw.DEHarvest.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
             QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
             return False
         return True

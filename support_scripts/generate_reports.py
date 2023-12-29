@@ -59,7 +59,8 @@ class MyDocTemplate(BaseDocTemplate):
         """
         canvas.saveState()
         canvas.drawString(30, 750, self.tr('Simple report from GeoDataFarm'))
-        canvas.drawString(30, 733, self.tr('For the growing season of ') + str(growing_year))
+        if growing_year is not None:
+            canvas.drawString(30, 733, self.tr('For the growing season of ') + str(growing_year))
         canvas.drawImage(self.plugin_dir + '\\img\\icon.png', 500, 765, width=50, height=50)
         canvas.drawString(500, 750, 'Generated:')
         canvas.drawString(500, 733, cur_date)
@@ -109,20 +110,23 @@ class RapportGen:
             return
         year = self.dw.DEReportYear.text()
         if self.dw.RBReportWithoutDetails.isChecked():
-            self.report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
-                                                         t=self.tr('GeoDataFarm_Limited_report_per_operation'),
-                                                         y=year)
             if self.dw.RBAllYear.isChecked():
                 year = None
+                self.report_name = '{p}\\{t}.pdf'.format(p=self.path,
+                                                             t=self.tr('GeoDataFarm_Limited_report_per_operation'))
             else:
                 year = self.dw.DEReportYear.text()
+                self.report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
+                                                             t=self.tr('GeoDataFarm_Limited_report_per_operation'),
+                                                             y=year)
             data = {'db': self.db, 'tr': self.tr, 'year': year}
             task = QgsTask.fromFunction('Run import text data',
                                         self.collect_data, data,
                                         on_finished=self.simple_operation)
-            #self.tsk_mngr.addTask(task)
-            a = self.collect_data('debug', data)
-            self.simple_operation('a', a)
+            self.tsk_mngr.addTask(task)
+            ## Run debug
+            #a = self.collect_data('debug', data)
+            #self.simple_operation('a', a)
         else:
             report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
                                                     t=self.tr('GeoDataFarm_Limited_report'),
@@ -137,21 +141,67 @@ class RapportGen:
             return
         year = self.dw.DEReportYear.text()
         if self.dw.RBReportWithoutDetails.isChecked():
-            self.report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
-                                                         t=self.tr('GeoDataFarm_Limited_report_per_field'),
-                                                         y=year)
             if self.dw.RBAllYear.isChecked():
                 year = None
+                self.report_name = '{p}\\{t}.pdf'.format(p=self.path,
+                                                         t=self.tr('GeoDataFarm_Limited_report_per_field'))
             else:
                 year = self.dw.DEReportYear.text()
+                self.report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
+                                                         t=self.tr('GeoDataFarm_Limited_report_per_field'),
+                                                         y=year)
+            
             data = {'db': self.db, 'tr': self.tr, 'year': year}
             task = QgsTask.fromFunction('Run import text data', self.collect_data, data,
                                         on_finished=self.simple_field)
             self.tsk_mngr.addTask(task)
+            ## Debug
+            #a = self.collect_data('debug', data)
+            #self.simple_field('a', a)
         else:
             report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
                                                     t=self.tr('GeoDataFarm_Limited_report'),
                                                     y=year)
+    def check_continue(self, operation):
+        if operation == 'planting':
+            if not self.dw.CBPlanting.isChecked():
+                return True
+        elif operation == 'fertilizing':
+            if not self.dw.CBFertilizing.isChecked():
+                return True
+        elif operation == 'spraying':
+            if not self.dw.CBSpraying.isChecked():
+                return True
+        elif operation == 'harvesting':
+            if not self.dw.CBHarvest.isChecked():
+                return True
+        elif operation == 'plowing':
+            if not self.dw.CBPlowing.isChecked():
+                return True
+        elif operation == 'harrowing':
+            if not self.dw.CBHarrowing.isChecked():
+                return True
+        elif operation == 'soil':
+            if not self.dw.CBSoil.isChecked():
+                return True
+        return False
+
+    def set_heading_simple(self, operation, story) -> list:
+        if operation == 'planting':
+            story.append(Paragraph(self.tr('Planting data (simple input)'), styleH))
+        elif operation == 'fertilizing':
+            story.append(Paragraph(self.tr('Fertilizing data (simple input)'), styleH))
+        elif operation == 'spraying':
+            story.append(Paragraph(self.tr('Spraying data (simple input)'), styleH))
+        elif operation == 'harvesting':
+            story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
+        elif operation == 'plowing':
+            story.append(Paragraph(self.tr('Plowing data (simple input)'), styleH))
+        elif operation == 'harrowing':
+            story.append(Paragraph(self.tr('Harrowing data (simple input)'), styleH))
+        elif operation == 'soil':
+            story.append(Paragraph(self.tr('Soil data (simple input)'), styleH))
+        return story
 
     def simple_operation(self,  result, values):
         """Generates a simple report of all operations
@@ -172,27 +222,18 @@ class RapportGen:
             return
         operation_dict = values[1]
         cur_date = date.today().isoformat()
-        growing_year = self.dw.DEReportYear.text()
+        if self.dw.RBAllYear.isChecked():
+            growing_year = None
+        else:
+            growing_year = self.dw.DEReportYear.text()
         doc = MyDocTemplate(self.report_name, self.plugin_dir, growing_year, cur_date)
         story = []
         operation_found = False
         for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
+            if self.check_continue(operation):
+                continue
             if operation_dict[operation]['simple']:
-                if operation == 'planting':
-                    story.append(Paragraph(self.tr('Planting data (simple input)'), styleH))
-                elif operation == 'fertilizing':
-                    story.append(Paragraph(self.tr('Fertilizing data (simple input)'), styleH))
-                elif operation == 'spraying':
-                    story.append(Paragraph(self.tr('Spraying data (simple input)'), styleH))
-                elif operation == 'harvesting':
-                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
-                elif operation == 'plowing':
-                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
-                elif operation == 'harrowing':
-                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
-                elif operation == 'soil':
-                    story.append(Paragraph(self.tr('Harvest data (simple input)'), styleH))
-
+                story = self.set_heading_simple(operation, story)
                 temp_d = [operation_dict[operation]['simple_heading']]
                 l_heading = len(temp_d[0]) - 1
                 temp_d.extend(operation_dict[operation]['simple_data'])
@@ -247,10 +288,9 @@ class RapportGen:
                                     self.tr('Following error occurred: {m}'.format(m=values[1])))
             return
         operation_dict = values[1]
-        print(operation_dict)
         cur_date = date.today().isoformat()
         growing_year = self.dw.DEReportYear.text()
-        doc = MyDocTemplate(self.report_name, self.tr, self.plugin_dir, growing_year, cur_date)
+        doc = MyDocTemplate(self.report_name, self.plugin_dir, growing_year, cur_date)
         story = []
         field_dict = {}
         for field in self.db.execute_and_return('select field_name from fields'):
@@ -263,50 +303,40 @@ class RapportGen:
                                  'headings': []}
         data_found = False
         for operation in ['planting', 'fertilizing', 'spraying', 'harvesting', 'plowing', 'harrowing', 'soil']:
+            if self.check_continue(operation):
+                continue
             if operation == 'planting':
                 operation_name = self.tr('Planting')
-                if not self.dw.CBPlanting.isChecked():
-                    continue
             elif operation == 'fertilizing':
                 operation_name = self.tr('Fertilizing')
-                if not self.dw.CBFertilizing.isChecked():
-                    continue
             elif operation == 'spraying':
                 operation_name = self.tr('Spraying')
-                if not self.dw.CBSpraying.isChecked():
-                    continue
             elif operation == 'harvesting':
                 operation_name = self.tr('Harvest')
-                if not self.dw.CBHarvest.isChecked():
-                    continue
             elif operation == 'plowing':
                 operation_name = self.tr('Plowing')
-                if not self.dw.CBPlowing.isChecked():
-                    continue
             elif operation == 'harrowing':
                 operation_name = self.tr('Harrowing')
-                if not self.dw.CBHarrowing.isChecked():
-                    continue
             elif operation == 'soil':
                 operation_name = self.tr('Soil')
-                if not self.dw.CBSoil.isChecked():
-                    continue
             if operation_dict[operation]['simple']:
                 data_found = True
                 field_col = operation_dict[operation]['simple_heading'].index(self.tr('Field'))
-                operation_dict[operation]['adv_heading'][field_col] = self.tr('Operation')
-                head_row = operation_dict[operation]['adv_heading']
+                operation_dict[operation]['simple_heading'][field_col] = self.tr('Operation')
+                head_row = operation_dict[operation]['simple_heading']
                 for row in operation_dict[operation]['simple_data']:
-                    field_dict[row[field_col].text]['heading'].append(head_row)
+                    field_dict[row[field_col].text]['headings'].append(head_row)
                     temp_row = []#[None] * len(field_dict[row[field_col]]['heading'])
                     for i, col in enumerate(row):
                         if i == field_col:
                             col = operation_name
                         temp_row.append(col)
-                    field_dict[row[field_col].text]['table'].append(temp_row)
+                    field_dict[row[field_col].text]['tables'].append(temp_row)
             if operation_dict[operation]['advanced']:
-                data_found = True
+                if self.tr('Field') not in operation_dict[operation]['adv_heading']:
+                    continue
                 field_col = operation_dict[operation]['adv_heading'].index(self.tr('Field'))
+                data_found = True
                 operation_dict[operation]['adv_heading'][field_col] = self.tr('Operation')
                 head_row = operation_dict[operation]['adv_heading']
                 for row in operation_dict[operation]['advance_dat']:
@@ -317,13 +347,13 @@ class RapportGen:
                             col = operation_name
                         temp_row.append(col)
                     field_dict[row[field_col].text]['tables'].append(temp_row)
-
         if not data_found:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('No data where found for that year'))
             return
-        print(1)
         for field in field_dict.keys():
+            if len(field_dict[field]['headings']) == 0:
+                continue
             story.append(Paragraph(field, styleH))
             for i, heading in enumerate(field_dict[field]['headings']):
                 l_heading = len(heading) - 1
@@ -333,9 +363,7 @@ class RapportGen:
                 table.setStyle(TableStyle([('FONTSIZE', (0, 0), (l_heading, 0), 12)]))
                 story.append(table)
         try:
-            print(2)
             doc.multiBuild(story)
-            print(3)
         except OSError:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('You must close the file in order to create it again'))
@@ -432,14 +460,14 @@ from {schema}.{table}"""
             return_list = []
             if 'date' in meta_data.keys():
                 return_list.append(retrieve_date(meta_data, schema, data['year']))
-            if 'variety' in meta_data.keys():
-                return_list.append(retrieve_distinct(meta_data['variety'], meta_data['tbl'], schema, data['year']))
             if 'field' in meta_data.keys():
                 field = Paragraph(meta_data['field'], styleN)
                 return_list.append(field)
             if 'crop' in meta_data.keys():
                 crop = Paragraph(meta_data['crop'], styleN)
                 return_list.append(crop)
+            if 'variety' in meta_data.keys():
+                return_list.append(retrieve_distinct(meta_data['variety'], meta_data['tbl'], schema, data['year']))
             if 'rate' in meta_data.keys():
                 return_list.append(retrieve_distinct(meta_data['rate'], meta_data['tbl'], schema, data['year']))
             if 'yield' in meta_data.keys():
@@ -464,7 +492,7 @@ from {schema}.{table}"""
             # Planting
             if task != 'debug':
                 task.setProgress(5)
-            sql = """select date_, field, crop, variety from plant.manual 
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety from plant.manual 
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """and extract(year from date_) = {y}""".format(y=data['year'])
@@ -474,7 +502,7 @@ from {schema}.{table}"""
                 for row in simple_plant_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                     row[2] = Paragraph(row[2], styleN)
@@ -488,6 +516,7 @@ from {schema}.{table}"""
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
             planting_data_advanced = data['db'].execute_and_return(sql)
+            print(planting_data_advanced)
             if len(planting_data_advanced) > 0:
                 adv_data = []
                 for date_, field, crop, variety, table_ in planting_data_advanced:
@@ -500,12 +529,12 @@ from {schema}.{table}"""
                     data_dict['planting']['advanced'] = True
                     data_dict['planting']['advance_dat'] = adv_data
                     data_dict['planting']['adv_heading'] = adv_heading
-            sql = """select date_, field, crop, variety, rate from ferti.manual 
+            # Fertilizing
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate from ferti.manual 
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
-            # Fertilizing
             if task != 'debug':
                 task.setProgress(15)
             simple_ferti_data = data['db'].execute_and_return(sql)
@@ -514,7 +543,7 @@ from {schema}.{table}"""
                 for row in simple_ferti_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                     row[2] = Paragraph(row[2], styleN)
@@ -542,7 +571,7 @@ from {schema}.{table}"""
             # Spraying
             if task != 'debug':
                 task.setProgress(25)
-            sql = """select date_, field, crop, variety, rate from spray.manual 
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate from spray.manual 
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
@@ -553,7 +582,7 @@ from {schema}.{table}"""
                 for row in simple_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                     row[2] = Paragraph(row[2], styleN)
@@ -581,7 +610,7 @@ from {schema}.{table}"""
             #Harvest
             if task != 'debug':
                 task.setProgress(35)
-            sql = """select date_, field, crop, total_yield, yield from harvest.manual 
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, total_yield, yield from harvest.manual 
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """and extract(year from date_) = {y}""".format(y=data['year'])
@@ -591,7 +620,7 @@ from {schema}.{table}"""
                 for row in simple_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                     row[2] = Paragraph(row[2], styleN)
@@ -619,7 +648,7 @@ from {schema}.{table}"""
             # Plowing
             if task != 'debug':
                 task.setProgress(50)
-            sql = """select date_, field, depth from other.plowing_manual"""
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth from other.plowing_manual"""
             if data['year'] is not None:
                 sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
             simple_data = data['db'].execute_and_return(sql)
@@ -628,7 +657,7 @@ from {schema}.{table}"""
                 for row in simple_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                 data_dict['plowing']['simple'] = True
@@ -637,7 +666,7 @@ from {schema}.{table}"""
             # Harrowing
             if task != 'debug':
                 task.setProgress(55)
-            sql = """select date_, field, depth from other.harrowing_manual"""
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth from other.harrowing_manual"""
             if data['year'] is not None:
                 sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
             simple_data = data['db'].execute_and_return(sql)
@@ -646,7 +675,7 @@ from {schema}.{table}"""
                 for row in simple_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                 data_dict['harrowing']['simple'] = True
@@ -655,7 +684,7 @@ from {schema}.{table}"""
             #Soil
             if task != 'debug':
                 task.setProgress(60)
-            sql = """select date_, field, clay, humus, ph, rx from soil.manual 
+            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, clay, humus, ph, rx from soil.manual 
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """and extract(year from date_) = {y}""".format(y=data['year'])
@@ -665,7 +694,7 @@ from {schema}.{table}"""
                 for row in simple_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
-                        date_str += date_nr.date().isoformat() + ', '
+                        date_str += date_nr + ', '
                     row[0] = Paragraph(date_str[:-2], styleN)
                     row[1] = Paragraph(row[1], styleN)
                 data_dict['soil']['simple'] = True

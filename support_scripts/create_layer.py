@@ -38,7 +38,7 @@ def set_label(layer, field_label):
     text_format.setBuffer(buffer_settings)
     layer_settings.setFormat(text_format)
     layer_settings.fieldName = field_label
-    layer_settings.placement = 4
+    # layer_settings.placement = 4
 
     layer_settings.enabled = True
 
