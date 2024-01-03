@@ -45,7 +45,7 @@ class SaveFertilizing:
         if self.dw.CBFFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'ferti', columns=columns)
             add_f.run()
-        elif self.dw.CBPFileType.currentText() == self.tr('Iso Bin XML files (.xml+.bin)'):
+        elif self.dw.CBFFileType.currentText() == self.tr('Iso Bin XML files (.xml+.bin)'):
             add_f = Iso11783(self.parent, 'ferti')
             add_f.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):

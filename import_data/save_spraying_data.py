@@ -45,7 +45,7 @@ class SaveSpraying:
         if self.dw.CBSpFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'spray', columns=columns)
             add_f.run()
-        elif self.dw.CBPFileType.currentText() == self.tr('Iso Bin XML files (.xml+.bin)'):
+        elif self.dw.CBSpFileType.currentText() == self.tr('Iso Bin XML files (.xml+.bin)'):
             add_f = Iso11783(self.parent, 'spray')
             add_f.run()
         elif self.dw.CBSpFileType.currentText() == self.tr('Databasefile (.db)'):

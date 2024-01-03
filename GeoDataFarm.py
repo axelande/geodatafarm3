@@ -24,6 +24,8 @@ it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE.
 # Import the code for the dialog
 import os.path
 from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
+import sys
+sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python')
 from qgis.core import QgsApplication
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
@@ -31,7 +33,7 @@ from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from PyQt5.QtGui import QIcon, QImage
 from psycopg2 import IntegrityError
 import os
-import sys
+
 import subprocess
 import platform
 import webbrowser
@@ -73,7 +75,7 @@ from .support_scripts.rescale_values import RescaleValues
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
 
-    def __init__(self, iface):
+    def __init__(self, iface, test_mode=False):
         """Constructor.
 
         Parameters
@@ -131,6 +133,8 @@ class GeoDataFarm:
         self.save_soil = None
         self.plan_ahead = None
         self.report_generator = None
+        self.tabel_mgmt = None
+        self.test_mode = test_mode
 
     # noinspection PyMethodMayBeStatic
 
@@ -305,8 +309,8 @@ class GeoDataFarm:
 
     def tbl_mgmt(self):
         """Open the table manager widget"""
-        tabel_mgmt = TableManagement(self)
-        tabel_mgmt.run()
+        self.tabel_mgmt = TableManagement(self)
+        self.tabel_mgmt.run()
 
     def multi_edit(self):
         """Opens the multi edit widget"""
@@ -336,6 +340,8 @@ class GeoDataFarm:
         self.db = DB(self.dock_widget, path=self.plugin_dir)
         connected = self.db.get_conn()
         if not connected:
+            if self.test_mode:
+                return False
             QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
@@ -373,7 +379,10 @@ class GeoDataFarm:
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
         create_farm = CreateFarm(self, True)
-        create_farm.run()
+        if not self.test_mode:
+            create_farm.run()
+        else:
+            return create_farm
 
     def connect_to_farm(self):
         """Connects the docked widget with the CreateFarm script and starts
@@ -435,7 +444,7 @@ class GeoDataFarm:
             self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
-    def run(self):
+    def run(self, test_mode=False):
         """Run method that loads and starts the plugin"""
         icon_path = ':/plugins/GeoDataFarm/img/icon.png'
         if not self.pluginIsActive:

@@ -36,7 +36,7 @@ class NoConnection:
 
 
 class DB:
-    def __init__(self, dock_widget, path=None):
+    def __init__(self, dock_widget=None, path=None, dbname=None, dbuser=None, dbpass=None):
         """The widget that is connects to the database
         Parameters
         ----------
@@ -53,9 +53,9 @@ class DB:
         self.conn = None
         self.dbhost = "geodatafarm.com"
         self.dbport = '5432'
-        self.dbname = None
-        self.dbuser = None
-        self.dbpass = None
+        self.dbname = dbname
+        self.dbuser = dbuser
+        self.dbpass = dbpass
         translate = TR('DB')
         self.tr = translate.tr
 

@@ -14,6 +14,8 @@ from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsFeature,QgsProcessingFeedback, QgsRasterBandStats,
                        QgsExpression, QgsField)
 from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalculator, QgsZonalStatistics
+import sys
+sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python\\plugins\\')
 import processing
 from qgis.core import QgsProcessingException
 from ..support_scripts import check_text, TR

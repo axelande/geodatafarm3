@@ -121,12 +121,13 @@ class AddField:
             item = self.parent.dock_widget.LWFields.item(j)
             if item.checkState() == 2:
                 field_name = item.text()
-                qm = QMessageBox()
-                res = qm.question(None, self.tr('Question'),
-                                  self.tr("Do you want to delete ") + str(field_name),
-                                  qm.Yes, qm.No)
-                if res == qm.No:
-                    continue
+                if not self.parent.test_mode:
+                    qm = QMessageBox()
+                    res = qm.question(None, self.tr('Question'),
+                                    self.tr("Do you want to delete ") + str(field_name),
+                                    qm.Yes, qm.No)
+                    if res == qm.No:
+                        continue
                 field_names = []
                 for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
                     field_names.extend(self.db.execute_and_return("select field from {type}.manual".format(type=tble_type)))

@@ -34,6 +34,7 @@ class SavePlanting:
         translate = TR('SavePlanting')
         self.tr = translate.tr
         self.parent = parent
+        self.importer = None
 
     def set_widget_connections(self):
         """A simple function that sets the buttons on the planting tab"""
@@ -44,12 +45,12 @@ class SavePlanting:
         """The function loads the correct import dialog for files"""
         columns = [self.tr('Variety')]
         if self.dw.CBPFileType.currentText() == self.tr('Text file (.csv; .txt)'):
-            add_f = InputTextHandler(self.parent, 'plant', columns=columns)
-            add_f.run()
+            self.importer = InputTextHandler(self.parent, 'plant', columns=columns)
+            self.importer.run()
 
         elif self.dw.CBPFileType.currentText() == self.tr('Iso Bin XML files (.xml+.bin)'):
-            add_f = Iso11783(self.parent, 'plant')
-            add_f.run()
+            self.importer = Iso11783(self.parent, 'plant')
+            self.importer.run()
 
         elif self.dw.CBPFileType.currentText() == self.tr('Databasefile (.db)'):
             QMessageBox.information(None, "Error:", self.tr(
@@ -58,11 +59,11 @@ class SavePlanting:
             self.IH = dbFileHandler(self.iface, self.dock_widget)
             self.IH.start_up()
         elif self.dw.CBPFileType.currentText() == self.tr('Shape file (.shp)'):
-            shp_file = InputShpHandler(self.parent, 'planting', columns)
-            shp_file.run()
+            self.importer = InputShpHandler(self.parent, 'planting', columns)
+            self.importer.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
-            ir = ImportRaster(self.parent, self.dw.DEPlanting, self.dw.CBPField, 'plant')
-            ir.run()
+            self.importer = ImportRaster(self.parent, self.dw.DEPlanting, self.dw.CBPField, 'plant')
+            self.importer.run()
 
     def save_manual_data(self):
         """Saves the manual data"""

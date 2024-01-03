@@ -39,7 +39,8 @@ class TableManagement:
         self.TMD.PBMakeRows.clicked.connect(self.make_rows)
         self.update_table_list()
         self.TMD.show()
-        self.TMD.exec_()
+        if not self.parent.test_mode:
+            self.TMD.exec_()
 
     def merge_tbls(self):
         """Merging two data sets into one."""
@@ -242,7 +243,10 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         msgBox.setText(self.tr('Do you really want to remove the selected tables from the database?'))
         msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
         msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
-        ret = msgBox.exec_()
+        if self.parent.test_mode:
+            ret = 0
+        else:
+            ret = msgBox.exec_()
         if ret == 1:
             return
         model = self.TMD.SATables.model()

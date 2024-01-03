@@ -89,8 +89,9 @@ class CreateFarm:
             return
         else:
             insertion_ok = True
-        with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
-            f.write(username + ',' + password + ',' + farmname)
+        if not self.parent_widget.test_mode:
+            with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
+                f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self._connect_to_db()
         self.parent_widget.db = self.db
@@ -102,6 +103,8 @@ class CreateFarm:
         self.parent_widget.populate.update_table_list()
         self.parent_widget.populate.reload_fields()
         self.parent_widget.populate.reload_crops()
+        if self.parent_widget.test_mode:
+            return True
         if insertion_ok:
             QMessageBox.information(None, self.tr("Done"),
                                     self.tr('Database created'))
@@ -117,9 +120,10 @@ class CreateFarm:
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
 
-        with open(self.plugin_dir +
-                  '\database_scripts\connection_data.ini', 'w') as f:
-            f.write(username + ',' + password + ',' + farmname)
+        if not self.parent_widget.test_mode:
+            with open(self.plugin_dir +
+                    '\database_scripts\connection_data.ini', 'w') as f:
+                f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname +
                                                          ' is set\nas your farm')
         self._connect_to_db()
@@ -143,8 +147,14 @@ class CreateFarm:
 
     def _connect_to_db(self):
         """Simple function to connect to the new database"""
-        self.db = DB(self.dock_widget, path=self.plugin_dir)
-        connected = self.db.get_conn()
+        if self.parent_widget.test_mode:
+            self.db = DB(self.dock_widget, path=self.plugin_dir, dbname = 'pytest_farm', dbuser = 'pytest_user', 
+                         dbpass = hashlib.sha256('pytest_pass'.encode()).hexdigest())
+            self.parent_widget.dock_widget.LFarmName.setText('pytest_farm' +
+                                            self.tr(' is set as your farm'))
+        else:
+            self.db = DB(self.dock_widget, path=self.plugin_dir)
+            connected = self.db.get_conn()
 
     def create_spec_functions(self):
         """Generates the function makegrid_2d in the users postgres

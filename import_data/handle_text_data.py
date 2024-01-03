@@ -94,7 +94,8 @@ class InputTextHandler(object):
             self.ITD.LEMoveY.setEnabled(True)
         if self.data_type == 'soil':
             self.ITD.CBCrop.setEnabled(False)
-        self.ITD.exec_()
+        if not self.parent_widget.test_mode:
+            self.ITD.exec_()
 
     def show_abbreviations(self):
         """Shows a messageBox with the time abbreviations"""
@@ -255,7 +256,15 @@ class InputTextHandler(object):
         be inserted. In the end of this function the function define_separator,
         set_sep_radio_but and set_column_list are being called."""
         filters = "Text files (*.txt *.csv)"
-        self.file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
+        if self.parent_widget.test_mode:
+            if self.data_type == 'plant':
+                self.file_name_with_path = './test_data/planting_file.csv'
+            if self.data_type == 'harvest':
+                self.file_name_with_path = '../test_data/harvest_file.txt'
+            if self.data_type == 'soli':
+                self.file_name_with_path = '../test_data/soil_sample.csv'
+        else:
+            self.file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
                                                       filters)[0]
         if self.file_name_with_path == '':
             return
@@ -402,9 +411,13 @@ class InputTextHandler(object):
             params['move'] = False
         #a = insert_data_to_database('debug', self.db, params)
         #print(a)
-        task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
-                                    on_finished=self.finish)
-        self.tsk_mngr.addTask(task)
+        if self.parent_widget.test_mode:
+            result = insert_data_to_database('debug', self.db, params)
+            return result
+        else:
+            task = QgsTask.fromFunction('Run import text data', insert_data_to_database, self.db, params,
+                                        on_finished=self.finish)
+            self.tsk_mngr.addTask(task)
 
     def finish(self, result, values):
         """Checks that all data is uploaded to the postgres database and adds
