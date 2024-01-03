@@ -258,11 +258,11 @@ class InputTextHandler(object):
         filters = "Text files (*.txt *.csv)"
         if self.parent_widget.test_mode:
             if self.data_type == 'plant':
-                self.file_name_with_path = './test_data/planting_file.csv'
+                self.file_name_with_path = './tests/test_data/planting_file.csv'
             if self.data_type == 'harvest':
-                self.file_name_with_path = '../test_data/harvest_file.txt'
+                self.file_name_with_path = './tests/test_data/harvest_file.txt'
             if self.data_type == 'soli':
-                self.file_name_with_path = '../test_data/soil_sample.csv'
+                self.file_name_with_path = './tests/test_data/soil_sample.csv'
         else:
             self.file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
                                                       filters)[0]

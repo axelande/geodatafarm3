@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TIM A="" D="4">
+	<PTN A="" B="" C="" D=""/>
+	<DLV A="DFFE" B="" C="DET-1" D="65096" E="0" F="15"/>
+	<DLV A="DFFE" B="" C="DET-1" D="61443" E="16" F="23"/>
+	<DLV A="DFFE" B="" C="DET-1" D="61444" E="24" F="39"/>
+	<DLV A="DFFE" B="" C="DET-1" D="65253" E="0" F="31"/>
+	<DLV A="0095" B="" C="DET-4"/>
+	<DLV A="00C0" B="" C="DET-4"/>
+	<DLV A="00FB" B="" C="DET-4"/>
+	<DLV A="00FF" B="" C="DET-4"/>
+	<DLV A="00F7" B="" C="DET-4"/>
+	<DLV A="00F3" B="" C="DET-4"/>
+	<DLV A="E256" B="" C="DET-4"/>
+	<DLV A="E254" B="" C="DET-4"/>
+	<DLV A="E253" B="" C="DET-4"/>
+	<DLV A="0198" B="" C="DET-4"/>
+	<DLV A="00A0" B="" C="DET-7"/>
+	<DLV A="008D" B="" C="DET-7"/>
+	<DLV A="E258" B="" C="DET-7"/>
+	<DLV A="E259" B="" C="DET-7"/>
+	<DLV A="0063" B="" C="DET-7"/>
+	<DLV A="E107" B="" C="DET-7"/>
+	<DLV A="E252" B="" C="DET-7"/>
+	<DLV A="0043" B="" C="DET-7"/>
+	<DLV A="00ED" B="" C="DET-7"/>
+	<DLV A="0087" B="" C="DET-7"/>
+	<DLV A="0086" B="" C="DET-7"/>
+	<DLV A="E251" B="" C="DET-7"/>
+	<DLV A="00EE" B="" C="DET-7"/>
+	<DLV A="00F0" B="" C="DET-7"/>
+	<DLV A="0057" B="" C="DET-7"/>
+	<DLV A="00B6" B="" C="DET-7"/>
+	<DLV A="00F1" B="" C="DET-7"/>
+	<DLV A="FFFD" B="" C="DET-7"/>
+	<DLV A="00B5" B="" C="DET-7"/>
+	<DLV A="0097" B="" C="DET-7"/>
+	<DLV A="00EF" B="" C="DET-7"/>
+	<DLV A="0054" B="" C="DET-7"/>
+	<DLV A="0053" B="" C="DET-7"/>
+	<DLV A="E255" B="" C="DET-7"/>
+	<DLV A="0104" B="" C="DET-7"/>
+	<DLV A="0103" B="" C="DET-7"/>
+	<DLV A="008F" B="" C="DET-7"/>
+	<DLV A="0079" B="" C="DET-7"/>
+	<DLV A="00A1" B="" C="DET-7"/>
+	<DLV A="0122" B="" C="DET-7"/>
+	<DLV A="0087" B="" C="DET-8"/>
+	<DLV A="0087" B="" C="DET-9"/>
+	<DLV A="0087" B="" C="DET-10"/>
+	<DLV A="0087" B="" C="DET-11"/>
+	<DLV A="0087" B="" C="DET-12"/>
+	<DLV A="0087" B="" C="DET-13"/>
+	<DLV A="0087" B="" C="DET-14"/>
+	<DLV A="0087" B="" C="DET-15"/>
+	<DLV A="0087" B="" C="DET-16"/>
+	<DLV A="0087" B="" C="DET-17"/>
+	<DLV A="0087" B="" C="DET-18"/>
+	<DLV A="0087" B="" C="DET-19"/>
+	<DLV A="0087" B="" C="DET-20"/>
+	<DLV A="0087" B="" C="DET-21"/>
+</TIM>

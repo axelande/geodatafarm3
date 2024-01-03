@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ISO11783_TaskData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ISO11783_TaskFile_V3-3.xsd" VersionMajor="3" VersionMinor="3" ManagementSoftwareManufacturer="" ManagementSoftwareVersion="" TaskControllerManufacturer="AGCO GmbH / Fendt" TaskControllerVersion="1.0" DataTransferOrigin="2">
+	<TSK A="TSK-1" B="Teat" G="4">
+		<DLT A="DFFF" B="31"/>
+		<DLT A="DFFE" B="2" C="5000" J="44288" K="16" L="18"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-1" J="61443" K="16" L="23"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-2" J="61444" K="24" L="39"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65096" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65097" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65253" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65255" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65256" K="16" L="31"/>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-26T12:29:52" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-26T12:29:53" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-26T12:29:59" B="2019-07-26T14:26:01" C="6962" D="4"/>
+		</DAN>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-26T12:29:59" B="2019-07-26T14:26:01" C="6962" D="4"/>
+		</DAN>
+		<TIM A="2019-07-26T12:29:58" B="2019-07-26T14:26:00" C="6962" D="4">
+			<PTN A="55.4268372942" B="13.4862410045" C="60589" D="1"/>
+			<DLV A="005A" B="17147" C="DET-4"/>
+			<DLV A="0074" B="47440" C="DET-4"/>
+			<DLV A="0075" B="4940590" C="DET-4"/>
+			<DLV A="0076" B="2049760" C="DET-4"/>
+			<DLV A="0077" B="4753" C="DET-4"/>
+			<DLV A="0078" B="1957" C="DET-4"/>
+			<DLV A="0094" B="85522" C="DET-4"/>
+			<DLV A="00B7" B="17147" C="DET-4"/>
+			<DLV A="00EC" B="6423" C="DET-4"/>
+			<DLV A="0105" B="3607611" C="DET-4"/>
+			<DLV A="0106" B="62168" C="DET-4"/>
+			<DLV A="0107" B="361450" C="DET-4"/>
+			<DLV A="013C" B="65392" C="DET-4"/>
+			<DLV A="013E" B="3053" C="DET-4"/>
+			<DLV A="013F" B="1048" C="DET-4"/>
+			<DLV A="0166" B="3607611" C="DET-4"/>
+			<DLV A="0167" B="361450" C="DET-4"/>
+			<DLV A="0077" B="4759" C="DET-7"/>
+			<DLV A="0078" B="2217" C="DET-7"/>
+			<DLV A="00D7" B="242" C="DET-4"/>
+		</TIM>
+		<TLG A="TLG00003" C="1"/>
+	</TSK>
+	<TSK A="TSK-2" B="Värnhem" G="4">
+		<DLT A="DFFF" B="31"/>
+		<DLT A="DFFE" B="2" C="5000" J="44288" K="16" L="18"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-1" J="61443" K="16" L="23"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-2" J="61444" K="24" L="39"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65096" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65097" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65253" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65255" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65256" K="16" L="31"/>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-29T10:53:12" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-29T10:53:12" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-29T10:53:19" B="2019-07-29T16:09:01" C="18942" D="4"/>
+		</DAN>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-29T10:53:19" B="2019-07-29T16:09:01" C="18942" D="4"/>
+		</DAN>
+		<TIM A="2019-07-29T10:53:19" B="2019-07-29T16:09:01" C="18942" D="4">
+			<PTN A="55.3945797369" B="13.5520775015" C="56549" D="1"/>
+			<DLV A="005A" B="44862" C="DET-4"/>
+			<DLV A="0074" B="117215" C="DET-4"/>
+			<DLV A="0075" B="12184700" C="DET-4"/>
+			<DLV A="0076" B="4634010" C="DET-4"/>
+			<DLV A="0077" B="13273" C="DET-4"/>
+			<DLV A="0078" B="5522" C="DET-4"/>
+			<DLV A="0094" B="263303" C="DET-4"/>
+			<DLV A="00B7" B="44862" C="DET-4"/>
+			<DLV A="00EC" B="16147" C="DET-4"/>
+			<DLV A="0105" B="3379917" C="DET-4"/>
+			<DLV A="0106" B="95604" C="DET-4"/>
+			<DLV A="0107" B="382730" C="DET-4"/>
+			<DLV A="013C" B="213650" C="DET-4"/>
+			<DLV A="013E" B="9868" C="DET-4"/>
+			<DLV A="013F" B="2499" C="DET-4"/>
+			<DLV A="0166" B="3379917" C="DET-4"/>
+			<DLV A="0167" B="382730" C="DET-4"/>
+			<DLV A="0077" B="13341" C="DET-7"/>
+			<DLV A="0078" B="5645" C="DET-7"/>
+			<DLV A="00D7" B="552" C="DET-4"/>
+		</TIM>
+		<TLG A="TLG00002" C="1"/>
+	</TSK>
+	<TSK A="TSK-3" B="Raps" G="4">
+		<DLT A="DFFF" B="31"/>
+		<DLT A="DFFE" B="2" C="5000" J="44288" K="16" L="18"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-1" J="61443" K="16" L="23"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-2" J="61444" K="24" L="39"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65096" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65097" K="0" L="15"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65253" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-4" J="65255" K="0" L="31"/>
+		<DLT A="DFFE" B="2" C="5000" I="VPN-3" J="65256" K="16" L="31"/>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-30T10:42:09" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-30T10:42:09" D="1"/>
+		</DAN>
+		<DAN A="A00E84080CC00000" C="DVC-2">
+			<ASP A="2019-07-30T10:42:15" B="2019-07-30T13:49:01" C="11206" D="4"/>
+		</DAN>
+		<DAN A="A00E84000CC00000" C="DVC-1">
+			<ASP A="2019-07-30T10:42:15" B="2019-07-30T13:49:01" C="11206" D="4"/>
+		</DAN>
+		<TIM A="2019-07-30T10:42:14" B="2019-07-30T13:49:01" C="11207" D="4">
+			<PTN A="55.4177570889" B="13.4737941652" C="83080" D="1"/>
+			<DLV A="005A" B="28786" C="DET-4"/>
+			<DLV A="0074" B="66170" C="DET-4"/>
+			<DLV A="0075" B="6910080" C="DET-4"/>
+			<DLV A="0076" B="4668890" C="DET-4"/>
+			<DLV A="0077" B="7224" C="DET-4"/>
+			<DLV A="0078" B="3877" C="DET-4"/>
+			<DLV A="0094" B="139691" C="DET-4"/>
+			<DLV A="00B7" B="28228" C="DET-4"/>
+			<DLV A="00D7" B="630" C="DET-4"/>
+			<DLV A="00EC" B="8227" C="DET-4"/>
+			<DLV A="0105" B="3984750" C="DET-4"/>
+			<DLV A="0106" B="119374" C="DET-4"/>
+			<DLV A="0107" B="435030" C="DET-4"/>
+			<DLV A="013C" B="111709" C="DET-4"/>
+			<DLV A="013E" B="5220" C="DET-4"/>
+			<DLV A="013F" B="1360" C="DET-4"/>
+			<DLV A="0166" B="3907556" C="DET-4"/>
+			<DLV A="0167" B="426600" C="DET-4"/>
+			<DLV A="0077" B="7251" C="DET-7"/>
+			<DLV A="0078" B="3982" C="DET-7"/>
+		</TIM>
+		<TLG A="TLG00001" C="1"/>
+	</TSK>
+	<DVC A="DVC-1" B="IDEAL Combine Series" C="V0.01" D="A00E84000CC00000" E="" F="33304C41454449" G="FF000000000000">
+		<DET A="DET-4" B="1011" C="2" D="P3_Combines" E="1" F="1000">
+			<DOR A="30"/>
+			<DOR A="31"/>
+			<DOR A="32"/>
+			<DOR A="33"/>
+			<DOR A="34"/>
+			<DOR A="35"/>
+			<DOR A="36"/>
+			<DOR A="37"/>
+			<DOR A="38"/>
+			<DOR A="39"/>
+			<DOR A="40"/>
+			<DOR A="41"/>
+			<DOR A="42"/>
+			<DOR A="43"/>
+			<DOR A="44"/>
+			<DOR A="45"/>
+			<DOR A="46"/>
+			<DOR A="47"/>
+			<DOR A="48"/>
+			<DOR A="49"/>
+			<DOR A="50"/>
+			<DOR A="51"/>
+			<DOR A="52"/>
+			<DOR A="53"/>
+			<DOR A="54"/>
+			<DOR A="55"/>
+			<DOR A="56"/>
+			<DOR A="57"/>
+		</DET>
+		<DET A="DET-3" B="1006" C="7" D="GNSS Sensor" E="600" F="1000">
+			<DOR A="1007"/>
+			<DOR A="1008"/>
+			<DOR A="1009"/>
+		</DET>
+		<DET A="DET-2" B="1001" C="6" D="Connector" E="500" F="1000">
+			<DOR A="1002"/>
+			<DOR A="1003"/>
+			<DOR A="1004"/>
+			<DOR A="1005"/>
+		</DET>
+		<DET A="DET-1" B="1000" C="1" D="Root_DET" E="0" F="0">
+			<DOR A="1010"/>
+		</DET>
+		<DPD A="50" B="005A" C="2" D="17" E="Total Wet Grain" F="28"/>
+		<DPD A="51" B="0074" C="2" D="17" E="Total Area" F="17"/>
+		<DPD A="30" B="0075" C="2" D="17" E="Field Distance travelled" F="14"/>
+		<DPD A="31" B="0076" C="2" D="17" E="Road Distance travelled" F="14"/>
+		<DPD A="32" B="0077" C="2" D="17" E="Effective Total Time" F="5"/>
+		<DPD A="44" B="0078" C="2" D="17" E="Ineffective Total Time" F="5"/>
+		<DPD A="33" B="0094" C="2" D="17" E="Total Fuel Consumed" F="16"/>
+		<DPD A="34" B="0095" C="1" D="9" E="Fuel Consumption" F="19"/>
+		<DPD A="52" B="00B7" C="2" D="17" E="Total Dry Grain" F="9"/>
+		<DPD A="35" B="00C0" C="1" D="9" E="Ambient Temperature" F="21"/>
+		<DPD A="36" B="00D7" C="0" D="17" E="Lifetime Working Hours" F="20"/>
+		<DPD A="37" B="00EC" C="2" D="17" E="Thresher Engagement Total Time" F="5"/>
+		<DPD A="38" B="00F3" C="1" D="9" E="Sieve Clearance" F="12"/>
+		<DPD A="39" B="00F7" C="1" D="9" E="Chaffer Clearance" F="12"/>
+		<DPD A="40" B="00FB" C="1" D="9" E="Concave Clearance" F="12"/>
+		<DPD A="45" B="00FF" C="1" D="9" E="Cleaning Fan Speed" F="25"/>
+		<DPD A="53" B="0105" C="2" D="17" E="Average Wet Capacity" F="7"/>
+		<DPD A="54" B="0106" C="2" D="17" E="Average Moisture" F="24"/>
+		<DPD A="55" B="0107" C="2" D="17" E="Average Wet Yield" F="8"/>
+		<DPD A="41" B="013C" C="2" D="17" E="Effective Fuel Consumed" F="16"/>
+		<DPD A="43" B="013E" C="2" D="17" E="Total Working DEF Consumed" F="16"/>
+		<DPD A="42" B="013F" C="2" D="17" E="Total Idle DEF Consumed" F="16"/>
+		<DPD A="56" B="0166" C="2" D="17" E="Average Dry Capacity" F="7"/>
+		<DPD A="57" B="0167" C="2" D="17" E="Average Dry Yield" F="8"/>
+		<DPD A="49" B="0198" C="1" D="9" E="Avg Crop Decontamination" F="4"/>
+		<DPD A="1010" B="DFFF" C="0" D="31" E="Default Logging"/>
+		<DPD A="48" B="E253" C="1" D="9" E="Avg Crop Damage" F="4"/>
+		<DPD A="46" B="E254" C="1" D="9" E="Actual Tailings Volume" F="4"/>
+		<DPD A="47" B="E256" C="1" D="9" E="Shoe Loss" F="4"/>
+		<DPT A="1002" B="0086" C="2322" D="Connector Offset X" E="14"/>
+		<DPT A="1003" B="0087" C="0" D="Connector Offset Y" E="14"/>
+		<DPT A="1004" B="0088" C="711" D="Connector Offset Z" E="14"/>
+		<DPT A="1005" B="009D" C="3" D="Connector Type"/>
+		<DPT A="1007" B="0086" C="870" D="NRP Offset X" E="14"/>
+		<DPT A="1008" B="0087" C="0" D="NRP Offset Y" E="14"/>
+		<DPT A="1009" B="0088" C="-3771" D="NRP Offset Z" E="14"/>
+		<DVP A="4" B="0" C="0.0001" D="1" E="%"/>
+		<DVP A="5" B="0" C="1.0" D="0" E="s"/>
+		<DVP A="6" B="32" C="0.1800000072" D="1" E="F"/>
+		<DVP A="7" B="0" C="0.0079366304" D="2" E="lb/h"/>
+		<DVP A="8" B="0" C="0.0089217899" D="1" E="lb/ac"/>
+		<DVP A="9" B="0" C="2.2046198845" D="2" E="lb"/>
+		<DVP A="10" B="0" C="1.0" D="0"/>
+		<DVP A="11" B="0" C="1.0" D="0" E="rpm"/>
+		<DVP A="12" B="0" C="0.0393701009" D="2" E="in"/>
+		<DVP A="13" B="0" C="1.0" D="0" E="Hz"/>
+		<DVP A="14" B="0" C="0.0032808401" D="3" E="ft"/>
+		<DVP A="15" B="0" C="0.0000776889" D="0" E="lb/bu"/>
+		<DVP A="16" B="0" C="0.000264172" D="2" E="gal"/>
+		<DVP A="17" B="0" C="0.000247105" D="4" E="ac"/>
+		<DVP A="18" B="0" C="0.0000008896" D="2" E="ac/h"/>
+		<DVP A="19" B="0" C="0.000951019" D="2" E="gal/h"/>
+		<DVP A="20" B="0" C="0.0500000007" D="0" E="h"/>
+		<DVP A="21" B="-255372" C="0.0018" D="1" E="F"/>
+		<DVP A="22" B="0" C="0.0328084007" D="3" E="ft"/>
+		<DVP A="23" B="0" C="0.0039370102" D="2" E="in"/>
+		<DVP A="24" B="0" C="0.0001" D="1" E="%"/>
+		<DVP A="25" B="0" C="0.0599999987" D="0" E="rpm"/>
+		<DVP A="26" B="0" C="0.1148400381" D="2" E="bu/ac"/>
+		<DVP A="27" B="-273150" C="0.001" D="1" E="C"/>
+		<DVP A="28" B="0" C="0.00220462" D="2" E="lb"/>
+		<DVP A="29" B="0" C="0.001" D="2" E="s"/>
+	</DVC>
+	<DVC A="DVC-2" B="Combine Header" C="V0.01" D="A00E84080CC00000" E="" F="0080D5DA808507" G="FF000000000000">
+		<DET A="DET-21" B="1053" C="4" D="Section 14" E="756" F="1006">
+			<DOR A="1054"/>
+			<DOR A="1055"/>
+		</DET>
+		<DET A="DET-20" B="1050" C="4" D="Section 13" E="755" F="1006">
+			<DOR A="1051"/>
+			<DOR A="1052"/>
+		</DET>
+		<DET A="DET-19" B="1047" C="4" D="Section 12" E="754" F="1006">
+			<DOR A="1048"/>
+			<DOR A="1049"/>
+		</DET>
+		<DET A="DET-18" B="1044" C="4" D="Section 11" E="753" F="1006">
+			<DOR A="1045"/>
+			<DOR A="1046"/>
+		</DET>
+		<DET A="DET-17" B="1041" C="4" D="Section 10" E="752" F="1006">
+			<DOR A="1042"/>
+			<DOR A="1043"/>
+		</DET>
+		<DET A="DET-16" B="1038" C="4" D="Section 9" E="751" F="1006">
+			<DOR A="1039"/>
+			<DOR A="1040"/>
+		</DET>
+		<DET A="DET-15" B="1035" C="4" D="Section 8" E="750" F="1006">
+			<DOR A="1036"/>
+			<DOR A="1037"/>
+		</DET>
+		<DET A="DET-14" B="1032" C="4" D="Section 7" E="749" F="1006">
+			<DOR A="1033"/>
+			<DOR A="1034"/>
+		</DET>
+		<DET A="DET-13" B="1029" C="4" D="Section 6" E="748" F="1006">
+			<DOR A="1030"/>
+			<DOR A="1031"/>
+		</DET>
+		<DET A="DET-12" B="1026" C="4" D="Section 5" E="747" F="1006">
+			<DOR A="1027"/>
+			<DOR A="1028"/>
+		</DET>
+		<DET A="DET-11" B="1023" C="4" D="Section 4" E="746" F="1006">
+			<DOR A="1024"/>
+			<DOR A="1025"/>
+		</DET>
+		<DET A="DET-10" B="1020" C="4" D="Section 3" E="745" F="1006">
+			<DOR A="1021"/>
+			<DOR A="1022"/>
+		</DET>
+		<DET A="DET-9" B="1017" C="4" D="Section 2" E="744" F="1006">
+			<DOR A="1018"/>
+			<DOR A="1019"/>
+		</DET>
+		<DET A="DET-8" B="1014" C="4" D="Section 1" E="743" F="1006">
+			<DOR A="1015"/>
+			<DOR A="1016"/>
+		</DET>
+		<DET A="DET-7" B="1006" C="2" D="Combine Header" E="700" F="1000">
+			<DOR A="58"/>
+			<DOR A="59"/>
+			<DOR A="60"/>
+			<DOR A="61"/>
+			<DOR A="62"/>
+			<DOR A="63"/>
+			<DOR A="64"/>
+			<DOR A="65"/>
+			<DOR A="66"/>
+			<DOR A="67"/>
+			<DOR A="68"/>
+			<DOR A="69"/>
+			<DOR A="70"/>
+			<DOR A="71"/>
+			<DOR A="72"/>
+			<DOR A="73"/>
+			<DOR A="74"/>
+			<DOR A="75"/>
+			<DOR A="76"/>
+			<DOR A="77"/>
+			<DOR A="78"/>
+			<DOR A="79"/>
+			<DOR A="80"/>
+			<DOR A="81"/>
+			<DOR A="82"/>
+			<DOR A="83"/>
+			<DOR A="84"/>
+			<DOR A="1007"/>
+			<DOR A="1008"/>
+			<DOR A="1009"/>
+			<DOR A="1010"/>
+			<DOR A="1011"/>
+			<DOR A="1012"/>
+			<DOR A="1013"/>
+		</DET>
+		<DET A="DET-6" B="1001" C="6" D="Connector" E="500" F="1000">
+			<DOR A="1002"/>
+			<DOR A="1003"/>
+			<DOR A="1004"/>
+		</DET>
+		<DET A="DET-5" B="1000" C="1" D="Root_DET" E="0" F="0">
+			<DOR A="1005"/>
+		</DET>
+		<DPD A="1039" B="0087" C="1" D="9" E="Section 9 Y" F="2"/>
+		<DPD A="1042" B="0087" C="1" D="9" E="Section 10 Y" F="2"/>
+		<DPD A="1045" B="0087" C="1" D="9" E="Section 11 Y" F="2"/>
+		<DPD A="1048" B="0087" C="1" D="9" E="Section 12 Y" F="2"/>
+		<DPD A="64" B="0087" C="1" D="9" E="Header Y-Offset" F="14"/>
+		<DPD A="66" B="008D" C="1" D="9" E="Work State" F="10"/>
+		<DPD A="67" B="008F" C="1" D="9" E="Yield Delay" F="29"/>
+		<DPD A="68" B="0097" C="1" D="9" E="Harvesting Rate" F="18"/>
+		<DPD A="1013" B="00A0" C="3" D="9" E="Section Control State"/>
+		<DPD A="1011" B="00A1" C="1" D="9" E="Actual Workstate 1 - 16"/>
+		<DPD A="69" B="00B5" C="1" D="9" E="Dry Yield" F="8"/>
+		<DPD A="61" B="00B6" C="1" D="9" E="Dry Capacity" F="7"/>
+		<DPD A="71" B="00ED" C="1" D="9" E="Header Height Status" F="10"/>
+		<DPD A="72" B="00EE" C="1" D="9" E="Header Engaged Status" F="10"/>
+		<DPD A="73" B="00EF" C="1" D="9" E="Yield Hold Status" F="10"/>
+		<DPD A="74" B="00F0" C="1" D="9" E="Unloading Status" F="10"/>
+		<DPD A="75" B="00F1" C="1" D="9" E="Crop Temperature" F="27"/>
+		<DPD A="76" B="0103" C="1" D="9" E="Yield Lag Delay Time" F="29"/>
+		<DPD A="77" B="0104" C="1" D="9" E="Yield Lead Delay Time" F="29"/>
+		<DPD A="1012" B="0122" C="3" D="9" E="Setpoint Workstate 1 - 16"/>
+		<DPD A="1005" B="DFFF" C="0" D="31" E="Default Logging"/>
+		<DPD A="79" B="E107" C="1" D="9" E="Rotor Speed" F="25"/>
+		<DPD A="81" B="E251" C="1" D="9" E="Feeder Throughput Load" F="4"/>
+		<DPD A="82" B="E252" C="1" D="9" E="Processor Load" F="4"/>
+		<DPD A="80" B="E255" C="1" D="9" E="Processor Loss" F="4"/>
+		<DPD A="84" B="E258" C="1" D="9" E="Feeder Throughput Left" F="4"/>
+		<DPD A="83" B="E259" C="1" D="9" E="Feeder Throughput Right" F="4"/>
+		<DPD A="70" B="FFFD" C="1" D="9" E="Crop Type" F="10"/>
+		<DPD A="58" B="0043" C="1" D="9" E="Actual Working Width" F="22"/>
+		<DPD A="78" B="0053" C="1" D="9" E="Volume Per Area Yield" F="26"/>
+		<DPD A="59" B="0054" C="1" D="9" E="Wet Yield" F="8"/>
+		<DPD A="60" B="0057" C="1" D="9" E="Wet Capacity" F="7"/>
+		<DPD A="62" B="0063" C="1" D="9" E="Moisture" F="24"/>
+		<DPD A="1009" B="0077" C="3" D="17" E="In Work Time" F="3"/>
+		<DPD A="1010" B="0078" C="3" D="17" E="Out of Work Time" F="3"/>
+		<DPD A="63" B="0079" C="1" D="9" E="Test Weight" F="15"/>
+		<DPD A="65" B="0086" C="1" D="9" E="Header X-Offset" F="14"/>
+		<DPD A="1054" B="0087" C="1" D="9" E="Section 14 Y" F="2"/>
+		<DPD A="1051" B="0087" C="1" D="9" E="Section 13 Y" F="2"/>
+		<DPD A="1015" B="0087" C="1" D="9" E="Section 1 Y" F="2"/>
+		<DPD A="1018" B="0087" C="1" D="9" E="Section 2 Y" F="2"/>
+		<DPD A="1021" B="0087" C="1" D="9" E="Section 3 Y" F="2"/>
+		<DPD A="1024" B="0087" C="1" D="9" E="Section 4 Y" F="2"/>
+		<DPD A="1027" B="0087" C="1" D="9" E="Section 5 Y" F="2"/>
+		<DPD A="1030" B="0087" C="1" D="9" E="Section 6 Y" F="2"/>
+		<DPD A="1033" B="0087" C="1" D="9" E="Section 7 Y" F="2"/>
+		<DPD A="1036" B="0087" C="1" D="9" E="Section 8 Y" F="2"/>
+		<DPT A="1002" B="0086" C="0" D="Connector Offset X" E="14"/>
+		<DPT A="1003" B="0087" C="0" D="Connector Offset Y" E="14"/>
+		<DPT A="1004" B="009D" C="3" D="Connector Type"/>
+		<DPT A="1007" B="0046" C="10970" D="Boom Maximum Width" E="1"/>
+		<DPT A="1008" B="0088" C="0" D="Boom ERP Z" E="2"/>
+		<DPT A="1016" B="0043" C="783" D="Section 1 Width" E="1"/>
+		<DPT A="1019" B="0043" C="784" D="Section 2 Width" E="1"/>
+		<DPT A="1022" B="0043" C="783" D="Section 3 Width" E="1"/>
+		<DPT A="1025" B="0043" C="784" D="Section 4 Width" E="1"/>
+		<DPT A="1028" B="0043" C="783" D="Section 5 Width" E="1"/>
+		<DPT A="1031" B="0043" C="784" D="Section 6 Width" E="1"/>
+		<DPT A="1034" B="0043" C="784" D="Section 7 Width" E="1"/>
+		<DPT A="1037" B="0043" C="783" D="Section 8 Width" E="1"/>
+		<DPT A="1040" B="0043" C="784" D="Section 9 Width" E="1"/>
+		<DPT A="1043" B="0043" C="783" D="Section 10 Width" E="1"/>
+		<DPT A="1046" B="0043" C="784" D="Section 11 Width" E="1"/>
+		<DPT A="1049" B="0043" C="783" D="Section 12 Width" E="1"/>
+		<DPT A="1052" B="0043" C="784" D="Section 13 Width" E="1"/>
+		<DPT A="1055" B="0043" C="784" D="Section 14 Width" E="1"/>
+		<DVP A="1" B="0" C="0.0032808401" D="2" E="ft"/>
+		<DVP A="2" B="0" C="0.0032808401" D="3" E="ft"/>
+		<DVP A="3" B="0" C="0.0002777778" D="2" E="hr"/>
+		<DVP A="4" B="0" C="0.0001" D="1" E="%"/>
+		<DVP A="5" B="0" C="1.0" D="0" E="s"/>
+		<DVP A="6" B="32" C="0.1800000072" D="1" E="F"/>
+		<DVP A="7" B="0" C="0.0079366304" D="2" E="lb/h"/>
+		<DVP A="8" B="0" C="0.0089217899" D="1" E="lb/ac"/>
+		<DVP A="9" B="0" C="2.2046198845" D="2" E="lb"/>
+		<DVP A="10" B="0" C="1.0" D="0"/>
+		<DVP A="11" B="0" C="1.0" D="0" E="rpm"/>
+		<DVP A="12" B="0" C="0.0393701009" D="2" E="in"/>
+		<DVP A="13" B="0" C="1.0" D="0" E="Hz"/>
+		<DVP A="14" B="0" C="0.0032808401" D="3" E="ft"/>
+		<DVP A="15" B="0" C="0.0000776889" D="0" E="lb/bu"/>
+		<DVP A="16" B="0" C="0.000264172" D="2" E="gal"/>
+		<DVP A="17" B="0" C="0.000247105" D="4" E="ac"/>
+		<DVP A="18" B="0" C="0.0000008896" D="2" E="ac/h"/>
+		<DVP A="19" B="0" C="0.000951019" D="2" E="gal/h"/>
+		<DVP A="20" B="0" C="0.0500000007" D="0" E="h"/>
+		<DVP A="21" B="-255372" C="0.0018" D="1" E="F"/>
+		<DVP A="22" B="0" C="0.0328084007" D="3" E="ft"/>
+		<DVP A="23" B="0" C="0.0039370102" D="2" E="in"/>
+		<DVP A="24" B="0" C="0.0001" D="1" E="%"/>
+		<DVP A="25" B="0" C="0.0599999987" D="0" E="rpm"/>
+		<DVP A="26" B="0" C="0.1148400381" D="2" E="bu/ac"/>
+		<DVP A="27" B="-273150" C="0.001" D="1" E="C"/>
+		<DVP A="28" B="0" C="0.00220462" D="2" E="lb"/>
+		<DVP A="29" B="0" C="0.001" D="2" E="s"/>
+	</DVC>
+	<VPN A="VPN-1" B="0" C="1.0" D="0" E="%"/>
+	<VPN A="VPN-2" B="0" C="0.125" D="0" E="1/min"/>
+	<VPN A="VPN-3" B="0" C="0.0036" D="2" E="km/h"/>
+	<VPN A="VPN-4" B="0" C="0.05" D="2" E="h"/>
+</ISO11783_TaskData>
