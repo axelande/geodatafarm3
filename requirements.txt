@@ -1,8 +1,6 @@
 Cython
 matplotlib
 numpy
-gdal
-osgeo
 pandas
 psycopg2
 psycopg2_binary
