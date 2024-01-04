@@ -1,6 +1,7 @@
 Cython
 matplotlib
 numpy
+gdal
 osgeo
 pandas
 psycopg2
