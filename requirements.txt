@@ -1,0 +1,12 @@
+Cython
+matplotlib
+numpy
+osgeo
+pandas
+processing
+psycopg2
+psycopg2_binary
+PyQt5
+reportlab
+requests
+pytest-qgis
