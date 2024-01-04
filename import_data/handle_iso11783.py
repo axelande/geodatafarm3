@@ -108,7 +108,7 @@ class Iso11783:
         for row in self.checkboxes1:
             if row[0].checkState() == 2:
                 tasks_to_include.append(row[1])
-        if len(tasks_to_include) is 0:
+        if len(tasks_to_include) == 0:
             QtWidgets.QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('You need to select at least one of the tasks'))
             return
@@ -469,12 +469,6 @@ def insert_data(tr, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_na
     db.execute_sql(f"DROP TABLE {schema}.temp_table")
     for col in focus_col:
         db.create_indexes(tbl_name, col, schema, primary_key=False)
-
-
-class App:
-    def __init__(self):
-        self.dock_widget = GeoDataFarmDockWidget(None)
-        self.db = DB(self.dock_widget)
 
 
 if __name__ == '__main__':

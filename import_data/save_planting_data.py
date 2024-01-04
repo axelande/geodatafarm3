@@ -56,8 +56,6 @@ class SavePlanting:
             QMessageBox.information(None, "Error:", self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
-            self.IH = dbFileHandler(self.iface, self.dock_widget)
-            self.IH.start_up()
         elif self.dw.CBPFileType.currentText() == self.tr('Shape file (.shp)'):
             self.importer = InputShpHandler(self.parent, 'planting', columns)
             self.importer.run()

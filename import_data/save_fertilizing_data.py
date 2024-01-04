@@ -55,8 +55,6 @@ class SaveFertilizing:
             QMessageBox.information(None, "Error:", self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
-            self.IH = dbFileHandler(self.iface, self.dock_widget)
-            self.IH.start_up()
         elif self.dw.CBFFileType.currentText() == self.tr('Shape file (.shp)'):
             shp_file = InputShpHandler(self.parent, 'ferti', columns)
             shp_file.run()
