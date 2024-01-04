@@ -3,7 +3,6 @@ matplotlib
 numpy
 osgeo
 pandas
-processing
 psycopg2
 psycopg2_binary
 PyQt5
