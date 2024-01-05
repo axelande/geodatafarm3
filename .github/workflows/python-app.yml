@@ -27,7 +27,11 @@ jobs:
     - name: Pull qgis image
       run: docker pull qgis/qgis
     - name: Find Python executable path
-      run: docker run --rm qgis/qgis sh -c "which python"
+      run: |
+        docker run --rm qgis/qgis sh -c "\
+          if [ -x /usr/bin/python3 ]; then echo /usr/bin/python3; \
+          elif [ -x /usr/bin/python ]; then echo /usr/bin/python; \
+          else echo 'Python executable not found'; exit 1; fi" 
       id: python-path
 
     - name: Update pip
