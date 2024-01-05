@@ -29,9 +29,6 @@ jobs:
 
     - name: Update pip
       run: docker run --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "python3 -m pip install --upgrade pip"  
-    - name: Install requirements
-      run: docker run --net=host --volume $(pwd):/app -w=/app qgis/qgis sh -c "python3 -m pip install -r requirements.txt && python3 -m pip freeze"
-
-    - name: run tests
-      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "python3 -m pytest tests -v"
+    - name: Run tests
+      run: docker run --net=host --volume $(pwd):/app -w=/app qgis/qgis sh -c "python3 -m pip install -r requirements.txt && python3 -m pytest tests"
     
