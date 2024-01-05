@@ -4,6 +4,11 @@
 name: Python application
 
 on:
+  schedule:
+    # runs once a week
+    - cron: '0 6 * * 0'
+    # runs every day
+    # - cron: '0 12 * *'
   push:
     branches: [ "master", "try_ci" ]
   pull_request:
@@ -34,5 +39,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
     - name: Run tests
-      run: docker run --rm --net=host --volume `pwd`/Qaava:/ -w=/ qgis/qgis sh -c "pip3 install -q pytest && xvfb-run -s '+extension GLX -screen 0 1024x768x24' pytest tests -v"
+      run: docker run --rm --net=host --volume qgis/qgis sh -c "pip3 install -q pytest && xvfb-run -s '+extension GLX -screen 0 1024x768x24' pytest tests -v"
     
