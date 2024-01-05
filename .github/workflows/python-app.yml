@@ -26,10 +26,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Pull qgis image
       run: docker pull qgis/qgis
+    - name: Find Python executable path
+      run: docker run --rm qgis/qgis sh -c "which python"
+      id: python-path
+
     - name: Update pip
-      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "python -m pip install --upgrade pip"  
+      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "$(cat ${python-path}) -m pip install --upgrade pip"  
     - name: Install requirements
-      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "pip install -r requirements.txt --prefer-binary" 
+      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "$(cat ${python-path}) -m pip install -r requirements.txt --prefer-binary" 
     - name: run tests
-      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "pytest tests -v"
+      run: docker run --rm --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "$(cat ${python-path}) -m pytest tests -v"
     
