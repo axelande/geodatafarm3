@@ -10,7 +10,7 @@ on:
     # runs every day
     - cron: '0 12 * * *'
   push:
-    branches: [ "master", "try_ci" ]
+    branches: [ "master", "axelande-patch" ]
   pull_request:
     branches: [ "master" ]
 
