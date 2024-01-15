@@ -645,7 +645,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>961</width>
-              <height>451</height>
+              <height>465</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_8">
@@ -849,7 +849,7 @@ GeoDataFarms webpage</string>
               <x>11</x>
               <y>10</y>
               <width>961</width>
-              <height>477</height>
+              <height>491</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_9">
@@ -1070,7 +1070,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>511</width>
-              <height>503</height>
+              <height>517</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
@@ -1808,7 +1808,7 @@ GeoDataFarms webpage</string>
               <x>10</x>
               <y>10</y>
               <width>961</width>
-              <height>453</height>
+              <height>467</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_15">

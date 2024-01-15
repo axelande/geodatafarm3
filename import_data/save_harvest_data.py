@@ -33,6 +33,7 @@ class SaveHarvesting:
         translate = TR('SaveHarvesting')
         self.tr = translate.tr
         self.parent = parent
+        self.importer = None
 
     def set_widget_connections(self):
         """A simple function that sets the buttons on the planting tab"""
@@ -43,18 +44,18 @@ class SaveHarvesting:
         """The function loads the correct import dialog for files"""
         columns = [self.tr('Yield'), self.tr('Total yield')]
         if self.dw.CBHvFileType.currentText() == self.tr('Text file (.csv; .txt)'):
-            add_f = InputTextHandler(self.parent, 'harvest', columns=columns)
-            add_f.run()
+            self.importer = InputTextHandler(self.parent, 'harvest', columns=columns)
+            self.importer.run()
         elif self.dw.CBHvFileType.currentText() == self.tr('Iso Bin XML files'):
-            add_f = Iso11783(self.parent, 'harvest')
-            add_f.run()
+            self.importer = Iso11783(self.parent, 'harvest')
+            self.importer.run()
         elif self.dw.CBHvFileType.currentText() == self.tr('Databasefile (.db)'):
             QMessageBox.information(None, "Error:", self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
         elif self.dw.CBHvFileType.currentText() == self.tr('Shape file (.shp)'):
-            shp_file = InputShpHandler(self.parent, 'harvest', columns)
-            shp_file.run()
+            self.importer = InputShpHandler(self.parent, 'harvest', columns)
+            self.importer.run()
 
     def save_manual_data(self):
         """Saves the manual data."""

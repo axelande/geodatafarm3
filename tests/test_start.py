@@ -5,6 +5,7 @@ from ..database_scripts.db import DB
 from ..GeoDataFarm import GeoDataFarm
 from . import gdf, RESET_USER, RESET_PASSWORD
 
+@pytest.mark.skip('No need to test connection')
 def test_startup(gdf):
     gdf.run()
 

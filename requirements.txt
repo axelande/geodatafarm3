@@ -9,4 +9,3 @@ reportlab
 requests
 pytest
 pytest-qgis
-pytest-depends

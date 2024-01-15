@@ -4,12 +4,12 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="465"/>
+        <location filename="../import_data/handle_iso11783.py" line="495"/>
         <source>Warning:</source>
         <translation>Warnung:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="465"/>
+        <location filename="../import_data/handle_iso11783.py" line="495"/>
         <source>No data was found on that field.</source>
         <translation>In diesem Feld wurden keine Daten gefunden.</translation>
     </message>
@@ -17,37 +17,37 @@
 <context>
     <name>AddField</name>
     <message>
-        <location filename="../support_scripts/add_field.py" line="223"/>
+        <location filename="../support_scripts/add_field.py" line="224"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="211"/>
+        <location filename="../support_scripts/add_field.py" line="212"/>
         <source>Field name must be filled in.</source>
         <translation>Der Feldname muss ausgefüllt werden.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="125"/>
+        <location filename="../support_scripts/add_field.py" line="126"/>
         <source>Question</source>
         <translation>Frage</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="125"/>
+        <location filename="../support_scripts/add_field.py" line="126"/>
         <source>Do you want to delete </source>
         <translation>Möchten Sie löschen </translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="179"/>
+        <location filename="../support_scripts/add_field.py" line="180"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="142"/>
+        <location filename="../support_scripts/add_field.py" line="143"/>
         <source>There are data sets that are dependent on this field, it cant be removed.</source>
         <translation>Es gibt Datensätze, die von diesem Feld abhängig sind. Es kann nicht entfernt werden.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="179"/>
+        <location filename="../support_scripts/add_field.py" line="180"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -56,22 +56,22 @@
 Rückverfolgung: {t}</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="205"/>
+        <location filename="../support_scripts/add_field.py" line="206"/>
         <source>No coordinates were found, did you mark the field on the canvas?</source>
         <translation>Keine Koordinaten gefunden, haben Sie das Feld auf der Leinwand markiert?</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="219"/>
+        <location filename="../support_scripts/add_field.py" line="220"/>
         <source>Field name already exist, please select a new name</source>
         <translation>Der Feldname ist fertig, bitte wählen Sie einen neuen Namen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="236"/>
+        <location filename="../support_scripts/add_field.py" line="237"/>
         <source>Help:</source>
         <translation>Hilfe:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/add_field.py" line="236"/>
+        <location filename="../support_scripts/add_field.py" line="237"/>
         <source>Here is where you add a field.
 1. Start with giving the field a name.
 2. Press &quot;select extent&quot; and switch to the QGIS window and zoom to your field.
@@ -347,14 +347,19 @@ Rückverfolgung: {t}</translation>
         <translation>User name already taken, please choose another name as user name!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="106"/>
+        <location filename="../database_scripts/create_new_farm.py" line="109"/>
         <source>Done</source>
         <translation>Gemacht</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="106"/>
+        <location filename="../database_scripts/create_new_farm.py" line="109"/>
         <source>Database created</source>
         <translation>Datenbank erstellt</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="153"/>
+        <source> is set as your farm</source>
+        <translation> ist als deine Farm eingestellt</translation>
     </message>
 </context>
 <context>
@@ -928,42 +933,42 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
 <context>
     <name>GeoDataFarm</name>
     <message>
-        <location filename="../GeoDataFarm.py" line="219"/>
+        <location filename="../GeoDataFarm.py" line="223"/>
         <source>&amp;GeoFarm</source>
         <translation>&amp;GeoFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="203"/>
+        <location filename="../GeoDataFarm.py" line="207"/>
         <source>GeoDataFarm</source>
         <translation>GeoDataFarm</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="355"/>
+        <location filename="../GeoDataFarm.py" line="361"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="277"/>
+        <location filename="../GeoDataFarm.py" line="281"/>
         <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="293"/>
+        <location filename="../GeoDataFarm.py" line="297"/>
         <source>The name of the data set already exist in your database, would you like to replace it?</source>
         <translation>Der Name des Datensatzes ist bereits in Ihrer Datenbank vorhanden. Möchten Sie ihn ersetzen?</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="339"/>
+        <location filename="../GeoDataFarm.py" line="345"/>
         <source>Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don&apos;t understand some parts please do send a e-mail to me at geodatafarm@gmail.com</source>
         <translation>Willkommen bei GeoDataFarm. Dieses Plugin befindet sich noch in der Entwicklung. Wenn Sie Verbesserungsvorschläge haben oder einige Teile nicht verstehen, senden Sie mir bitte eine E-Mail an geodatafarm@gmail.com</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="347"/>
+        <location filename="../GeoDataFarm.py" line="353"/>
         <source>Crop name must be filled in.</source>
         <translation>Der Name der Ernte muss ausgefüllt werden.</translation>
     </message>
     <message>
-        <location filename="../GeoDataFarm.py" line="355"/>
+        <location filename="../GeoDataFarm.py" line="361"/>
         <source>Crop name already exist, please select a new name</source>
         <translation>Der Name des Ernteguts ist fertig, bitte wählen Sie einen neuen Namen</translation>
     </message>
@@ -2221,22 +2226,22 @@ folgende Spalte</translation>
         <translation>Eingabedatei hinzufügen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="225"/>
+        <location filename="../widgets/import_xml_bin.ui" line="237"/>
         <source>Columns in the file:</source>
         <translation>Spalten in der Datei:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="173"/>
+        <location filename="../widgets/import_xml_bin.ui" line="185"/>
         <source>Parameters that could be analysed:</source>
         <translation>Parameter, die analysiert werden könnten:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="235"/>
+        <location filename="../widgets/import_xml_bin.ui" line="247"/>
         <source>&lt;--</source>
         <translation>&lt;--</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="186"/>
+        <location filename="../widgets/import_xml_bin.ui" line="198"/>
         <source>--&gt;</source>
         <translation>--&gt;</translation>
     </message>
@@ -2428,7 +2433,7 @@ folgende Spalte</translation>
         <translation>Ordner &quot;Taskdata&quot; auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="84"/>
+        <location filename="../widgets/import_xml_bin.ui" line="112"/>
         <source>Adding tasks and
 checking their field
 may take a while</source>
@@ -2439,19 +2444,28 @@ das kann einen nehmen
 während</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="109"/>
+        <location filename="../widgets/import_xml_bin.ui" line="105"/>
         <source>Find thier field</source>
         <translation>Finden Sie ihr Feld</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="283"/>
+        <location filename="../widgets/import_xml_bin.ui" line="295"/>
         <source>Store data</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="270"/>
+        <location filename="../widgets/import_xml_bin.ui" line="282"/>
         <source>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</source>
         <translation>Nachdem Sie überprüft haben, ob alles gut aussieht (dass die Spalten die richtige Einheit und Skalierung haben), drücken Sie &quot;Daten speichern&quot;, dies kann einige Zeit dauern</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_xml_bin.ui" line="169"/>
+        <source>Select a column that
+must be included
+in each point</source>
+        <translation>Wählen Sie eine Spalte aus,
+die muss enthalten sein
+in jedem Punkt</translation>
     </message>
 </context>
 <context>
@@ -2526,12 +2540,12 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>InputTextHandler</name>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="101"/>
+        <location filename="../import_data/handle_text_data.py" line="102"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="101"/>
+        <location filename="../import_data/handle_text_data.py" line="102"/>
         <source>%Y = Year (2010)
 %y = Year (98)
 %m = Month
@@ -2550,47 +2564,47 @@ If you are missing any formats please contact geodatafarm@gmail.com</source>
 Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gmail.com</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="124"/>
+        <location filename="../import_data/handle_text_data.py" line="125"/>
         <source>harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="298"/>
+        <location filename="../import_data/handle_text_data.py" line="307"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="125"/>
+        <location filename="../import_data/handle_text_data.py" line="126"/>
         <source>You can only select one yield column!</source>
         <translation>Sie können nur eine Ertragsspalte auswählen!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="144"/>
+        <location filename="../import_data/handle_text_data.py" line="145"/>
         <source>No row selected!</source>
         <translation>Keine Zeile ausgewählt!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="295"/>
+        <location filename="../import_data/handle_text_data.py" line="304"/>
         <source>There needs to be a column called latitude (wgs84) or you need to change the EPSG system</source>
         <translation>Es muss eine Spalte mit dem Namen Latitude (wgs84) vorhanden sein oder Sie müssen das EPSG-System ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="298"/>
+        <location filename="../import_data/handle_text_data.py" line="307"/>
         <source>There needs to be a column called longitude (wgs84) or you need to change the EPSG system</source>
         <translation>Es muss eine Spalte mit dem Namen Longtitude (wgs84) vorhanden sein oder Sie müssen das EPSG-System ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="437"/>
+        <location filename="../import_data/handle_text_data.py" line="450"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="368"/>
+        <location filename="../import_data/handle_text_data.py" line="377"/>
         <source>The date format didn&apos;t match the selected format, please change</source>
         <translation>Das Datumsformat stimmte nicht mit dem ausgewählten Format überein, bitte ändern</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="421"/>
+        <location filename="../import_data/handle_text_data.py" line="434"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -2599,17 +2613,17 @@ Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gm
 Rückverfolgung: {t}</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="426"/>
+        <location filename="../import_data/handle_text_data.py" line="439"/>
         <source>Information:</source>
         <translation>Information:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="426"/>
+        <location filename="../import_data/handle_text_data.py" line="439"/>
         <source> rows were skipped since the row did not match the heading.</source>
         <translation> zeilen wurden übersprungen, da die Zeile nicht mit der Überschrift übereinstimmt.</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_text_data.py" line="437"/>
+        <location filename="../import_data/handle_text_data.py" line="450"/>
         <source>No data were found in the field, are you sure that the data is in the correct field?</source>
         <translation>Es wurden keine Daten im Feld gefunden. Sind Sie sicher, dass die Daten im richtigen Feld sind?</translation>
     </message>
@@ -2632,109 +2646,119 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 <context>
     <name>Iso11783</name>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="60"/>
+        <location filename="../import_data/handle_iso11783.py" line="66"/>
         <source>Open a folder</source>
         <translation>Öffnen Sie einen Ordner</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="93"/>
+        <location filename="../import_data/handle_iso11783.py" line="104"/>
         <source>Get more info</source>
         <translation>Daten herunterladen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="93"/>
+        <location filename="../import_data/handle_iso11783.py" line="104"/>
         <source>Task name</source>
         <translation>Aufgabennname</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="345"/>
+        <location filename="../import_data/handle_iso11783.py" line="375"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="345"/>
+        <location filename="../import_data/handle_iso11783.py" line="375"/>
         <source>You need to select at least one of the tasks</source>
         <translation>Sie müssen mindestens eine der Aufgaben auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="124"/>
+        <location filename="../import_data/handle_iso11783.py" line="154"/>
         <source>To include</source>
         <translation>Einschließen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="124"/>
+        <location filename="../import_data/handle_iso11783.py" line="154"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="124"/>
+        <location filename="../import_data/handle_iso11783.py" line="154"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="124"/>
+        <location filename="../import_data/handle_iso11783.py" line="154"/>
         <source>Crops</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="183"/>
+        <location filename="../import_data/handle_iso11783.py" line="213"/>
         <source>No row selected!</source>
         <translation>Keine Zeile ausgewählt!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Column name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Mean value</source>
         <translation>Durchschnitt</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Min value</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Max value</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Unit</source>
         <translation>Einheit</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="196"/>
+        <location filename="../import_data/handle_iso11783.py" line="226"/>
         <source>Scale</source>
         <translation>Skala</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="331"/>
+        <location filename="../import_data/handle_iso11783.py" line="361"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="338"/>
+        <location filename="../import_data/handle_iso11783.py" line="368"/>
         <source>You need to select a crop</source>
         <translation>Sie müssen sich für eine Ernte entscheiden</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="337"/>
+        <location filename="../import_data/handle_iso11783.py" line="367"/>
         <source>--- Select crop ---</source>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="363"/>
+        <location filename="../import_data/handle_iso11783.py" line="393"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="363"/>
+        <location filename="../import_data/handle_iso11783.py" line="393"/>
         <source>The number must only contain numbers and .</source>
         <translation>Die Skala kann nur Zahlen enthalten und Dezimalstellen werden durch Eins getrennt.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_iso11783.py" line="90"/>
+        <source>At least one of the tasked was placed outside the field at approximate: </source>
+        <translation>Zumindest einer der Beauftragten wurde außerhalb des Feldes platziert bei ungefähr: </translation>
+    </message>
+    <message>
+        <location filename="../import_data/handle_iso11783.py" line="118"/>
+        <source>No &quot;DPD&quot; data was found in the taskdata.xml, the file might be corrupt?</source>
+        <translation>In der taskdata.xml wurden keine „DPD“-Daten gefunden. Möglicherweise ist die Datei beschädigt?</translation>
     </message>
 </context>
 <context>
@@ -2884,12 +2908,12 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 <context>
     <name>RapportGen</name>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="366"/>
+        <location filename="../support_scripts/generate_reports.py" line="368"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="138"/>
+        <location filename="../support_scripts/generate_reports.py" line="139"/>
         <source>A directory to save the report must be selected.</source>
         <translation>Ein Verzeichnis zum Speichern des Berichts muss ausgewählt werden.</translation>
     </message>
@@ -2899,17 +2923,17 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
         <translation>GeoDataFarm_Limited-Bericht_pro_Vorgang</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="160"/>
+        <location filename="../support_scripts/generate_reports.py" line="162"/>
         <source>GeoDataFarm_Limited_report</source>
         <translation>GeoDataFarm_Limited-Bericht</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="149"/>
+        <location filename="../support_scripts/generate_reports.py" line="150"/>
         <source>GeoDataFarm_Limited_report_per_field</source>
         <translation>GeoDataFarm_Limited-Bericht_pro_Feld</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="217"/>
+        <location filename="../support_scripts/generate_reports.py" line="219"/>
         <source>Following error occurred: {m}
 
  Traceback: {t}</source>
@@ -2918,127 +2942,127 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 Rückverfolgung: {t}</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="189"/>
+        <location filename="../support_scripts/generate_reports.py" line="191"/>
         <source>Planting data (simple input)</source>
         <translation>Pflanzdaten (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="191"/>
+        <location filename="../support_scripts/generate_reports.py" line="193"/>
         <source>Fertilizing data (simple input)</source>
         <translation>Dünge (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="193"/>
+        <location filename="../support_scripts/generate_reports.py" line="195"/>
         <source>Spraying data (simple input)</source>
         <translation>Sprüh (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="195"/>
+        <location filename="../support_scripts/generate_reports.py" line="197"/>
         <source>Harvest data (simple input)</source>
         <translation>Erntedaten (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="244"/>
+        <location filename="../support_scripts/generate_reports.py" line="246"/>
         <source>Planting data (text input)</source>
         <translation>Pflanzdaten (Texteingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="246"/>
+        <location filename="../support_scripts/generate_reports.py" line="248"/>
         <source>Fertilizing data (text input)</source>
         <translation>Daten düngen (Texteingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="248"/>
+        <location filename="../support_scripts/generate_reports.py" line="250"/>
         <source>Spraying data (text input)</source>
         <translation>Sprühdaten (Texteingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="250"/>
+        <location filename="../support_scripts/generate_reports.py" line="252"/>
         <source>Harvest data (text input)</source>
         <translation>Erntedaten (Texteingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="252"/>
+        <location filename="../support_scripts/generate_reports.py" line="254"/>
         <source>Soil data (text input)</source>
         <translation>Bodendaten (Texteingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="349"/>
+        <location filename="../support_scripts/generate_reports.py" line="351"/>
         <source>No data where found for that year</source>
         <translation>Für dieses Jahr wurden keine Daten gefunden</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="366"/>
+        <location filename="../support_scripts/generate_reports.py" line="368"/>
         <source>You must close the file in order to create it again</source>
         <translation>Sie müssen die Datei schließen, um sie erneut zu erstellen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="297"/>
+        <location filename="../support_scripts/generate_reports.py" line="299"/>
         <source>You must create fields before you can get make reports</source>
         <translation>Sie müssen Felder erstellen, bevor Sie Berichte erstellen können</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="307"/>
+        <location filename="../support_scripts/generate_reports.py" line="309"/>
         <source>Planting</source>
         <translation>Pflanzen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="309"/>
+        <location filename="../support_scripts/generate_reports.py" line="311"/>
         <source>Fertilizing</source>
         <translation>Befruchten</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="311"/>
+        <location filename="../support_scripts/generate_reports.py" line="313"/>
         <source>Spraying</source>
         <translation>Sprühen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="313"/>
+        <location filename="../support_scripts/generate_reports.py" line="315"/>
         <source>Harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="315"/>
+        <location filename="../support_scripts/generate_reports.py" line="317"/>
         <source>Plowing</source>
         <translation>Pflügen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="317"/>
+        <location filename="../support_scripts/generate_reports.py" line="319"/>
         <source>Harrowing</source>
         <translation>Harrowing</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="319"/>
+        <location filename="../support_scripts/generate_reports.py" line="321"/>
         <source>Soil</source>
         <translation>Boden</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="336"/>
+        <location filename="../support_scripts/generate_reports.py" line="338"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="338"/>
+        <location filename="../support_scripts/generate_reports.py" line="340"/>
         <source>Operation</source>
         <translation>Operation</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="285"/>
+        <location filename="../support_scripts/generate_reports.py" line="287"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="197"/>
+        <location filename="../support_scripts/generate_reports.py" line="199"/>
         <source>Plowing data (simple input)</source>
         <translation>Pflügendaten (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="199"/>
+        <location filename="../support_scripts/generate_reports.py" line="201"/>
         <source>Harrowing data (simple input)</source>
         <translation>Eggedata (einfache Eingabe)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/generate_reports.py" line="201"/>
+        <location filename="../support_scripts/generate_reports.py" line="203"/>
         <source>Soil data (simple input)</source>
         <translation>Bodendaten (einfache Eingabe)</translation>
     </message>
@@ -3194,52 +3218,52 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>SatelliteData</name>
     <message>
-        <location filename="../import_data/satellite_data.py" line="320"/>
+        <location filename="../import_data/satellite_data.py" line="322"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="98"/>
+        <location filename="../import_data/satellite_data.py" line="100"/>
         <source>Either is raster band 4 or 8 missing from the ZIP file.</source>
         <translation>Entweder fehlt das Rasterband 4 oder 8 in der ZIP-Datei.</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="281"/>
+        <location filename="../import_data/satellite_data.py" line="283"/>
         <source>You have already created a guide file for this field today, do you want to replace it?</source>
         <translation>Sie haben heute alle eine Leitfadendatei für dieses Feld erstellt. Möchten Sie diese ersetzen?</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="342"/>
+        <location filename="../import_data/satellite_data.py" line="344"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="343"/>
+        <location filename="../import_data/satellite_data.py" line="345"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="291"/>
+        <location filename="../import_data/satellite_data.py" line="293"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="291"/>
+        <location filename="../import_data/satellite_data.py" line="293"/>
         <source>The file could not automatically be removed, please try to do it manually and create the guide file again</source>
         <translation>Die Datei konnte nicht automatisch entfernt werden. Bitte versuchen Sie es manuell und erstellen Sie die Leitfadendatei erneut</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="341"/>
+        <location filename="../import_data/satellite_data.py" line="343"/>
         <source>Are you planning to use it today?</source>
         <translation>Planen Sie es heute zu verwenden?</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="320"/>
+        <location filename="../import_data/satellite_data.py" line="322"/>
         <source>Currently QGIS does not allow you to have any non English character in the directory path or filename</source>
         <translation>Momentan erlaubt QGIS keinen nicht-englischen Buchstaben in der Ordnerstruktur oder im Dateinamen</translation>
     </message>
     <message>
-        <location filename="../import_data/satellite_data.py" line="194"/>
+        <location filename="../import_data/satellite_data.py" line="196"/>
         <source>There is no data in that file, is the day cloud free?</source>
         <translation>Es sind keine Daten in der Datei, ist der Tag wolkenfrei?</translation>
     </message>
@@ -3282,62 +3306,62 @@ Rückverfolgung: {t}</translation>
         <translation>Unterstützung für Datenbankdateien ist noch nicht zu 100% implementiert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="60"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="58"/>
         <source>Shape file (.shp)</source>
         <translation>Shape file (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="85"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="83"/>
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="85"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="83"/>
         <source>The data was stored correctly</source>
         <translation>Die Daten wurden korrekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="87"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="85"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="87"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="85"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="107"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="105"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="120"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="118"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="108"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="106"/>
         <source>In order to save the data you must select a field</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="111"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="109"/>
         <source>--- Select crop ---</source>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="112"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="110"/>
         <source>In order to save the data you must select a crop</source>
         <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="116"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="114"/>
         <source>In order to save the data you must select a date</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Datum auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_fertilizing_data.py" line="120"/>
+        <location filename="../import_data/save_fertilizing_data.py" line="118"/>
         <source>A variety  has to be set in order to save the data</source>
         <translation>Zum Speichern der Daten muss eine Sorte eingestellt werden</translation>
     </message>
@@ -3393,87 +3417,87 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>SaveHarvesting</name>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="44"/>
+        <location filename="../import_data/save_harvest_data.py" line="45"/>
         <source>Yield</source>
         <translation>Ausbeute</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="44"/>
+        <location filename="../import_data/save_harvest_data.py" line="45"/>
         <source>Total yield</source>
         <translation>Gesamtertrag</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="45"/>
+        <location filename="../import_data/save_harvest_data.py" line="46"/>
         <source>Text file (.csv; .txt)</source>
         <translation>Textdatei (.csv; .txt)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="51"/>
+        <location filename="../import_data/save_harvest_data.py" line="52"/>
         <source>Databasefile (.db)</source>
         <translation>Datenbankdatei (.db)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="52"/>
+        <location filename="../import_data/save_harvest_data.py" line="53"/>
         <source>Support for databasefiles are not implemented 100% yet</source>
         <translation>Unterstützung für Datenbankdateien ist noch nicht zu 100% implementiert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="57"/>
+        <location filename="../import_data/save_harvest_data.py" line="56"/>
         <source>Shape file (.shp)</source>
         <translation>Shape file (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="81"/>
+        <location filename="../import_data/save_harvest_data.py" line="80"/>
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="81"/>
+        <location filename="../import_data/save_harvest_data.py" line="80"/>
         <source>The data was stored correctly</source>
         <translation>Die Daten wurden korrekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="83"/>
+        <location filename="../import_data/save_harvest_data.py" line="82"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="83"/>
+        <location filename="../import_data/save_harvest_data.py" line="82"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="102"/>
+        <location filename="../import_data/save_harvest_data.py" line="101"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="109"/>
+        <location filename="../import_data/save_harvest_data.py" line="108"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="103"/>
+        <location filename="../import_data/save_harvest_data.py" line="102"/>
         <source>In order to save the data you must select a field</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="105"/>
+        <location filename="../import_data/save_harvest_data.py" line="104"/>
         <source>--- Select crop ---</source>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="106"/>
+        <location filename="../import_data/save_harvest_data.py" line="105"/>
         <source>In order to save the data you must select a crop</source>
         <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="109"/>
+        <location filename="../import_data/save_harvest_data.py" line="108"/>
         <source>In order to save the data you must select a date</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Datum auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_harvest_data.py" line="48"/>
+        <location filename="../import_data/save_harvest_data.py" line="49"/>
         <source>Iso Bin XML files</source>
         <translation>xml und Binärdateien</translation>
     </message>
@@ -3534,92 +3558,92 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>SavePlanting</name>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="45"/>
+        <location filename="../import_data/save_planting_data.py" line="46"/>
         <source>Variety</source>
         <translation>Sorte</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="46"/>
+        <location filename="../import_data/save_planting_data.py" line="47"/>
         <source>Text file (.csv; .txt)</source>
         <translation>Textdatei (.csv; .txt)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="54"/>
+        <location filename="../import_data/save_planting_data.py" line="55"/>
         <source>Databasefile (.db)</source>
         <translation>Datenbankdatei (.db)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="55"/>
+        <location filename="../import_data/save_planting_data.py" line="56"/>
         <source>Support for databasefiles are not implemented 100% yet</source>
         <translation>Unterstützung für Datenbankdateien ist noch nicht zu 100% implementiert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="60"/>
+        <location filename="../import_data/save_planting_data.py" line="59"/>
         <source>Shape file (.shp)</source>
         <translation>Shape file (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="63"/>
+        <location filename="../import_data/save_planting_data.py" line="62"/>
         <source>Georeferenced Raster (.tif; .geotif)</source>
         <translation>Georeferenziertes Raster (.tif; .geotiff)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="92"/>
+        <location filename="../import_data/save_planting_data.py" line="91"/>
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="92"/>
+        <location filename="../import_data/save_planting_data.py" line="91"/>
         <source>The data was stored correctly</source>
         <translation>Die Daten wurden korrekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="101"/>
+        <location filename="../import_data/save_planting_data.py" line="100"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="101"/>
+        <location filename="../import_data/save_planting_data.py" line="100"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="111"/>
+        <location filename="../import_data/save_planting_data.py" line="110"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="121"/>
+        <location filename="../import_data/save_planting_data.py" line="120"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="112"/>
+        <location filename="../import_data/save_planting_data.py" line="111"/>
         <source>In order to save the data you must select a field</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="114"/>
+        <location filename="../import_data/save_planting_data.py" line="113"/>
         <source>--- Select crop ---</source>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="115"/>
+        <location filename="../import_data/save_planting_data.py" line="114"/>
         <source>In order to save the data you must select a crop</source>
         <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="118"/>
+        <location filename="../import_data/save_planting_data.py" line="117"/>
         <source>In order to save the data you must select a date</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Datum auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="121"/>
+        <location filename="../import_data/save_planting_data.py" line="120"/>
         <source>A variety  has to be set in order to save the data</source>
         <translation>Zum Speichern der Daten muss eine Sorte eingestellt werden</translation>
     </message>
     <message>
-        <location filename="../import_data/save_planting_data.py" line="50"/>
+        <location filename="../import_data/save_planting_data.py" line="51"/>
         <source>Iso Bin XML files (.xml+.bin)</source>
         <translation>Iso Bin XML Dateien (.xml+.bin)</translation>
     </message>
@@ -3705,52 +3729,52 @@ Rückverfolgung: {t}</translation>
         <translation>Unterstützung für Datenbankdateien ist noch nicht zu 100% implementiert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="39"/>
+        <location filename="../import_data/save_soil_data.py" line="37"/>
         <source>Shape file (.shp)</source>
         <translation>Shape file (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="42"/>
+        <location filename="../import_data/save_soil_data.py" line="40"/>
         <source>Georeferenced Raster (.tif; .geotif)</source>
         <translation>Georeferenziertes Raster (.tif; .geotiff)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="71"/>
+        <location filename="../import_data/save_soil_data.py" line="69"/>
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="71"/>
+        <location filename="../import_data/save_soil_data.py" line="69"/>
         <source>The data was stored correctly</source>
         <translation>Die Daten wurden korrekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="73"/>
+        <location filename="../import_data/save_soil_data.py" line="71"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="73"/>
+        <location filename="../import_data/save_soil_data.py" line="71"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="93"/>
+        <location filename="../import_data/save_soil_data.py" line="91"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="97"/>
+        <location filename="../import_data/save_soil_data.py" line="95"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="94"/>
+        <location filename="../import_data/save_soil_data.py" line="92"/>
         <source>In order to save the data you must select a field</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_soil_data.py" line="97"/>
+        <location filename="../import_data/save_soil_data.py" line="95"/>
         <source>In order to save the data you must select a date</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Datum auswählen</translation>
     </message>
@@ -3788,67 +3812,67 @@ Rückverfolgung: {t}</translation>
         <translation>Unterstützung für Datenbankdateien ist noch nicht zu 100% implementiert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="57"/>
+        <location filename="../import_data/save_spraying_data.py" line="55"/>
         <source>Shape file (.shp)</source>
         <translation>Shape file (.shp)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="60"/>
+        <location filename="../import_data/save_spraying_data.py" line="58"/>
         <source>Georeferenced Raster (.tif; .geotif)</source>
         <translation>Georeferenziertes Raster (.tif; .geotiff)</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="90"/>
+        <location filename="../import_data/save_spraying_data.py" line="88"/>
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="90"/>
+        <location filename="../import_data/save_spraying_data.py" line="88"/>
         <source>The data was stored correctly</source>
         <translation>Die Daten wurden korrekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="92"/>
+        <location filename="../import_data/save_spraying_data.py" line="90"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="92"/>
+        <location filename="../import_data/save_spraying_data.py" line="90"/>
         <source>Following error occurred: {m}</source>
         <translation>Folgender Fehler ist aufgetreten: {m}</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="117"/>
+        <location filename="../import_data/save_spraying_data.py" line="115"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="127"/>
+        <location filename="../import_data/save_spraying_data.py" line="125"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="118"/>
+        <location filename="../import_data/save_spraying_data.py" line="116"/>
         <source>In order to save the data you must select a field</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="120"/>
+        <location filename="../import_data/save_spraying_data.py" line="118"/>
         <source>--- Select crop ---</source>
         <translation>--- Ernte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="121"/>
+        <location filename="../import_data/save_spraying_data.py" line="119"/>
         <source>In order to save the data you must select a crop</source>
         <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="124"/>
+        <location filename="../import_data/save_spraying_data.py" line="122"/>
         <source>In order to save the data you must select a date</source>
         <translation>Um die Daten zu speichern, müssen Sie ein Datum auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/save_spraying_data.py" line="127"/>
+        <location filename="../import_data/save_spraying_data.py" line="125"/>
         <source>A variety  has to be set in order to save the data</source>
         <translation>Zum Speichern der Daten muss eine Sorte eingestellt werden</translation>
     </message>
@@ -3876,127 +3900,127 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>TableManagement</name>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="49"/>
+        <location filename="../database_scripts/table_managment.py" line="50"/>
         <source>plant</source>
         <translation>Pflanzen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="51"/>
+        <location filename="../database_scripts/table_managment.py" line="52"/>
         <source>fertilize</source>
         <translation>Befruchten</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="53"/>
+        <location filename="../database_scripts/table_managment.py" line="54"/>
         <source>spray</source>
         <translation>Sprühen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="55"/>
+        <location filename="../database_scripts/table_managment.py" line="56"/>
         <source>other</source>
         <translation>Andere</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="57"/>
+        <location filename="../database_scripts/table_managment.py" line="58"/>
         <source>harvest</source>
         <translation>Ernte</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="59"/>
+        <location filename="../database_scripts/table_managment.py" line="60"/>
         <source>soil</source>
         <translation>Boden</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="103"/>
+        <location filename="../database_scripts/table_managment.py" line="104"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="62"/>
+        <location filename="../database_scripts/table_managment.py" line="63"/>
         <source>You need to fill in a new name</source>
         <translation>Sie müssen einen neuen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="64"/>
+        <location filename="../database_scripts/table_managment.py" line="65"/>
         <source>-Select data type -</source>
         <translation>-Wählen Sie den Datentyp -</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="65"/>
+        <location filename="../database_scripts/table_managment.py" line="66"/>
         <source>You have to decide what type of data it is</source>
         <translation>Sie müssen entscheiden, um welche Art von Daten es sich handelt</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="68"/>
+        <location filename="../database_scripts/table_managment.py" line="69"/>
         <source>You need a new name</source>
         <translation>Du brauchst einen neuen Namen</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="76"/>
+        <location filename="../database_scripts/table_managment.py" line="77"/>
         <source>You need at least 2 dataset when merging</source>
         <translation>Zum Zusammenführen benötigen Sie mindestens 2 Datensätz</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="103"/>
+        <location filename="../database_scripts/table_managment.py" line="104"/>
         <source>You can only have one dataset selected</source>
         <translation>Es kann nur ein Datensatz ausgewählt werden</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="187"/>
+        <location filename="../database_scripts/table_managment.py" line="188"/>
         <source>Data set name</source>
         <translation>Datensätze Name</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="200"/>
+        <location filename="../database_scripts/table_managment.py" line="201"/>
         <source>What do you want to rename </source>
         <translation>Was möchtest du umbenennen </translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="200"/>
+        <location filename="../database_scripts/table_managment.py" line="201"/>
         <source> to?</source>
         <translation> zu?</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="200"/>
+        <location filename="../database_scripts/table_managment.py" line="201"/>
         <source>Parameter name</source>
         <translation>Parametername</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="242"/>
+        <location filename="../database_scripts/table_managment.py" line="243"/>
         <source>Do you really want to remove the selected tables from the database?</source>
         <translation>Möchten Sie die ausgewählten Tabellen wirklich aus der Datenbank entfernen?</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="243"/>
+        <location filename="../database_scripts/table_managment.py" line="244"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="244"/>
+        <location filename="../database_scripts/table_managment.py" line="245"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="380"/>
+        <location filename="../database_scripts/table_managment.py" line="384"/>
         <source>--- Select yield column ---</source>
         <translation>--- Erntespalte auswählen ---</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="306"/>
+        <location filename="../database_scripts/table_managment.py" line="310"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="300"/>
+        <location filename="../database_scripts/table_managment.py" line="304"/>
         <source>In order to split the yield you need to specify the yield column</source>
         <translation>Um die Ernte aufteilen zu können, muss eine Erntespalte angegeben werden</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="306"/>
+        <location filename="../database_scripts/table_managment.py" line="310"/>
         <source>This option is only possible for harvest tables</source>
         <translation>Dieses Verfahren ist nur für geerntete Daten möglich</translation>
     </message>
     <message>
-        <location filename="../database_scripts/table_managment.py" line="263"/>
+        <location filename="../database_scripts/table_managment.py" line="267"/>
         <source>This option is not possible for harvest tables</source>
         <translation>Diese Option ist für Erntetabellen nicht möglich</translation>
     </message>

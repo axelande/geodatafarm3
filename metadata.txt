@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.9.1
+version=2.9.2
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,10 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.9.2
+  - [fix] Some bugs related to ISO XML import.
+  - [feature] Added more tests.
+  
   Version 2.9.1
   - [fix] Some improvements when adding a dataset.
   - [fix] Reporting problems

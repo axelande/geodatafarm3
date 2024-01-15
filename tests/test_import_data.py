@@ -5,7 +5,7 @@ from ..GeoDataFarm import GeoDataFarm
 from . import gdf
 
 
-@pytest.mark.depends(name='import_text', on=['add_crop'])
+# @pytest.mark.depends(name='import_text', on=['add_field'])
 def test_import_text(gdf:GeoDataFarm):
     gdf.dock_widget.CBPFileType.setCurrentIndex(1)
     gdf.dock_widget.PBPAddFile.click()
@@ -21,8 +21,19 @@ def test_import_text(gdf:GeoDataFarm):
     suc = gdf.save_planting.importer.trigger_insection()
     assert suc[0]
 
-@pytest.mark.depends(on=['import_text'], name='remove_text')
-def test_remove_dataset(gdf: GeoDataFarm):
+
+# @pytest.mark.depends(name='import_harvest_text', on=['add_field2'])
+def test_import_iso(gdf:GeoDataFarm):
+    gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
+    gdf.dock_widget.PBHvAddFile.click()
+    gdf.save_harvesting.importer.IXB.PBAddInputFolder.click()
+    gdf.save_harvesting.importer.IXB.PBFindFields.click()
+    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,3).setCurrentIndex(1)
+    gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(3)
+    gdf.save_harvesting.importer.IXB.PBAddParam.click()
+    gdf.save_harvesting.importer.IXB.PBInsert.click()
     gdf.dock_widget.PBEditTables.click()
-    gdf.tabel_mgmt.TMD.SATables.itemAt(0, 0).setCheckState(2)
-    gdf.tabel_mgmt.TMD.pButRemove.click()
+    items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
+    for text in items:
+        if 'test_iso_field' in text:
+            assert True

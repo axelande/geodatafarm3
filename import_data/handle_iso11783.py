@@ -16,6 +16,7 @@ class Iso11783:
         self.py_agri = None
         self.db = parent_widget.db
         self.populate = parent_widget.populate
+        self.parent = parent_widget
         self.data_type = type_
         self.sender = QtWidgets.QWidget().sender
         self.IXB = ImportXmlBin()
@@ -44,7 +45,8 @@ class Iso11783:
         self.IXB.PBAddParam.clicked.connect(self.add_to_param_list)
         self.IXB.PBRemParam.clicked.connect(self.remove_from_param_list)
         self.IXB.PBInsert.clicked.connect(self.add_to_database)
-        self.IXB.exec_()
+        if not self.parent.test_mode:
+            self.IXB.exec_()
 
     def close(self):
         """Disconnects buttons and closes the widget"""
@@ -57,11 +59,16 @@ class Iso11783:
 
     def open_input_folder(self):
         """Opens a dialog and let the user select the folder where Taskdata are stored."""
-        path = QtWidgets.QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
-                                                          QtWidgets.QFileDialog.ShowDirsOnly)
+        if self.parent.test_mode:
+            if self.data_type == 'harvest':
+                path = './tests/test_data/TASKDATA2/'
+        else:
+            path = QtWidgets.QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
+                                                              QtWidgets.QFileDialog.ShowDirsOnly)
         if path != '':
             self.initiate_pyAgriculture(path)
             self.populate_first_table()
+            self.populate_most_interesting()
 
     def get_task_data(self) -> dict:
         """For those tasks that are marked with include the script will gather their data."""
@@ -79,6 +86,10 @@ class Iso11783:
                 return
             fields = []
             fields_ = self.db.execute_and_return(f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({lon} {lat})', 4326))""")
+            if len(fields_) == 0 and not self.parent.test_mode:
+                QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+                                              self.tr('At least one of the tasked was placed outside the field at approximate: ') + 
+                                                      f'{round(lat, 4)}, {round(lon, 4)}')
             for field in fields_:
                 fields.append([field, time_stamp])
             task_names[task_nr] = fields
@@ -102,6 +113,25 @@ class Iso11783:
             self.IXB.TWISODataAll.setItem(i, 0, item1)
             self.IXB.TWISODataAll.setItem(i, 1, item2)
 
+    def populate_most_interesting(self):
+        if 'DPD' not in self.py_agri.task_dicts:
+            QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+                                              self.tr('No "DPD" data was found in the taskdata.xml, the file might be corrupt?'))
+            return
+        self.IXB.CBMostImportant.clear()
+        for k, dpd in self.py_agri.task_dicts['DPD'].items():
+            name = dpd['E']
+            unit_key = dpd['F']
+            unit_name = ''
+            for _, unit in self.py_agri.task_dicts['DVP'].items():
+                if unit['A'] == unit_key:
+                    unit_name = unit['E']
+            self.IXB.CBMostImportant.addItem(f'{name} {unit_name}')
+        items = [self.IXB.CBMostImportant.itemText(i) for i in range(self.IXB.CBMostImportant.count())]
+        for i, key in enumerate(items):
+            if 'yield' in key.lower():
+                self.IXB.CBMostImportant.setCurrentIndex(i)
+
     def populate_second_table(self):
         """Populates the list that is marked as include in the first table."""
         tasks_to_include = []
@@ -117,7 +147,7 @@ class Iso11783:
         self.checkboxes2 = []
         self.checkboxes3 = []
         self.checkboxes4 = []
-        self.py_agri.gather_data(only_tasks=tasks_to_include)
+        self.py_agri.gather_data(only_tasks=tasks_to_include, most_important='yield')
         task_names = self.get_task_data()
         self.IXB.TWISODataSelect.setRowCount(len(tasks_to_include))
         self.IXB.TWISODataSelect.setColumnCount(4)
