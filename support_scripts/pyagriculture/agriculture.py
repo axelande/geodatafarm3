@@ -1,12 +1,13 @@
 # Author Axel Hörteborn
 from datetime import datetime, timedelta
+import os
 from pathlib import Path
-import xml.etree.ElementTree as ET
 
 import numpy as np
 import pandas as pd
+import xml.etree.ElementTree as ET
 
-from ..__init__ import TR
+from ..__init__ import TR, getfile_insensitive
 from .sorting_utils import find_by_key
 from .cython_agri import read_static_binary_data, cython_read_dlvs
 
@@ -32,7 +33,8 @@ class PyAgriculture:
     def _check_path_is_ok(self):
         if self.path[-1] not in ['/', '\\']:
             self.path += '/'
-        if not Path(self.path + 'TaskData.xml').is_file():
+        path = getfile_insensitive(self.path + 'TaskData.xml')
+        if not Path(path).is_file():
             print(self.path + 'TaskData.xml')
             raise FileNotFoundError(self.tr('The specified path does not contain a taskdata.xml file'))
 
@@ -100,12 +102,13 @@ class PyAgriculture:
 
         task_data_dict = {}
         task_names = []
-        tree = ET.parse(self.path + 'TASKDATA.xml')
+        tree = ET.parse(getfile_insensitive(self.path + 'TaskData.xml'))
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         if 'TLG' in self.task_dicts.keys():
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
                 try:
-                    branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                    file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                    branch = ET.parse(file)
                 except (FileNotFoundError, ET.ParseError):
                     if not continue_on_fail:
                         raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
@@ -127,12 +130,13 @@ class PyAgriculture:
          taskdata file and all the files tlg xml and bin files."""
         reset_columns = False  # Resets all columns when the "most_important" have been used.
         task_data_dict = {}
-        tree = ET.parse(self.path + 'TASKDATA.xml')
+        tree = ET.parse(getfile_insensitive(self.path + 'TASKDATA.xml'))
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         if 'TLG' in self.task_dicts.keys():
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
                 try:
-                    branch = ET.parse(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                    file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                    branch = ET.parse(file)
                 except (FileNotFoundError, ET.ParseError):
                     if not continue_on_fail:
                         raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
@@ -156,7 +160,8 @@ class PyAgriculture:
                         continue
                 if most_important not in columns:
                     continue
-                task = self.read_binaryfile(self.path + self.task_dicts['TLG'][tsk]['A'], tlg_dict, columns,
+                path = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'])
+                task = self.read_binaryfile(path, tlg_dict, columns,
                                                        most_important, task_name, reset_columns)
                 if task is not None:
                     self.tasks.append(task)

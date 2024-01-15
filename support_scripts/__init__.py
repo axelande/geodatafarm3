@@ -1,5 +1,7 @@
-from string import ascii_letters, digits as str_digits
 from datetime import datetime
+from string import ascii_letters, digits as str_digits
+import os
+
 from PyQt5.QtCore import QCoreApplication
 
 
@@ -128,3 +130,11 @@ def error_in_sign(sign):
     if sign in ['+', '-', '*', '/']:
         return False
     return True
+
+def getfile_insensitive(path):
+    directory, filename = os.path.split(path)
+    directory, filename = (directory or '.'), filename.lower()
+    for f in os.listdir(directory):
+        newpath = os.path.join(directory, f)
+        if os.path.isfile(newpath) and f.lower() == filename:
+            return newpath
