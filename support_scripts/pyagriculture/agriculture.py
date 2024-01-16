@@ -160,7 +160,7 @@ class PyAgriculture:
                         continue
                 if most_important not in columns:
                     continue
-                path = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'])
+                path = self.path + self.task_dicts['TLG'][tsk]['A']
                 task = self.read_binaryfile(path, tlg_dict, columns,
                                                        most_important, task_name, reset_columns)
                 if task is not None:
@@ -278,7 +278,7 @@ class PyAgriculture:
 
     def read_binaryfile(self, file_path: str, tlg_dict: dict, df_columns: list, most_important: str,
                         task_name: str, reset_columns: bool) -> pd.DataFrame:
-        with open(file_path + '.bin', 'rb') as fin:
+        with open(getfile_insensitive(file_path + '.bin'), 'rb') as fin:
             binary_data = fin.read()
         read_point = 0
         nr_columns = len(df_columns)
