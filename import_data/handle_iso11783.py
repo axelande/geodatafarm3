@@ -443,11 +443,14 @@ class Iso11783:
             table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
             for col in df.columns:
                 columns.append(check_text(col))
-            insert_sql, _ = create_table(self.db, self.data_type, columns, 'latitude', 'longitude', 'time_stamp', '',
-                                         col_types, column_units=col_units, table=table, ask_replace=False)
+            suc, insert_sql, _ = create_table(self.db, self.data_type, columns, 'latitude', 'longitude', 'time_stamp', '',
+                                              col_types, column_units=col_units, table=table, ask_replace=False, test_mode=self.parent.test_mode)
+            if not suc:
+                self.close()
+                return False
             insert_data(self.tr, self.db, df, self.data_type, insert_sql, table, field, focus_cols, col_types)
         self.close()
-
+        return True
 
 def insert_data(tr, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_name: str, field: str, focus_col: list,
                 col_types: list):

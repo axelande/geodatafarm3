@@ -17,7 +17,8 @@ def test_add_field(gdf: GeoDataFarm):
     gdf.add_field.field.addFeature(feat)
     gdf.add_field.field.endEditCommand() # Stop editing
     gdf.add_field.field.commitChanges() # Save changes
-    gdf.add_field.save()
+    save_suc = gdf.add_field.save()
+    assert save_suc
 
 # @pytest.mark.depends(scope='session', name='add_field2')
 def test_add_sec_field(gdf: GeoDataFarm):
@@ -33,5 +34,5 @@ def test_add_sec_field(gdf: GeoDataFarm):
     gdf.add_field.field.addFeature(feat)
     gdf.add_field.field.endEditCommand() # Stop editing
     gdf.add_field.field.commitChanges() # Save changes
-    gdf.add_field.save()
-
+    save_suc = gdf.add_field.save()
+    assert save_suc

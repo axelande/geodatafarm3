@@ -101,9 +101,12 @@ class AddField:
         else:
             name = self.AFD.LEFieldName.text()
             if len(name) == 0:
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Field name must be filled in.'))
-                return
+                if self.parent.test_mode:
+                    return False
+                else:    
+                    QMessageBox.information(None, self.tr('Error:'),
+                                            self.tr('Field name must be filled in.'))
+                    return
             self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
 
         add_background()
@@ -140,10 +143,13 @@ class AddField:
                 stop_removing = False
                 for row in field_names:
                     if row[0] == field_name:
-                        QMessageBox.information(None, self.tr('Error'),
-                                                self.tr('There are data sets that are dependent on this field, '
-                                                        'it cant be removed.'))
-                        stop_removing = True
+                        if self.parent.test_mode:
+                            return False
+                        else:  
+                            QMessageBox.information(None, self.tr('Error'),
+                                                    self.tr('There are data sets that are dependent on this field, '
+                                                            'it cant be removed.'))
+                            stop_removing = True
                 if stop_removing:
                     continue
                 sql = "delete from fields where field_name='{f}'".format(f=field_name)
@@ -203,9 +209,12 @@ class AddField:
             feature = self.field.getFeature(1)
             QgsProject.instance().removeMapLayers([self.field.id()])
         except:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'No coordinates were found, did you mark the field on the canvas?'))
-            return
+            if self.parent.test_mode:
+                return False
+            else:  
+                QMessageBox.information(None, self.tr("Error:"), self.tr(
+                    'No coordinates were found, did you mark the field on the canvas?'))
+                return
         polygon = feature.geometry().asWkt()
         name = self.AFD.LEFieldName.text()
         if len(name) == 0:
@@ -215,11 +224,14 @@ class AddField:
         sql = """Insert into fields (field_name, polygon) 
         VALUES ('{name}', st_geomfromtext('{poly}', 4326))""".format(name=name, poly=polygon)
         try:
-            self.db.execute_sql(sql)
+            res = self.db.execute_sql(sql, return_failure=True)
         except IntegrityError:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Field name already exist, please select a new name'))
-            return
+            if self.parent.test_mode:
+                return False
+            else:  
+                QMessageBox.information(None, self.tr('Error:'),
+                                        self.tr('Field name already exist, please select a new name'))
+                return
         except InternalError as e:
             QMessageBox.information(None, self.tr('Error:'),
                                     str(e))
@@ -230,6 +242,10 @@ class AddField:
         item.setCheckState(QtCore.Qt.Unchecked)
         self.defined_field = name
         self.view_fields()
+        if not res[0]:
+            return False
+        else:
+            return True
 
     def help(self):
         """A function that gives some advice on how the function works for the user.

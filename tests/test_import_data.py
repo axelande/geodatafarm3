@@ -31,7 +31,8 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,3).setCurrentIndex(1)
     gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(3)
     gdf.save_harvesting.importer.IXB.PBAddParam.click()
-    gdf.save_harvesting.importer.IXB.PBInsert.click()
+    suc = gdf.save_harvesting.importer.add_to_database()
+    assert suc
     gdf.dock_widget.PBEditTables.click()
     items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     for text in items:

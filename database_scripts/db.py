@@ -36,7 +36,8 @@ class NoConnection:
 
 
 class DB:
-    def __init__(self, dock_widget=None, path=None, dbname=None, dbuser=None, dbpass=None):
+    def __init__(self, dock_widget=None, path=None, dbname=None, dbuser=None, 
+                 dbpass=None, test_mode=False):
         """The widget that is connects to the database
         Parameters
         ----------
@@ -58,6 +59,7 @@ class DB:
         self.dbpass = dbpass
         translate = TR('DB')
         self.tr = translate.tr
+        self.test_mode = test_mode
 
     def get_conn(self):
         """A function that checks if the database is created and sets then the
@@ -180,19 +182,22 @@ class DB:
         if res[0][0] > 0:
             if ask_replace:
                 qm = QMessageBox()
-                res = qm.question(None, self.tr('Message'),
-                                  self.tr(
-                                      "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                                  qm.Yes, qm.No)
-                if res == qm.No:
+                if self.test_mode:
                     return True
                 else:
-                    self.execute_sql("""DROP TABLE {schema}.{tbl};
-                                                       DELETE FROM {schema}.manual
-                                                       WHERE table_ = '{tbl}';
-                                                       """.format(
-                        schema=schema,
-                        tbl=table_name))
+                    res = qm.question(None, self.tr('Message'),
+                                    self.tr(
+                                        "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                                    qm.Yes, qm.No)
+                    if res == qm.No:
+                        return True
+                    else:
+                        self.execute_sql("""DROP TABLE {schema}.{tbl};
+                                                        DELETE FROM {schema}.manual
+                                                        WHERE table_ = '{tbl}';
+                                                        """.format(
+                            schema=schema,
+                            tbl=table_name))
             else:
                 return True
         return False
@@ -428,7 +433,10 @@ class DB:
                 pass
             else:
                 sf = SomeFailure()
-                sf.display_failure(e)
+                if self.test_mode:
+                    return False
+                else:  
+                    sf.display_failure(e)
         self._close()
         if return_failure:
             if return_row_count:
@@ -466,8 +474,11 @@ class DB:
                 self._close()
                 return [False, error_type, e]
             else:
-                sf = SomeFailure()
-                sf.display_failure(e)
+                if self.test_mode:
+                    return False
+                else:  
+                    sf = SomeFailure()
+                    sf.display_failure(e)
             data = 'There were an error..'
         self._close()
         return data

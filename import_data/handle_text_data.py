@@ -390,7 +390,7 @@ class InputTextHandler(object):
         self.tbl_name = check_text(self.ITD.CBField.currentText() + '_' + self.data_type + '_' + table_date)
         params['tbl_name'] = self.tbl_name
         if self.db.check_table_exists(self.tbl_name, self.data_type):
-            return
+            return [False]
         for i in range(self.add_to_param_row_count):
             params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
         self.focus_cols = params['focus_col']
@@ -411,6 +411,7 @@ class InputTextHandler(object):
             params['move'] = False
         #a = insert_data_to_database('debug', self.db, params)
         #print(a)
+        params['test_mode'] = self.parent_widget.test_mode
         if self.parent_widget.test_mode:
             result = insert_data_to_database('debug', self.db, params)
             return result
@@ -571,7 +572,7 @@ def move_points(db, move_x, move_y, tbl_name, task):
 
 
 def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date,
-                 column_types, column_units=None, table='', ask_replace=True):
+                 column_types, column_units=None, table='', ask_replace=True, test_mode=False):
     inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
     sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
         schema=schema)
@@ -611,9 +612,11 @@ def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, 
     sql += ")"
     inserting_text = inserting_text[:-2] + ') VALUES '
     insert_org_sql = inserting_text
-    if not db.check_table_exists(schema=schema, table_name=table, ask_replace=ask_replace):
+    if not db.check_table_exists(schema=schema, table_name=table):
         db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
-    return inserting_text, insert_org_sql
+    else:
+        return [False, '', '']
+    return [True, inserting_text, insert_org_sql]
 
 
 def create_polygons(db, schema, tbl_name, field):
@@ -673,8 +676,10 @@ def insert_data_to_database(task, db: DB, params: dict):
         focus_col = params['focus_col']
         if isint(tbl_name[0]):
             tbl_name = '_' + tbl_name
-        inserting_text, insert_org_sql = create_table(db, schema, params['heading_row'], latitude_col, longitude_col,
+        suc, inserting_text, insert_org_sql = create_table(db, schema, params['heading_row'], latitude_col, longitude_col,
                                                       date_row, all_same_date, column_types, table=tbl_name)
+        if params['test_mode'] and not suc:
+            return False
         if task != 'debug':
             task.setProgress(2)
         count_db_insert = 0

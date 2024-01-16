@@ -278,7 +278,10 @@ class GeoDataFarm:
             else:
                 return
         else:
-            QMessageBox.information(None, self.tr("Error:"),
+            if self.test_mode:
+                return False
+            else:
+                QMessageBox.information(None, self.tr("Error:"),
                                     self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
 
     def _q_replace_db_data(self, tbl=None):
@@ -293,17 +296,20 @@ class GeoDataFarm:
         if isint(tbl_name[0]):
             tbl_name = '_' + tbl_name
         if tbl_name in tables_in_db:
-            qm = QMessageBox()
-            ret = qm.question(None, 'Message',
-                              self.tr("The name of the data set already exist in your database, would you like to replace it?"),
-                              qm.Yes, qm.No)
-            if ret == qm.No:
+            if self.test_mode:
                 return False
             else:
-                self.db.execute_sql(
-                    "DROP TABLE {schema}.{tbl}".format(schema=schema,
-                                                       tbl=tbl_name))
-                return True
+                qm = QMessageBox()
+                ret = qm.question(None, 'Message',
+                                self.tr("The name of the data set already exist in your database, would you like to replace it?"),
+                                qm.Yes, qm.No)
+                if ret == qm.No:
+                    return False
+                else:
+                    self.db.execute_sql(
+                        "DROP TABLE {schema}.{tbl}".format(schema=schema,
+                                                        tbl=tbl_name))
+                    return True
         else:
             return True
 
@@ -337,12 +343,15 @@ class GeoDataFarm:
 
     def get_database_connection(self):
         """Connects to the database and create the db object"""
-        self.db = DB(self.dock_widget, path=self.plugin_dir)
+        self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.test_mode)
         connected = self.db.get_conn()
         if not connected:
             if self.test_mode:
                 return False
-            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
+            if self.test_mode:
+                return False
+            else:
+                QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
 
@@ -350,17 +359,22 @@ class GeoDataFarm:
         """Adds a crop to the database"""
         crop_name = self.dock_widget.LECropName.text()
         if len(crop_name) == 0:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Crop name must be filled in.'))
-            return
+            if self.test_mode:
+                return False
+            else:
+                QMessageBox.information(None, self.tr('Error:'),
+                                        self.tr('Crop name must be filled in.'))
+                return
         sql = """Insert into crops (crop_name) 
                 VALUES ('{name}')""".format(name=crop_name)
         r_value = self.db.execute_sql(sql, return_failure=True)
         if r_value is IntegrityError:
-
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Crop name already exist, please select a new name'))
-            return
+            if self.test_mode:
+                return False
+            else:
+                QMessageBox.information(None, self.tr('Error:'),
+                                        self.tr('Crop name already exist, please select a new name'))
+                return
         _name = QApplication.translate("qadashboard", crop_name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWCrops)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
