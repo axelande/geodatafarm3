@@ -95,7 +95,7 @@ If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm
             else:
                 subprocess.call(['python3', f'{this_folder}/pyagriculture/setup.py', 'build_ext', '--build-lib', f'{this_folder}/pyagriculture'])
             print('installation complete')
-            from geodatafarm.support_scripts.pyagriculture.cython_agri import read_static_binary_data
+            from ..support_scripts.pyagriculture.cython_agri import read_static_binary_data
             print('import ok')
             return True
         except Exception as e:
