@@ -71,27 +71,32 @@ class Iso11783:
             self.populate_most_interesting()
 
     def get_task_data(self) -> dict:
-        """For those tasks that are marked with include the script will gather their data."""
+        """For those tasks that are marked with include the script will gather their data.
+        The function will return a dict[task_nr] = [[field, timestamp]]"""
         task_names = {}
         for task_nr, data_set in enumerate(self.py_agri.tasks):  # type: pd.DataFrame
             try:
-                mid_rw = int(len(data_set) / 2)
-                lat = data_set.iloc[mid_rw]['latitude']
-                lon = data_set.iloc[mid_rw]['longitude']
-                time_stamp = data_set.iloc[mid_rw]['time_stamp']
+                lat = data_set['latitude']
+                lon = data_set['longitude']
+                time_stamp = data_set['time_stamp']
                 if lat is None or lon is None or time_stamp is None:
                     continue
             except Exception as e:
                 print(f'error: {e}')
                 return
             fields = []
-            fields_ = self.db.execute_and_return(f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({lon} {lat})', 4326))""")
+            sql = "with start_sel as ("
+            for index, row in data_set.iloc[::10].iterrows():
+                sql +=f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({row["longitude"]} {row["latitude"]})', 4326))
+UNION """
+            sql = sql[:-6] + ") select field_name from start_sel group by field_name"
+            fields_ = self.db.execute_and_return(sql)
             if len(fields_) == 0 and not self.parent.test_mode:
                 QtWidgets.QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('At least one of the tasked was placed outside the field at approximate: ') + 
                                                       f'{round(lat, 4)}, {round(lon, 4)}')
             for field in fields_:
-                fields.append([field, time_stamp])
+                fields.append([field[0], time_stamp.values[-1]])
             task_names[task_nr] = fields
         return task_names
 
@@ -155,24 +160,22 @@ class Iso11783:
                                                             self.tr('Crops')])
         self.IXB.TWISODataSelect.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         j = -1  # How may checkboxes that is added
-        for i, row in enumerate(task_names.items()):
-            if len(row[1]) == 0:
-                continue
+        for i, row in enumerate(task_names.values()):
             j += 1
             item1 = QtWidgets.QTableWidgetItem('Include')
             item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item1.setCheckState(QtCore.Qt.Checked)
             self.checkboxes2.append([i, j, item1])
-            item2 = QtWidgets.QTableWidgetItem(row[1][0][1])
+            item2 = QtWidgets.QTableWidgetItem(row[0][1])
             item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
             field_column = RadioComboBox()
             self.combo.append(field_column)
-            self.populate.reload_fields(field_column)
-            for nr in range(field_column.count()):
-                if field_column.itemText(nr) == row[1][0][0][0]:
-                    item = field_column.model().item(nr, 0)
-                    item.setCheckState(QtCore.Qt.Checked)
-                    field_column.setCurrentIndex(nr)
+            for field, _ in row:
+                field_column.addItem(field)
+            # for nr in range(field_column.count()):
+                # item = field_column.model().item(nr, 0)
+                # item.setCheckState(QtCore.Qt.Checked)
+            field_column.setCurrentIndex(1)
             crops = QtWidgets.QComboBox()
             self.populate.reload_crops(crops)
             self.IXB.TWISODataSelect.setItem(i, 0, item1)
