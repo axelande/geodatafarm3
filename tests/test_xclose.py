@@ -10,35 +10,32 @@ def test_remove_crop(gdf: GeoDataFarm):
 def test_remove_dataset(gdf: GeoDataFarm):
     gdf.dock_widget.PBEditTables.click()
     items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
+    found = False
     for i, text in enumerate(items):
         if 'test_field' in text:
             gdf.tabel_mgmt.TMD.SATables.itemAt(i, 0).setCheckState(2)
+            found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
+    assert found
 
 # @pytest.mark.depends(on=['import_harvest_text'], name='remove_iso')
 def test_remove_iso_dataset(gdf: GeoDataFarm):
     gdf.dock_widget.PBEditTables.click()
     items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
+    found = False
     for i, text in enumerate(items):
         if 'test_iso_field' in text:
             gdf.tabel_mgmt.TMD.SATables.itemAt(i, 0).setCheckState(2)
+            found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
-
+    assert found
 
 # @pytest.mark.depends(scope='session', on=['remove_text'], name='remove_field')
-def test_remove_field(gdf: GeoDataFarm):
+@pytest.mark.parametrize('field_name', ['test_field', 'test_iso_field'])
+def test_remove_field(gdf: GeoDataFarm, field_name):
     gdf.add_field.clicked_define_field()
     items = [gdf.dock_widget.LWFields.item(0).text() for i in range(gdf.dock_widget.LWFields.count())]
     for i, text in enumerate(items):
-        if 'test_field' in text:
-            gdf.dock_widget.LWFields.item(i).setCheckState(2)
-    gdf.add_field.remove_field()
-
-# @pytest.mark.depends(scope='session', on=['remove_iso'], name='remove_sec_field')
-def test_remove_field2(gdf: GeoDataFarm):
-    gdf.add_field.clicked_define_field()
-    items = [gdf.dock_widget.LWFields.item(0).text() for i in range(gdf.dock_widget.LWFields.count())]
-    for i, text in enumerate(items):
-        if 'test_iso_field' in text:
+        if field_name in text:
             gdf.dock_widget.LWFields.item(i).setCheckState(2)
     gdf.add_field.remove_field()

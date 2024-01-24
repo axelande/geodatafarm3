@@ -28,6 +28,7 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.IXB.PBAddInputFolder.click()
     gdf.save_harvesting.importer.IXB.PBFindFields.click()
+    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,2).setCurrentIndex(0)
     gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,3).setCurrentIndex(1)
     gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(3)
     gdf.save_harvesting.importer.IXB.PBAddParam.click()
