@@ -69,12 +69,9 @@ class RowFixer:
         """
         self.FRD.CBRow.clear()
         self.FRD.CBCourse.clear()
-        cols = self.db.get_all_columns(table=text.split('.')[1],
+        columns = self.db.get_all_columns(table=text.split('.')[1],
                                        schema=text.split('.')[0],
                                        exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'")
-        columns = []
-        for col in cols:
-            columns.append(col[0])
         self.FRD.CBRow.addItems(columns)
         self.FRD.CBCourse.addItems(columns)
 

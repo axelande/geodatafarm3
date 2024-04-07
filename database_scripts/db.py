@@ -335,7 +335,10 @@ class DB:
         group by t.relname,
         a.attname order by a.attname""".format(table=table, schema=schema,
                                                exclude=exclude)
-        columns = self.execute_and_return(sql)
+        cols = self.execute_and_return(sql)
+        columns = []
+        for col in cols:
+            columns.append(col[0])
         return columns
 
     def update_row_id(self, schema, table):

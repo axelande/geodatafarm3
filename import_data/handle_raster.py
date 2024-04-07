@@ -186,13 +186,9 @@ class ImportRaster:
         sql = """UPDATE {s_tbl} 
         SET pos=st_centroid(polygon)""".format(s_tbl=self.s_tbl)
         self.db.execute_sql(sql)
-        cols = self.db.get_all_columns(self.file_name, self.schema,
+        columns = self.db.get_all_columns(self.file_name, self.schema,
                                        "'field_row_id', 'pos', 'polygon', 'cmin', 'cmax', 'xmin', 'xmax', 'ctid', 'tableoid'")
-        cols_to_add = []
-        for col in cols:
-            col_ = col[0]
-            cols_to_add.append(col_)
-        self.db.create_indexes(self.file_name, cols_to_add, self.schema,
+        self.db.create_indexes(self.file_name, columns, self.schema,
                                primary_key=False)
         layer = self.db.add_postgis_layer(self.file_name, 'polygon',
                                           self.schema)

@@ -63,10 +63,7 @@ class DropUnReal:
         if self.DUR.CBTables.currentText() != self.tr('- select dataset -'):
             self.DUR.CBAttributes.clear()
             self.DUR.CBAttributes.addItem(self.tr('- select attribute -'))
-            cols_ = self.db.get_all_columns(self.DUR.CBTables.currentText(), self.schema)
-            cols = []
-            for col in cols_:
-                cols.append(col[0])
+            cols = self.db.get_all_columns(self.DUR.CBTables.currentText(), self.schema)
             self.DUR.CBAttributes.addItems(cols)
             self.table = self.DUR.CBTables.currentText()
 

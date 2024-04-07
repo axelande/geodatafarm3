@@ -127,16 +127,16 @@ class TableManagement:
             checked_params.append(indexes[nbr]['index_col'])
         columns = self.db.get_all_columns(table, schema)
         for param_name in columns:
-            if param_name[0] in ['cmin', 'xmin', 'xmax', 'cmax', 'ctid', 'pos',
+            if param_name in ['cmin', 'xmin', 'xmax', 'cmax', 'ctid', 'pos',
                                  'polygon', 'tableoid', '_', 'field_row_id']:
                 continue
-            if param_name[0][:3] == '...':
+            if param_name[:3] == '...':
                 continue
-            item_name = str(param_name[0])
+            item_name = str(param_name)
             testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
             item = QListWidgetItem(testcase_name, self.TMD.SAParams)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            if param_name[0] in checked_params:
+            if param_name in checked_params:
                 item.setCheckState(QtCore.Qt.Checked)
             else:
                 item.setCheckState(QtCore.Qt.Unchecked)
@@ -383,16 +383,13 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         lw.clear()
         lw.addItem(self.tr('--- Select yield column ---'))
         for name in columns:
-            lw.addItem(str(name[0]))
+            lw.addItem(str(name))
 
     def duplicate_first_row(self, org_min, org_max, table, schema='harvest'):
         """Duplicates the original data table and returns the first and last row_id"""
         sql_max_row = "select max(field_row_id) from {s}.{t}".format(s=schema, t=table)
         current_max = self.db.execute_and_return(sql_max_row)[0][0]
-        columns_ = self.db.get_all_columns(table, schema)
-        columns = []
-        for row in columns_:
-            columns.append(row[0])
+        columns = self.db.get_all_columns(table, schema)
         c1 = ','.join(columns)
         c2 = ','.join(columns)
         c2 = c2.replace('field_row_id', 'ROW_NUMBER() OVER () + {n}'.format(n=current_max+1))
