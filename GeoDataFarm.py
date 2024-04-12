@@ -25,7 +25,11 @@ it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE.
 import os.path
 from .GeoDataFarm_dockwidget import GeoDataFarmDockWidget
 import sys
-sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python')
+if sys.platform == 'win32':
+    sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python')
+else:
+    sys.path.append('/usr/lib/qgis')
+    sys.path.append('/usr/share/qgis/python/plugins')
 from qgis.core import QgsApplication
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
