@@ -17,22 +17,23 @@ from ..widgets.create_guide_file import CreateGuideFileDialog
 
 
 class CreateGuideFile:
-    def __init__(self, parent_widget):
+    def __init__(self, parent):
         """This class creates a guide file
 
         Parameters
         ----------
         parent_widget: GeoDataFarm
         """
-        self.iface = parent_widget.iface
-        self.plugin_dir = parent_widget.plugin_dir
-        self.populate = parent_widget.populate
+        self.iface = parent.iface
+        self.plugin_dir = parent.plugin_dir
+        self.populate = parent.populate
         self.CGF = CreateGuideFileDialog()
         self.grid_layer = None
         translate = TR('CreateGuideFile')
         self.tr = translate.tr
-        self.dock_widget = parent_widget.dock_widget
-        self.db = parent_widget.db
+        self.dock_widget = parent.dock_widget
+        self.db = parent.db
+        self.parent = parent
         self.tables_in_tw_cb = 0
         self.nbr_selected_attr = 0
         self.select_table = ''
@@ -57,12 +58,16 @@ class CreateGuideFile:
         self.CGF.TWSelected.setColumnWidth(0, 150)
         self.CGF.TWSelected.setColumnWidth(1, 150)
         self.CGF.TWSelected.setColumnWidth(2, 25)
-        self.CGF.exec()
+        if not self.parent.test_mode:
+            self.CGF.exec()
 
     def set_output_path(self):
         """Sets the path where the guide file should be saved."""
         dialog = QFileDialog()
-        folder_path = dialog.getExistingDirectory(None, "Select Folder")
+        if self.parent.test_mode:
+            folder_path = "./tests/"
+        else:
+            folder_path = dialog.getExistingDirectory(None, "Select Folder")
         self.CGF.LOutputPath.setText(str(folder_path))
         self.save_folder = folder_path
         self.CGF.PBCreateFile.setEnabled(True)
@@ -138,15 +143,16 @@ class CreateGuideFile:
         if self.CGF.TWSelected.selectedItems() is None:
             QMessageBox.information(None, "Error:", self.tr('No row selected!'))
             return
+        rows_to_delete = []
         for item in self.CGF.TWSelected.selectedItems():
-            self.CGF.TWSelected.removeRow(item.row())
+            if not item.row() in rows_to_delete:
+                rows_to_delete.append(item.row())
+        deleted_rows = 0
+        for i in rows_to_delete:
+            self.CGF.TWSelected.removeRow(i - deleted_rows)
             row_count -= 1
+            deleted_rows += 1
         self.nbr_selected_attr = row_count
-
-    def get_operator_order(self, eq_text_min) -> list:
-        pos_op = [i for i, char in enumerate(eq_text_min) if char == '+' or char == '*']
-        neg_op = [i for i, char in enumerate(eq_text_min) if char == '-' or char == '/']
-        return neg_op, pos_op
 
     def update_max_min(self):
         """Update the text min, max text and set the equation for the guide
@@ -273,21 +279,27 @@ class CreateGuideFile:
             layer.CreateFeature(feat)
             attribute_values.append(float(value))
             feat = geom = None  # destroy these
-
+        self.add_prj_file(EPSG, path)
+        
         # Save and close everything
-        layer = ds  = feat = geom = None
+        ds.Destroy()
+        layer = ds  = feat = geom = driver = None
+        if not self.parent.test_mode:
+            cl = CreateLayer(self.db, self.dock_widget)
+            v_layer = QgsVectorLayer(path,
+                                    file_name, "ogr")
+            layer = cl.equal_count(v_layer, data_values_list=attribute_values,
+                                field=attr_name[:10], steps=15)
+            QgsProject.instance().addMapLayer(layer)
+            cl = v_layer = layer = None
+        self.CGF.done(0)
+
+    def add_prj_file(self, EPSG, path):
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(int(EPSG))
         esri_output = srs.ExportToWkt()
         with open(path[:-4] + '.prj', 'a') as prj_file:
             prj_file.write(esri_output)
-        cl = CreateLayer(self.db, self.dock_widget)
-        v_layer = QgsVectorLayer(path,
-                                 file_name, "ogr")
-        layer = cl.equal_count(v_layer, data_values_list=attribute_values,
-                               field=attr_name[:10], steps=15)
-        QgsProject.instance().addMapLayer(layer)
-        self.CGF.done(0)
 
     def help(self):
         """Shows a help message in a QMessageBox"""

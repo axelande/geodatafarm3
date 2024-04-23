@@ -138,6 +138,7 @@ class GeoDataFarm:
         self.plan_ahead = None
         self.report_generator = None
         self.tabel_mgmt = None
+        self.guide = None
         self.test_mode = test_mode
 
     # noinspection PyMethodMayBeStatic
@@ -342,8 +343,8 @@ class GeoDataFarm:
 
     def create_guide(self):
         """Opens the create guide file widget"""
-        guide = CreateGuideFile(self)
-        guide.run()
+        self.guide = CreateGuideFile(self)
+        self.guide.run()
 
     def get_database_connection(self):
         """Connects to the database and create the db object"""

@@ -63,12 +63,12 @@ def set_zoom(iface, extra_extent):
         if 'xyz&url' not in layer.source():
             zoom_extent.combineExtentWith(layer.extent())
     if zoom_extent.center().x() != 0.0:
-        wgsCRS = QgsCoordinateReferenceSystem(4326)
+        wgsCRS = QgsCoordinateReferenceSystem.fromEpsgId(4326)
         QgsProject.instance().setCrs(wgsCRS)
         zoom_extent.scale(extra_extent)
         iface.mapCanvas().setExtent(zoom_extent)
         iface.mapCanvas().refresh()
-        wgsCRS = QgsCoordinateReferenceSystem(3857)
+        wgsCRS = QgsCoordinateReferenceSystem.fromEpsgId(3857)
         QgsProject.instance().setCrs(wgsCRS)
 
 

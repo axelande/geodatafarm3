@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>861</width>
-    <height>527</height>
+    <width>1120</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>841</width>
-     <height>511</height>
+     <width>1101</width>
+     <height>555</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -51,20 +51,6 @@
     </item>
     <item row="2" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="3">
-       <widget class="QPlainTextEdit" name="TEEquation">
-        <property name="plainText">
-         <string>100 +  [0] *2 </string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QPushButton" name="PBUpdate">
-        <property name="text">
-         <string>Update</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="3">
        <widget class="QLabel" name="LMaxVal">
         <property name="text">
@@ -79,23 +65,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="PBAddParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
+      <item row="2" column="3">
+       <widget class="QPushButton" name="PBUpdate">
         <property name="text">
-         <string>--&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="PBRemParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>&lt;--</string>
+         <string>Update</string>
         </property>
        </widget>
       </item>
@@ -107,18 +80,11 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
-       <widget class="QLabel" name="LMinVal">
-        <property name="text">
-         <string>Min value: Not selected</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="2" rowspan="4">
        <widget class="QTableWidget" name="TWSelected">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>350</width>
           <height>250</height>
          </size>
         </property>
@@ -131,7 +97,7 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
        <widget class="QTableWidget" name="TWColumnNames">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>350</width>
           <height>250</height>
          </size>
         </property>
@@ -140,6 +106,36 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
         </property>
         <property name="editTriggers">
          <set>QAbstractItemView::AnyKeyPressed</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="LMinVal">
+        <property name="text">
+         <string>Min value: Not selected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPlainTextEdit" name="TEEquation">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="plainText">
+         <string>100 +  [0] *2 </string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QPushButton" name="PBRemParam">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="text">
+         <string>&lt;--</string>
         </property>
        </widget>
       </item>
@@ -279,6 +275,15 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="CBFields">
+      <item>
+       <property name="text">
+        <string>-- Select field --</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
