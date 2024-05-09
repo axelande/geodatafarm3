@@ -10,7 +10,7 @@ on:
     # runs every day
     - cron: '0 12 * * *'
   push:
-    branches: [ "master", "try_ci" ]
+    branches: [ "master", "try_ci-1" ]
   pull_request:
     branches: [ "master" ]
 
@@ -25,10 +25,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Pull qgis image
-      run: docker pull qgis/qgis
+      run: docker pull qgis/qgis:stable
 
-    - name: Update pip
-      run: docker run --net=host --volume `pwd`:/app -w=/app qgis/qgis sh -c "python3 -m pip install --upgrade pip"  
     - name: Run tests
-      run: docker run --net=host --volume $(pwd):/app -w=/app qgis/qgis sh -c "python3 -m pip install -r requirements.txt && xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
+      run: docker run --net=host --volume $(pwd):/app -w=/app qgis/qgis:stable sh -c "python3 -m pip install -r requirements.txt --break-system-packages && xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
     
