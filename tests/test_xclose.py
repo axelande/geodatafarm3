@@ -29,12 +29,12 @@ def test_remove_iso_dataset(gdf: GeoDataFarm):
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
     assert found
-
+fields = ['test_field', 'test_iso_field'] #, 'test_iso_field2']
 # @pytest.mark.depends(scope='session', on=['remove_text'], name='remove_field')
-@pytest.mark.parametrize('field_name', ['test_field', 'test_iso_field'])
+@pytest.mark.parametrize('field_name', fields)
 def test_remove_field(gdf: GeoDataFarm, field_name):
     gdf.add_field.clicked_define_field()
-    items = [gdf.dock_widget.LWFields.item(0).text() for i in range(gdf.dock_widget.LWFields.count())]
+    items = [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
     for i, text in enumerate(items):
         if field_name in text:
             gdf.dock_widget.LWFields.item(i).setCheckState(2)

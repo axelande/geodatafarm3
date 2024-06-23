@@ -51,7 +51,6 @@ class DB:
 
         self.dock_widget = dock_widget
         self.path = path
-        self.conn = None
         self.dbhost = "geodatafarm.com"
         self.dbport = '5432'
         self.dbname = dbname
@@ -60,8 +59,9 @@ class DB:
         translate = TR('DB')
         self.tr = translate.tr
         self.test_mode = test_mode
+        self.pool = None
 
-    def get_conn(self):
+    def get_conn(self, set_farm_name:bool=True):
         """A function that checks if the database is created and sets then the
         database name, user name and password.
 
@@ -70,16 +70,25 @@ class DB:
         bool
         """
         try:
-            with open(self.path + '\database_scripts\connection_data.ini', 'r') as f:
-                text = f.readline()
-                [username, password, farmname] = text.split(',')
+            if self.dbname is None:
+                with open(self.path + '\database_scripts\connection_data.ini', 'r') as f:
+                    text = f.readline()
+                    [username, password, farmname] = text.split(',')
+        
+                self.dbname = farmname
+                self.dbuser = username
+                self.dbpass = password
         except IOError:
             return False
-        self.dbname = farmname
-        self.dbuser = username
-        self.dbpass = password
-        self.dock_widget.LFarmName.setText(farmname +
+        if set_farm_name:
+            self.dock_widget.LFarmName.setText(self.dbname +
                                            self.tr(' is set as your farm'))
+        self.pool = psycopg2.pool.ThreadedConnectionPool(1, 20,
+            host=self.dbhost,
+            database=self.dbname,
+            user=self.dbuser,
+            password=self.dbpass
+            )
         return True
 
     def _connect(self):
@@ -88,30 +97,18 @@ class DB:
         -------
         bool
         """
-        if self.conn is None:
-            try:
-                pool = psycopg2.pool.SimpleConnectionPool(1, 20,
-                    host=self.dbhost,
-                    database=self.dbname,
-                    user=self.dbuser,
-                    password=self.dbpass
-                    )
-                if not pool:
-                    QMessageBox.information(None, self.tr('Error'),
-                                            self.tr('Could not make a stable connection to the GeoDataFarm server'))
-                self.conn = pool.getconn()
-                self.conn.set_isolation_level(0)
-                return True
-            except psycopg2.OperationalError as e:
-                QMessageBox.information(None, self.tr('Error'), self.tr("Error connecting to database on {host}. {e}".format(
-                        host=self.dbhost, e=str(e))))
+        try:
+            if not self.pool:
+                QMessageBox.information(None, self.tr('Error'),
+                                        self.tr('Could not make a stable connection to the GeoDataFarm server'))
                 return False
-
-    def _close(self):
-        """Closes the connection to the database"""
-        if self.conn is not None:
-            self.conn.close()
-            self.conn = None
+            conn = self.pool.getconn()
+            conn.set_isolation_level(0)
+            return conn
+        except psycopg2.OperationalError as e:
+            QMessageBox.information(None, self.tr('Error'), self.tr("Error connecting to database on {host}. {e}".format(
+                    host=self.dbhost, e=str(e))))
+            return False
 
     def add_postgis_layer(self, table, geom_col, schema, extra_name='',
                           filter_text=''):
@@ -418,18 +415,19 @@ class DB:
         disregard_failure: bool, optional default False
             If True disregards failures and don't print etc.
         """
-        self._connect()
-        if self.conn is None:
+        conn = self._connect()
+        if not conn:
             nc = NoConnection(self.tr)
             nc.run_failure()
             return 'There was no connection established'
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
             cur.execute(sql)
-            self.conn.commit()
+            conn.commit()
             row_count = cur.rowcount
         except Exception as e:
             if return_failure:
+                self.pool.putconn(conn)
                 error_type, value_, traceback_ = sys.exc_info()
                 return [False, error_type, e]
             elif disregard_failure:
@@ -437,10 +435,11 @@ class DB:
             else:
                 sf = SomeFailure()
                 if self.test_mode:
+                    self.pool.putconn(conn)
                     return False
                 else:  
                     sf.display_failure(e)
-        self._close()
+        self.pool.putconn(conn)
         if return_failure:
             if return_row_count:
                 return [True, 'suc', row_count]
@@ -462,19 +461,19 @@ class DB:
         list of lists
             the data requested in the statement
         """
-        self._connect()
-        if self.conn is None:
+        conn = self._connect()
+        if not conn:
             nc = NoConnection(self.tr)
             nc.run_failure()
             return 'There was no connection established'
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
             cur.execute(sql)
             data = cur.fetchall()
         except Exception as e:
+            self.pool.putconn(conn)
             if return_failure:
                 error_type, value_, traceback_ = sys.exc_info()
-                self._close()
                 return [False, error_type, e]
             else:
                 if self.test_mode:
@@ -483,7 +482,7 @@ class DB:
                     sf = SomeFailure()
                     sf.display_failure(e)
             data = 'There were an error..'
-        self._close()
+        self.pool.putconn(conn)
         return data
 
     def remove_table(self, tbl_schema_name):
@@ -523,9 +522,9 @@ class DB:
         bool
         """
         try:
-            self._connect()
+            conn = self._connect()
             return True
         except DBException as e:
             return False
         finally:
-            self._close()
+            self.pool.putconn(conn)

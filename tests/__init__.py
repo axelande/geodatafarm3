@@ -47,7 +47,7 @@ def create_new_farm(gdf: GeoDataFarm):
 
 def connect_2_farm(gdf):
     gdf.run()
-    cf = gdf.clicked_create_farm()
+    cf = gdf.connect_to_farm()
     cf.CF.user_name.setText('pytest_user')
     cf.CF.pass_word.setText('pytest_pass')
     cf.CF.farm_name.setText('pytest_farm')

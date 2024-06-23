@@ -13,6 +13,9 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.html
+*htmlcov
+/build
 
 # Windows shortcuts
 *.lnk

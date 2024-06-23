@@ -1,6 +1,7 @@
 # Author Axel Hörteborn
 from datetime import datetime, timedelta
 import os
+import time
 from pathlib import Path
 
 import numpy as np
@@ -9,7 +10,7 @@ import xml.etree.ElementTree as ET
 
 from ..__init__ import TR, getfile_insensitive
 from .sorting_utils import find_by_key
-from .cython_agri import read_static_binary_data, cython_read_dlvs
+#from .cython_agri import read_static_binary_data, cython_read_dlvs
 
 
 class PyAgriculture:
@@ -22,7 +23,7 @@ class PyAgriculture:
         self.task_infos = []
         self.dlvs = []
         self.dlv_idx = {}
-        self.read_with_cython = True
+        self.read_with_cython = False
         self.rename_columns_with_units = False
         self.start_date = datetime(year=1980, month=1, day=1)
         self.dt = None
@@ -95,6 +96,14 @@ class PyAgriculture:
             if dlv_e.attrib["A"] not in self.dlv_idx.keys():
                 self.dlv_idx[dlv_e.attrib["A"]] = len(list(self.dlv_idx))
 
+    def add_xfr_parts(self, tree:ET.ElementTree) -> ET.ElementTree:
+        for child in tree.getroot():
+            if child.tag == 'XFR':
+                child_data = ET.parse(getfile_insensitive(self.path + child.attrib["A"] + '.xml'))
+                child_list = list(child_data.getroot())
+                for sub in child_list:
+                    tree.getroot().append(sub)
+        return tree
 
     def gather_task_names(self, continue_on_fail=True) -> list:
         """This function will use the specified path to the taskdata.xml to build a tree of all information in the
@@ -102,7 +111,9 @@ class PyAgriculture:
 
         task_data_dict = {}
         task_names = []
+        file_names = []
         tree = ET.parse(getfile_insensitive(self.path + 'TaskData.xml'))
+        tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         if 'TLG' in self.task_dicts.keys():
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
@@ -123,27 +134,28 @@ class PyAgriculture:
                 except IndexError:
                     task_name = 'unkown'
                 task_names.append(task_name)
-        return task_names
+                file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
+        return task_names, file_names
 
-    def gather_data(self, most_important='dry yield', continue_on_fail=True, only_tasks=[]):
+    def gather_data(self, qtask, only_tasks=[], most_important='dry yield'):
         """This function will use the specified path to the taskdata.xml to build a tree of all information in the
          taskdata file and all the files tlg xml and bin files."""
         reset_columns = False  # Resets all columns when the "most_important" have been used.
         task_data_dict = {}
         tree = ET.parse(getfile_insensitive(self.path + 'TASKDATA.xml'))
+        tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         if 'TLG' in self.task_dicts.keys():
+            nr_tlgs = len(list(self.task_dicts['TLG'].keys()))
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
                 try:
                     file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
                     branch = ET.parse(file)
                 except (FileNotFoundError, ET.ParseError):
-                    if not continue_on_fail:
-                        raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
-                    else:
+                    continue
+                if len(only_tasks) > 0:
+                    if not self.task_dicts['TLG'][tsk]['A'] + '.xml' in only_tasks:
                         continue
-                #if i < 50 or i > 108:
-                #    continue
                 self.dlvs = []
                 self.dlv_idx = {}
                 tlg_dict = self.add_children({}, branch.getroot())
@@ -155,9 +167,6 @@ class PyAgriculture:
                     task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
                 except IndexError:
                     task_name = 'unkown'
-                if len(only_tasks) > 0:
-                    if not task_name in only_tasks:
-                        continue
                 if most_important not in columns:
                     continue
                 path = self.path + self.task_dicts['TLG'][tsk]['A']
@@ -165,7 +174,9 @@ class PyAgriculture:
                                                        most_important, task_name, reset_columns)
                 if task is not None:
                     self.tasks.append(task)
-
+                if qtask != "debug":
+                    qtask.setProgress(float(i/nr_tlgs * 90)+10)
+                
         if self.convert_field:
             self.convert_yield_field()
 
@@ -229,6 +240,8 @@ class PyAgriculture:
             dpd = task_data_dict['DPD'][dpd_key]
             tlg_dict['DLV'][dlv_key]['Name'] = dpd['E']
             if 'F' in dpd.keys():
+                if dpd['F'] not in task_data_dict['DVP']:
+                    return
                 dvp = task_data_dict['DVP'][dpd['F']]
                 tlg_dict['DLV'][dlv_key]['DVP'] = {'nr_decimals': dvp['D'], 'scale': dvp['C'],
                                                    'offset': dvp['B']}
@@ -292,12 +305,13 @@ class PyAgriculture:
         while read_point < len(binary_data):
             # The first part of each "row" contains of static data, a timestamp and some satellite data.
             if self.read_with_cython:
-                data_row, nr_dlvs, nr_static = read_static_binary_data(data_row, read_point, binary_data, tlg_dict,
-                                                                       self.dt, self.start_date)
-                read_point += self.static_bytes
-                read_point, data_row, unit_row = cython_read_dlvs(binary_data, read_point, nr_dlvs, nr_static, dpd_ids,
-                                                            self.task_dicts, unit_row, data_row, self.dlvs,
-                                                            self.dlv_idx)
+                raise DeprecationWarning("Cython reading is removed")
+            #    data_row, nr_dlvs, nr_static = read_static_binary_data(data_row, read_point, binary_data, tlg_dict,
+            #                                                           self.dt, self.start_date)
+            #    read_point += self.static_bytes
+            #    read_point, data_row, unit_row = cython_read_dlvs(binary_data, read_point, nr_dlvs, nr_static, dpd_ids,
+            #                                                self.task_dicts, unit_row, data_row, self.dlvs,
+            #                                                self.dlv_idx)
             else:
                 data_row, nr_dlvs, nr_static = self._read_static_binary_python(data_row, read_point, binary_data,
                                                                                tlg_dict)
@@ -326,13 +340,13 @@ class PyAgriculture:
                             continue
                     except IndexError and KeyError:
                         pass
-        #df_columns.extend([str(i) for i in range(15)])
         df = pd.DataFrame(to_tlg_df, columns=df_columns)
         for i in range(nr_static - 1):
             unit_row.insert(i, '')
         df.attrs['task_name'] = task_name
         df.attrs['columns'] = df_columns
         df.attrs['unit_row'] = unit_row
+
         return df
 
     @staticmethod

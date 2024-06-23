@@ -4,21 +4,7 @@ from ..import_data.handle_input_shp_data import InputShpHandler
 from ..import_data.handle_text_data import InputTextHandler
 from ..import_data.handle_raster import ImportRaster
 from ..support_scripts.__init__ import TR
-from ..support_scripts.init_checks import check_if_pyagri_is_built
-
-if check_if_pyagri_is_built():
-    from ..import_data.handle_iso11783 import Iso11783
-else:
-    class Iso11783:
-        def __init__(self, a, b):
-            pass
-
-        def run(self):
-            QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
-GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install cython"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
-If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
+from ..import_data.handle_iso11783 import Iso11783
 
 
 class SaveSpraying:

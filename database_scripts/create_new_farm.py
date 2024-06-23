@@ -150,10 +150,10 @@ class CreateFarm:
         if self.parent_widget.test_mode:
             self.db = DB(self.dock_widget, path=self.plugin_dir, dbname = 'pytest_farm', dbuser = 'pytest_user', 
                          dbpass = hashlib.sha256('pytest_pass'.encode()).hexdigest(), test_mode=self.parent_widget.test_mode)
-            self.parent_widget.dock_widget.LFarmName.setText('pytest_farm' +
-                                            self.tr(' is set as your farm'))
+            connected = self.db.get_conn()
         else:
-            self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.parent_widget.test_mode)
+            self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.parent_widget.test_mode, 
+                         dbname=None)
             connected = self.db.get_conn()
 
     def create_spec_functions(self):

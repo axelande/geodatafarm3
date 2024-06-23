@@ -572,10 +572,9 @@ def move_points(db, move_x, move_y, tbl_name, task):
 
 
 def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date,
-                 column_types, column_units=None, table='', ask_replace=True, test_mode=False):
-    inserting_text = 'INSERT INTO {schema}.temp_table ('.format(schema=schema)
-    sql = "CREATE TABLE {schema}.temp_table (field_row_id serial PRIMARY KEY, ".format(
-        schema=schema)
+                 column_types, column_units=None, table='', ask_replace=True, test_mode=False, task_nr=''):
+    inserting_text = f'INSERT INTO {schema}.temp_table{task_nr} ('
+    sql = f"CREATE TABLE {schema}.temp_table{task_nr} (field_row_id serial PRIMARY KEY, "
     lat_lon_inserted = False
     date_inserted = False
     for i, col_name in enumerate(heading_row):
@@ -613,7 +612,7 @@ def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, 
     inserting_text = inserting_text[:-2] + ') VALUES '
     insert_org_sql = inserting_text
     if not db.check_table_exists(schema=schema, table_name=table):
-        db.create_table(sql, '{schema}.temp_table'.format(schema=schema))
+        db.create_table(sql, f'{schema}.temp_table{task_nr}')
     else:
         return [False, '', '']
     return [True, inserting_text, insert_org_sql]

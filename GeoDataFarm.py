@@ -407,7 +407,10 @@ class GeoDataFarm:
         """Connects the docked widget with the CreateFarm script and starts
         the connect to farm widget"""
         create_farm = CreateFarm(self, False)
-        create_farm.run()
+        if not self.test_mode:
+            create_farm.run()
+        else:
+            return create_farm
 
     def fix_rows(self):
         RowFixer(self)

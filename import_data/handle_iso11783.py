@@ -2,9 +2,12 @@ import numpy as np
 from operator import xor
 import pandas as pd
 from PyQt5 import QtWidgets, QtCore
+from qgis.core import QgsTask
 
+from ..database_scripts.db import DB
 from ..import_data.handle_text_data import create_table, create_polygons
 from ..support_scripts.__init__ import (TR, check_text)
+from ..support_scripts.create_layer import CreateLayer, add_background
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.import_xml_bin import ImportXmlBin
@@ -34,7 +37,6 @@ class Iso11783:
     def initiate_pyAgriculture(self, path: str):
         """Connects the plugin to pyAgriculture."""
         self.py_agri = PyAgriculture(path)
-        self.py_agri.read_with_cython = False
 
     def run(self):
         """Presents the sub widget ImportXmlBin and connects the different
@@ -48,14 +50,41 @@ class Iso11783:
         if not self.parent.test_mode:
             self.IXB.exec_()
 
-    def close(self):
-        """Disconnects buttons and closes the widget"""
-        self.IXB.PBAddInputFolder.clicked.disconnect()
-        self.IXB.PBFindFields.clicked.disconnect()
-        self.IXB.PBAddParam.clicked.disconnect()
-        self.IXB.PBRemParam.clicked.disconnect()
-        self.IXB.PBInsert.clicked.disconnect()
-        self.IXB.done(0)
+    def add_to_canvas(self, schema, tbl, focus_cols):
+        """At the end add the layers to the canvas, one layer for 
+        each of the columns in the focus_cols"""
+        add_background()
+        create_layer = CreateLayer(self.db)
+        for param_layer in focus_cols[0]:
+            param_layer = check_text(param_layer)
+            target_field = param_layer
+            if self.data_type == 'harvest':
+                layer = self.db.add_postgis_layer(tbl, 'pos', '{schema}'.format(schema=schema),
+                                                check_text(param_layer.lower()))
+            else:
+                layer = self.db.add_postgis_layer(tbl, 'polygon', '{schema}'.format(schema=schema),
+                                                check_text(param_layer.lower()))
+
+            create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
+
+    def close(self, result, values):
+        """Disconnects buttons and closes the widget when all tasks are completed, 
+        also makes the call to add them to the canvas"""
+        if values[0]:
+            self.add_to_canvas(values[1], values[2], values[3])
+        else:
+             if values[1]:
+                QtWidgets.QMessageBox.information(None, self.tr("Warning:"),
+                                            values[2])
+        self.added_nbrs += 1
+        if self.added_nbrs == self.tasks_to_run:
+            self.IXB.PBAddInputFolder.clicked.disconnect()
+            self.IXB.PBFindFields.clicked.disconnect()
+            self.IXB.PBAddParam.clicked.disconnect()
+            self.IXB.PBRemParam.clicked.disconnect()
+            self.IXB.PBInsert.clicked.disconnect()
+            self.IXB.done(0)
+            return True
 
     def open_input_folder(self):
         """Opens a dialog and let the user select the folder where Taskdata are stored."""
@@ -103,22 +132,27 @@ UNION """
     def populate_first_table(self):
         """Populates the task list."""
         self.checkboxes1 = []
-        task_names = self.py_agri.gather_task_names()
+        task_names, file_names = self.py_agri.gather_task_names()
         self.IXB.TWISODataAll.setRowCount(len(task_names))
-        self.IXB.TWISODataAll.setColumnCount(2)
-        self.IXB.TWISODataAll.setHorizontalHeaderLabels([self.tr('Get more info'), self.tr('Task name')])
+        self.IXB.TWISODataAll.setColumnCount(3)
+        self.IXB.TWISODataAll.setHorizontalHeaderLabels([self.tr('Get more info'), self.tr('Task name'), self.tr('File name')])
         self.IXB.TWISODataAll.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         for i, row in enumerate(task_names):
             item1 = QtWidgets.QTableWidgetItem('Include')
             item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item1.setCheckState(QtCore.Qt.Checked)
-            self.checkboxes1.append([item1, row])
+            item1.setCheckState(QtCore.Qt.Unchecked)
+            self.checkboxes1.append([item1, row, file_names[i]])
             item2 = QtWidgets.QTableWidgetItem(row)
             item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
+            item3 = QtWidgets.QTableWidgetItem(file_names[i])
+            item3.setFlags(xor(item3.flags(), QtCore.Qt.ItemIsEditable))
             self.IXB.TWISODataAll.setItem(i, 0, item1)
             self.IXB.TWISODataAll.setItem(i, 1, item2)
+            self.IXB.TWISODataAll.setItem(i, 2, item3)
 
     def populate_most_interesting(self):
+        """Sets the combobox with all column names to select which all 
+        rows must contain."""
         if 'DPD' not in self.py_agri.task_dicts:
             QtWidgets.QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('No "DPD" data was found in the taskdata.xml, the file might be corrupt?'))
@@ -126,24 +160,22 @@ UNION """
         self.IXB.CBMostImportant.clear()
         for k, dpd in self.py_agri.task_dicts['DPD'].items():
             name = dpd['E']
-            unit_key = dpd['F']
-            unit_name = ''
-            for _, unit in self.py_agri.task_dicts['DVP'].items():
-                if unit['A'] == unit_key:
-                    unit_name = unit['E']
-            self.IXB.CBMostImportant.addItem(f'{name} {unit_name}')
+            self.IXB.CBMostImportant.addItem(f'{name.lower()}')
         items = [self.IXB.CBMostImportant.itemText(i) for i in range(self.IXB.CBMostImportant.count())]
         for i, key in enumerate(items):
             if 'yield' in key.lower():
                 self.IXB.CBMostImportant.setCurrentIndex(i)
+                break
 
     def populate_second_table(self):
-        """Populates the list that is marked as include in the first table."""
-        tasks_to_include = []
+        """Populates the list that is marked as include in the first table.
+        Also calls py_agri to decode the binary data, this is done in a separate
+        task."""
+        self.tasks_to_include = []
         for row in self.checkboxes1:
             if row[0].checkState() == 2:
-                tasks_to_include.append(row[1])
-        if len(tasks_to_include) == 0:
+                self.tasks_to_include.append(row[2])
+        if len(self.tasks_to_include) == 0:
             QtWidgets.QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('You need to select at least one of the tasks'))
             return
@@ -152,12 +184,30 @@ UNION """
         self.checkboxes2 = []
         self.checkboxes3 = []
         self.checkboxes4 = []
-        self.py_agri.gather_data(only_tasks=tasks_to_include, most_important='yield')
+        if self.parent.test_mode is False:
+            task = QgsTask.fromFunction('Decode binary data', self.py_agri.gather_data, 
+                                        self.tasks_to_include, 
+                                        self.IXB.CBMostImportant.currentText().lower(),
+                                        on_finished=self.populate2)
+            self.parent.tsk_mngr.addTask(task)
+        else:
+            self.py_agri.gather_data("debug", self.tasks_to_include, 
+                                     self.IXB.CBMostImportant.currentText().lower())
+            self.populate2()
+
+    def populate2(self, res="", values=""):
+        """The end of populate the second table when all data is decoded 
+        from the qtask"""
         task_names = self.get_task_data()
-        self.IXB.TWISODataSelect.setRowCount(len(tasks_to_include))
+        self.IXB.TWISODataSelect.setRowCount(len(self.tasks_to_include))
         self.IXB.TWISODataSelect.setColumnCount(4)
         self.IXB.TWISODataSelect.setHorizontalHeaderLabels([self.tr('To include'), self.tr('Date'), self.tr('Field'),
                                                             self.tr('Crops')])
+        header = self.IXB.TWISODataSelect.horizontalHeader()       
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         self.IXB.TWISODataSelect.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         j = -1  # How may checkboxes that is added
         for i, row in enumerate(task_names.values()):
@@ -359,6 +409,8 @@ UNION """
         for tbl_idx, check_idx,  cbox in self.checkboxes2:
             if cbox.checkState() == 2:
                 found = True
+                if self.IXB.TWISODataSelect.item(tbl_idx, 1) is None:
+                    continue
                 dates.append(self.IXB.TWISODataSelect.item(tbl_idx, 1).text())
                 field = self.checkboxes3[check_idx].currentText()
                 if field == self.tr('--- Select field ---'):
@@ -435,81 +487,118 @@ UNION """
         crops = prep_data[2]
         dates = prep_data[3]
         focus_cols = prep_data[4]
-        df = pd.concat(self.tasks)
-        success = self.scale_dfs(df)
-        if not success[0]:
-            return False
+        self.added_nbrs = 0
+        self.tasks_to_run = len(fields)
         for i, field in enumerate(fields):
-            crop = crops[i]
-            date = dates[i]
-            columns = []
-            table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
-            for col in df.columns:
-                columns.append(check_text(col))
-            suc, insert_sql, _ = create_table(self.db, self.data_type, columns, 'latitude', 'longitude', 'time_stamp', '',
-                                              col_types, column_units=col_units, table=table, ask_replace=False, test_mode=self.parent.test_mode)
-            if not suc:
-                self.close()
-                return False
-            insert_data(self.tr, self.db, df, self.data_type, insert_sql, table, field, focus_cols, col_types)
-        self.close()
-        return True
+            try:
+                df = self.tasks[i]
+                success = self.scale_dfs(df)
+                if not success[0]:
+                    return False
+                
+                crop = crops[i]
+                date = dates[i]
+                columns = []
+                table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
+                for col in df.columns:
+                    columns.append(check_text(col))
+                suc, insert_sql, _ = create_table(self.db, self.data_type, columns, 
+                                                'latitude', 'longitude', 'time_stamp', '',
+                                                col_types, column_units=col_units, table=table, 
+                                                ask_replace=False, test_mode=self.parent.test_mode,
+                                                task_nr=i)
+                if not suc:
+                    return False
+                
+                db = DB(None, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
+                connected = db.get_conn(False)
+                if not self.parent.test_mode:
+                    task = QgsTask.fromFunction(f'Adding field: {field}{prep_data[5][i]}', insert_data,
+                                                db, df, self.data_type, 
+                                                insert_sql, table, field, focus_cols, 
+                                                col_types, i, on_finished=self.close)
+                    self.parent.tsk_mngr.addTask(task)
+                else:
+                    res = insert_data(None, db, df, self.data_type, 
+                                                insert_sql, table, field, focus_cols, 
+                                                col_types, i)
+                    self.close("", res)
+            except Exception as e:
+                print(e)
 
-def insert_data(tr, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_name: str, field: str, focus_col: list,
-                col_types: list):
+def insert_data(qtask, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_name: str, 
+                field: str, focus_col: list, col_types: list, tsk_nr:int):
     """Makes the actual insertion to the database (first to a temp table and then to the correct table)."""
-    sql = insert_sql + '('
-    count_db_insert = 0
-    for row_nr, row in data.iterrows():
-        lat_lon_insert = False
-        for col_nr, col in enumerate(data.columns):
-            if col in ['latitude', 'longitude']:
-                if not lat_lon_insert:
-                    sql += f"ST_PointFromText('POINT({row['longitude']} {row['latitude']})', 4326), "
-                    lat_lon_insert = True
-                continue
-            if col == 'time_stamp':
-                sql += f"'{row['time_stamp']}', "
-                continue
-            if str(row[col]) == 'nan':
-                sql += f"Null, "
-            elif str(row[col]).lower() == 'none':
-                sql += f"Null, "
-            elif col_types[col_nr] == 2:
-                sql += f"'{row[col]}', "
+    try:
+        sql = insert_sql + '('
+        count_db_insert = 0
+        for row_nr, row in data.iterrows():
+            lat_lon_insert = False
+            for col_nr, col in enumerate(data.columns):
+                if col in ['latitude', 'longitude']:
+                    if not lat_lon_insert:
+                        sql += f"ST_PointFromText('POINT({row['longitude']} {row['latitude']})', 4326), "
+                        lat_lon_insert = True
+                    continue
+                if col == 'time_stamp':
+                    sql += f"'{row['time_stamp']}', "
+                    continue
+                if str(row[col]) == 'nan':
+                    sql += f"Null, "
+                elif str(row[col]).lower() == 'none':
+                    sql += f"Null, "
+                elif col_types[col_nr] == 2:
+                    sql += f"'{row[col]}', "
+                else:
+                    sql += f"{row[col]}, "
+            sql = sql[:-2] + '), ('
+            if count_db_insert > 1_000:
+                db.execute_sql(sql[:-3], return_failure=True)
+                if qtask is not None:
+                    qtask.setProgress(row_nr / len(data) * 80)
+                sql = insert_sql + '('
+                count_db_insert = 0
             else:
-                sql += f"{row[col]}, "
-        sql = sql[:-2] + '), ('
-        if count_db_insert > 10000:
-            db.execute_sql(sql[:-3], return_failure=True)
-            sql = insert_sql + '('
-            count_db_insert = 0
-        else:
-            count_db_insert += 1
-    if count_db_insert > 0:
-        db.execute_sql(sql[:-3])
+                count_db_insert += 1
+            if qtask is not None:
+                if qtask.isCanceled():
+                    return False, False, "was cancelled"
+        if count_db_insert > 0:
+            db.execute_sql(sql[:-3])
+        if qtask is not None:
+            qtask.setProgress(80)
 
-    sql = f"""SELECT * INTO {schema}.{tbl_name} 
-    from {schema}.temp_table
-    where st_intersects(pos, (select polygon 
-    from fields where field_name = '{field}'))
-    """
-    suc = db.execute_sql(sql, return_failure=True, return_row_count=True)
-    if not suc[0]:
-        return suc
-    if suc[2] == 0:
-        QtWidgets.QMessageBox.information(None, tr("Warning:"),
-                                          tr('No data was found on that field.'))
-    if schema != 'harvest':
-        create_polygons(db, schema, tbl_name, field)
-    db.execute_sql(f"DROP TABLE {schema}.temp_table")
-    for col in focus_col:
-        db.create_indexes(tbl_name, col, schema, primary_key=False)
-
+        sql = f"""SELECT * INTO {schema}.{tbl_name} 
+        from {schema}.temp_table{tsk_nr}
+        where st_intersects(pos, (select polygon 
+        from fields where field_name = '{field}'))
+        """
+        suc = db.execute_sql(sql, return_failure=True, return_row_count=True)
+        if qtask is not None:
+            qtask.setProgress(85)
+        if not suc[0]:
+            return False, True, suc[1]
+        if suc[2] == 0:
+            return False, True, 'No data was found on that field.'
+        if schema != 'harvest':
+            create_polygons(db, schema, tbl_name, field)
+        db.execute_sql(f"DROP TABLE {schema}.temp_table{tsk_nr}")
+        if qtask is not None:
+            qtask.setProgress(90)
+        for j, col in enumerate(focus_col):
+            db.create_indexes(tbl_name, col, schema, primary_key=False)
+            if qtask is not None:
+                qtask.setProgress(90 + j / len(focus_col) * 10)
+        return True, schema, tbl_name, focus_col
+    except Exception as e:
+        return False, e
 
 if __name__ == '__main__':
-    test_path = 'c:\\dev\\geodatafarm\\test_data\\TASKDATA\\'
-    ap = None
-    iso = Iso11783(ap)
+    test_path = 'C:\\Users\\AxelHor\\Downloads\\TASKDATA-20240611T121749Z-001\\TASKDATA'
+    class AP:
+        db = None
+        populate = None
+    ap = AP()
+    iso = Iso11783(ap, 'harvest')
     iso.initate_pyagriculture(test_path)
     iso.get_task_names()
