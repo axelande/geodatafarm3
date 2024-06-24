@@ -29,7 +29,6 @@ def gdf(qgis_iface):
     # create_new_farm(gdf)
     connect_2_farm(gdf)
     yield gdf
-    gdf.db._close()
     #delete_farm()
 
 def create_new_farm(gdf: GeoDataFarm):

@@ -9,7 +9,7 @@ def test_remove_crop(gdf: GeoDataFarm):
 # @pytest.mark.depends(on=['import_text'], name='remove_text')
 def test_remove_dataset(gdf: GeoDataFarm):
     gdf.dock_widget.PBEditTables.click()
-    items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
+    items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     found = False
     for i, text in enumerate(items):
         if 'test_field' in text:
