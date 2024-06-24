@@ -16,6 +16,7 @@ $RECYCLE.BIN/
 *.html
 *htmlcov
 /build
+\old
 
 # Windows shortcuts
 *.lnk

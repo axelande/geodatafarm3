@@ -510,19 +510,19 @@ UNION """
                 if not suc:
                     return False
                 
-                db = DB(None, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
-                connected = db.get_conn(False)
                 if not self.parent.test_mode:
+                    db = DB(None, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
+                    connected = db.get_conn(False)
                     task = QgsTask.fromFunction(f'Adding field: {field}{prep_data[5][i]}', insert_data,
                                                 db, df, self.data_type, 
                                                 insert_sql, table, field, focus_cols, 
                                                 col_types, i, on_finished=self.close)
                     self.parent.tsk_mngr.addTask(task)
                 else:
-                    res = insert_data(None, db, df, self.data_type, 
+                    res = insert_data(None, self.db, df, self.data_type, 
                                                 insert_sql, table, field, focus_cols, 
                                                 col_types, i)
-                    self.close("", res)
+                    return res[0]
             except Exception as e:
                 print(e)
 

@@ -45,9 +45,9 @@ def create_new_farm(gdf: GeoDataFarm):
     suc3 = gdf.db.execute_sql(f'GRANT pytest_user TO {RESET_USER} WITH ADMIN OPTION;', return_failure=True)
     # assert all([suc1, suc2[0], suc3[0]])
 
-def connect_2_farm(gdf):
+def connect_2_farm(gdf: GeoDataFarm):
     gdf.run()
-    cf = gdf.connect_to_farm()
+    cf = gdf.clicked_create_farm()
     cf.CF.user_name.setText('pytest_user')
     cf.CF.pass_word.setText('pytest_pass')
     cf.CF.farm_name.setText('pytest_farm')

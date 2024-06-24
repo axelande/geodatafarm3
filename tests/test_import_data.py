@@ -27,15 +27,17 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.IXB.PBAddInputFolder.click()
+    gdf.save_harvesting.importer.IXB.TWISODataAll.item(0, 0).setCheckState(2)
     gdf.save_harvesting.importer.IXB.PBFindFields.click()
-    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,2).setCurrentIndex(0)
-    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(0,3).setCurrentIndex(1)
+    i = 0 #for i in range(gdf.save_harvesting.importer.IXB.TWISODataSelect.rowCount()):
+    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(i, 2).setCurrentIndex(0)
+    gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(i, 3).setCurrentIndex(1)
     gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(3)
     gdf.save_harvesting.importer.IXB.PBAddParam.click()
     suc = gdf.save_harvesting.importer.add_to_database()
     assert suc
     gdf.dock_widget.PBEditTables.click()
-    items = [gdf.tabel_mgmt.TMD.SATables.item(0).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
+    items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     for text in items:
         if 'test_iso_field' in text:
             assert True
