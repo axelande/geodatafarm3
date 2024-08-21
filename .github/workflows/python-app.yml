@@ -25,7 +25,7 @@ jobs:
       run: docker pull qgis/qgis:stable
 
     - name: Pip install
-      run: docker run --volume $(pwd):/app -w=/app qgis/qgis:stable sh -c "python3 -m pip install -r requirements_dev.txt --break-system-packages"
+      run: docker run --name qgis_container --volume $(pwd):/app -w=/app qgis/qgis:stable sh -c "python3 -m pip install -r requirements_dev.txt --break-system-packages"
 
     - name: Run tests
-      run: docker run --volume $(pwd):/app -w=/app qgis/qgis:stable sh -c "xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
+      run: docker start qgis_container && docker exec qgis_container sh -c "xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
