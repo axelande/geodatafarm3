@@ -1,3 +1,4 @@
+import os
 from PyQt5.QtWidgets import QMessageBox
 import requests
 import hashlib
@@ -90,7 +91,7 @@ class CreateFarm:
         else:
             insertion_ok = True
         if not self.parent_widget.test_mode:
-            with open(self.plugin_dir + '\database_scripts\connection_data.ini', 'w') as f:
+            with open(os.path.join(self.plugin_dir, 'database_scripts', 'connection_data.ini'), 'w') as f:
                 f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self._connect_to_db()
@@ -121,8 +122,7 @@ class CreateFarm:
         password = hashlib.sha256(password).hexdigest()
 
         if not self.parent_widget.test_mode:
-            with open(self.plugin_dir +
-                    '\database_scripts\connection_data.ini', 'w') as f:
+            with open(os.path.join(self.plugin_dir, 'database_scripts', 'connection_data.ini'), 'w') as f:
                 f.write(username + ',' + password + ',' + farmname)
         self.parent_widget.dock_widget.LFarmName.setText(farmname +
                                                          ' is set\nas your farm')

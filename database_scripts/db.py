@@ -1,3 +1,4 @@
+import os
 import psycopg2
 import psycopg2.pool
 import psycopg2.extras
@@ -71,7 +72,7 @@ class DB:
         """
         try:
             if self.dbname is None:
-                with open(self.path + '\database_scripts\connection_data.ini', 'r') as f:
+                with open(os.path.join(self.path, 'database_scripts', 'connection_data.ini'), 'r') as f:
                     text = f.readline()
                     [username, password, farmname] = text.split(',')
         
