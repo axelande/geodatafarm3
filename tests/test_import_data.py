@@ -6,7 +6,7 @@ from . import gdf
 
 
 # @pytest.mark.depends(name='import_text', on=['add_field'])
-def test_import_text(gdf:GeoDataFarm):
+def test_import_plant_text(gdf:GeoDataFarm):
     gdf.dock_widget.CBPFileType.setCurrentIndex(1)
     gdf.dock_widget.PBPAddFile.click()
     gdf.save_planting.importer.ITD.PBAddInputFile.click()
@@ -17,8 +17,25 @@ def test_import_text(gdf:GeoDataFarm):
         gdf.save_planting.importer.ITD.PBAddParam.click()
     gdf.save_planting.importer.ITD.PBContinue.click()
     gdf.save_planting.importer.ITD.GLSpecific.itemAt(1).widget().setCurrentIndex(18)
-    gdf.save_planting.importer.ITD.DE.setDate(QDate.fromString('2015-04-15', "yyyy-MM-dd"))
+    gdf.save_planting.importer.ITD.DE.setDate(QDate.fromString('2023-04-15', "yyyy-MM-dd"))
     suc = gdf.save_planting.importer.trigger_insection()
+    assert suc[0]
+
+
+def test_import_harvest_text(gdf:GeoDataFarm):
+    gdf.dock_widget.CBHvFileType.setCurrentIndex(1)
+    gdf.dock_widget.PBHvAddFile.click()
+    gdf.save_harvesting.importer.ITD.PBAddInputFile.click()
+    gdf.save_harvesting.importer.ITD.CBField.setCurrentIndex(1)
+    gdf.save_harvesting.importer.ITD.CBCrop.setCurrentIndex(1)
+    for i in [2]:
+        gdf.save_harvesting.importer.ITD.TWColumnNames.selectRow(i)
+        gdf.save_harvesting.importer.ITD.PBAddParam.click()
+    gdf.save_harvesting.importer.ITD.PBContinue.click()
+    gdf.save_harvesting.importer.ITD.GLSpecific.itemAt(1).widget().setCurrentIndex(2)
+    gdf.save_harvesting.importer.ITD.GLSpecific.itemAt(7).widget().setChecked(True)
+    gdf.save_harvesting.importer.ITD.DE.setDate(QDate.fromString('2023-09-15', "yyyy-MM-dd"))
+    suc = gdf.save_harvesting.importer.trigger_insection()
     assert suc[0]
 
 
