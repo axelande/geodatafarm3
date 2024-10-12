@@ -43,9 +43,6 @@ import platform
 import webbrowser
 from .resources import *
 plugin_dir = os.path.dirname(__file__)
-# TODO get the links to work to geodatafarms webpage prior to createing a farm.
-from .support_scripts.init_checks import check_and_install_requirements
-check_and_install_requirements()
 
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.create_new_farm import CreateFarm

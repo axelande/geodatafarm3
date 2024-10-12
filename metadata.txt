@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.9.6
+version=2.10.1
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,10 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.10.1 (2024-10-12)
+  - [bug] fixed a minor import bug
+  Version 2.10.0 (2024-08-17)
+  - [feature] Now using qpip to handle the required python packages
   Version 2.9.6 (2024-06-23)
   - [fix] Improved the reading of ISO XML.
   Version 2.9.5
@@ -89,6 +93,6 @@ icon=img\icon.png
 # experimental flag
 experimental=False
 # Plugin Dependencies
-# plugin_dependencies=qpip
+plugin_dependencies=qpip
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

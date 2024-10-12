@@ -258,16 +258,20 @@ class InputTextHandler(object):
         filters = "Text files (*.txt *.csv)"
         if self.parent_widget.test_mode:
             if self.data_type == 'plant':
-                self.file_name_with_path = './tests/test_data/planting_file.csv'
+                file_name_with_path = './tests/test_data/planting_file.csv'
             if self.data_type == 'harvest':
-                self.file_name_with_path = './tests/test_data/harvest_file.txt'
+                file_name_with_path = './tests/test_data/harvest_file.txt'
             if self.data_type == 'soli':
-                self.file_name_with_path = './tests/test_data/soil_sample.csv'
+                file_name_with_path = './tests/test_data/soil_sample.csv'
         else:
-            self.file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
+            file_name_with_path = QFileDialog.getOpenFileName(None, " File dialog ", '',
                                                       filters)[0]
-        if self.file_name_with_path == '':
-            return
+        if file_name_with_path == '':
+            if self.file_name_with_path != '':
+                file_name_with_path = self.file_name_with_path
+            else:
+                return
+        self.file_name_with_path = file_name_with_path
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = self.file_name_with_path[0:self.file_name_with_path.index(self.file_name)]

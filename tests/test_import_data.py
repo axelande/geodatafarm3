@@ -20,7 +20,8 @@ def test_import_plant_text(gdf:GeoDataFarm):
     gdf.save_planting.importer.ITD.DE.setDate(QDate.fromString('2023-04-15', "yyyy-MM-dd"))
     suc = gdf.save_planting.importer.trigger_insection()
     assert suc[0]
-
+    assert 'test_field_plant_2023_04_15' in gdf.db.get_tables_in_db('plant')
+    
 
 def test_import_harvest_text(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(1)
@@ -37,6 +38,8 @@ def test_import_harvest_text(gdf:GeoDataFarm):
     gdf.save_harvesting.importer.ITD.DE.setDate(QDate.fromString('2023-09-15', "yyyy-MM-dd"))
     suc = gdf.save_harvesting.importer.trigger_insection()
     assert suc[0]
+    assert 'test_field_harvest_2023_09_15' in gdf.db.get_tables_in_db('harvest')
+    
 
 
 # @pytest.mark.depends(name='import_harvest_text', on=['add_field2'])
@@ -58,3 +61,4 @@ def test_import_iso(gdf:GeoDataFarm):
     for text in items:
         if 'test_iso_field' in text:
             assert True
+    assert 'test_iso_field_potatoes_2023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')
