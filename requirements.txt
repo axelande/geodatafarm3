@@ -6,3 +6,6 @@ psycopg2_binary
 PyQt5
 reportlab
 requests
+contextily
+shapely
+geopandas

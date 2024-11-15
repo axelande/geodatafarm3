@@ -8,3 +8,6 @@ reportlab
 requests
 pytest
 pytest-qgis
+contextily
+shapely
+geopandas

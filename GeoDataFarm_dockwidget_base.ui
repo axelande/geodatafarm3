@@ -73,126 +73,13 @@
             <property name="sizeConstraint">
              <enum>QLayout::SetNoConstraint</enum>
             </property>
-            <item row="5" column="3">
-             <widget class="QLabel" name="Label3_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Your crops:</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="PBAddNewFarm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Create new farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="3" rowspan="4">
+            <item row="6" column="3" rowspan="5">
              <widget class="QListWidget" name="LWCrops">
               <property name="maximumSize">
                <size>
                 <width>250</width>
                 <height>16777215</height>
                </size>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QPushButton" name="PBConnect2Farm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Connect to an
- exciting farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLabel" name="Label3">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Your fields:</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLineEdit" name="LECropName">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>130</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
               </property>
              </widget>
             </item>
@@ -262,6 +149,113 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="PBAddNewFarm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Create new farm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="2">
+             <widget class="QPushButton" name="PBRemoveCrop">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Remove crop </string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QPushButton" name="PBAddField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add field</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QLineEdit" name="LECropName">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QPushButton" name="PBRemoveField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Remove field </string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1" rowspan="5">
+             <widget class="QListWidget" name="LWFields">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="0" colspan="2">
              <widget class="QLabel" name="LFarmName">
               <property name="minimumSize">
@@ -287,6 +281,47 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
+            <item row="10" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLabel" name="Label3">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Your fields:</string>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QLabel" name="LIcon"/>
+            </item>
             <item row="7" column="2">
              <widget class="QPushButton" name="PBAddCrop">
               <property name="maximumSize">
@@ -300,37 +335,47 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
-            <item row="8" column="2">
-             <widget class="QPushButton" name="PBRemoveCrop">
+            <item row="2" column="0">
+             <widget class="QPushButton" name="PBConnect2Farm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Connect to an
+ exciting farm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="3">
+             <widget class="QLabel" name="Label3_2">
               <property name="minimumSize">
                <size>
-                <width>130</width>
-                <height>0</height>
+                <width>0</width>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>100</width>
-                <height>16777215</height>
+                <width>16777215</width>
+                <height>25</height>
                </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
               </property>
               <property name="text">
-               <string>Remove crop </string>
+               <string>Your crops:</string>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
               </property>
              </widget>
-            </item>
-            <item row="9" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item row="2" column="4">
              <widget class="QPushButton" name="PBWebbpage">
@@ -353,7 +398,7 @@ GeoDataFarms webpage</string>
              </widget>
             </item>
             <item row="8" column="0">
-             <widget class="QPushButton" name="PBRemoveField">
+             <widget class="QPushButton" name="PBAddIsoField">
               <property name="maximumSize">
                <size>
                 <width>130</width>
@@ -361,41 +406,10 @@ GeoDataFarms webpage</string>
                </size>
               </property>
               <property name="text">
-               <string>Remove field </string>
+               <string>Add fields from 
+isoxml taskdata</string>
               </property>
              </widget>
-            </item>
-            <item row="6" column="1" rowspan="4">
-             <widget class="QListWidget" name="LWFields">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>300</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>250</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QPushButton" name="PBAddField">
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add field</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="4">
-             <widget class="QLabel" name="LIcon"/>
             </item>
            </layout>
           </item>

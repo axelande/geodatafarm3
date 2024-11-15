@@ -66,6 +66,7 @@ from .support_scripts.add_field import AddField
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.create_layer import CreateLayer
 from .support_scripts.create_guiding_file import CreateGuideFile
+from .support_scripts.find_iso_field import FindIsoField
 from .support_scripts.fix_rows import RowFixer
 from .support_scripts.drop_unreal import DropUnReal
 from .support_scripts.generate_reports import RapportGen
@@ -137,6 +138,7 @@ class GeoDataFarm:
         self.tabel_mgmt = None
         self.guide = None
         self.test_mode = test_mode
+        self.find_iso_field = None
 
     # noinspection PyMethodMayBeStatic
 
@@ -234,6 +236,10 @@ class GeoDataFarm:
         """Adds a layer for each "parameter" of all selected tables"""
         add_layer_to_canvas = AddLayerToCanvas(self)
         add_layer_to_canvas.run()
+
+    def add_iso_field(self):
+        self.find_iso_field = FindIsoField(self)
+        self.find_iso_field.run()
 
     def reload_layer(self):
         """Reloads a layer be create a CreateLayer object and call
@@ -450,6 +456,7 @@ class GeoDataFarm:
             self.save_soil = SaveSoil(self)
             self.save_soil.set_widget_connections()
             self.dock_widget.PBAddCrop.clicked.connect(self.add_crop)
+            self.dock_widget.PBAddIsoField.clicked.connect(self.add_iso_field)
             self.dock_widget.PBRemoveCrop.clicked.connect(self.remove_crop_name)
             self.dock_widget.PBMultiEdit.clicked.connect(self.multi_edit)
             self.dock_widget.PBDropUnReal.clicked.connect(self.drop_unreal)
