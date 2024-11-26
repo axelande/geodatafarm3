@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.curdir))
 import pytest
 from pytest_qgis import qgis_iface
 class actionAddFeature:

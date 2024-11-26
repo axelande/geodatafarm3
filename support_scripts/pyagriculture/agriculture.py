@@ -167,7 +167,7 @@ class PyAgriculture:
                     task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
                 except IndexError:
                     task_name = 'unkown'
-                if most_important not in columns:
+                if most_important is not None and most_important not in columns:
                     continue
                 path = self.path + self.task_dicts['TLG'][tsk]['A']
                 task = self.read_binaryfile(path, tlg_dict, columns,
