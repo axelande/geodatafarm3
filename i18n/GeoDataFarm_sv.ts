@@ -273,27 +273,27 @@ inträffade, här: {t}</translation>
 <context>
     <name>CreateFarm</name>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="88"/>
+        <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="84"/>
+        <location filename="../database_scripts/create_new_farm.py" line="92"/>
         <source>Farm name already taken, please choose another name for your farm!</source>
         <translation>Gårdsnamnet är redan taget, var god välj ett annat namn på gården!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="88"/>
+        <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>User name already taken, please choose another name as user name!</source>
         <translation>Användarsnamnet är redan taget, var god välj ett annat namn aom användarnamn!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="110"/>
+        <location filename="../database_scripts/create_new_farm.py" line="118"/>
         <source>Done</source>
         <translation>Klar</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="110"/>
+        <location filename="../database_scripts/create_new_farm.py" line="118"/>
         <source>Database created</source>
         <translation>Databasen är skapad</translation>
     </message>
@@ -313,31 +313,36 @@ inträffade, här: {t}</translation>
         <translation>Ditt användarnmn måste vara skillt från &quot;Namn&quot;</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="60"/>
+        <location filename="../database_scripts/create_new_farm.py" line="64"/>
         <source>your@email.com</source>
         <translation>din@epostadress</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="61"/>
+        <location filename="../database_scripts/create_new_farm.py" line="65"/>
         <source>The e-mail must be a real e-mail address</source>
         <translation>Epost adressen måste vara en riktig adress</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="64"/>
+        <location filename="../database_scripts/create_new_farm.py" line="68"/>
         <source>farmname</source>
         <translation>Gårdsnamn</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="65"/>
+        <location filename="../database_scripts/create_new_farm.py" line="69"/>
         <source>The farm name must be different from &quot;farmname&quot;</source>
         <translation>Ditt gårdsnamn måste vara skillt från &quot;Gårdsnamn&quot;</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="79"/>
+        <location filename="../database_scripts/create_new_farm.py" line="87"/>
         <source>- Is your computer online? 
 - If you are sure that please send an email to geodatafarm@gmail.com</source>
         <translation>- Är din dator online?
 - Om du är säker, skicka ett e-mail till geodatafarm@gmail.com för vidare support</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="73"/>
+        <source>The farm name can not start with a number</source>
+        <translation>Gårdsnamnet får inte starta med en siffra</translation>
     </message>
 </context>
 <context>
@@ -818,27 +823,27 @@ Om du vill hitta fält baserat på loggade data kan du ignorera varningen och tr
 Listan med fält som visas till vänster är valbara och efter en kort fördröjning bör de illustrera kartan på skärmen till höger.</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="54"/>
+        <location filename="../widgets/findIsoFields.ui" line="53"/>
         <source>Get additional data</source>
         <translation>Hämta mer data</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="70"/>
+        <location filename="../widgets/findIsoFields.ui" line="69"/>
         <source>Field name</source>
         <translation>Fältnamn</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="77"/>
+        <location filename="../widgets/findIsoFields.ui" line="76"/>
         <source>Save Field</source>
         <translation>Spara fält</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="100"/>
+        <location filename="../widgets/findIsoFields.ui" line="106"/>
         <source>No folder selected</source>
         <translation>Ingen mapp vald</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="107"/>
+        <location filename="../widgets/findIsoFields.ui" line="99"/>
         <source>Select folder</source>
         <translation>Välj mapp</translation>
     </message>
@@ -846,12 +851,12 @@ Listan med fält som visas till vänster är valbara och efter en kort fördröj
 <context>
     <name>FindIsoField</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="252"/>
+        <location filename="../support_scripts/find_iso_field.py" line="258"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="248"/>
+        <location filename="../support_scripts/find_iso_field.py" line="254"/>
         <source>Field name already exist, please select a new name</source>
         <translation>Fält namn finns redan, var god välj ett nytt namn</translation>
     </message>
@@ -2962,17 +2967,17 @@ Are you sure that id, username and password was correct?</source>
 <context>
     <name>PyAgriculture</name>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="41"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="40"/>
         <source>The specified path does not contain a taskdata.xml file</source>
         <translation>Den definierade sökvägen innehåller inte någon taskdata.xml fil</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="126"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="125"/>
         <source>The TLG file {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml was not found.</source>
         <translation>Filen {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml hittades inte.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="186"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="185"/>
         <source>Point data does not exist in all TLG files..</source>
         <translation>Punkt data finns inte i alla TLG filer..</translation>
     </message>
@@ -4272,17 +4277,17 @@ Traceback: {t}</translation>
 <context>
     <name>self.parent</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="48"/>
+        <location filename="../support_scripts/find_iso_field.py" line="54"/>
         <source>Open a taskdata</source>
         <translation>Öppna taskdata</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="62"/>
+        <location filename="../support_scripts/find_iso_field.py" line="68"/>
         <source>Warning</source>
         <translation>Varning</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="62"/>
+        <location filename="../support_scripts/find_iso_field.py" line="68"/>
         <source>No partfields contour was found in the taskdata.xml</source>
         <translation>Inga partfield konturer hittades i taskdata.xml</translation>
     </message>

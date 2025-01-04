@@ -34,6 +34,12 @@ class FindIsoField:
         self.fifw.PBSaveField.clicked.connect(self.save_field)
         self.fifw.PBGetAdditionalData.clicked.connect(self.find_from_tasks)
 
+    def disconnect(self):
+        self.fifw.PBAddFolder.clicked.disconnect()
+        self.fifw.LWFields.itemClicked.disconnect()
+        self.fifw.PBSaveField.clicked.disconnect(self.save_field)
+        self.fifw.PBGetAdditionalData.clicked.connect(self.find_from_tasks)
+
     def run(self):
         """Shows the widget and executes it if not in test mode."""
         self.fifw.show()
@@ -103,7 +109,6 @@ class FindIsoField:
     def populate_field_list2(self, res=None, values=None):
         """Populates the field list based on the pyagri tasks."""
         self.fifw.LWFields.clear()
-        print(self.py_agri.tasks)
         for i, task in enumerate(self.py_agri.tasks):
             task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
             gdf = gpd.GeoDataFrame(task, geometry='geometry')

@@ -277,7 +277,7 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>CreateFarm</name>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="88"/>
+        <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
@@ -297,51 +297,56 @@ Rückverfolgung: {t}</translation>
         <translation>Der Benutzername darf nicht mit &quot;name&quot; identisch sein</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="60"/>
+        <location filename="../database_scripts/create_new_farm.py" line="64"/>
         <source>your@email.com</source>
         <translation>ihre@email.com</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="61"/>
+        <location filename="../database_scripts/create_new_farm.py" line="65"/>
         <source>The e-mail must be a real e-mail address</source>
         <translation>Die E-Mail muss eine echte E-Mail-Adresse sein</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="64"/>
+        <location filename="../database_scripts/create_new_farm.py" line="68"/>
         <source>farmname</source>
         <translation>Farmname</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="65"/>
+        <location filename="../database_scripts/create_new_farm.py" line="69"/>
         <source>The farm name must be different from &quot;farmname&quot;</source>
         <translation>Der Farmname darf nicht mit &quot;farmname&quot; identisch sein</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="79"/>
+        <location filename="../database_scripts/create_new_farm.py" line="87"/>
         <source>- Is your computer online? 
 - If you are sure that please send an email to geodatafarm@gmail.com</source>
         <translation>- Ist Ihr Computer online?
 - Wenn Sie sich sicher sind, bitte send eine E-Mail zu geodatafarm@gmail.com</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="84"/>
+        <location filename="../database_scripts/create_new_farm.py" line="92"/>
         <source>Farm name already taken, please choose another name for your farm!</source>
         <translation>Hofname bereits vergeben, bitte wählen Sie einen anderen Hofnamen!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="88"/>
+        <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>User name already taken, please choose another name as user name!</source>
         <translation>User name already taken, please choose another name as user name!</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="110"/>
+        <location filename="../database_scripts/create_new_farm.py" line="118"/>
         <source>Done</source>
         <translation>Gemacht</translation>
     </message>
     <message>
-        <location filename="../database_scripts/create_new_farm.py" line="110"/>
+        <location filename="../database_scripts/create_new_farm.py" line="118"/>
         <source>Database created</source>
         <translation>Datenbank erstellt</translation>
+    </message>
+    <message>
+        <location filename="../database_scripts/create_new_farm.py" line="73"/>
+        <source>The farm name can not start with a number</source>
+        <translation>Der Farmname darf nicht start mit ein number</translation>
     </message>
 </context>
 <context>
@@ -821,27 +826,27 @@ Wenn Sie jedoch Felder basierend auf protokollierten Daten finden möchten, kön
 Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen Verzögerung sollten sie die Karte auf dem Bildschirm rechts darstellen.</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="54"/>
+        <location filename="../widgets/findIsoFields.ui" line="53"/>
         <source>Get additional data</source>
         <translation>Zusätzliche Daten abrufen</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="70"/>
+        <location filename="../widgets/findIsoFields.ui" line="69"/>
         <source>Field name</source>
         <translation>Feldname</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="77"/>
+        <location filename="../widgets/findIsoFields.ui" line="76"/>
         <source>Save Field</source>
         <translation>Feld speichern</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="100"/>
+        <location filename="../widgets/findIsoFields.ui" line="106"/>
         <source>No folder selected</source>
         <translation>Kein Ordner ausgewählt</translation>
     </message>
     <message>
-        <location filename="../widgets/findIsoFields.ui" line="107"/>
+        <location filename="../widgets/findIsoFields.ui" line="99"/>
         <source>Select folder</source>
         <translation>Ordner auswählen</translation>
     </message>
@@ -849,12 +854,12 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
 <context>
     <name>FindIsoField</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="252"/>
+        <location filename="../support_scripts/find_iso_field.py" line="258"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="248"/>
+        <location filename="../support_scripts/find_iso_field.py" line="254"/>
         <source>Field name already exist, please select a new name</source>
         <translation>Der Feldname ist fertig, bitte wählen Sie einen neuen Namen</translation>
     </message>
@@ -2970,17 +2975,17 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 <context>
     <name>PyAgriculture</name>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="41"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="40"/>
         <source>The specified path does not contain a taskdata.xml file</source>
         <translation>Der definierte Pfad enthält keine taskdata.xml feile</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="126"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="125"/>
         <source>The TLG file {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml was not found.</source>
         <translation>Das feile {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml wurde nicht gefund.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="186"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="185"/>
         <source>Point data does not exist in all TLG files..</source>
         <translation>Punktdaten sind nicht in allen TLG-Dateien verfügbar.</translation>
     </message>
@@ -4280,17 +4285,17 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>self.parent</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="48"/>
+        <location filename="../support_scripts/find_iso_field.py" line="54"/>
         <source>Open a taskdata</source>
         <translation>Eine Taskdaten öffnen</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="62"/>
+        <location filename="../support_scripts/find_iso_field.py" line="68"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="62"/>
+        <location filename="../support_scripts/find_iso_field.py" line="68"/>
         <source>No partfields contour was found in the taskdata.xml</source>
         <translation>Kein Partfeld-Kontur wurde in der taskdata.xml gefunden</translation>
     </message>

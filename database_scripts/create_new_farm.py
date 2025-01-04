@@ -2,7 +2,7 @@ import os
 from PyQt5.QtWidgets import QMessageBox
 import requests
 import hashlib
-from ..support_scripts.__init__ import check_text, TR
+from ..support_scripts.__init__ import check_text, TR, isint
 from .db import DB
 #from ..GeoDataFarm import GeoDataFarm
 __author__ = 'Axel Horteborn'
@@ -57,6 +57,10 @@ class CreateFarm:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 'The user name must be different from "name"'))
             return
+        if isint(username_inp[0]):
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The user name can not start with a number'))
+            return
         if email_inp == self.tr('your@email.com'):
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 'The e-mail must be a real e-mail address'))
@@ -64,6 +68,10 @@ class CreateFarm:
         if farmname_inp == self.tr('farmname'):
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 'The farm name must be different from "farmname"'))
+            return
+        if isint(farmname_inp[0]):
+            QMessageBox.information(None, self.tr("Error:"), self.tr(
+                'The farm name can not start with a number'))
             return
         username = check_text(username_inp)
         password = check_text(password_inp).encode('utf-8')
