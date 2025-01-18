@@ -1,4 +1,5 @@
 # Author Axel Hörteborn
+from typing import Never, Self
 from datetime import datetime, timedelta
 import os
 import time
@@ -14,7 +15,7 @@ from .sorting_utils import find_by_key
 
 
 class PyAgriculture:
-    def __init__(self, path):
+    def __init__(self: Self, path: str) -> None:
         self.path = path
         translate = TR('Agriculture')
         self.tr = translate.tr
@@ -31,7 +32,7 @@ class PyAgriculture:
         self.convert_field = False
         self._check_path_is_ok()
 
-    def _check_path_is_ok(self):
+    def _check_path_is_ok(self: Self) -> None:
         if self.path[-1] not in ['/', '\\']:
             self.path += '/'
         path = getfile_insensitive(self.path + 'TaskData.xml')
@@ -40,7 +41,8 @@ class PyAgriculture:
             raise FileNotFoundError(self.tr('The specified path does not contain a taskdata.xml file'))
 
     @staticmethod
-    def _add_from_root_or_child(r_or_c, task_data_dict: dict) -> list:
+    def _add_from_root_or_child(r_or_c: ET.Element, 
+                                task_data_dict: dict) -> list:
         """
         :param r_or_c: Root or child object
         """
@@ -75,7 +77,8 @@ class PyAgriculture:
             a=1
         return [task_data_dict, found_children]
 
-    def add_children(self, task_data_dict, root):
+    def add_children(self: Self, task_data_dict: dict[Never, Never], 
+                     root: ET.Element) -> dict[str, dict[str, dict[str, str]]]:
         """Adds data from the xml schema to a dict, walking down the tags in the .xml file
         """
         if "A" in root.keys():
@@ -90,13 +93,13 @@ class PyAgriculture:
                     self.add_children(task_data_dict, sub_c)
         return task_data_dict
 
-    def add_dlv(self, dlv_e: ET.Element):
+    def add_dlv(self: Self, dlv_e: ET.Element) -> None:
         if dlv_e.attrib["B"] == "":
             self.dlvs.append(dlv_e.attrib.copy())
             if dlv_e.attrib["A"] not in self.dlv_idx.keys():
                 self.dlv_idx[dlv_e.attrib["A"]] = len(list(self.dlv_idx))
 
-    def add_xfr_parts(self, tree:ET.ElementTree) -> ET.ElementTree:
+    def add_xfr_parts(self: Self, tree:ET.ElementTree) -> ET.ElementTree:
         for child in tree.getroot():
             if child.tag == 'XFR':
                 child_data = ET.parse(getfile_insensitive(self.path + child.attrib["A"] + '.xml'))
@@ -105,7 +108,8 @@ class PyAgriculture:
                     tree.getroot().append(sub)
         return tree
 
-    def gather_task_names(self, continue_on_fail=True) -> list:
+    def gather_task_names(self: Self, 
+                          continue_on_fail: bool=True) -> list:
         """This function will use the specified path to the taskdata.xml to build a tree of all information in the
          taskdata file and all the files tlg xml and bin files."""
 
@@ -137,7 +141,9 @@ class PyAgriculture:
                 file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
         return task_names, file_names
 
-    def gather_data(self, qtask, only_tasks=[], most_important='dry yield'):
+    def gather_data(self: Self, qtask: str, 
+                    only_tasks: list[str|Never|Never]=[], 
+                    most_important: str|None='dry yield') -> None:
         """This function will use the specified path to the taskdata.xml to build a tree of all information in the
          taskdata file and all the files tlg xml and bin files."""
         reset_columns = False  # Resets all columns when the "most_important" have been used.
@@ -180,7 +186,7 @@ class PyAgriculture:
         if self.convert_field:
             self.convert_yield_field()
 
-    def set_ptn_data(self, tlg_dict: dict) -> None:
+    def set_ptn_data(self: Self, tlg_dict: dict) -> None:
         if 'PTN' not in tlg_dict.keys():
             raise BaseException(self.tr('Point data does not exist in all TLG files..'))
         dtypes = [('millisFromMidnight', np.dtype('uint32')),
@@ -214,7 +220,7 @@ class PyAgriculture:
         self.static_bytes = static_bytes
 
     @staticmethod
-    def get_tlg_columns(tlg_dict) -> list:
+    def get_tlg_columns(tlg_dict: dict[str, dict[str, dict[str, str]]]) -> list:
         columns = ['time_stamp', 'latitude', 'longitude']
         if 'C' in tlg_dict['PTN'][''].keys():
             columns.append('pos_up')
@@ -234,7 +240,10 @@ class PyAgriculture:
         return columns
 
     @staticmethod
-    def _add_device(task_data_dict, dlv_key, tlg_dict, pd_id):
+    def _add_device(task_data_dict: dict[str, dict[str, dict[str, str]]], 
+                    dlv_key: str, 
+                    tlg_dict: dict[str, dict[str, dict[str, str]]], 
+                    pd_id: str) -> None:
         found, dpd_key = find_by_key(task_data_dict['DPD'], 'B', pd_id)
         if found:
             dpd = task_data_dict['DPD'][dpd_key]
@@ -248,7 +257,10 @@ class PyAgriculture:
                 if 'E' in dvp.keys():
                     tlg_dict['DLV'][dlv_key]['DVP']['unit'] = dvp['E']
 
-    def combine_task_tlg_data(self, tlg_dict, task_data_dict):
+    def combine_task_tlg_data(self: Self, 
+                              tlg_dict: dict[str, dict[str, dict[str, str]]], 
+                              task_data_dict: dict[str, dict[str, dict[str, str]]]
+                              ) -> dict[str, dict[str, dict[str, str]]]:
         for dlv_key in tlg_dict['DLV'].keys():
             # Obtains the DeviceElementIdRef
             de_id = tlg_dict['DLV'][dlv_key]['C']
@@ -267,7 +279,9 @@ class PyAgriculture:
             self._add_device(task_data_dict, dlv_key, tlg_dict, pd_id)
         return tlg_dict
 
-    def _read_static_binary_python(self, data_row: list, read_point: int, binary_data: object, tlg_dict: dict) -> list:
+    def _read_static_binary_python(self: Self, data_row: list, 
+                                   read_point: int, binary_data: object, 
+                                   tlg_dict: dict) -> list:
         nr_d = 3
         np_data = np.frombuffer(binary_data, self.dt, count=1, offset=read_point)
         millis_from_midnight = int(np_data[0][0])
@@ -289,8 +303,11 @@ class PyAgriculture:
         nr_dlvs = np_data[0][nr_d + 1]
         return [data_row, nr_dlvs, nr_d]
 
-    def read_binaryfile(self, file_path: str, tlg_dict: dict, df_columns: list, most_important: str,
-                        task_name: str, reset_columns: bool) -> pd.DataFrame:
+    def read_binaryfile(self: Self, file_path: str, 
+                        tlg_dict: dict, 
+                        df_columns: list, most_important: str,
+                        task_name: str, reset_columns: bool
+                        ) -> pd.DataFrame:
         with open(getfile_insensitive(file_path + '.bin'), 'rb') as fin:
             binary_data = fin.read()
         read_point = 0
@@ -350,8 +367,10 @@ class PyAgriculture:
         return df
 
     @staticmethod
-    def read_dlvs(binary_data, read_point: int, nr_dlvs: int, nr_static: int, dpd_ids: dict,
-                  tlg_dict: dict, unit_row: list, data_row: list, dlvs: list, dlv_idx: dict) -> list:
+    def read_dlvs(binary_data: bytes, read_point: int, 
+                  nr_dlvs: int, nr_static: int, dpd_ids: dict,
+                  tlg_dict: dict, unit_row: list, data_row: list, 
+                  dlvs: list, dlv_idx: dict) -> list:
         for nr, dlv in np.frombuffer(binary_data, [('DLVn', np.dtype('uint8')),
                                                    ('PDV', np.dtype('int32'))],
                                      count=nr_dlvs, offset=read_point):

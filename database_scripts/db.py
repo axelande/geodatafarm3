@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING, Callable, Never, Self
+if TYPE_CHECKING:
+    import psycopg2.errors
+    import psycopg2.extensions
+    import qgis._core
 import os
 import psycopg2
 import psycopg2.pool
@@ -28,19 +33,20 @@ class SomeFailure:
 
 
 class NoConnection:
-    def __init__(self, tr, message_box=QMessageBox):
+    def __init__(self: Self, tr: Callable[[str], str], message_box: type[QMessageBox]=QMessageBox) -> None:
         self.tr = tr
         self.message_box = message_box
 
-    def run_failure(self, suppress_message=False):
+    def run_failure(self: Self, suppress_message: bool=False) -> None:
         if not suppress_message:
             self.message_box.information(None, self.tr('Error'),
                                          self.tr('No connection was found'))
 
 
 class DB:
-    def __init__(self, dock_widget=None, path=None, dbname=None, dbuser=None, 
-                 dbpass=None, test_mode=False):
+    def __init__(self: Self, dock_widget=None, path: str|None|None=None,
+                 dbname: str|None=None, dbuser: str|None=None,
+                 dbpass: str|None=None, test_mode: bool=False) -> None:
         """The widget that is connects to the database
         Parameters
         ----------
@@ -64,7 +70,7 @@ class DB:
         self.test_mode = test_mode
         self.pool = None
 
-    def set_conn(self, set_farm_name:bool=True):
+    def set_conn(self: Self, set_farm_name:bool=True) -> bool:
         """A function that checks if the database is created and then sets the
         database name, user name, password and the pool to the class.
 
@@ -94,7 +100,7 @@ class DB:
             )
         return True
 
-    def _connect(self):
+    def _connect(self: Self) -> "psycopg2.extensions.connection":
         """Connects to the database
         Returns
         -------
@@ -113,8 +119,8 @@ class DB:
                     host=self.dbhost, e=str(e))))
             return False
 
-    def add_postgis_layer(self, table, geom_col, schema, extra_name='',
-                          filter_text=''):
+    def add_postgis_layer(self: Self, table: str, geom_col: str, schema: str, extra_name: str='',
+                          filter_text: str='') -> "qgis._core.QgsVectorLayer":
         """Creates a qgis layer from a postgres database table.
 
         Parameters
@@ -157,7 +163,8 @@ class DB:
                                     str(uri.uri()))
         return vlayer
 
-    def check_table_exists(self, table_name, schema, ask_replace=True):
+    def check_table_exists(self: Self, table_name: str, schema: str,
+                           ask_replace: bool=True) -> bool:
         """Checks if a table already exists, if it exists, the user can choose
         if it wants to reset the table. Returns False the table doesn't exists
         or have been dropped.
@@ -198,7 +205,8 @@ class DB:
                     return False
         return False
 
-    def create_table(self, sql, tbl_name, drop_if_exist=True):
+    def create_table(self: Self, sql: str, tbl_name: str,
+                     drop_if_exist: bool=True) -> None:
         """Create s table, if table exists the table is dropped.
 
         Parameters
@@ -214,8 +222,8 @@ class DB:
             self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
         self.execute_sql(sql)
 
-    def create_indexes(self, tbl_name, params_to_eval, schema,
-                       primary_key=True):
+    def create_indexes(self: Self, tbl_name: str, params_to_eval: list[str], 
+                       schema: str, primary_key: bool=True) -> None:
         """Drops is exists and create a gist index and
         btree indexes for params_to_eval a table
 
@@ -253,7 +261,7 @@ class DB:
             print('Failed when trying to create indexes')
             print(e)
 
-    def get_tables_in_db(self, schema) -> list:
+    def get_tables_in_db(self: Self, schema: str) -> list:
         """Get the tables in schema
 
         Parameters
@@ -275,7 +283,8 @@ class DB:
             names.append(name[0])
         return names
 
-    def get_distinct(self, table, column, schema):
+    def get_distinct(self: Self, table: str, column: str,
+                     schema: str) -> list[list[int|str]]:
         """Get distinct values from a schema.table
 
         Parameters
@@ -299,7 +308,8 @@ class DB:
             checked_values.append([col, count])
         return checked_values
 
-    def get_all_columns(self, table, schema, exclude="''") -> list:
+    def get_all_columns(self: Self, table: str, schema: str, 
+                        exclude: str="''") -> list:
         """Get all columns of a table
 
         Parameters
@@ -350,7 +360,7 @@ class DB:
         res = self.execute_sql(sql, return_failure=True)
 
 
-    def get_indexes(self, tables, schema):
+    def get_indexes(self: Self, tables: str, schema: str) -> dict[int, dict[str, str]]:
         """Get indexes of tables in a schema, returns a dict.
 
         Parameters
@@ -404,8 +414,9 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self, sql, return_failure=False, return_row_count=False, 
-                    disregard_failure=False, suppress_message=False):
+    def execute_sql(self: Self, sql: str, return_failure: bool=False, 
+                    return_row_count: bool=False, disregard_failure: bool=False, 
+                    suppress_message: bool=False) -> "list[bool|int|str]|None":
         """
         Parameters
         ----------
@@ -447,7 +458,9 @@ class DB:
             else:
                 return [True, 'suc']
 
-    def execute_and_return(self, sql, return_failure=False, suppress_message=False):
+    def execute_and_return(self: Self, sql: str, return_failure: bool=False,
+                           suppress_message: bool=False
+                           ) -> "list[list[float|int|str|None]]|list[bool|list[float|int|str|None]|str]":
         """Execute and returns an SQL statement
 
         Parameters
@@ -484,9 +497,12 @@ class DB:
                     sf.display_failure(e)
                     return 'There were an error..'
         self.pool.putconn(conn)
-        return data
+        if return_failure:
+            return [True, data]
+        else:
+            return data
 
-    def remove_table(self, tbl_schema_name):
+    def remove_table(self: Self, tbl_schema_name: str) -> None:
         """Function that removes a table from the database
 
         Parameters
@@ -504,7 +520,7 @@ class DB:
         except:
             pass
 
-    def reset_row_id(self, schema, tbl) -> list:
+    def reset_row_id(self: Self, schema: str, tbl: str) -> list:
         sql = """ALTER TABLE {schema}.{tbl} drop constraint if exists pkey_{schema}_{tbl};
         with a as(select field_row_id as a_old, ROW_NUMBER() OVER() as a_row from {schema}.{tbl})
         UPDATE {schema}.{tbl} b

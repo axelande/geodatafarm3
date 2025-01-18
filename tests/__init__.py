@@ -1,16 +1,20 @@
+from typing import TYPE_CHECKING, Iterator, Self
+if TYPE_CHECKING:
+    import geodatafarm.GeoDataFarm
+    import pytest_qgis.qgis_interface
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.curdir))
 import pytest
 from pytest_qgis import qgis_iface
 class actionAddFeature:
-    def trigger(self):
+    def trigger(self: Self) -> None:
         pass
 class actionSaveActiveLayerEdits:
-    def trigger(self):
+    def trigger(self: Self) -> None:
         pass
 class actionToggleEditing:
-    def trigger(self):
+    def trigger(self: Self) -> None:
         pass
 
 from PyQt5.QtCore import QSettings, QDate
@@ -24,7 +28,7 @@ RESET_PASSWORD = 'test_password'
 
 
 @pytest.fixture(scope='session', autouse=True)
-def gdf(qgis_iface):
+def gdf(qgis_iface: "pytest_qgis.qgis_interface.QgisInterface") -> "Iterator[geodatafarm.GeoDataFarm.GeoDataFarm]":
     qgis_iface.actionAddFeature = actionAddFeature
     qgis_iface.actionSaveActiveLayerEdits = actionSaveActiveLayerEdits
     qgis_iface.actionToggleEditing = actionToggleEditing
@@ -47,7 +51,7 @@ def create_new_farm(gdf: GeoDataFarm):
     suc3 = gdf.db.execute_sql(f'GRANT pytest_user TO {RESET_USER} WITH ADMIN OPTION;', return_failure=True)
     # assert all([suc1, suc2[0], suc3[0]])
 
-def connect_2_farm(gdf: GeoDataFarm):
+def connect_2_farm(gdf: GeoDataFarm) -> None:
     gdf.run()
     cf = gdf.clicked_create_farm()
     cf.CF.user_name.setText('pytest_user')

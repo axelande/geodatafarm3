@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING, Never, Self
+if TYPE_CHECKING:
+    import matplotlib.figure
+    import pyproj.crs.crs
+    import shapely.geometry.polygon
 import os
 import xml.etree.ElementTree as ET
 
@@ -18,7 +23,7 @@ from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
 
 class FindIsoField:
-    def __init__(self, parent, test_path:str = '') -> None:
+    def __init__(self: Self, parent, test_path:str = '') -> None:
         self.parent = parent
         self.fifw = FindIsoFieldWidget()
         self.connect()
@@ -27,14 +32,14 @@ class FindIsoField:
         self.path = test_path
         self.zoom_level = 17
 
-    def connect(self):
+    def connect(self: Self) -> None:
         """Connects the UI elements to their respective functions."""
         self.fifw.PBAddFolder.clicked.connect(self.open_input_folder)
         self.fifw.LWFields.itemClicked.connect(self.on_item_clicked)
         self.fifw.PBSaveField.clicked.connect(self.save_field)
         self.fifw.PBGetAdditionalData.clicked.connect(self.find_from_tasks)
 
-    def disconnect(self):
+    def disconnect(self: Self) -> None:
         self.fifw.PBAddFolder.clicked.disconnect()
         self.fifw.LWFields.itemClicked.disconnect()
         self.fifw.PBSaveField.clicked.disconnect(self.save_field)
@@ -46,7 +51,7 @@ class FindIsoField:
         if not self.parent.test_mode:
             self.fifw.exec_()
 
-    def open_input_folder(self):
+    def open_input_folder(self: Self) -> None:
         """Opens a dialog and lets the user select the folder where Taskdata are stored."""
         if self.parent.test_mode:
             path = self.path
@@ -56,7 +61,7 @@ class FindIsoField:
         if path != '':
             self._populate_field_table(path)
 
-    def _populate_field_table(self, file_path):
+    def _populate_field_table(self: Self, file_path: str) -> bool|None:
         """Populates the field table with data from the provided file path."""
         self.path = file_path
         self.fifw.LSelectedFolder.setText(file_path)
@@ -74,13 +79,13 @@ class FindIsoField:
             self.fields[name] = wkt
             self.fifw.LWFields.addItem(name)
 
-    def _get_xml_root(self, file_path):
+    def _get_xml_root(self: Self, file_path: str) -> ET.Element:
         """Parses the XML file and returns the root element."""
         tree = ET.parse(file_path)
         root = tree.getroot()
         return root
 
-    def _extract_coordinates(self, root):
+    def _extract_coordinates(self: Self, root: ET.Element) -> list[list[str]|Never]:
         """Extracts coordinates from the XML root and returns them as a list of field names and polygons."""
         data = []
         for pfd in root.findall('.//PFD'):
@@ -94,7 +99,7 @@ class FindIsoField:
                 data.append([field_name, Polygon(points)])
         return data
 
-    def find_from_tasks(self):
+    def find_from_tasks(self: Self) -> None:
         """Finds additional data from Pyagriculture tasks"""
         self.py_agri = PyAgriculture(os.path.dirname(self.path))
         if self.parent.test_mode is False:
@@ -106,7 +111,8 @@ class FindIsoField:
             self.py_agri.gather_data(qtask='debug', most_important=None)
             self.populate_field_list2()
 
-    def populate_field_list2(self, res=None, values=None):
+    def populate_field_list2(self: Self, res: None=None, 
+                             values: None=None) -> None:
         """Populates the field list based on the pyagri tasks."""
         self.fifw.LWFields.clear()
         for i, task in enumerate(self.py_agri.tasks):
@@ -117,7 +123,7 @@ class FindIsoField:
             self.fields[f'Task {i}'] = convex_hull.wkt
             self.fifw.LWFields.addItem(f'Task {i}')
 
-    def on_item_clicked(self, item):
+    def on_item_clicked(self: Self, item: QListWidgetItem) -> None:
         """Handles the event when an item in the field list is clicked."""
         item_name = item.text()
         if self.current_polygon != '':
@@ -126,13 +132,19 @@ class FindIsoField:
             self.load_wkt(self.fields[item_name])
             self.current_polygon = self.fields[item_name]
 
-    def _set_new_crs(self, polygon, source_proj = pyproj.CRS('EPSG:4326'), target_proj = pyproj.CRS('EPSG:3857')):
+    def _set_new_crs(self: Self, 
+                     polygon: "shapely.geometry.polygon.Polygon", 
+                     source_proj: "pyproj.crs.crs.CRS" = pyproj.CRS('EPSG:4326'), 
+                     target_proj: "pyproj.crs.crs.CRS" = pyproj.CRS('EPSG:3857')
+                     ) -> "shapely.geometry.polygon.Polygon":
         """Transforms the polygon to a new coordinate reference system."""
         project = pyproj.Transformer.from_crs(source_proj, target_proj, always_xy=True).transform
         transformed_polygon = transform(project, polygon)
         return transformed_polygon
 
-    def _plot_polygon_on_map(self, polygon):
+    def _plot_polygon_on_map(self: Self, 
+                             polygon: "shapely.geometry.polygon.Polygon"
+                             ) -> "matplotlib.figure.Figure":
         """Plots the polygon on a map with interactivity for zoom and node editing."""
         polygon = self._set_new_crs(polygon)
         minx, miny, maxx, maxy = polygon.bounds
@@ -205,7 +217,7 @@ class FindIsoField:
         self.dragging_point = None
         self.canvas.draw()
 
-    def load_wkt(self, polygon_wkt):
+    def load_wkt(self: Self, polygon_wkt: str) -> None:
         """Loads a polygon from WKT and plots it on the map."""
         polygon = wkt.loads(polygon_wkt)
         fig = self._plot_polygon_on_map(polygon)
@@ -222,7 +234,7 @@ class FindIsoField:
                     widget.setParent(None)
         layout.addWidget(self.canvas)
 
-    def save_updated_polygon(self):
+    def save_updated_polygon(self: Self) -> None:
         """Saves the updated polygon coordinates."""
         new_coords = [(point.get_xdata()[0], point.get_ydata()[0]) for point in self.draggable_points]
         new_polygon = Polygon(new_coords)
@@ -234,7 +246,7 @@ class FindIsoField:
                 break
         self.current_polygon = new_wkt.wkt
 
-    def save_field(self):
+    def save_field(self: Self) -> None:
         """Saves the current field to the database."""
         self.save_updated_polygon()
         name = self.fifw.LEFieldName.text()

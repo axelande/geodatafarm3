@@ -1,3 +1,4 @@
+from typing import Self
 import webbrowser
 import os
 import shutil
@@ -23,7 +24,7 @@ from ..import_data.handle_input_shp_data import InputShpHandler
 
 
 class SatelliteData:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         self.parent = parent
         self.dlg = parent.dock_widget
         translate = TR('SatelliteData')
@@ -37,7 +38,7 @@ class SatelliteData:
         self.graph_area = QVBoxLayout(self.dlg.QWGraphArea)
         self.connect_buttons = False
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the satellite tab"""
         if self.connect_buttons:
             return

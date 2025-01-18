@@ -1,3 +1,4 @@
+from typing import Self
 from datetime import datetime
 from string import ascii_letters, digits as str_digits
 import os
@@ -6,10 +7,10 @@ from PyQt5.QtCore import QCoreApplication
 
 
 class TR:
-    def __init__(self, class_name='GeoDataFarm'):
+    def __init__(self: Self, class_name: str='GeoDataFarm') -> None:
         self.class_name =class_name
 
-    def tr(self, message):
+    def tr(self: Self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
         We implement this ourselves since we do not inherit QObject.
 
@@ -26,7 +27,7 @@ class TR:
         return QCoreApplication.translate(self.class_name, message)
 
 
-def check_text(text):
+def check_text(text: str) -> str:
     """Checks that the text only contains ascii letters and numbers
 
     Parameters
@@ -53,7 +54,7 @@ def check_text(text):
     return only_char.lower()
 
 
-def isfloat(x):
+def isfloat(x: str) -> bool:
     """Checks if the inserted value is of float type
 
     Parameters
@@ -72,7 +73,7 @@ def isfloat(x):
         return True
 
 
-def isint(x):
+def isint(x: str) -> bool:
     """Checks if the inserted value is of int type
 
     Parameters
@@ -131,7 +132,7 @@ def error_in_sign(sign):
         return False
     return True
 
-def getfile_insensitive(path):
+def getfile_insensitive(path: str) -> str:
     directory, filename = os.path.split(path)
     directory, filename = (directory or '.'), filename.lower()
     for f in os.listdir(directory):

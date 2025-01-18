@@ -1,3 +1,4 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from ..import_data.handle_input_shp_data import InputShpHandler
@@ -8,7 +9,7 @@ from ..import_data.handle_iso11783 import Iso11783
 
 
 class SaveSpraying:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A class for storing spraying data
 
         Parameters
@@ -20,7 +21,7 @@ class SaveSpraying:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBSpAddFile.clicked.connect(self.run_file_import)
         self.parent.dock_widget.PBSpSaveManual.clicked.connect(self.save_manual_data)

@@ -1,10 +1,11 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from ..support_scripts.__init__ import TR
 
 
 class SavePlowing:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A class for storing plowing data
 
         Parameters
@@ -16,7 +17,7 @@ class SavePlowing:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the plowing tab"""
         self.parent.dock_widget.PBPloSaveManual.clicked.connect(self.save_manual_data)
 

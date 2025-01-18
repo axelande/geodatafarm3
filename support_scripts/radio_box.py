@@ -1,3 +1,4 @@
+from typing import Self
 __author__ = 'Axel Horteborn'
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QComboBox
@@ -5,7 +6,7 @@ from PyQt5.QtGui import QStandardItemModel
 
 
 class RadioComboBox(QComboBox):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super(RadioComboBox, self).__init__()
         self.view().pressed.connect(self.handle_item_pressed)
         self.setModel(QStandardItemModel(self))

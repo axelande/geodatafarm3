@@ -1,10 +1,11 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from ..support_scripts.__init__ import TR
 
 
 class SaveHarrowing:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """
         A class for storing harrowing data
 
@@ -17,7 +18,7 @@ class SaveHarrowing:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the harrowing tab"""
         self.parent.dock_widget.PBHwSaveManual.clicked.connect(self.save_manual_data)
 

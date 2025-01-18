@@ -1,3 +1,6 @@
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import pandas.core.frame
 import numpy as np
 from operator import xor
 import pandas as pd
@@ -14,7 +17,7 @@ from ..widgets.import_xml_bin import ImportXmlBin
 
 
 class Iso11783:
-    def __init__(self, parent_widget, type_: str):
+    def __init__(self: Self, parent_widget, type_: str) -> None:
         """For supporting the read of iso XML/Bin files"""
         self.py_agri = None
         self.db = parent_widget.db
@@ -34,11 +37,11 @@ class Iso11783:
         self.checkboxes4 = []
         self.unit_boxes = {}
 
-    def initiate_pyAgriculture(self, path: str):
+    def initiate_pyAgriculture(self: Self, path: str) -> None:
         """Connects the plugin to pyAgriculture."""
         self.py_agri = PyAgriculture(path)
 
-    def run(self):
+    def run(self: Self) -> None:
         """Presents the sub widget ImportXmlBin and connects the different
         buttons to their function."""
         self.IXB.show()
@@ -86,7 +89,7 @@ class Iso11783:
             self.IXB.done(0)
             return True
 
-    def open_input_folder(self):
+    def open_input_folder(self: Self) -> None:
         """Opens a dialog and let the user select the folder where Taskdata are stored."""
         if self.parent.test_mode:
             if self.data_type == 'harvest':
@@ -99,7 +102,7 @@ class Iso11783:
             self.populate_first_table()
             self.populate_most_interesting()
 
-    def get_task_data(self) -> dict:
+    def get_task_data(self: Self) -> dict:
         """For those tasks that are marked with include the script will gather their data.
         The function will return a dict[task_nr] = [[field, timestamp]]"""
         task_names = {}
@@ -129,7 +132,7 @@ UNION """
             task_names[task_nr] = fields
         return task_names
 
-    def populate_first_table(self):
+    def populate_first_table(self: Self) -> None:
         """Populates the task list."""
         self.checkboxes1 = []
         task_names, file_names = self.py_agri.gather_task_names()
@@ -150,7 +153,7 @@ UNION """
             self.IXB.TWISODataAll.setItem(i, 1, item2)
             self.IXB.TWISODataAll.setItem(i, 2, item3)
 
-    def populate_most_interesting(self):
+    def populate_most_interesting(self: Self) -> None:
         """Sets the combobox with all column names to select which all 
         rows must contain."""
         if 'DPD' not in self.py_agri.task_dicts:
@@ -167,7 +170,7 @@ UNION """
                 self.IXB.CBMostImportant.setCurrentIndex(i)
                 break
 
-    def populate_second_table(self):
+    def populate_second_table(self: Self) -> None:
         """Populates the list that is marked as include in the first table.
         Also calls py_agri to decode the binary data, this is done in a separate
         task."""
@@ -195,7 +198,7 @@ UNION """
                                      self.IXB.CBMostImportant.currentText().lower())
             self.populate2()
 
-    def populate2(self, res="", values=""):
+    def populate2(self: Self, res: str="", values: str="") -> None:
         """The end of populate the second table when all data is decoded 
         from the qtask"""
         task_names = self.get_task_data()
@@ -237,7 +240,7 @@ UNION """
             self.tasks.append(self.py_agri.tasks[i])
         self.set_column_list()
 
-    def add_to_param_list(self):
+    def add_to_param_list(self: Self) -> None:
         """Adds the selected columns to the list of fields that should be
         treated as "special" in the database both to work as a parameter that
         could be evaluated and as a layer that is added to the canvas"""
@@ -270,7 +273,7 @@ UNION """
         if self.IXB.TWtoParam.rowCount() == 0:
             self.IXB.PBInsert.setEnabled(False)
 
-    def set_column_list(self):
+    def set_column_list(self: Self) -> None:
         """A function that retrieves the name of the columns from the first tasks"""
         self.IXB.TWColumnNames.clear()
         self.combo = []
@@ -357,7 +360,7 @@ UNION """
             self.IXB.TWColumnNames.item(index, 5).setText(str(new_value))
 
     @staticmethod
-    def get_units_option(org_unit) -> RadioComboBox:
+    def get_units_option(org_unit: str) -> RadioComboBox:
         unit_col = RadioComboBox()
         unit_col.addItem(org_unit)
         if org_unit == 'C':
@@ -394,7 +397,7 @@ UNION """
         celsius = (fahrenheit - 32) * 5.0 / 9.0
         return  celsius
 
-    def prep_data(self) -> list:
+    def prep_data(self: Self) -> list:
         """Gather data from the combo-checkboxes and check that they are valid."""
         fields = []
         crops = []
@@ -432,7 +435,7 @@ UNION """
             return [False]
         return [True, fields, crops, dates, focus_cols, idxs]
 
-    def scale_dfs(self, df) -> list:
+    def scale_dfs(self: Self, df: "pandas.core.frame.DataFrame") -> list:
         for col_id, col in enumerate(df.columns):
             scale_f = self.IXB.TWColumnNames.item(col_id, 5).text()
             if scale_f == 'C':
@@ -451,7 +454,7 @@ UNION """
                 pass
         return [True, df]
 
-    def get_col_types(self) -> list:
+    def get_col_types(self: Self) -> list:
         """Gather the column types (0=int, 1=float, 2=string)"""
         col_types = []
         for dtype in self.py_agri.tasks[0].dtypes:
@@ -465,7 +468,7 @@ UNION """
                 col_types.append(2)
         return col_types
 
-    def get_col_units(self) -> list:
+    def get_col_units(self: Self) -> list:
         """returns a list with the unit of all columns, if None '' is added."""
         col_units = []
         for index in range(self.IXB.TWColumnNames.rowCount()):
@@ -476,7 +479,7 @@ UNION """
                 col_units.append('')
         return col_units
 
-    def add_to_database(self):
+    def add_to_database(self: Self) -> bool:
         """Initiate the insertion of data to the database."""
         col_types = self.get_col_types()
         col_units = self.get_col_units()
@@ -526,8 +529,8 @@ UNION """
             except Exception as e:
                 print(e)
 
-def insert_data(qtask, db, data: pd.DataFrame, schema: str, insert_sql: str, tbl_name: str, 
-                field: str, focus_col: list, col_types: list, tsk_nr:int):
+def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql: str, tbl_name: str, 
+                field: str, focus_col: list, col_types: list, tsk_nr:int) -> tuple[bool, str, str, list[list[str]]]:
     """Makes the actual insertion to the database (first to a temp table and then to the correct table)."""
     try:
         sql = insert_sql + '('

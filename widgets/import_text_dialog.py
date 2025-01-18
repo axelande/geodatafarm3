@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from typing import Self
 
 import os
 from PyQt5 import QtWidgets, uic
@@ -29,7 +30,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class ImportTextDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self: Self, parent: None=None) -> None:
         """Constructor."""
         super(ImportTextDialog, self).__init__(parent)
         # Set up the user interface from Designer.

@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import geodatafarm.database_scripts.db
+    import pytest_qgis.qgis_interface
+    import qgis._core
 from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsLineSymbol, QgsFillSymbol, QgsGraduatedSymbolRenderer, \
     QgsProject, QgsRendererCategory, QgsCategorizedSymbolRenderer, \
@@ -12,7 +17,8 @@ from ..support_scripts.RG import rg
 __author__ = 'Axel'
 
 
-def set_label(layer, field_label):
+def set_label(layer: "qgis._core.QgsVectorLayer", 
+              field_label: str) -> None:
     """Function that sets the label to a field value. Inspiration found at:
     https://gis.stackexchange.com/questions/277106/loading-labels-from-python-script-in-qgis
 
@@ -48,7 +54,8 @@ def set_label(layer, field_label):
     layer.triggerRepaint()
 
 
-def set_zoom(iface, extra_extent):
+def set_zoom(iface: "pytest_qgis.qgis_interface.QgisInterface", 
+             extra_extent: int) -> None:
     """Sets the zoom level to include all layers (excluding tiles layer) with some extra extent
 
     Parameters
@@ -72,7 +79,7 @@ def set_zoom(iface, extra_extent):
         QgsProject.instance().setCrs(wgsCRS)
 
 
-def add_background():
+def add_background() -> None:
     """Check if there are no other tiles present on the canvas then
     adds a google satellite as a background map."""
     source_found = False
@@ -109,7 +116,9 @@ def hist_edges_equal(x, nbin):
 
 
 class CreateLayer:
-    def __init__(self, db, dock_widget=None):
+    def __init__(self: Self, 
+                 db: "geodatafarm.database_scripts.db.DB", 
+                 dock_widget: None=None) -> None:
         """Creates a layer with color coded attributes"""
         self.db = db
         self.dock_widget = dock_widget

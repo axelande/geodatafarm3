@@ -1,3 +1,4 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 
@@ -9,7 +10,7 @@ from ..import_data.handle_iso11783 import Iso11783
 
 
 class SavePlanting:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A class for storing plant data
 
         Parameters
@@ -22,12 +23,12 @@ class SavePlanting:
         self.parent = parent
         self.importer = None
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBPAddFile.clicked.connect(self.run_file_import)
         self.parent.dock_widget.PBPSaveManual.clicked.connect(self.save_manual_data)
 
-    def run_file_import(self):
+    def run_file_import(self: Self) -> None:
         """The function loads the correct import dialog for files"""
         columns = [self.tr('Variety')]
         if self.dw.CBPFileType.currentText() == self.tr('Text file (.csv; .txt)'):

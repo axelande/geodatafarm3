@@ -1,3 +1,4 @@
+from typing import Self
 from datetime import datetime
 from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from ..support_scripts.create_layer import CreateLayer, add_background
@@ -6,14 +7,14 @@ from ..support_scripts.__init__ import TR
 
 class PlanAhead:
     """A class that fill the tab plan ahead with content"""
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         self.parent = parent
         self.db = parent.db
         translate = TR('PlanAhead')
         self.tr = translate.tr
         self.create_layer = CreateLayer(self.db)
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the plan ahead tab"""
         self.parent.dock_widget.PBUpdatePlaning.clicked.connect(self.update_fields)
         self.parent.dock_widget.PBUpdateSummary.clicked.connect(self.update_sum)

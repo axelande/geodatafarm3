@@ -1,3 +1,4 @@
+from typing import Self
 import os
 from PyQt5.QtWidgets import QMessageBox
 import requests
@@ -9,7 +10,7 @@ __author__ = 'Axel Horteborn'
 
 
 class CreateFarm:
-    def __init__(self, parent_widget, new_farm):
+    def __init__(self: Self, parent_widget, new_farm: bool) -> None:
         """Sends a request to create a database for the farm
 
         Parameters
@@ -119,7 +120,7 @@ class CreateFarm:
                                     self.tr('Database created'))
         self.CF.done(0)
 
-    def connect_to_source(self):
+    def connect_to_source(self: Self) -> None:
         """Connects the plugin to another database"""
         username_inp = self.CF.user_name.text()
         password_inp = self.CF.pass_word.text()
@@ -144,7 +145,7 @@ class CreateFarm:
         self.parent_widget.populate.reload_crops()
         self.CF.done(0)
 
-    def reset_db_connections(self):
+    def reset_db_connections(self: Self) -> None:
         """Resets the database connection"""
         self.parent_widget.db = self.db
         try:
@@ -153,7 +154,7 @@ class CreateFarm:
         except AttributeError:
             pass
 
-    def _connect_to_db(self):
+    def _connect_to_db(self: Self) -> None:
         """Simple function to connect to the new database"""
         if self.parent_widget.test_mode:
             self.db = DB(self.dock_widget, path=self.plugin_dir, dbname = 'pytest_farm', dbuser = 'pytest_user', 

@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from typing import Self
 
 import os
 
@@ -30,7 +31,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class CreateFarmPopup(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self: Self, parent: None=None) -> None:
         """Constructor."""
         super(CreateFarmPopup, self).__init__(parent)
         # Set up the user interface from Designer.

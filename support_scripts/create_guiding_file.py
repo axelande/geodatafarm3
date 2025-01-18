@@ -1,3 +1,4 @@
+from typing import Self
 from operator import xor
 import os
 
@@ -17,7 +18,7 @@ from ..widgets.create_guide_file import CreateGuideFileDialog
 
 
 class CreateGuideFile:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """This class creates a guide file
 
         Parameters
@@ -43,7 +44,7 @@ class CreateGuideFile:
         self.attributes = {}
         self.selected = {}
 
-    def run(self):
+    def run(self: Self) -> None:
         """Presents the sub widget HandleInput and connects the different
         buttons to their function"""
         self.CGF.show()
@@ -61,7 +62,7 @@ class CreateGuideFile:
         if not self.parent.test_mode:
             self.CGF.exec()
 
-    def set_output_path(self):
+    def set_output_path(self: Self) -> None:
         """Sets the path where the guide file should be saved."""
         dialog = QFileDialog()
         if self.parent.test_mode:
@@ -72,7 +73,7 @@ class CreateGuideFile:
         self.save_folder = folder_path
         self.CGF.PBCreateFile.setEnabled(True)
 
-    def fill_cb(self):
+    def fill_cb(self: Self) -> None:
         """Updates the ComboBox with names from the differnt schemas in the
         database"""
         lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil', 'other']
@@ -80,7 +81,7 @@ class CreateGuideFile:
         self.CGF.CBDataSource.addItems(lw_list)
         self.CGF.CBDataSource.activated[str].connect(self.possible_attr)
 
-    def possible_attr(self, schema):
+    def possible_attr(self: Self, schema: str) -> None:
         """Adds the name of the table which the user than can use as base for
         calculation of the guiding file.
 
@@ -117,7 +118,7 @@ class CreateGuideFile:
             self.CGF.TWColumnNames.setCellWidget(i, 1, popup_menu)
             popup_menu.activated.connect(lambda index, row=i: self.add_to_param_list(index, row))
 
-    def add_to_param_list(self, index, row):
+    def add_to_param_list(self: Self, index: int, row: int) -> None:
         """Adds the selected columns to the list of fields that should be
         treated as "special" in the database both to work as a parameter that
         could be evaluated and as a layer that is added to the canvas"""
@@ -137,7 +138,7 @@ class CreateGuideFile:
         self.nbr_selected_attr = row_count
         self.selected[len(self.selected)] = [self.attributes[row]['tbl'], self.attributes[row]['attributes'][index]]
 
-    def remove_from_param_list(self):
+    def remove_from_param_list(self: Self) -> None:
         """Removes the selected columns from the list"""
         row_count = self.nbr_selected_attr
         if self.CGF.TWSelected.selectedItems() is None:
@@ -154,7 +155,7 @@ class CreateGuideFile:
             deleted_rows += 1
         self.nbr_selected_attr = row_count
 
-    def update_max_min(self):
+    def update_max_min(self: Self) -> None:
         """Update the text min, max text and set the equation for the guide
         file."""
         field = self.CGF.CBFields.currentText()
@@ -192,7 +193,7 @@ class CreateGuideFile:
         self.CGF.LMinVal.setText(f'Min value: {eval(eq_text_min)}')
         self.CGF.PBSelectOutput.setEnabled(True)
 
-    def create_file(self):
+    def create_file(self: Self) -> None:
         """Creates the guide file with the information from the user."""
         print(self.selected)
         cell_size = self.CGF.LECellSize.text()
@@ -294,7 +295,7 @@ class CreateGuideFile:
             cl = v_layer = layer = None
         self.CGF.done(0)
 
-    def add_prj_file(self, EPSG, path):
+    def add_prj_file(self: Self, EPSG: str, path: str) -> None:
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(int(EPSG))
         esri_output = srs.ExportToWkt()

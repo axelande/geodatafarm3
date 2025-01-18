@@ -1,3 +1,4 @@
+from typing import Self
 from ..import_data.handle_text_data import InputTextHandler
 from ..import_data.handle_raster import ImportRaster
 from ..import_data.handle_input_shp_data import InputShpHandler
@@ -7,7 +8,7 @@ from ..support_scripts.__init__ import TR
 
 
 class SaveSoil:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A class for storing spraying data
 
         Parameters
@@ -19,7 +20,7 @@ class SaveSoil:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBSoAddFile.clicked.connect(self.run_file_import)
         self.parent.dock_widget.PBSoSaveManual.clicked.connect(self.save_manual_data)

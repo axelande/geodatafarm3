@@ -1,3 +1,4 @@
+from typing import Self
 from PyQt5 import QtCore
 from qgis.core import QgsTask
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
@@ -8,7 +9,7 @@ __author__ = 'Axel Horteborn'
 
 
 class TableManagement:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
         self.add_to_Param_row_count = 0
@@ -26,7 +27,7 @@ class TableManagement:
         self.params_in_table = None
         self.items_in_table = []
 
-    def run(self):
+    def run(self: Self) -> None:
         """Connects the push buttons and enable the visibility of the dialog."""
         self.TMD.pButRemove.clicked.connect(self.remove_table_from_db)
         self.TMD.pButCombine.clicked.connect(self.merge_tbls)
@@ -42,7 +43,7 @@ class TableManagement:
         if not self.parent.test_mode:
             self.TMD.exec_()
 
-    def merge_tbls(self):
+    def merge_tbls(self: Self) -> None:
         """Merging two data sets into one."""
         tables_to_merge = []
         new_name = self.TMD.LEName.text()
@@ -88,7 +89,7 @@ class TableManagement:
         self.TMD.CBDataType.setCurrentIndex(0)
         self.update_table_list()
 
-    def check_multiple(self):
+    def check_multiple(self: Self) -> tuple[bool, str]:
         """Checks if multiple table is selected
 
         Returns
@@ -215,7 +216,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                         pass
         self.retrieve_params()
 
-    def update_table_list(self):
+    def update_table_list(self: Self) -> None:
         """Update the list of tables in the docket widget"""
         lw_list = self.parent.populate.get_lw_list()
         if self.tables_in_db != 0:
@@ -237,7 +238,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 self.tables_in_db += 1
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
 
-    def remove_table_from_db(self):
+    def remove_table_from_db(self: Self) -> None:
         """Removes the selected tables from the database"""
         msgBox = QMessageBox()
         msgBox.setText(self.tr('Do you really want to remove the selected tables from the database?'))
@@ -258,7 +259,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 self.tables_in_db -= 1
         self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
 
-    def make_rows(self):
+    def make_rows(self: Self) -> None:
         suc, s_table = self.check_multiple()
         if not suc:
             return

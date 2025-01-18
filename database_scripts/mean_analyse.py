@@ -1,3 +1,5 @@
+from typing import Self
+
 from qgis.core import QgsProject, QgsTask
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
@@ -19,7 +21,7 @@ __author__ = 'Axel Horteborn'
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 class Analyze:
-    def __init__(self, parent_widget, tables_to_analyse):
+    def __init__(self: Self, parent_widget, tables_to_analyse: list[list[str]]) -> None:
         """A widget that analyses the data in the database
 
         Parameters
@@ -64,7 +66,7 @@ class Analyze:
         self.dlg.PBSelectArea.clicked.connect(partial(self.add_field.clicked_define_field, ignore_name=True))
         self.dlg.exec_()
 
-    def check_consistency(self):
+    def check_consistency(self: Self) -> bool:
         """Checks that the harvest tables is intersecting some of the input data
         If the data is an activity does it also check that the year is the same
         table both with respect to location and time!
@@ -224,7 +226,7 @@ class Analyze:
                 return False
         return True
 
-    def fill_dict_tables(self):
+    def fill_dict_tables(self: Self) -> None:
         """Fills the dict tables"""
         for i, (schema, table) in enumerate(self.tables):
             if schema == 'harvest':
@@ -240,7 +242,8 @@ class Analyze:
             if schema == 'weather':
                 self.weather_tables[i] = self.db.get_indexes(table, schema)
 
-    def get_initial_distinct_values(self, parameter_to_eval, tbl, schema):
+    def get_initial_distinct_values(self: Self, parameter_to_eval: str, tbl: str, 
+                                    schema: str) -> dict[str, list[int]]:
         """Calls the database and gets distinct values
 
         Parameters

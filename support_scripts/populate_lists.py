@@ -1,3 +1,6 @@
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import PyQt5.QtWidgets
 from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
@@ -7,7 +10,7 @@ from ..support_scripts.__init__ import TR
 
 class Populate:
     """A class to set/reload list widgets and comboBoxes"""
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """Starts/resets the class and all its objects,
         calls: - reload_fields,
                - reload_crops,
@@ -44,7 +47,7 @@ class Populate:
         list"""
         return self.items_in_table
 
-    def get_lw_list(self):
+    def get_lw_list(self: Self) -> list[list[str]]:
         """ Function returns the list of lists with [[ListWidget, 'name']]
         Returns
         -------
@@ -52,7 +55,7 @@ class Populate:
         """
         return self.lw_list
 
-    def reload_fields(self, cmd_box=None):
+    def reload_fields(self: Self, cmd_box: "PyQt5.QtWidgets.QComboBox|None|None"=None) -> None:
         """Reloads all field comboBoxes in the GeoDataFarm widget
         Parameters
         ----------
@@ -93,7 +96,7 @@ class Populate:
         self.fields = [self.tr('--- Select field ---')]
         self.fields.extend(fields)
 
-    def reload_crops(self, cmd_box=None):
+    def reload_crops(self: Self, cmd_box: "PyQt5.QtWidgets.QComboBox|None|None"=None) -> None:
         """Reloads all crops comboBoxes in the GeoDataFarm widget
         Parameters
         ----------
@@ -130,7 +133,7 @@ class Populate:
         self.crops = [self.tr('--- Select crop ---')]
         self.crops.extend(crops)
 
-    def update_table_list(self):
+    def update_table_list(self: Self) -> None:
         """Update the list of tables in the docket widget"""
         for i, (lw, schema) in enumerate(self.lw_list):
             table_names = self.db.get_tables_in_db(schema)

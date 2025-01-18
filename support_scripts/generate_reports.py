@@ -1,3 +1,4 @@
+from typing import Self
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
@@ -71,7 +72,7 @@ class MyDocTemplate(BaseDocTemplate):
 
 
 class RapportGen:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """Generates reports from GeoDataFarm
 
         Parameters
@@ -87,7 +88,7 @@ class RapportGen:
         self.parent = parent
         self.path = None
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the report tab"""
         self.dw.PBReportPerOperation.clicked.connect(self.report_per_operation)
         self.dw.PBReportPerField.clicked.connect(self.report_per_field)

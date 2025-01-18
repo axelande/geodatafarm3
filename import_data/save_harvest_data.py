@@ -1,3 +1,4 @@
+from typing import Self
 from ..import_data.handle_text_data import InputTextHandler
 from ..import_data.handle_iso11783 import Iso11783
 from ..import_data.handle_input_shp_data import InputShpHandler
@@ -7,7 +8,7 @@ from ..support_scripts.__init__ import TR
 
 
 class SaveHarvesting:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """
         A class for storing harvesting data
         Parameters
@@ -20,12 +21,12 @@ class SaveHarvesting:
         self.parent = parent
         self.importer = None
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBHvAddFile.clicked.connect(self.run_file_import)
         self.parent.dock_widget.PBHvSaveManual.clicked.connect(self.save_manual_data)
 
-    def run_file_import(self):
+    def run_file_import(self: Self) -> None:
         """The function loads the correct import dialog for files"""
         columns = [self.tr('Yield'), self.tr('Total yield')]
         if self.dw.CBHvFileType.currentText() == self.tr('Text file (.csv; .txt)'):

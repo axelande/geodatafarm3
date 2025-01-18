@@ -1,3 +1,4 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from ..support_scripts.__init__ import check_text
@@ -5,7 +6,7 @@ from ..support_scripts.__init__ import TR
 
 
 class SaveOther:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """A class for storing other data
 
         Parameters
@@ -17,7 +18,7 @@ class SaveOther:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBSaveOther.clicked.connect(self.save_manual_data)
 

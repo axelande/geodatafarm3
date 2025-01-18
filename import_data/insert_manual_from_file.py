@@ -1,10 +1,14 @@
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import geodatafarm.database_scripts.db
+    import geodatafarm.widgets.import_text_dialog
 from PyQt5.QtWidgets import QLabel, QLineEdit, QComboBox, QCheckBox
 from ..support_scripts import check_text
 from ..support_scripts.__init__ import TR
 
 
 class ManualFromFile:
-    def __init__(self, db, widget, spec_columns):
+    def __init__(self: Self, db: "geodatafarm.database_scripts.db.DB", widget: "geodatafarm.widgets.import_text_dialog.ImportTextDialog", spec_columns: list[str]) -> None:
         """Adds Manual data from file
 
         Parameters
@@ -21,7 +25,7 @@ class ManualFromFile:
         self.widget = widget
         self.add_specific_columns(widget, spec_columns)
 
-    def prepare_data(self, columns_to_add):
+    def prepare_data(self: Self, columns_to_add: list[str]) -> None:
         """Adds rows to the comboboxes
 
         Parameters
@@ -34,7 +38,9 @@ class ManualFromFile:
             self.manual_values[i]['line_edit'].setEnabled(True)
             self.manual_values[i]['checkbox'].setEnabled(True)
 
-    def add_specific_columns(self, widget, spec_columns):
+    def add_specific_columns(self: Self, 
+                             widget: "geodatafarm.widgets.import_text_dialog.ImportTextDialog", 
+                             spec_columns: list[str]) -> None:
         """Adds rows for the user to manual define which columns contains
         schema specific columns (or one single value / Not applicable)
 
@@ -67,7 +73,7 @@ class ManualFromFile:
             self.manual_values[i]['checkbox'] = check
             widget.GLSpecific.addWidget(check, i, 3)
 
-    def insert_manual_data(self, date_, field, table, data_type):
+    def insert_manual_data(self: Self, date_: str, field: str, table: str, data_type: str) -> bool:
         """Inserts the manual data that is used to generate reports, rather long
         function since all schemas have separate attributes.
 

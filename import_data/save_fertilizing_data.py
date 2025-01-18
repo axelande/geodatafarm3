@@ -1,3 +1,4 @@
+from typing import Self
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from ..import_data.handle_text_data import InputTextHandler
@@ -8,7 +9,7 @@ from ..import_data.handle_iso11783 import Iso11783
 
 
 class SaveFertilizing:
-    def __init__(self, parent):
+    def __init__(self: Self, parent) -> None:
         """
         A class for storing plant data
         Parameters
@@ -20,7 +21,7 @@ class SaveFertilizing:
         self.tr = translate.tr
         self.parent = parent
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the planting tab"""
         self.parent.dock_widget.PBFAddFile.clicked.connect(self.run_file_import)
         self.parent.dock_widget.PBFSaveManual.clicked.connect(self.save_manual_data)

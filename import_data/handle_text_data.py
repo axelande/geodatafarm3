@@ -1,3 +1,4 @@
+from typing import Self
 import webbrowser
 from qgis.core import QgsTask
 import traceback
@@ -21,7 +22,8 @@ __author__ = 'Axel Horteborn'
 
 
 class InputTextHandler(object):
-    def __init__(self, parent_widget, data_type, columns=None):
+    def __init__(self: Self, parent_widget, data_type: str, 
+                 columns: list[str]|None=None) -> None:
         """A widget that enables the possibility to insert data from a text
         file into a postgres database.
         Parameters
@@ -64,7 +66,7 @@ class InputTextHandler(object):
         self.tbl_name = ''
         self.encoding = 'utf-8'
 
-    def run(self):
+    def run(self: Self) -> None:
         """Presents the sub widget ImportTextDialog and connects the different
         buttons to their function"""
         self.ITD.show()
@@ -110,7 +112,7 @@ class InputTextHandler(object):
                                         'If you are missing any formats please contact geodatafarm@gmail.com'
                                         ))
 
-    def add_to_param_list(self):
+    def add_to_param_list(self: Self) -> None:
         """Adds the selected columns to the list of fields that should be
         treated as "special" in the database both to work as a parameter that
         could be evaluated and as a layer that is added to the canvas"""
@@ -149,7 +151,7 @@ class InputTextHandler(object):
             row_count -= 1
         self.add_to_param_row_count = row_count
 
-    def define_separator(self):
+    def define_separator(self: Self) -> None:
         """Define the file encoding and the separator of the file"""
         with open(self.file_name_with_path, 'rb') as f:
             # Join binary lines for specified number of lines
@@ -177,7 +179,7 @@ class InputTextHandler(object):
             else:
                 self.sep = '\t'
 
-    def set_column_list(self):
+    def set_column_list(self: Self) -> None:
         """A function that retrieves the name of the columns from the text file
         and fills the TWColumnName list with the name, first value and data type"""
         self.ITD.TWColumnNames.clear()
@@ -218,7 +220,7 @@ class InputTextHandler(object):
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
         self.add_to_db_row_count = i
 
-    def set_sep_radio_but(self):
+    def set_sep_radio_but(self: Self) -> None:
         """Sets the radioButton indicating the separator of the file"""
         if self.sep == ',':
             self.ITD.RBComma.setChecked(True)
@@ -251,7 +253,7 @@ class InputTextHandler(object):
             if c_box.currentText() == "Character":
                 self.col_types.append(2)
 
-    def open_input_file(self):
+    def open_input_file(self: Self) -> None:
         """Open the file dialog and let the user choose which file that should
         be inserted. In the end of this function the function define_separator,
         set_sep_radio_but and set_column_list are being called."""
@@ -279,7 +281,7 @@ class InputTextHandler(object):
         self.set_sep_radio_but()
         self.set_column_list()
 
-    def prepare_last_choices(self):
+    def prepare_last_choices(self: Self) -> None:
         """A function that prepares the last parts of the widget with the data
         to be inserted into the database"""
         columns_to_add = []
@@ -317,7 +319,7 @@ class InputTextHandler(object):
         self.ITD.PBInsertDataIntoDB.setEnabled(True)
         self.mff.prepare_data(columns_to_add)
 
-    def determine_column_type(self):
+    def determine_column_type(self: Self) -> None:
         """
         A function that retrieves the types of the columns from the .csv file
         and sets col_types as a list where with 0=int, 1=float, 2=char
@@ -357,7 +359,7 @@ class InputTextHandler(object):
             row_type_return.append(int(col_value/(max_rows*0.7)))
         self.col_types = row_type_return
 
-    def trigger_insection(self):
+    def trigger_insection(self: Self) -> list[bool|str]:
         """Preparing the data, by setting the correct type (including the date and
         time format), creating a shp file and finally ensure that the
         coordinates is in EPSG:4326
@@ -485,7 +487,9 @@ class InputTextHandler(object):
         self.ITD.done(0)
 
 
-def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, min_yield):
+def check_row_failed(row: list[str], heading_row: list[str], 
+                     n_coord: str, e_coord: str, yield_col: bool|str, 
+                     max_yield: float, min_yield: float) -> bool:
     if len(row) != len(heading_row) and len(row) < 3:
         return True
     try:
@@ -505,7 +509,7 @@ def check_row_failed(row, heading_row, n_coord, e_coord, yield_col, max_yield, m
     return False
 
 
-def create_course_column(db, schema):
+def create_course_column(db: DB, schema: str) -> None:
     sql = f"""Alter table {schema}.temp_table
     ADD COLUMN course float;
     update {schema}.temp_table a
@@ -575,8 +579,14 @@ def move_points(db, move_x, move_y, tbl_name, task):
         return [False, e]
 
 
-def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, date_row:str, all_same_date,
-                 column_types, column_units=None, table='', ask_replace=True, test_mode=False, task_nr=''):
+def create_table(db: DB, schema: str, heading_row: list[str], 
+                 latitude_col: str, longitude_col:str, 
+                 date_row:str, all_same_date: str,
+                 column_types: list[int], 
+                 column_units: list[str]|None|None=None, 
+                 table: str='', ask_replace: bool=True, 
+                 test_mode: bool=False, 
+                 task_nr: int|str|str='') -> list[str]:
     inserting_text = f'INSERT INTO {schema}.temp_table{task_nr} ('
     sql = f"CREATE TABLE {schema}.temp_table{task_nr} (field_row_id serial PRIMARY KEY, "
     lat_lon_inserted = False
@@ -622,7 +632,8 @@ def create_table(db, schema, heading_row, latitude_col: str, longitude_col:str, 
     return [True, inserting_text, insert_org_sql]
 
 
-def create_polygons(db, schema, tbl_name, field):
+def create_polygons(db: DB, schema: str, tbl_name: str, 
+                    field: str) -> None:
     sql = """drop table if exists {schema}.temp_tbl2;
         WITH voronoi_temp2 AS (
         SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
@@ -639,7 +650,7 @@ def create_polygons(db, schema, tbl_name, field):
     db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
 
 
-def insert_data_to_database(task, db: DB, params: dict):
+def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
     """Walks though the text files and adds data to the database
     Parameters
     ----------

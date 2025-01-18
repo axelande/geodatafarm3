@@ -1,3 +1,10 @@
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import geodatafarm.GeoDataFarm
+    import geodatafarm.database_scripts.db
+    import psycopg2.extras
+    import qgis._core
+    import qgis.core.additions.qgstaskwrapper
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
@@ -11,7 +18,11 @@ import time
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
 
-def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
+def add_fields_2_canvas(task: "qgis.core.additions.qgstaskwrapper.QgsTaskWrapper", 
+                        db: "geodatafarm.database_scripts.db.DB", 
+                        fields_db: "list[psycopg2.extras.DictRow[str]]", 
+                        defined_field: str, 
+                        sources: list[str]) -> "list[bool|list[qgis._core.QgsVectorLayer]]":
     """A function that adds fields that are not added previously.
 
     Parameters
@@ -57,7 +68,7 @@ def add_fields_2_canvas(task, db, fields_db, defined_field, sources):
 
 
 class AddField:
-    def __init__(self, parent_widget):
+    def __init__(self: Self, parent_widget: "geodatafarm.GeoDataFarm.GeoDataFarm") -> None:
         """This class handle the creation of Fields. This class is also imported
         in the MeanAnalyse class.
 
@@ -87,13 +98,13 @@ class AddField:
         self.AFD.exec()
         self.parent.populate.reload_fields()
 
-    def set_widget_connections(self):
+    def set_widget_connections(self: Self) -> None:
         """Function that sets the main widget connections."""
         self.parent.dock_widget.PBAddField.clicked.connect(self.run)
         self.parent.dock_widget.PBRemoveField.clicked.connect(self.remove_field)
         self.parent.dock_widget.PBViewFields.clicked.connect(self.view_fields)
 
-    def clicked_define_field(self, ignore_name=True):
+    def clicked_define_field(self: Self, ignore_name: bool=True) -> None:
         """Creates an empty polygon that's define a field"""
         if ignore_name:
             self.field = QgsVectorLayer("Polygon?crs=epsg:4326", 'Search area',
@@ -115,7 +126,7 @@ class AddField:
         self.iface.actionAddFeature().trigger()
         QgsProject.instance().addMapLayer(self.field)
 
-    def remove_field(self):
+    def remove_field(self: Self) -> None:
         """Removes a field that the user wants, a check that there are no
         data that is depended on is made."""
         j = -1
@@ -157,7 +168,7 @@ class AddField:
                 self.parent.dock_widget.LWFields.takeItem(j)
                 j -= 1
 
-    def view_fields(self):
+    def view_fields(self: Self) -> None:
         """Add all fields that aren't displayed on the canvas,
         if no background map is loaded Google maps are loaded."""
         defined_field = self.defined_field
@@ -201,7 +212,7 @@ class AddField:
         self.AFD.PBQuit.clicked.disconnect()
         self.AFD.done(0)
 
-    def save(self):
+    def save(self: Self) -> bool:
         """Saves the field in the database"""
         try:
             self.iface.actionSaveActiveLayerEdits().trigger()
