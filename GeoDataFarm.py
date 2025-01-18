@@ -352,7 +352,7 @@ class GeoDataFarm:
     def get_database_connection(self):
         """Connects to the database and create the db object"""
         self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.test_mode)
-        connected = self.db.get_conn()
+        connected = self.db.set_conn()
         if not connected:
             if self.test_mode:
                 return False

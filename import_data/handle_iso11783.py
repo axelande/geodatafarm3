@@ -512,7 +512,7 @@ UNION """
                 
                 if not self.parent.test_mode:
                     db = DB(None, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
-                    connected = db.get_conn(False)
+                    connected = db.set_conn(False)
                     task = QgsTask.fromFunction(f'Adding field: {field}{prep_data[5][i]}', insert_data,
                                                 db, df, self.data_type, 
                                                 insert_sql, table, field, focus_cols, 

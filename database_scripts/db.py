@@ -28,12 +28,14 @@ class SomeFailure:
 
 
 class NoConnection:
-    def __init__(self, tr):
+    def __init__(self, tr, message_box=QMessageBox):
         self.tr = tr
+        self.message_box = message_box
 
-    def run_failure(self):
-        QMessageBox.information(None, self.tr('Error'),
-                                self.tr('No connection was found'))
+    def run_failure(self, suppress_message=False):
+        if not suppress_message:
+            self.message_box.information(None, self.tr('Error'),
+                                         self.tr('No connection was found'))
 
 
 class DB:
@@ -62,9 +64,9 @@ class DB:
         self.test_mode = test_mode
         self.pool = None
 
-    def get_conn(self, set_farm_name:bool=True):
-        """A function that checks if the database is created and sets then the
-        database name, user name and password.
+    def set_conn(self, set_farm_name:bool=True):
+        """A function that checks if the database is created and then sets the
+        database name, user name, password and the pool to the class.
 
         Returns
         -------
@@ -179,25 +181,21 @@ class DB:
         res = self.execute_and_return(sql)
         if res[0][0] > 0:
             if ask_replace:
-                qm = QMessageBox()
-                if self.test_mode:
+                qm = QMessageBox
+                res_qm = qm().question(None, self.tr('Message'),
+                                self.tr(
+                                    "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
+                                qm.Yes, qm.No)
+                if res_qm == qm.No:
                     return True
                 else:
-                    res = qm.question(None, self.tr('Message'),
-                                    self.tr(
-                                        "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                                    qm.Yes, qm.No)
-                    if res == qm.No:
-                        return True
-                    else:
-                        self.execute_sql("""DROP TABLE {schema}.{tbl};
-                                                        DELETE FROM {schema}.manual
-                                                        WHERE table_ = '{tbl}';
-                                                        """.format(
-                            schema=schema,
-                            tbl=table_name))
-            else:
-                return True
+                    self.execute_sql("""DROP TABLE {schema}.{tbl};
+                                                    DELETE FROM {schema}.manual
+                                                    WHERE table_ = '{tbl}';
+                                                    """.format(
+                        schema=schema,
+                        tbl=table_name))
+                    return False
         return False
 
     def create_table(self, sql, tbl_name, drop_if_exist=True):
@@ -349,7 +347,8 @@ class DB:
         sql = """ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
         ALTER TABLE {schema}.{table} add COLUMN field_row_id serial UNIQUE NOT NULL
         """.format(schema=schema, table=table)
-        self.execute_sql(sql)
+        res = self.execute_sql(sql, return_failure=True)
+
 
     def get_indexes(self, tables, schema):
         """Get indexes of tables in a schema, returns a dict.
@@ -405,7 +404,8 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self, sql, return_failure=False, return_row_count=False, disregard_failure=False):
+    def execute_sql(self, sql, return_failure=False, return_row_count=False, 
+                    disregard_failure=False, suppress_message=False):
         """
         Parameters
         ----------
@@ -419,7 +419,7 @@ class DB:
         conn = self._connect()
         if not conn:
             nc = NoConnection(self.tr)
-            nc.run_failure()
+            nc.run_failure(suppress_message=suppress_message)
             return 'There was no connection established'
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
@@ -447,7 +447,7 @@ class DB:
             else:
                 return [True, 'suc']
 
-    def execute_and_return(self, sql, return_failure=False):
+    def execute_and_return(self, sql, return_failure=False, suppress_message=False):
         """Execute and returns an SQL statement
 
         Parameters
@@ -465,7 +465,7 @@ class DB:
         conn = self._connect()
         if not conn:
             nc = NoConnection(self.tr)
-            nc.run_failure()
+            nc.run_failure(suppress_message=suppress_message)
             return 'There was no connection established'
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
@@ -478,11 +478,11 @@ class DB:
                 return [False, error_type, e]
             else:
                 if self.test_mode:
-                    return False
+                    return 'There were an error..'
                 else:  
                     sf = SomeFailure()
                     sf.display_failure(e)
-            data = 'There were an error..'
+                    return 'There were an error..'
         self.pool.putconn(conn)
         return data
 
@@ -515,17 +515,3 @@ class DB:
         """.format(schema=schema, tbl=tbl)
         fail = self.execute_sql(sql, return_failure=True)
         return [fail]
-
-    def test_connection(self):
-        """Tests to open the connection and then closes it again
-        Returns
-        -------
-        bool
-        """
-        try:
-            conn = self._connect()
-            return True
-        except DBException as e:
-            return False
-        finally:
-            self.pool.putconn(conn)
