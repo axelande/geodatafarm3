@@ -17,6 +17,9 @@ it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE.
 ***************************************************************************
 
 """
+from typing import TYPE_CHECKING, Self
+if TYPE_CHECKING:
+    import pytest_qgis.qgis_interface
 # TODO: ensure that no calls to the database within tasks handel errors correctly
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
@@ -38,8 +41,6 @@ from PyQt5.QtGui import QIcon, QImage
 from psycopg2 import IntegrityError
 import os
 
-import subprocess
-import platform
 import webbrowser
 from .resources import *
 plugin_dir = os.path.dirname(__file__)
@@ -77,7 +78,7 @@ from .support_scripts.rescale_values import RescaleValues
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
 
-    def __init__(self, iface, test_mode=False):
+    def __init__(self: Self, iface: "pytest_qgis.qgis_interface.QgisInterface", test_mode: bool=False) -> None:
         """Constructor.
 
         Parameters
@@ -247,7 +248,7 @@ class GeoDataFarm:
         create_layer = CreateLayer(self.db, self.dock_widget)
         create_layer.repaint_layer()
 
-    def reload_range(self):
+    def reload_range(self: Self) -> None:
         """Reload the range of the lowest and highest value of the layer"""
         cb = self.dock_widget.mMapLayerComboBox
         layer = cb.currentLayer()
@@ -321,7 +322,7 @@ class GeoDataFarm:
         else:
             return True
 
-    def tbl_mgmt(self):
+    def tbl_mgmt(self: Self) -> None:
         """Open the table manager widget"""
         self.tabel_mgmt = TableManagement(self)
         self.tabel_mgmt.run()
@@ -344,12 +345,12 @@ class GeoDataFarm:
         irr = IrrigationHandler(self)
         irr.run()
 
-    def create_guide(self):
+    def create_guide(self: Self) -> None:
         """Opens the create guide file widget"""
         self.guide = CreateGuideFile(self)
         self.guide.run()
 
-    def get_database_connection(self):
+    def get_database_connection(self: Self) -> bool:
         """Connects to the database and create the db object"""
         self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.test_mode)
         connected = self.db.set_conn()
@@ -363,7 +364,7 @@ class GeoDataFarm:
             return False
         return True
 
-    def add_crop(self):
+    def add_crop(self: Self) -> None:
         """Adds a crop to the database"""
         crop_name = self.dock_widget.LECropName.text()
         if len(crop_name) == 0:
@@ -389,7 +390,7 @@ class GeoDataFarm:
         item.setCheckState(QtCore.Qt.Unchecked)
         self.populate.reload_crops()
 
-    def remove_crop_name(self):
+    def remove_crop_name(self: Self) -> None:
         for i in range(self.dock_widget.LWCrops.count()):
             item = self.dock_widget.LWCrops.item(i)
             if item.checkState() == 2:
@@ -397,7 +398,7 @@ class GeoDataFarm:
                 self.db.execute_sql(sql)
         self.populate.reload_crops()
 
-    def clicked_create_farm(self):
+    def clicked_create_farm(self: Self) -> CreateFarm:
         """Connects the docked widget with the CreateFarm script and starts
         the create_farm widget"""
         create_farm = CreateFarm(self, True)
@@ -422,7 +423,7 @@ class GeoDataFarm:
         cta = ConvertToAreas(self)
         cta.run()
 
-    def set_buttons(self):
+    def set_buttons(self: Self) -> None:
         """Since most functions are dependent on that a database connections
         exist the buttons are set when a connection is set. If new connections
         are added here do not forget to add them in create_new_farms function
@@ -470,7 +471,7 @@ class GeoDataFarm:
             self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
-    def run(self, test_mode=False):
+    def run(self: Self, test_mode: bool=False) -> None:
         """Run method that loads and starts the plugin"""
         icon_path = ':/plugins/GeoDataFarm/img/icon.png'
         if not self.pluginIsActive:

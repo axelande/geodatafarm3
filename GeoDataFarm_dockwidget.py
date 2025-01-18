@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from typing import Self
 
 import os
 
@@ -34,7 +35,7 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     closingPlugin = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self: Self, parent: None=None) -> None:
         """Constructor."""
         super(GeoDataFarmDockWidget, self).__init__(parent)
         # Set up the user interface from Designer.
