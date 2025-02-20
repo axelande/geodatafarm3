@@ -6,7 +6,7 @@
     <message>
         <location filename="../support_scripts/add_field.py" line="236"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="221"/>
@@ -21,17 +21,17 @@
     <message>
         <location filename="../support_scripts/add_field.py" line="129"/>
         <source>Do you want to delete </source>
-        <translation>Möchten Sie löschen </translation>
+        <translation>Möchten Sie löschen?</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="186"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="149"/>
         <source>There are data sets that are dependent on this field, it cant be removed.</source>
-        <translation>Es gibt Datensätze, die von diesem Feld abhängig sind. Es kann nicht entfernt werden.</translation>
+        <translation>Es gibt Datensätze, die von diesem Feld abhängig sind. Sie können nicht entfernt werden.</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="186"/>
@@ -50,7 +50,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/add_field.py" line="232"/>
         <source>Field name already exist, please select a new name</source>
-        <translation>Der Feldname ist fertig, bitte wählen Sie einen neuen Namen</translation>
+        <translation>Der Feldname ist existiert bereits, bitte wählen Sie einen neuen Namen.</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="253"/>
@@ -115,7 +115,7 @@ Klicken Sie dann mit der linken Maustaste in alle Ecken des Feldes und klicken S
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="700"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="734"/>
@@ -3919,7 +3919,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="76"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="76"/>
@@ -3934,7 +3934,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="111"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="102"/>
@@ -3944,12 +3944,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="104"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="105"/>
         <source>In order to save the data you must select a crop</source>
-        <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
+        <translation>Um die Daten zu speichern, müssen Sie eine Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="108"/>
@@ -3972,13 +3972,13 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/db.py" line="26"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/db.py" line="26"/>
         <source>Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:
 </source>
-        <translation>Einige Fehler treten auf, bitte senden Sie eine E-Mail mit der folgenden Meldung an geodatafarm@gmail.com:
+        <translation>Einige Fehler traten auf, bitte senden Sie eine E-Mail mit der folgenden Meldung an geodatafarm@gmail.com:
 </translation>
     </message>
 </context>
@@ -3992,12 +3992,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/table_managment.py" line="52"/>
         <source>fertilize</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="54"/>
         <source>spray</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="56"/>
@@ -4017,7 +4017,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/table_managment.py" line="104"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="63"/>
@@ -4042,7 +4042,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/table_managment.py" line="77"/>
         <source>You need at least 2 dataset when merging</source>
-        <translation>Zum Zusammenführen benötigen Sie mindestens 2 Datensätz</translation>
+        <translation>Zum Zusammenführen benötigen Sie mindestens 2 Datensätze</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="104"/>
@@ -4052,7 +4052,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/table_managment.py" line="188"/>
         <source>Data set name</source>
-        <translation>Datensätze Name</translation>
+        <translation>Name des Datensatzes</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="201"/>
@@ -4087,22 +4087,22 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/table_managment.py" line="384"/>
         <source>--- Select yield column ---</source>
-        <translation>--- Erntespalte auswählen ---</translation>
+        <translation>--- Ertragsspalte auswählen ---</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="310"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="304"/>
         <source>In order to split the yield you need to specify the yield column</source>
-        <translation>Um die Ernte aufteilen zu können, muss eine Erntespalte angegeben werden</translation>
+        <translation>Um die Ertrag aufteilen zu können, muss eine Ertragsspalte angegeben werden</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="310"/>
         <source>This option is only possible for harvest tables</source>
-        <translation>Dieses Verfahren ist nur für geerntete Daten möglich</translation>
+        <translation>Diese Option ist nur für Erntetabellen möglich</translation>
     </message>
     <message>
         <location filename="../database_scripts/table_managment.py" line="267"/>
