@@ -50,7 +50,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/add_field.py" line="232"/>
         <source>Field name already exist, please select a new name</source>
-        <translation>Der Feldname ist existiert bereits, bitte wählen Sie einen neuen Namen.</translation>
+        <translation>Dieser Feldname existiert bereits, bitte wählen Sie einen neuen Feldnamen.</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="253"/>
@@ -120,7 +120,7 @@ Klicken Sie dann mit der linken Maustaste in alle Ecken des Feldes und klicken S
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="734"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="734"/>
@@ -139,12 +139,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="769"/>
         <source>Yield samples</source>
-        <translation>Ausbeute Proben</translation>
+        <translation>Ertragsstichprobe</translation>
     </message>
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="700"/>
         <source>No coordinates were found, did you mark the field on the canvas?</source>
-        <translation>Keine Koordinaten gefunden, haben Sie das Feld auf der Leinwand markiert?</translation>
+        <translation>Keine Koordinaten gefunden, haben Sie das Feld auf der Karte markiert?</translation>
     </message>
     <message>
         <location filename="../database_scripts/mean_analyse.py" line="221"/>
@@ -194,7 +194,7 @@ Rückverfolgung: {t}</translation>
         <source>Connect to 
 existing database</source>
         <translation>Verbunden zu
-vorhandene Datenbank</translation>
+vorhandener Datenbank</translation>
     </message>
     <message>
         <location filename="../widgets/connect_to_farm_base.ui" line="74"/>
@@ -212,7 +212,7 @@ vorhandene Datenbank</translation>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="314"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="256"/>
@@ -222,17 +222,17 @@ vorhandene Datenbank</translation>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="261"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="262"/>
         <source>In order to save the data you must select a crop</source>
-        <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
+        <translation>Um die Daten zu speichern, müssen Sie eine Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="280"/>
         <source>Yield and move values must be integer or a float number {e}</source>
-        <translation>Yield- und Move-Werte müssen Integer oder eine Gleitkommazahl sein {e}</translation>
+        <translation>Ertrags- und Bewegungswerte müssen vom Typ Integer oder Gleitkommazahl sein {e}</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="301"/>
@@ -242,22 +242,22 @@ vorhandene Datenbank</translation>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="292"/>
         <source>Yield value must be an integer or a float number</source>
-        <translation>Yield-Werte müssen Integer oder eine Gleitkommazahl sein</translation>
+        <translation>Ertragswerte müssen vom Typ Integer oder Gleitkommazahl sein</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="306"/>
         <source>Moisture value must be an integer or a float number</source>
-        <translation>Wassergehaltswerte müssen Ganzzahlen oder Fließkommazahlen sein</translation>
+        <translation>Feuchtewerte müssen vom Typ Ganzzahl oder Gleitkommazahl sein</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="314"/>
         <source>Harvester width must be an integer or a float number</source>
-        <translation>Die Breite des Combines muss in Ganzzahlen oder Fließkommazahlen angegeben werden</translation>
+        <translation>Die Arbeitsbreite des Mähdreschers muss in Ganzzahlen oder Gleitkommazahlen angegeben werden</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="542"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/convert_harvest_to_area.py" line="526"/>
@@ -279,12 +279,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="53"/>
         <source>The first year must be less than 2030</source>
-        <translation>Das erste Jahr muss weniger als 2030 sein</translation>
+        <translation>Das erste Jahr muss kleiner als 2030 sein</translation>
     </message>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="56"/>
@@ -321,7 +321,7 @@ Rückverfolgung: {t}</translation>
         <source>- Is your computer online? 
 - If you are sure that please send an email to geodatafarm@gmail.com</source>
         <translation>- Ist Ihr Computer online?
-- Wenn Sie sich sicher sind, bitte send eine E-Mail zu geodatafarm@gmail.com</translation>
+- Wenn Sie sich sicher sind, bitte senden Sie eine E-Mail an geodatafarm@gmail.com</translation>
     </message>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="92"/>
@@ -331,12 +331,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="96"/>
         <source>User name already taken, please choose another name as user name!</source>
-        <translation>User name already taken, please choose another name as user name!</translation>
+        <translation>Der Benutzername ist bereits vergeben, bitte wählen Sie einen anderen Benutzernamen!</translation>
     </message>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="118"/>
         <source>Done</source>
-        <translation>Gemacht</translation>
+        <translation>Erledigt</translation>
     </message>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="118"/>
@@ -346,7 +346,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="73"/>
         <source>The farm name can not start with a number</source>
-        <translation>Der Farmname darf nicht start mit ein number</translation>
+        <translation>Der Farmname darf nicht mit einer Zahl beginnen</translation>
     </message>
 </context>
 <context>
@@ -384,7 +384,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="71"/>
         <source>choose password</source>
-        <translation>Passwort</translation>
+        <translation>Wählen Sie ein Passwort</translation>
     </message>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="64"/>
@@ -414,7 +414,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/create_farm_popup_base.ui" line="99"/>
         <source>yyyy</source>
-        <translation>yyyy</translation>
+        <translation>JJJJ</translation>
     </message>
 </context>
 <context>
@@ -437,7 +437,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/create_guiding_file.py" line="212"/>
         <source>Float (1.234)</source>
-        <translation>Float (1.234)</translation>
+        <translation>Gleitkommazahl (1.234)</translation>
     </message>
     <message>
         <location filename="../support_scripts/create_guiding_file.py" line="306"/>
@@ -457,7 +457,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/create_guiding_file.py" line="205"/>
         <source>Cell size must be integer</source>
-        <translation>Die Zellengröße muss eine ganze Zahl sein</translation>
+        <translation>Die Zellengröße muss eine Ganzzahl sein</translation>
     </message>
     <message>
         <location filename="../support_scripts/create_guiding_file.py" line="306"/>
@@ -535,7 +535,7 @@ Drücken Sie abschließend “Anleitung erstellen”, und Sie sind startklar!</t
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="183"/>
         <source>Float (1.234)</source>
-        <translation>Float (1.234)</translation>
+        <translation>Gleitkommazahl (1.234)</translation>
     </message>
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="64"/>
@@ -582,7 +582,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="198"/>
         <source>Setting_distance</source>
-        <translation>Einstellentfernung</translation>
+        <translation>Einstellen der Entfernung</translation>
     </message>
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="240"/>
@@ -592,7 +592,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="250"/>
         <source>Select Outputpath</source>
-        <translation>Wählen Sie Ausgabepfad</translation>
+        <translation>Wählen Sie den Ausgabepfad</translation>
     </message>
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="267"/>
@@ -645,7 +645,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../database_scripts/db.py" line="110"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/db.py" line="103"/>
@@ -660,7 +660,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../database_scripts/db.py" line="186"/>
         <source>Message</source>
-        <translation>Botschaft</translation>
+        <translation>Nachricht</translation>
     </message>
     <message>
         <location filename="../database_scripts/db.py" line="186"/>
@@ -673,7 +673,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="63"/>
         <source>- select dataset -</source>
-        <translation>- Wählen Sie den Dataset -</translation>
+        <translation>- Wählen Sie den Datensatz -</translation>
     </message>
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="39"/>
@@ -688,12 +688,12 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="43"/>
         <source>fertilize</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="45"/>
         <source>spray</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="47"/>
@@ -718,7 +718,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../support_scripts/drop_unreal.py" line="71"/>
         <source>- select attribute -</source>
-        <translation>- attribut asuwählen -</translation>
+        <translation>- Attribut auswählen -</translation>
     </message>
 </context>
 <context>
@@ -766,12 +766,12 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/drop_un_real.ui" line="109"/>
         <source>fertilize</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../widgets/drop_un_real.ui" line="114"/>
         <source>spray</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../widgets/drop_un_real.ui" line="119"/>
@@ -796,7 +796,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/drop_un_real.ui" line="163"/>
         <source>Select attribute:</source>
-        <translation>Attribut asuwählen:</translation>
+        <translation>Attribut auswählen:</translation>
     </message>
     <message>
         <location filename="../widgets/drop_un_real.ui" line="175"/>
@@ -806,7 +806,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/drop_un_real.ui" line="182"/>
         <source>Cancel</source>
-        <translation>Cancel</translation>
+        <translation>Abbruch</translation>
     </message>
 </context>
 <context>
@@ -814,7 +814,7 @@ bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation
     <message>
         <location filename="../widgets/findIsoFields.ui" line="14"/>
         <source>Find fields from ISOXML</source>
-        <translation>Felder aus ISOXML finden</translation>
+        <translation>Felder aus ISOXML-Datei finden</translation>
     </message>
     <message>
         <location filename="../widgets/findIsoFields.ui" line="31"/>
@@ -856,12 +856,12 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
     <message>
         <location filename="../support_scripts/find_iso_field.py" line="258"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../support_scripts/find_iso_field.py" line="254"/>
         <source>Field name already exist, please select a new name</source>
-        <translation>Der Feldname ist fertig, bitte wählen Sie einen neuen Namen</translation>
+        <translation>Der Feldname ist bereits vergeben, bitte wählen Sie einen neuen Namen</translation>
     </message>
 </context>
 <context>
@@ -869,7 +869,7 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="14"/>
         <source>Fix rows</source>
-        <translation>Zeile reparieren</translation>
+        <translation>Zeilen reparieren</translation>
     </message>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="161"/>
@@ -884,7 +884,7 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="47"/>
         <source>-- Select &quot;row&quot; --</source>
-        <translation>- Wählen &quot;Zeile&quot; -</translation>
+        <translation>- Wähle &quot;Zeile&quot; -</translation>
     </message>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="144"/>
@@ -939,17 +939,17 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="135"/>
         <source>10</source>
-        <translation></translation>
+        <translation>10</translation>
     </message>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="39"/>
         <source>Row col</source>
-        <translation>Row spalte</translation>
+        <translation>Reihe Spalte</translation>
     </message>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="55"/>
         <source>Course col</source>
-        <translation>kurs spalte</translation>
+        <translation>Kurs Spalte</translation>
     </message>
     <message>
         <location filename="../widgets/fix_rows_base.ui" line="32"/>
@@ -976,13 +976,13 @@ if you have any problems do not hesitate to
 contact me at geodatafarm@gmail.com</source>
         <translation>GeoDataFarm konvertiert Punktdaten automatisch in
 Polygon (außer Erntedaten). Die Polygone
-wird mit einem Delaunay-Triangulationsskript generiert
-die das Konzept der &quot;Zeilen&quot; nicht verstehen.
+werden mit einem Delaunay-Triangulationsskript generiert,
+das das Konzept der &quot;Zeilen&quot; nicht versteht.
 
 Dieses Skript aktualisiert die Polygongeometrie in
-&quot;Zeilen&quot; kann es einige Minuten dauern, bis sie ausgeführt werden!
+&quot;Zeilen&quot; die Ausführung kann einige Minuten dauern!
 
-Dies wird nur mit einem Miedema Sctrual Kartoffelpflanzgefäß getestet.
+Dies wird nur mit einem Miedema Sctrual Kartoffelpflanzgerät getestet.
 Wenn Sie irgendwelche Probleme haben, zögern Sie nicht
 Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
     </message>
@@ -1002,7 +1002,7 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
     <message>
         <location filename="../GeoDataFarm.py" line="383"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm.py" line="292"/>
