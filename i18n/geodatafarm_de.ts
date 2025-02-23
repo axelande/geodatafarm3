@@ -2009,7 +2009,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="371"/>
         <source>Harvester width (m):</source>
-        <translation>Breite des Dreschtisches (m):</translation>
+        <translation>Schneidwerksbreite (m):</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="391"/>
@@ -2049,7 +2049,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="527"/>
         <source>Yield:</source>
-        <translation>Ausbeute:</translation>
+        <translation>Ertrag:</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="534"/>
@@ -2059,7 +2059,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="554"/>
         <source>Moisture:</source>
-        <translation>Wassergehalt:</translation>
+        <translation>Feuchte:</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="577"/>
@@ -2082,12 +2082,12 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_irrigation_dialog_base.ui" line="14"/>
         <source>Add indata to the model</source>
-        <translation>Fügen Sie dem Modell Indata hinzu</translation>
+        <translation>Fügen Sie dem Modell Daten hinzu</translation>
     </message>
     <message>
         <location filename="../widgets/import_irrigation_dialog_base.ui" line="36"/>
         <source>Add from raindancer</source>
-        <translation>Addiere von raindancer</translation>
+        <translation>Vom raindancer hinzufügen</translation>
     </message>
     <message>
         <location filename="../widgets/import_irrigation_dialog_base.ui" line="43"/>
@@ -2107,7 +2107,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_irrigation_dialog_base.ui" line="101"/>
         <source>yyyy</source>
-        <translation>yyyy</translation>
+        <translation>JJJJ</translation>
     </message>
     <message>
         <location filename="../widgets/import_irrigation_dialog_base.ui" line="108"/>
@@ -2135,7 +2135,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../import_data/handle_raster.py" line="75"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/handle_raster.py" line="75"/>
@@ -2145,7 +2145,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../import_data/handle_raster.py" line="88"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/handle_raster.py" line="88"/>
@@ -2158,7 +2158,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="14"/>
         <source>Add indata to the model</source>
-        <translation>Fügen Sie dem Modell Indata hinzu</translation>
+        <translation>Fügen Sie dem Modell Daten hinzu</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="156"/>
@@ -2188,7 +2188,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="280"/>
         <source>Add data to canvas</source>
-        <translation>Daten zur Zeichenfläche hinzufügen</translation>
+        <translation>Daten zur Karte hinzufügen</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="136"/>
@@ -2218,7 +2218,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="222"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="35"/>
@@ -2230,7 +2230,7 @@ ISOXML hinzufügen</translation>
         <source>Date stored in 
 following column</source>
         <translation>Datum gespeichert in
-folgende Spalte</translation>
+folgender Spalte</translation>
     </message>
     <message>
         <location filename="../widgets/import_shp_dialog_base.ui" line="235"/>
@@ -2345,7 +2345,7 @@ folgende Spalte</translation>
         <source>Date stored in 
 following column</source>
         <translation>Datum gespeichert in
-folgende Spalte</translation>
+folgender Spalte</translation>
     </message>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="109"/>
@@ -2425,7 +2425,7 @@ folgende Spalte</translation>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="57"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="578"/>
@@ -2475,7 +2475,7 @@ folgende Spalte</translation>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="519"/>
         <source>Either select a column, fill in a static value or leave it</source>
-        <translation>Wählen entweder eine Spalte aus, einem statischen Wert oder lassen Sie ihn</translation>
+        <translation>Wählen Sie entweder eine Spalte aus, fügen einen festen Wert ein oder lassen Sie ihn frei</translation>
     </message>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="642"/>
@@ -2495,12 +2495,12 @@ folgende Spalte</translation>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="406"/>
         <source>Move (cc) forward:</source>
-        <translation>Bewegen (cc) vorwärts:</translation>
+        <translation>(cc) vorwärts bewegen:</translation>
     </message>
     <message>
         <location filename="../widgets/import_text_dialog_base.ui" line="507"/>
         <source>Move (cc) left:</source>
-        <translation>Bewegen (cc) nach links:</translation>
+        <translation>(cc) nach links bewegen:</translation>
     </message>
     <message>
         <location filename="../widgets/import_xml_bin.ui" line="37"/>
@@ -2512,15 +2512,15 @@ folgende Spalte</translation>
         <source>Adding tasks and
 checking their field
 may take a while</source>
-        <translation>Einzelheiten hinzufügen
-und prüfe
-zu welchem ​​Bereich sie gehören
-das kann einen nehmen
-während</translation>
+        <translation>Aufgaben hinzufügen
+und prüfen,
+zu welchem Feld sie gehören,
+kann eine Weile
+dauern</translation>
     </message>
     <message>
         <location filename="../widgets/import_xml_bin.ui" line="105"/>
-        <source>Find thier field</source>
+        <source>Find their field</source>
         <translation>Finden Sie ihr Feld</translation>
     </message>
     <message>
@@ -2539,8 +2539,8 @@ während</translation>
 must be included
 in each point</source>
         <translation>Wählen Sie eine Spalte aus,
-die muss enthalten sein
-in jedem Punkt</translation>
+die in jedem Punkt enthalten sein
+muss</translation>
     </message>
 </context>
 <context>
@@ -2548,13 +2548,13 @@ in jedem Punkt</translation>
     <message>
         <location filename="../import_data/handle_input_shp_data.py" line="188"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/handle_input_shp_data.py" line="86"/>
-        <source>No shapes was found in the file
+        <source>No shapes were found in the file
 </source>
-        <translation>No shapes was found in the file
+        <translation>Es wurden keine Formen in der Datei gefunden
 </translation>
     </message>
     <message>
@@ -2580,12 +2580,12 @@ in jedem Punkt</translation>
     <message>
         <location filename="../import_data/handle_input_shp_data.py" line="452"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/handle_input_shp_data.py" line="222"/>
         <source>The date format didn&apos;t match the selected format, please change</source>
-        <translation>Das Datumsformat stimmte nicht mit dem ausgewählten Format überein, bitte ändern</translation>
+        <translation>Das Datumsformat stimmt nicht mit dem ausgewählten Format überein, bitte ändern</translation>
     </message>
     <message>
         <location filename="../import_data/handle_input_shp_data.py" line="311"/>
@@ -2635,7 +2635,7 @@ If you are missing any formats please contact geodatafarm@gmail.com</source>
 % d = Tag
 % H = Stunde (24h)
 % M = Minute
-% S = Second
+% S = Sekunde
 Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gmail.com</translation>
     </message>
     <message>
@@ -2646,7 +2646,7 @@ Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gm
     <message>
         <location filename="../import_data/handle_text_data.py" line="311"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="126"/>
@@ -2671,12 +2671,12 @@ Wenn Sie irgendwelche Formate vermissen, wenden Sie sich bitte an geodatafarm@gm
     <message>
         <location filename="../import_data/handle_text_data.py" line="455"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="381"/>
         <source>The date format didn&apos;t match the selected format, please change</source>
-        <translation>Das Datumsformat stimmte nicht mit dem ausgewählten Format überein, bitte ändern</translation>
+        <translation>Das Datumsformat stimmt nicht mit dem ausgewählten Format überein, bitte ändern</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="439"/>
@@ -2695,7 +2695,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/handle_text_data.py" line="444"/>
         <source> rows were skipped since the row did not match the heading.</source>
-        <translation> zeilen wurden übersprungen, da die Zeile nicht mit der Überschrift übereinstimmt.</translation>
+        <translation> Zeilen wurden übersprungen, da die Zeile nicht mit der Überschrift übereinstimmt.</translation>
     </message>
     <message>
         <location filename="../import_data/handle_text_data.py" line="455"/>
@@ -2715,7 +2715,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_irrigation.py" line="73"/>
         <source>The &quot;to date&quot; must be larger than the &quot;from date&quot;</source>
-        <translation>Das &quot;Von Datum&quot; muss größer sein als das &quot;zu Datum&quot;</translation>
+        <translation>Das &quot;Von Datum&quot; muss größer sein als das &quot;bis Datum&quot;</translation>
     </message>
 </context>
 <context>
@@ -2728,7 +2728,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="138"/>
         <source>Get more info</source>
-        <translation>Daten herunterladen</translation>
+        <translation>Mehr Information</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="138"/>
@@ -2738,7 +2738,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="430"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="430"/>
@@ -2763,7 +2763,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="204"/>
         <source>Crops</source>
-        <translation>Hinzufügen</translation>
+        <translation>Kulturen</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="266"/>
@@ -2773,7 +2773,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="279"/>
         <source>Column name</source>
-        <translation>Name</translation>
+        <translation>Spaltenname</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="279"/>
@@ -2783,12 +2783,12 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="279"/>
         <source>Min value</source>
-        <translation>Min</translation>
+        <translation>Minimumwert</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="279"/>
         <source>Max value</source>
-        <translation>Max</translation>
+        <translation>Maximumwert</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="279"/>
@@ -2808,17 +2808,17 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="423"/>
         <source>You need to select a crop</source>
-        <translation>Sie müssen sich für eine Ernte entscheiden</translation>
+        <translation>Sie müssen sich für eine Kultur entscheiden</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="422"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="448"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="448"/>
@@ -2828,12 +2828,12 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="124"/>
         <source>At least one of the tasked was placed outside the field at approximate: </source>
-        <translation>Zumindest einer der Beauftragten wurde außerhalb des Feldes platziert bei ungefähr: </translation>
+        <translation>Zumindest einer der Aufträge wurde außerhalb des Feldes platziert bei ungefähr: </translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="157"/>
         <source>No &quot;DPD&quot; data was found in the taskdata.xml, the file might be corrupt?</source>
-        <translation>In der taskdata.xml wurden keine „DPD“-Daten gefunden. Möglicherweise ist die Datei beschädigt?</translation>
+        <translation>In der Taskdata.xml wurden keine „DPD“-Daten gefunden. Möglicherweise ist die Datei beschädigt?</translation>
     </message>
     <message>
         <location filename="../import_data/handle_iso11783.py" line="77"/>
@@ -2859,7 +2859,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../support_scripts/multiedit.py" line="179"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../support_scripts/multiedit.py" line="179"/>
@@ -2933,7 +2933,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../database_scripts/db.py" line="35"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/db.py" line="35"/>
@@ -2946,12 +2946,12 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../database_scripts/plan_ahead.py" line="107"/>
         <source>Select crop</source>
-        <translation>Ernte auswählen</translation>
+        <translation>Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../database_scripts/plan_ahead.py" line="100"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../database_scripts/plan_ahead.py" line="100"/>
@@ -2969,7 +2969,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../support_scripts/populate_lists.py" line="130"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
 </context>
 <context>
@@ -2977,12 +2977,12 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../support_scripts/pyagriculture/agriculture.py" line="40"/>
         <source>The specified path does not contain a taskdata.xml file</source>
-        <translation>Der definierte Pfad enthält keine taskdata.xml feile</translation>
+        <translation>Der ausgewählte Pfad enthält keine Taskdata.xml Datei</translation>
     </message>
     <message>
         <location filename="../support_scripts/pyagriculture/agriculture.py" line="125"/>
         <source>The TLG file {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml was not found.</source>
-        <translation>Das feile {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml wurde nicht gefund.</translation>
+        <translation>Die TLG Datei {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml wurde nicht gefunden.</translation>
     </message>
     <message>
         <location filename="../support_scripts/pyagriculture/agriculture.py" line="185"/>
@@ -2995,7 +2995,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="368"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="139"/>
