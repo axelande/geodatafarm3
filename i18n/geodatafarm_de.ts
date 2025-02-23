@@ -3005,17 +3005,17 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="119"/>
         <source>GeoDataFarm_Limited_report_per_operation</source>
-        <translation>GeoDataFarm_Limited-Bericht_pro_Vorgang</translation>
+        <translation>GeoDataFarm_Kurzbericht_pro_Vorgang</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="162"/>
         <source>GeoDataFarm_Limited_report</source>
-        <translation>GeoDataFarm_Limited-Bericht</translation>
+        <translation>GeoDataFarm_Kurzbericht</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="150"/>
         <source>GeoDataFarm_Limited_report_per_field</source>
-        <translation>GeoDataFarm_Limited-Bericht_pro_Feld</translation>
+        <translation>GeoDataFarm_KurzBericht_pro_Feld</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="219"/>
@@ -3034,12 +3034,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="193"/>
         <source>Fertilizing data (simple input)</source>
-        <translation>Dünge (einfache Eingabe)</translation>
+        <translation>Düngedaten (einfache Eingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="195"/>
         <source>Spraying data (simple input)</source>
-        <translation>Sprüh (einfache Eingabe)</translation>
+        <translation>Spritzdaten (einfache Eingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="197"/>
@@ -3054,12 +3054,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="248"/>
         <source>Fertilizing data (text input)</source>
-        <translation>Daten düngen (Texteingabe)</translation>
+        <translation>Düngedaten (Texteingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="250"/>
         <source>Spraying data (text input)</source>
-        <translation>Sprühdaten (Texteingabe)</translation>
+        <translation>Spritzdaten (Texteingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="252"/>
@@ -3094,12 +3094,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="311"/>
         <source>Fertilizing</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="313"/>
         <source>Spraying</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="315"/>
@@ -3114,7 +3114,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="319"/>
         <source>Harrowing</source>
-        <translation>Harrowing</translation>
+        <translation>Eggen</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="321"/>
@@ -3139,12 +3139,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="199"/>
         <source>Plowing data (simple input)</source>
-        <translation>Pflügendaten (einfache Eingabe)</translation>
+        <translation>Pflugdaten (einfache Eingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="201"/>
         <source>Harrowing data (simple input)</source>
-        <translation>Eggedata (einfache Eingabe)</translation>
+        <translation>Eggedaten (einfache Eingabe)</translation>
     </message>
     <message>
         <location filename="../support_scripts/generate_reports.py" line="203"/>
@@ -3192,12 +3192,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/rescale_values_widget.ui" line="104"/>
         <source>fertilize</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../widgets/rescale_values_widget.ui" line="109"/>
         <source>spray</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../widgets/rescale_values_widget.ui" line="114"/>
@@ -3232,7 +3232,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/rescale_values_widget.ui" line="177"/>
         <source>Cancel</source>
-        <translation>Cancel</translation>
+        <translation>Abbruch</translation>
     </message>
 </context>
 <context>
@@ -3240,7 +3240,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/fix_rows.py" line="102"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../support_scripts/fix_rows.py" line="102"/>
@@ -3305,7 +3305,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/satellite_data.py" line="322"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/satellite_data.py" line="100"/>
@@ -3315,7 +3315,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/satellite_data.py" line="283"/>
         <source>You have already created a guide file for this field today, do you want to replace it?</source>
-        <translation>Sie haben heute alle eine Leitfadendatei für dieses Feld erstellt. Möchten Sie diese ersetzen?</translation>
+        <translation>Sie haben heute bereits eine Leitfadendatei für dieses Feld erstellt. Möchten Sie diese ersetzen?</translation>
     </message>
     <message>
         <location filename="../import_data/satellite_data.py" line="344"/>
@@ -3330,7 +3330,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/satellite_data.py" line="293"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/satellite_data.py" line="293"/>
@@ -3363,7 +3363,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="30"/>
         <source>Rate</source>
-        <translation>Rate</translation>
+        <translation>Aufwandmenge</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="30"/>
@@ -3393,7 +3393,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="44"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="69"/>
@@ -3408,7 +3408,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="71"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="71"/>
@@ -3423,7 +3423,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="104"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="92"/>
@@ -3433,12 +3433,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="95"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="96"/>
         <source>In order to save the data you must select a crop</source>
-        <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
+        <translation>Um die Daten zu speichern, müssen Sie eine Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../import_data/save_fertilizing_data.py" line="100"/>
@@ -3471,7 +3471,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harrowing_data.py" line="42"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_harrowing_data.py" line="42"/>
@@ -3486,7 +3486,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harrowing_data.py" line="63"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_harrowing_data.py" line="60"/>
@@ -3504,7 +3504,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="30"/>
         <source>Yield</source>
-        <translation>Ausbeute</translation>
+        <translation>Ertrag</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="30"/>
@@ -3529,7 +3529,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="41"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="65"/>
@@ -3544,7 +3544,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="67"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="67"/>
@@ -3559,7 +3559,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="93"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="87"/>
@@ -3569,12 +3569,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="89"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="90"/>
         <source>In order to save the data you must select a crop</source>
-        <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
+        <translation>Um die Daten zu speichern, müssen Sie eine Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="93"/>
@@ -3584,7 +3584,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_harvest_data.py" line="34"/>
         <source>Iso Bin XML files</source>
-        <translation>xml und Binärdateien</translation>
+        <translation>ISOXML und Binärdateien</translation>
     </message>
 </context>
 <context>
@@ -3592,7 +3592,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_other_data.py" line="30"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/save_other_data.py" line="90"/>
@@ -3612,7 +3612,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_other_data.py" line="92"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_other_data.py" line="92"/>
@@ -3627,7 +3627,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_other_data.py" line="126"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_other_data.py" line="123"/>
@@ -3665,7 +3665,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_planting_data.py" line="45"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../import_data/save_planting_data.py" line="48"/>
@@ -3685,7 +3685,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_planting_data.py" line="86"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_planting_data.py" line="86"/>
@@ -3700,7 +3700,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_planting_data.py" line="106"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_planting_data.py" line="97"/>
@@ -3710,12 +3710,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_planting_data.py" line="99"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../import_data/save_planting_data.py" line="100"/>
         <source>In order to save the data you must select a crop</source>
-        <translation>Um die Daten zu speichern, müssen Sie eine Ernte auswählen</translation>
+        <translation>Um die Daten zu speichern, müssen Sie eine Kultur auswählen</translation>
     </message>
     <message>
         <location filename="../import_data/save_planting_data.py" line="103"/>
@@ -3748,7 +3748,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_plowing_data.py" line="41"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_plowing_data.py" line="41"/>
@@ -3763,7 +3763,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_plowing_data.py" line="62"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_plowing_data.py" line="59"/>
@@ -3791,7 +3791,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_soil_data.py" line="29"/>
         <source>pH</source>
-        <translation>pH</translation>
+        <translation>pH-Wert</translation>
     </message>
     <message>
         <location filename="../import_data/save_soil_data.py" line="29"/>
@@ -3816,7 +3816,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_soil_data.py" line="37"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../import_data/save_soil_data.py" line="40"/>
@@ -3836,7 +3836,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_soil_data.py" line="71"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../import_data/save_soil_data.py" line="71"/>
@@ -3851,7 +3851,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_soil_data.py" line="95"/>
         <source>Error:</source>
-        <translation>Error:</translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
         <location filename="../import_data/save_soil_data.py" line="92"/>
@@ -3874,7 +3874,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="30"/>
         <source>Rate</source>
-        <translation>Rate</translation>
+        <translation>Aufwandmenge</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="30"/>
@@ -3899,7 +3899,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="41"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="44"/>
@@ -3958,7 +3958,7 @@ Rückverfolgung: {t}</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="111"/>
-        <source>A variety  has to be set in order to save the data</source>
+        <source>A variety has to be set in order to save the data</source>
         <translation>Zum Speichern der Daten muss eine Sorte eingestellt werden</translation>
     </message>
     <message>
@@ -4126,7 +4126,7 @@ Rückverfolgung: {t}</translation>
         <location filename="../widgets/table_managment.ui" line="117"/>
         <source>Edit
 --&gt;</source>
-        <translation>Edieren
+        <translation>Bearbeiten
 --&gt;</translation>
     </message>
     <message>
@@ -4137,12 +4137,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="55"/>
         <source>Combine multiple datasets</source>
-        <translation>Kombinieren Datensätze</translation>
+        <translation>Mehrere Datensätze kombinieren</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="42"/>
         <source>*To rename any dataset or parameter make sure that only one is selected</source>
-        <translation>* Um einen Datensatz oder Parameter umzubenennen, stellen Sie sicher, dass nur einer ausgewählt ist</translation>
+        <translation>* Um einen Datensatz oder Parameter umzubenennen, stellen Sie sicher, dass nur ein Datensatz ausgewählt ist</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="77"/>
@@ -4152,12 +4152,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="128"/>
         <source>Remove selected datasets</source>
-        <translation>Ausgewählte Datensätze</translation>
+        <translation>Ausgewählte Datensätze entfernen</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="138"/>
         <source>Change parameter name</source>
-        <translation>Ändern den Parameternamen</translation>
+        <translation>Ändern Sie den Parameternamen</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="96"/>
@@ -4179,12 +4179,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="199"/>
         <source>fertilize</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="204"/>
         <source>spray</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="209"/>
@@ -4209,12 +4209,12 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="229"/>
         <source>Split the harvest data</source>
-        <translation>Teilen Sie die Ernte in mehrere Reihen auf</translation>
+        <translation>Teilen Sie die Erntedaten in mehrere Reihen auf</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="236"/>
         <source>Split the yield to each row</source>
-        <translation>Teilen Sie den Erntewert in mehrere Reihen auf</translation>
+        <translation>Teilen Sie den Ertragswert in mehrere Reihen auf</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="244"/>
@@ -4239,7 +4239,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="279"/>
         <source>Row distance:</source>
-        <translation>Abstand einstellen (m):</translation>
+        <translation>Reihenabstand (m):</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="289"/>
@@ -4249,7 +4249,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="300"/>
         <source>--- Select yield column ---</source>
-        <translation>--- Erntespalte auswählen ---</translation>
+        <translation>--- Ertragsspalte auswählen ---</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="311"/>
@@ -4259,7 +4259,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../widgets/table_managment.ui" line="342"/>
         <source>Remake rows</source>
-        <translation>Zeilen neu machen</translation>
+        <translation>Zeilen neu erstellen</translation>
     </message>
     <message>
         <location filename="../widgets/table_managment.ui" line="362"/>
@@ -4287,7 +4287,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/find_iso_field.py" line="54"/>
         <source>Open a taskdata</source>
-        <translation>Eine Taskdaten öffnen</translation>
+        <translation>Eine Taskdatei öffnen</translation>
     </message>
     <message>
         <location filename="../support_scripts/find_iso_field.py" line="68"/>
@@ -4297,7 +4297,7 @@ Rückverfolgung: {t}</translation>
     <message>
         <location filename="../support_scripts/find_iso_field.py" line="68"/>
         <source>No partfields contour was found in the taskdata.xml</source>
-        <translation>Kein Partfeld-Kontur wurde in der taskdata.xml gefunden</translation>
+        <translation>Keine Teilschlag-Kontur wurde in der Taskdata.xml gefunden</translation>
     </message>
 </context>
 </TS>
