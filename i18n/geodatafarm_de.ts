@@ -1007,7 +1007,7 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
     <message>
         <location filename="../GeoDataFarm.py" line="292"/>
         <source>You need to have at least one input (activity or soil) and one harvest data set selected.</source>
-        <translation></translation>
+        <translation>Sie müssen mindestens eine Eingabe (Aktivität oder Boden) und einen Erntedatensatz ausgewählt haben.</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm.py" line="311"/>
@@ -1022,12 +1022,12 @@ Kontaktieren Sie mich unter geodatafarm@gmail.com</translation>
     <message>
         <location filename="../GeoDataFarm.py" line="373"/>
         <source>Crop name must be filled in.</source>
-        <translation>Der Name der Ernte muss ausgefüllt werden.</translation>
+        <translation>Der Name der Kultur muss ausgefüllt werden.</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm.py" line="383"/>
         <source>Crop name already exist, please select a new name</source>
-        <translation>Der Name des Ernteguts ist fertig, bitte wählen Sie einen neuen Namen</translation>
+        <translation>Der Name des Kultur existiert bereits, bitte wählen Sie einen neuen Namen</translation>
     </message>
 </context>
 <context>
@@ -1077,17 +1077,17 @@ verbinden</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="334"/>
         <source>Add crop</source>
-        <translation>Ernte hinzufügen</translation>
+        <translation>Kultur hinzufügen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="188"/>
         <source>Remove crop </source>
-        <translation>Ernte entfernen </translation>
+        <translation>Kultur entfernen </translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="373"/>
         <source>Your crops:</source>
-        <translation>Ihre Ernten:</translation>
+        <translation>Ihre Kulturen:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="101"/>
@@ -1124,7 +1124,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1916"/>
         <source>Open the file and save it</source>
-        <translation>Öffnen Sie die Datei und speichern sie</translation>
+        <translation>Öffnen Sie die Datei und speichern Sie sie</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1866"/>
@@ -1139,7 +1139,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1876"/>
         <source>Shape file (.shp)</source>
-        <translation>Shape file (.shp)</translation>
+        <translation>Shape Datei (.shp)</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1881"/>
@@ -1154,7 +1154,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1352"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="498"/>
@@ -1164,12 +1164,12 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="484"/>
         <source>Seed  rate:</source>
-        <translation>Samenrate:</translation>
+        <translation>Aussaatstärke:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="733"/>
         <source>Saw depth:</source>
-        <translation>Sägetiefe:</translation>
+        <translation>Ablagetiefe:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1621"/>
@@ -1209,12 +1209,12 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3538"/>
         <source>Fertilizing</source>
-        <translation>Befruchten</translation>
+        <translation>Düngen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="967"/>
         <source>Rate:</source>
-        <translation>Rate:</translation>
+        <translation>Aufwandmenge:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1936"/>
@@ -1228,13 +1228,13 @@ GeoDataFarms Webseite</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="941"/>
-        <source>Varerity:</source>
+        <source>Variety:</source>
         <translation>Sorte:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3522"/>
         <source>Spraying</source>
-        <translation>Sprühen</translation>
+        <translation>Spritzen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="920"/>
@@ -1269,7 +1269,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1106"/>
         <source>Operation name:</source>
-        <translation>Operationsname:</translation>
+        <translation>Name der Anwendung:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1129"/>
@@ -1284,17 +1284,17 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1256"/>
         <source>Harvesting</source>
-        <translation>Ernte</translation>
+        <translation>Ernten</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1320"/>
         <source>Yield:</source>
-        <translation>Ausbeute:</translation>
+        <translation>Ertrag:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1334"/>
         <source>tonnes</source>
-        <translation>ton</translation>
+        <translation>Tonnen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1327"/>
@@ -1319,7 +1319,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3586"/>
         <source>Harrowing</source>
-        <translation>Harrowing</translation>
+        <translation>Eggen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3640"/>
@@ -1424,12 +1424,12 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2294"/>
         <source>Add selected tables to the canvas</source>
-        <translation>Fügen Sie ausgewählte Tabellen hinzu</translation>
+        <translation>Fügen Sie ausgewählte Tabellen zur Karte hinzu</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2543"/>
         <source>Run geo- spatial analyse</source>
-        <translation>Führen eine Geodatenanalyse</translation>
+        <translation>Führen Sie eine Geodatenanalyse durch</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2310"/>
@@ -1439,7 +1439,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2121"/>
         <source>Spraying data sets:</source>
-        <translation>Sprühdatensätze:</translation>
+        <translation>Spritzdatensätze:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2398"/>
@@ -1474,7 +1474,7 @@ GeoDataFarms Webseite</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3941"/>
         <source>yyyy</source>
-        <translation>yyyy</translation>
+        <translation>JJJJ</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2574"/>
@@ -1642,7 +1642,7 @@ von Farben:</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3011"/>
         <source>Edit the presentation of the layer on the canvas:</source>
-        <translation>Bearbeiten die Darstellung der Ebene:</translation>
+        <translation>Bearbeiten Sie die Darstellung der Kartenebene:</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3069"/>
@@ -1703,7 +1703,7 @@ von Farben:</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3670"/>
         <source>List all operations per operation</source>
-        <translation>Alle Operationen pro Operation auflisten</translation>
+        <translation>Alle Operationen pro Anwendung auflisten</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3464"/>
@@ -1723,17 +1723,17 @@ von Farben:</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3454"/>
         <source>List all operations per field</source>
-        <translation>Alle Operationen pro Feld auflisten</translation>
+        <translation>Alle Anwendungen pro Feld auflisten</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3487"/>
         <source>List all operations per crop</source>
-        <translation>Alle Operationen pro Ernte auflisten</translation>
+        <translation>Alle Anwendungen pro Kultur auflisten</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3494"/>
         <source>Select operations</source>
-        <translation>Operationen auswählen</translation>
+        <translation>Anwendungen auswählen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3554"/>
@@ -1743,34 +1743,34 @@ von Farben:</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3781"/>
         <source>Generate reports</source>
-        <translation>Berichte generieren</translation>
+        <translation>Berichte erstellen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3766"/>
         <source>Here you can generate reports of the imported data.
 If you are missing a report / something in a report please send a e-mail to geodatafarm@gmail.com</source>
-        <translation>Hier können Sie Berichte der importierten Daten erstellen.
-Wenn Sie einen Bericht / etwas in einem Bericht vermissen, senden Sie bitte eine E-Mail an geodatafarm@gmail.com</translation>
+        <translation>Hier können Sie Berichte über die importierten Daten erstellen.
+Wenn Ihnen ein Bericht/etwas in einem Bericht fehlt, senden Sie bitte eine E-Mail an geodatafarm@gmail.com</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3790"/>
         <source>Plan ahead</source>
-        <translation>Vorausplanen</translation>
+        <translation>Planen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3811"/>
         <source>Plan summary</source>
-        <translation>Zusammenfassung planen</translation>
+        <translation>Planzusammenfassung</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3867"/>
         <source>Make your plan ahead</source>
-        <translation>Machen Sie Ihren Plan voran</translation>
+        <translation>Machen Sie Ihren Plan</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3860"/>
         <source>Update fields and crops</source>
-        <translation>Felder und Ernten aktualisieren</translation>
+        <translation>Felder und Kulturen aktualisieren</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3840"/>
@@ -1786,12 +1786,12 @@ aktualisieren</translation>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3853"/>
         <source>View year on canvas</source>
-        <translation>Jahr auf Leinwand anzeigen</translation>
+        <translation>Jahr auf Karte anzeigen</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3208"/>
         <source>Do you want to change some of the data of the selected layer in the canvas? Select the objects with QGIS default selector and click Edit attributes</source>
-        <translation>Möchten Sie einige Daten der ausgewählten Ebene im Erstellungsbereich ändern? Wählen Sie die Objekte mit dem QGIS-Standardselektor aus und klicken Sie auf Attribute bearbeiten</translation>
+        <translation>Möchten Sie einige Daten der ausgewählten Ebene in der Karte ändern? Wählen Sie die Objekte mit QGIS-Standardauswahl aus und klicken Sie auf Attribute bearbeiten</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3137"/>
@@ -1804,7 +1804,7 @@ aktualisieren</translation>
 This plugin aims to helps farmers to view and analyze field data. Log positions from farm equipment can be loaded in to the plugin and if yield logs exist, its variation over the field can be analyzed. This plugin is complex, but each step/part is explained at: www.geodatafarm.com
 If you have questions, experience any errors or have any suggestions do not hesitate send an e-mail to geodatafarm@gmail.com</source>
         <translation>Willkommen bei GeoDataFarm!
-Dieses Plugin soll Landwirten helfen, Felddaten anzuzeigen und zu analysieren. Protokollpositionen von landwirtschaftlichen Geräten können in das Plugin geladen werden und wenn Ertragsprotokolle vorhanden sind, können deren Variationen über das Feld analysiert werden. Dieses Plugin ist komplex, aber jeder Schritt/Teil wird unter www.geodatafarm.com erklärt.
+Dieses Plugin soll Landwirten dabei helfen, Felddaten anzuzeigen und zu analysieren. Protokollpositionen von landwirtschaftlichen Geräten können in das Plugin geladen werden und wenn Ertragsprotokolle vorhanden sind, können deren Variationen über das Feld analysiert werden. Dieses Plugin ist komplex, aber jeder Schritt/Teil wird unter www.geodatafarm.com erklärt.
 Wenn Sie Fragen haben, Fehler feststellen oder Vorschläge haben, senden Sie bitte eine E-Mail an geodatafarm@gmail.com</translation>
     </message>
     <message>
@@ -1825,9 +1825,9 @@ Wenn Sie Fragen haben, Fehler feststellen oder Vorschläge haben, senden Sie bit
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2747"/>
         <source>Though satellile it is possible to track the growth of biomass (by comparing different light spectrum). For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage. For farms in european contries it possible to process an image here:
-You need to download the band 4 and 8 rasterbands from the EO Browser powered by Sential (free signup at their page).</source>
+You need to download the band 4 and 8 rasterbands from the EO Browser powered by Sentinel (free signup at their page).</source>
         <translation>Obwohl satellitengestützt, ist es möglich, das Wachstum von Biomasse zu verfolgen (durch Vergleichen verschiedener Lichtspektren). Für schwedische Farmen kann ich die Verwendung von cropsat.se empfehlen, wo auf der Webseite leicht Leitfadendateien erstellt werden können. Für Betriebe in europäischen Ländern kann hier ein Bild bearbeitet werden:
-Sie müssen die Band 4- und 8-Rasterbänder aus dem EO-Browser von Sential herunterladen (kostenlose Registrierung auf der entsprechenden Seite).</translation>
+Sie müssen die Band 4- und 8-Rasterbänder aus dem EO-Browser von Sentinel herunterladen (kostenlose Registrierung auf der entsprechenden Seite).</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1385"/>
@@ -1847,7 +1847,7 @@ Sie müssen die Band 4- und 8-Rasterbänder aus dem EO-Browser von Sential herun
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="1295"/>
         <source>Iso Bin XML files</source>
-        <translation>xml und Binärdateien</translation>
+        <translation>ISOXML und Binärdateien</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="3292"/>
@@ -1939,7 +1939,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="109"/>
         <source>Recalculate yield</source>
-        <translation>Ernte neu berechnen</translation>
+        <translation>Ertrag neu berechnen</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="116"/>
@@ -1949,12 +1949,12 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="186"/>
         <source>Move Y:</source>
-        <translation>Bewegung Y:</translation>
+        <translation>Verschiebe Y:</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="196"/>
         <source>Maximum yield:</source>
-        <translation>MaximalerErtrag:</translation>
+        <translation>Maximaler Ertrag:</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="216"/>
@@ -1974,7 +1974,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="269"/>
         <source>Move X:</source>
-        <translation>Bewegung X:</translation>
+        <translation>Verschiebe X:</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="279"/>
@@ -1999,7 +1999,7 @@ ISOXML hinzufügen</translation>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="354"/>
         <source>--- Select crop ---</source>
-        <translation>--- Ernte auswählen ---</translation>
+        <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
         <location filename="../widgets/import_interpolate_harvest_base.ui" line="362"/>
