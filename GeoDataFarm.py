@@ -353,14 +353,11 @@ class GeoDataFarm:
     def get_database_connection(self: Self) -> bool:
         """Connects to the database and create the db object"""
         self.db = DB(self.dock_widget, path=self.plugin_dir, test_mode=self.test_mode)
+        if self.test_mode:
+            return False
         connected = self.db.set_conn()
         if not connected:
-            if self.test_mode:
-                return False
-            if self.test_mode:
-                return False
-            else:
-                QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
+            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
 

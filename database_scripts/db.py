@@ -79,17 +79,20 @@ class DB:
         bool
         """
         try:
-            if self.dbname is None:
-                with open(os.path.join(self.path, 'database_scripts', 'connection_data.ini'), 'r') as f:
-                    text = f.readline()
-                    [username, password, farmname] = text.split(',')
-        
-                self.dbname = farmname
-                self.dbuser = username
-                self.dbpass = password
+            if not self.test_mode:
+                if not os.path.exists(os.path.join(self.path, 'database_scripts', 'connection_data.ini')):
+                    return False
+                if self.dbname is None:
+                    with open(os.path.join(self.path, 'database_scripts', 'connection_data.ini'), 'r') as f:
+                        text = f.readline()
+                        [username, password, farmname] = text.split(',')
+            
+                    self.dbname = farmname
+                    self.dbuser = username
+                    self.dbpass = password
         except IOError:
-            return False
-        if set_farm_name:
+            raise psycopg2.OperationalError("Could not make a stable connection to the GeoDataFarm server")
+        if not self.test_mode:
             self.dock_widget.LFarmName.setText(self.dbname +
                                            self.tr(' is set as your farm'))
         self.pool = psycopg2.pool.ThreadedConnectionPool(1, 20,

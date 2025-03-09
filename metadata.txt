@@ -25,6 +25,9 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.11.1 (2025-03-09)
+  - [bug] Fixed wrong projection when inserting data from isoxml
+  - [feature] Added more test cases
   Version 2.11.0 (2025-01-04)
   - [bug] Altering the user that username and farmname could not start with a number
   - [feature] Added the possibility to add fields from ISOXML files (both predefined and based on data)

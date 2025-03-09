@@ -203,13 +203,10 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                                                  self.tr('What do you want to rename ') + item.text() +
                                                  self.tr(' to?'))
                 if y_n:
-                    sql = """ALTER TABLE {schema}.{tbl} RENAME {new_name} TO {text}
-                    """.format(schema=self.current_schema, tbl=self.current_table, new_name=item.text(), text=text)
+                    sql = """ALTER TABLE {schema}.{tbl} RENAME {new_name} TO {text}""".format(schema=self.current_schema, tbl=self.current_table, new_name=item.text(), text=text)
                     self.db.execute_sql(sql)
                     try:
-                        sql = """ALTER INDEX {schema}.{old}_{schema}_{tbl}
-                              RENAME TO {new}_{schema}_{tbl}
-                              """.format(schema=self.current_schema, tbl=self.current_table,
+                        sql = """ALTER INDEX {schema}.{old}_{schema}_{tbl} RENAME TO {new}_{schema}_{tbl}""".format(schema=self.current_schema, tbl=self.current_table,
                                          old=item.text(), new=text)
                         self.db.execute_sql(sql)
                     except:
@@ -370,8 +367,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 # print(sql)
                 self.db.execute_sql(sql)
             if split_yield:
-                sql = f"""UPDATE {schema}.{tbl}
-	            SET {yield_row} = {yield_row} / {nbr_rows}"""
+                sql = f"""UPDATE {schema}.{tbl} SET {yield_row} = {yield_row} / {nbr_rows}"""
                 self.db.execute_sql(sql)
 
     def update_column_list(self):

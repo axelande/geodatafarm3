@@ -152,7 +152,8 @@ class FindIsoField:
         patch_collection = ax.fill(*polygon.exterior.xy, edgecolor='m', facecolor='none')
         if patch_collection:
             self.polygon_patch = patch_collection[0]
-        ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
+        if not self.parent.test_mode:
+            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
         padding = 0.15
         ax.set_xlim(minx - (maxx - minx) * padding, maxx + (maxx - minx) * padding)
         ax.set_ylim(miny - (maxy - miny) * padding)
@@ -241,7 +242,7 @@ class FindIsoField:
         for key, value in self.fields.items():
             if value == self.current_polygon:
                 new_wkt = self._set_new_crs(new_polygon, source_proj = pyproj.CRS('EPSG:3857'), 
-                                                          target_proj = pyproj.CRS('EPSG:4626'))
+                                                          target_proj = pyproj.CRS('EPSG:4326'))
                 self.fields[key] = new_wkt.wkt
                 break
         self.current_polygon = new_wkt.wkt

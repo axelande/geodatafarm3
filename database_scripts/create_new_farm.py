@@ -133,7 +133,7 @@ class CreateFarm:
         if not self.parent_widget.test_mode:
             with open(os.path.join(self.plugin_dir, 'database_scripts', 'connection_data.ini'), 'w') as f:
                 f.write(username + ',' + password + ',' + farmname)
-        self.parent_widget.dock_widget.LFarmName.setText(farmname +
+            self.parent_widget.dock_widget.LFarmName.setText(farmname +
                                                          ' is set\nas your farm')
         self._connect_to_db()
         self.reset_db_connections()

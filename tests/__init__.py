@@ -52,6 +52,7 @@ def create_new_farm(gdf: GeoDataFarm):
     # assert all([suc1, suc2[0], suc3[0]])
 
 def connect_2_farm(gdf: GeoDataFarm) -> None:
+    gdf.test_mode = True
     gdf.run()
     cf = gdf.clicked_create_farm()
     cf.CF.user_name.setText('pytest_user')
