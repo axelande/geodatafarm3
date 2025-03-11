@@ -5,8 +5,8 @@ from psycopg2.errors import UndefinedTable
 import pytest
 from unittest.mock import patch, MagicMock
 
-from ..database_scripts.db import DB
-from ..database_scripts.table_managment import TableManagement
+from geodatafarm.database_scripts.db import DB
+from geodatafarm.database_scripts.table_managment import TableManagement
 
 @pytest.fixture
 def db():
