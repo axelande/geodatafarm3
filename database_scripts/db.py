@@ -10,7 +10,7 @@ import psycopg2.extras
 import traceback
 import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QInputDialog
 try:
     from ..support_scripts.__init__ import TR
 except ImportError:

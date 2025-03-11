@@ -30,4 +30,4 @@ jobs:
         docker commit qgis_container qgis_with_deps
 
     - name: Run tests
-      run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
+      run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "export PYTHONPATH=\$PYTHONPATH:/app xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s"
