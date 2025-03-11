@@ -29,6 +29,12 @@ jobs:
         docker run --name qgis_container --volume $(pwd):/app -w=/app qgis/qgis:stable sh -c "python3 -m pip install -r requirements_dev.txt --break-system-packages"
         docker commit qgis_container qgis_with_deps
 
+    - name: Debug - List directory
+      run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "ls -la /app"
+
+    - name: Debug - Print PYTHONPATH
+      run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "echo \$PYTHONPATH"
+
     - name: Run tests
       run: |
         docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "
