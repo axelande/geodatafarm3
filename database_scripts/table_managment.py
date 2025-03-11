@@ -3,8 +3,8 @@ from PyQt5 import QtCore
 from qgis.core import QgsTask
 from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
-from ..widgets.table_managment_dialog import TableMgmtDialog
-from ..support_scripts.__init__ import TR
+from widgets.table_managment_dialog import TableMgmtDialog
+from support_scripts.__init__ import TR
 __author__ = 'Axel Horteborn'
 
 
