@@ -22,6 +22,17 @@ from shapely.geometry import Polygon, Point
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
 
+def remove_invalid_points(gdf):
+    """Removes rows with invalid latitude and longitude values from the GeoDataFrame."""
+    # Define valid ranges for latitude and longitude
+    valid_lat_range = (-90, 90)
+    valid_lon_range = (-180, 180)
+
+    # Filter out rows with invalid latitude and longitude values
+    valid_gdf = gdf[(gdf['latitude'].between(*valid_lat_range)) & (gdf['longitude'].between(*valid_lon_range))]
+
+    return valid_gdf
+
 class FindIsoField:
     def __init__(self: Self, parent, test_path:str = '') -> None:
         self.parent = parent
@@ -119,6 +130,7 @@ class FindIsoField:
             task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
             gdf = gpd.GeoDataFrame(task, geometry='geometry')
             gdf.set_crs(epsg=4326, inplace=True)
+            gdf = remove_invalid_points(gdf)
             convex_hull = gdf.unary_union.convex_hull
             self.fields[f'Task {i}'] = convex_hull.wkt
             self.fifw.LWFields.addItem(f'Task {i}')
@@ -146,6 +158,11 @@ class FindIsoField:
                              polygon: "shapely.geometry.polygon.Polygon"
                              ) -> "matplotlib.figure.Figure":
         """Plots the polygon on a map with interactivity for zoom and node editing."""
+        if polygon.is_empty:
+            fig, ax = plt.subplots(figsize=(12, 9))
+            ax.text(0.5, 0.5, 'No data points were found', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=15)
+            ax.set_axis_off()
+            return fig
         polygon = self._set_new_crs(polygon)
         minx, miny, maxx, maxy = polygon.bounds
         fig, ax = plt.subplots(figsize=(12, 9))
