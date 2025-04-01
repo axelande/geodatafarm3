@@ -8,9 +8,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import xml.etree.ElementTree as ET
-
-from ..__init__ import TR, getfile_insensitive
-from .sorting_utils import find_by_key
+if __name__ == '__main__':
+    import sys
+    sys.path.append(os.path.abspath(os.path.curdir))
+    from support_scripts.__init__ import TR, getfile_insensitive
+    from support_scripts.pyagriculture.sorting_utils import find_by_key
+else:
+    from .. import TR, getfile_insensitive
+    from .sorting_utils import find_by_key
 #from .cython_agri import read_static_binary_data, cython_read_dlvs
 
 
@@ -44,60 +49,83 @@ class PyAgriculture:
     def _add_from_root_or_child(r_or_c: ET.Element, 
                                 task_data_dict: dict) -> list:
         """
-        :param r_or_c: Root or child object
+        Adds an element to the task_data_dict, initializing it if necessary.
         """
-        if r_or_c.tag not in task_data_dict.keys():
+        if r_or_c.tag not in task_data_dict:
             task_data_dict[r_or_c.tag] = {}
+
         found_children = False
-        if r_or_c.attrib["A"] not in task_data_dict[r_or_c.tag].keys():
-            found_children = True
-            task_data_dict[r_or_c.tag][r_or_c.attrib["A"]] = r_or_c.attrib
-            task_data_dict[r_or_c.tag][r_or_c.attrib["A"]]['parent_tag'] = r_or_c.tag
-            try:
-                task_data_dict[r_or_c.tag][r_or_c.attrib["A"]]['parent_id'] = r_or_c.attrib["A"]
-            except Exception as e1:
-                task_data_dict[r_or_c.tag][r_or_c.attrib["A"]]['parent_id'] = None
-        else:
-            if r_or_c.attrib["A"] in task_data_dict[r_or_c.tag]:
-                r_or_c.attrib["A"] = r_or_c.attrib["A"] + str(len(task_data_dict[r_or_c.tag]))
-                task_data_dict[r_or_c.tag][r_or_c.attrib["A"]] = r_or_c.attrib
-                task_data_dict[r_or_c.tag][r_or_c.attrib["A"]]['parent_tag'] = r_or_c.tag
-            for attribute in r_or_c.attrib.keys():
-                if attribute in task_data_dict[r_or_c.tag][r_or_c.attrib["A"]]:
-                    pass
-                    #task_data_dict[r_or_c.tag][r_or_c.attrib["A"] + str(len(task_data_dict[r_or_c.tag]))] = r_or_c.attrib[attribute]
-                    #if isinstance(task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute], list):
-                    #    if r_or_c.attrib[attribute] not in task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute]:
-                    #        task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute].append(r_or_c.attrib[attribute])
-                    #else:
-                    #    if task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute] != r_or_c.attrib[attribute]:
-                    #        task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute] = [task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute], r_or_c.attrib[attribute]]
-                else:
-                    task_data_dict[r_or_c.tag][r_or_c.attrib["A"]][attribute] = r_or_c.attrib[attribute]
-            a=1
+        element_id = r_or_c.attrib.get("A")
+        if element_id:
+            # Check if the element already exists
+            if element_id not in task_data_dict[r_or_c.tag]:
+                found_children = True
+                task_data_dict[r_or_c.tag][element_id] = r_or_c.attrib
+                task_data_dict[r_or_c.tag][element_id]['parent_tag'] = r_or_c.tag
+                task_data_dict[r_or_c.tag][element_id]['parent_id'] = r_or_c.attrib.get("parent_id", None)
+            else:
+                # If the element already exists, skip adding it again
+                return [task_data_dict, found_children]
+
         return [task_data_dict, found_children]
 
-    def add_children(self: Self, task_data_dict: dict[Never, Never], 
-                     root: ET.Element) -> dict[str, dict[str, dict[str, str]]]:
+    def add_children(self: Self, task_data_dict: dict, 
+                     root: ET.Element, parent_id: str = None) -> dict[str, dict[str, dict[str, str]]]:
+        """Adds data from the XML schema to a dict, walking down the tags in the .xml file.
+        Includes parent-child relationships."""
+        # Ensure the root tag exists in the dictionary
+        if root.tag not in task_data_dict:
+            task_data_dict[root.tag] = {}
+
+        # Handle elements with an "A" attribute
+        if "A" in root.attrib:
+            element_id = root.attrib["A"]
+            if element_id in task_data_dict[root.tag]:
+                # If the element already exists, convert it to a list if necessary
+                if not isinstance(task_data_dict[root.tag][element_id], list):
+                    task_data_dict[root.tag][element_id] = [task_data_dict[root.tag][element_id]]
+                task_data_dict[root.tag][element_id].append(root.attrib)
+            else:
+                # Add the element as a single entry
+                task_data_dict[root.tag][element_id] = root.attrib
+        else:
+            # Handle elements without an "A" attribute (e.g., PTN, TIM)
+            if "" in task_data_dict[root.tag]:
+                if not isinstance(task_data_dict[root.tag][""], list):
+                    task_data_dict[root.tag][""] = [task_data_dict[root.tag][""]]
+                task_data_dict[root.tag][""].append(root.attrib)
+            else:
+                task_data_dict[root.tag][""] = root.attrib
+
+        # Add parent reference
+        if parent_id:
+            root.attrib["parent_id"] = parent_id
+
+        # Add child references
+        if "children" not in root.attrib:
+            root.attrib["children"] = []
+
+        # Recursively process child elements
+        for child in root:
+            # Add the current element as the parent of the child
+            child.attrib["parent_id"] = root.attrib.get("A", "")
+            # Add the child to the parent's "children" list
+            root.attrib["children"].append(child.attrib.get("A", ""))
+            task_data_dict = self.add_children(task_data_dict, child, 
+                                               parent_id=root.attrib.get("A", "") if root.attrib.get("A", "") != "" else root.tag)
+
+        return task_data_dict
+    
+    def get_structure(self: Self, tree: ET.Element, task_data_structure={}) -> dict:
         """Adds data from the xml schema to a dict, walking down the tags in the .xml file
         """
-        if "A" in root.keys():
-            task_data_dict, found_children = self._add_from_root_or_child(root, task_data_dict)
-        for child in root:
-            if child.tag == 'DLV':
-                self.add_dlv(child)
-            task_data_dict, found_children = self._add_from_root_or_child(child, task_data_dict)
-            if found_children:
-                for sub_c in child:
-
-                    self.add_children(task_data_dict, sub_c)
-        return task_data_dict
-
-    def add_dlv(self: Self, dlv_e: ET.Element) -> None:
-        if dlv_e.attrib["B"] == "":
-            self.dlvs.append(dlv_e.attrib.copy())
-            if dlv_e.attrib["A"] not in self.dlv_idx.keys():
-                self.dlv_idx[dlv_e.attrib["A"]] = len(list(self.dlv_idx))
+        for child in tree:
+            if child.tag not in task_data_structure.keys():
+                task_data_structure[child.tag] = []
+            grand_child = self.get_structure(child, {})
+            child.attrib["child"] = grand_child
+            task_data_structure[child.tag].append(child.attrib)
+        return task_data_structure
 
     def add_xfr_parts(self: Self, tree:ET.ElementTree) -> ET.ElementTree:
         for child in tree.getroot():
@@ -119,8 +147,16 @@ class PyAgriculture:
         tree = ET.parse(getfile_insensitive(self.path + 'TaskData.xml'))
         tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
-        if 'TLG' in self.task_dicts.keys():
+        task_structure = self.get_structure(tree.getroot())
+        if 'TSK' in task_structure.keys():
+            if 'TLG' not in self.task_dicts:
+                raise BaseException(self.tr('This ISOXML format is yet not supported. Please send an e-mail to geodatafarm@gmail.com to get further help!'))
             for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
+                equipment = 'unknown'
+                try:
+                    equipment = self.task_dicts['DVC'][task_structure['TSK'][i]["child"]["CNN"][0]["C"]]["B"]
+                except:
+                    pass
                 try:
                     file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
                     branch = ET.parse(file)
@@ -137,13 +173,13 @@ class PyAgriculture:
                     task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
                 except IndexError:
                     task_name = 'unkown'
-                task_names.append(task_name)
+                task_names.append(f"{equipment}-{task_name}")
                 file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
         return task_names, file_names
 
     def gather_data(self: Self, qtask: str, 
                     only_tasks: list[str|Never|Never]=[], 
-                    most_important: str|None='dry yield') -> None:
+                    most_importants: list=['dry yield']) -> None:
         """This function will use the specified path to the taskdata.xml to build a tree of all information in the
          taskdata file and all the files tlg xml and bin files."""
         reset_columns = False  # Resets all columns when the "most_important" have been used.
@@ -173,8 +209,10 @@ class PyAgriculture:
                     task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
                 except IndexError:
                     task_name = 'unkown'
-                if most_important is not None and most_important not in columns:
-                    continue
+                if len(most_importants) == 0:
+                    most_important = None
+                else:
+                    most_important = most_importants[i]
                 path = self.path + self.task_dicts['TLG'][tsk]['A']
                 task = self.read_binaryfile(path, tlg_dict, columns,
                                                        most_important, task_name, reset_columns)
@@ -235,48 +273,106 @@ class PyAgriculture:
             columns.append('GPS time')
 
         for key in tlg_dict['DLV'].keys():
-            if 'Name' in tlg_dict['DLV'][key].keys():
-                columns.append(tlg_dict['DLV'][key]['Name'].lower())
+            if isinstance(tlg_dict['DLV'][key], list):
+                for dlv in tlg_dict['DLV'][key]:
+                    if 'Name' in dlv.keys():
+                        columns.append(dlv['Name'])
+            else:
+                if 'Name' in tlg_dict['DLV'][key].keys():
+                    columns.append(tlg_dict['DLV'][key]['Name'])
         return columns
 
     @staticmethod
     def _add_device(task_data_dict: dict[str, dict[str, dict[str, str]]], 
-                    dlv_key: str, 
+                    dlv_key: str, dlv_idx: int,
                     tlg_dict: dict[str, dict[str, dict[str, str]]], 
-                    pd_id: str) -> None:
-        found, dpd_key = find_by_key(task_data_dict['DPD'], 'B', pd_id)
-        if found:
-            dpd = task_data_dict['DPD'][dpd_key]
-            tlg_dict['DLV'][dlv_key]['Name'] = dpd['E']
-            if 'F' in dpd.keys():
-                if dpd['F'] not in task_data_dict['DVP']:
-                    return
-                dvp = task_data_dict['DVP'][dpd['F']]
-                tlg_dict['DLV'][dlv_key]['DVP'] = {'nr_decimals': dvp['D'], 'scale': dvp['C'],
-                                                   'offset': dvp['B']}
-                if 'E' in dvp.keys():
-                    tlg_dict['DLV'][dlv_key]['DVP']['unit'] = dvp['E']
+                    pd_id: str, det_a: str) -> None:
+        """
+        Adds device information to the DLV entry, resolving names and units using DPD and DPT mappings.
+        Ensures the correct DOR is used based on the DET's A value.
+        """
+        # Iterate through all DORs in the DET
+        b, c, d = find_by_key(tlg_dict['DLV'], 'B', pd_id)
+        for dor_key in task_data_dict['DET'][det_a]['children']:
+            if dor_key in task_data_dict['DPD']:
+                dpd_list = task_data_dict['DPD'][dor_key]
+                
+                if isinstance(dpd_list, list):
+                    # Find the correct DPD where the PD ID matches
+                    dpd = next((dpd for dpd in dpd_list if dpd['B'] == pd_id), None)
+                else:
+                    dpd = dpd_list if dpd_list['B'] == pd_id else None
+
+                if dpd:
+                    # Assign the name from the DPD entry
+                    tlg_dict['DLV'][dlv_key][dlv_idx]['Name'] = dpd['E']
+                    # Check for DVP (Device Value Parameters) and assign scale, offset, and unit
+                    if 'F' in dpd.keys():
+                        if dpd['F'] not in task_data_dict['DVP']:
+                            return
+                        dvp = task_data_dict['DVP'][dpd['F']]
+                        tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = {
+                            'nr_decimals': dvp['D'],
+                            'scale': dvp['C'],
+                            'offset': dvp['B']
+                        }
+                        if 'E' in dvp.keys():
+                            tlg_dict['DLV'][dlv_key][dlv_idx]['DVP']['unit'] = dvp['E']
+                    return  # Exit after finding the correct DPD
+
+        # If no matching DPD is found, check DPT
+        for dor_key in task_data_dict['DET'][det_a].keys():
+            if dor_key in task_data_dict['DPT']:
+                dpt_list = task_data_dict['DPT'][dor_key]
+                if isinstance(dpt_list, list):
+                    # Find the correct DPT where the PD ID matches
+                    dpt = next((dpt for dpt in dpt_list if dpt['B'] == pd_id), None)
+                else:
+                    dpt = dpt_list if dpt_list['B'] == pd_id else None
+
+                if dpt:
+                    # Assign the name from the DPT entry
+                    tlg_dict['DLV'][dlv_key][dlv_idx]['Name'] = dpt['D']
+                    # Check for DVP and assign scale, offset, and unit
+                    if 'E' in dpt.keys():
+                        if dpt['E'] not in task_data_dict['DVP']:
+                            return
+                        dvp = task_data_dict['DVP'][dpt['E']]
+                        tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = {
+                            'nr_decimals': dvp['D'],
+                            'scale': dvp['C'],
+                            'offset': dvp['B']
+                        }
+                        if 'E' in dvp.keys():
+                            tlg_dict['DLV'][dlv_key][dlv_idx]['DVP']['unit'] = dvp['E']
+                    return  # Exit after finding the correct DPT
 
     def combine_task_tlg_data(self: Self, 
                               tlg_dict: dict[str, dict[str, dict[str, str]]], 
                               task_data_dict: dict[str, dict[str, dict[str, str]]]
                               ) -> dict[str, dict[str, dict[str, str]]]:
         for dlv_key in tlg_dict['DLV'].keys():
-            # Obtains the DeviceElementIdRef
-            de_id = tlg_dict['DLV'][dlv_key]['C']
-            # Obtains the ProcessDataDDI
-            pd_id = tlg_dict['DLV'][dlv_key]['A']
-            # Adding the DeviceElement to the tlg dict
-            if not isinstance(de_id, list):
-                tlg_dict['DLV'][dlv_key]['DET'] = task_data_dict['DET'][de_id]
-                tlg_dict['DLV'][dlv_key]['DET']['list'] = False
-            else:
-                tlg_dict['DLV'][dlv_key]['DET'] = {}
-                tlg_dict['DLV'][dlv_key]['DET']['list'] = True
-                for i, de_i in enumerate(de_id):
-                    tlg_dict['DLV'][dlv_key]['DET'][i] = {}
-                    tlg_dict['DLV'][dlv_key]['DET'][i] = task_data_dict['DET'][de_i]
-            self._add_device(task_data_dict, dlv_key, tlg_dict, pd_id)
+            dlvs = tlg_dict['DLV'][dlv_key]
+            if not isinstance(dlvs, list):
+                tlg_dict['DLV'][dlv_key] = [dlvs]
+                dlvs = [dlvs]
+            for idx, dlv in enumerate(dlvs):
+                # Obtains the DeviceElementIdRef
+                de_id = dlv['C']
+                # Obtains the ProcessDataDDI
+                pd_id = dlv['A']
+                # Adding the DeviceElement to the tlg dict
+                det_a = de_id  # Pass the DET's A value
+                if not isinstance(de_id, list):
+                    dlv['DET'] = task_data_dict['DET'][de_id]
+                    dlv['DET']['list'] = False
+                else:
+                    dlv['DET'] = {}
+                    dlv['DET']['list'] = True
+                    for i, de_i in enumerate(de_id):
+                        dlv['DET'][i] = {}
+                        dlv['DET'][i] = task_data_dict['DET'][de_i]
+                self._add_device(task_data_dict, dlv_key, idx, tlg_dict, pd_id, det_a)
         return tlg_dict
 
     def _read_static_binary_python(self: Self, data_row: list, 
@@ -317,7 +413,15 @@ class PyAgriculture:
         unit_row = [None] * nr_columns
         dpd_ids = {}
         for dpd in self.task_dicts['DPD'].values():
-            dpd_ids[dpd["B"]] = dpd
+            if isinstance(dpd, list):
+                for dpd_i in dpd:
+                    dpd_ids[f'{dpd_i["A"]}-{dpd_i["B"]}'] = dpd_i
+            else:
+                dpd_ids[f'{dpd["A"]}-{dpd["B"]}'] = dpd
+        
+        for key, item in tlg_dict['DLV'].items():
+            for item_i in item:
+                self.dlvs.append(item_i['DVP'])
 
         while read_point < len(binary_data):
             # The first part of each "row" contains of static data, a timestamp and some satellite data.
@@ -333,9 +437,8 @@ class PyAgriculture:
                 data_row, nr_dlvs, nr_static = self._read_static_binary_python(data_row, read_point, binary_data,
                                                                                tlg_dict)
                 read_point += self.static_bytes
-                read_point, data_row, unit_row = self.read_dlvs(binary_data, read_point, nr_dlvs, nr_static, dpd_ids,
-                                                            self.task_dicts, unit_row, data_row, self.dlvs,
-                                                            self.dlv_idx)
+                read_point, data_row, unit_row = self.read_dlvs(binary_data, read_point, nr_dlvs, nr_static, 
+                                                                unit_row, data_row, self.dlvs)
 
             if most_important is None:
                 to_tlg_df.append(data_row[:])
@@ -368,30 +471,20 @@ class PyAgriculture:
 
     @staticmethod
     def read_dlvs(binary_data: bytes, read_point: int, 
-                  nr_dlvs: int, nr_static: int, dpd_ids: dict,
-                  tlg_dict: dict, unit_row: list, data_row: list, 
-                  dlvs: list, dlv_idx: dict) -> list:
-        for nr, dlv in np.frombuffer(binary_data, [('DLVn', np.dtype('uint8')),
+                  nr_dlvs: int, nr_static: int, unit_row: list, 
+                  data_row: list, dlvs: list) -> list:
+        for idx, dlv in np.frombuffer(binary_data, [('DLVn', np.dtype('uint8')),
                                                    ('PDV', np.dtype('int32'))],
                                      count=nr_dlvs, offset=read_point):
             read_point += 5
-            dpd_key = dlvs[nr]['A']
-            idx = dlv_idx[dpd_key]
-            if dpd_key in dpd_ids.keys():
-                dpd = dpd_ids[dpd_key]
-                dvp_key = dpd.get('F')
-            else:
-                continue
-            if dvp_key is None or dvp_key not in tlg_dict['DVP'].keys():
-                continue
-            dvp = tlg_dict['DVP'][dvp_key]
-            decimals = float(10**int(dvp['D']))
-            dlv = int((dlv + float(dvp['B'])) * float(dvp['C']) * decimals + 0.5) / decimals
-            if unit_row[idx] is None:
-                if 'E' in dvp.keys():
-                    unit_row[idx] = dvp['E']
+            dvp = dlvs[idx]
+            decimals = float(10**int(dvp['nr_decimals']))
+            dlv = int((dlv + float(dvp['offset'])) * float(dvp['scale']) * decimals + 0.5) / decimals
+            if unit_row[idx + 1] is None:
+                if 'unit' in dvp.keys():
+                    unit_row[idx + 1] = dvp['unit']
             try:
-                data_row[idx + nr_static - 1] = dlv
+                data_row[idx + nr_static] = dlv
             except:
                 pass
         return [read_point, data_row, unit_row]

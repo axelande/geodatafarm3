@@ -6,311 +6,300 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>909</width>
-    <height>608</height>
+    <width>1025</width>
+    <height>583</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Add indata to the model</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>889</width>
-     <height>581</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="sizeConstraint">
-     <enum>QLayout::SetMinimumSize</enum>
-    </property>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="PBAddInputFolder">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Select taskdata folder</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="PBHelp">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Help</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
-      <item row="1" column="3" rowspan="7">
-       <widget class="QTableWidget" name="TWISODataSelect">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::AnyKeyPressed</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QComboBox" name="CBMostImportant"/>
-      </item>
-      <item row="6" column="2">
-       <widget class="QPushButton" name="PBFindFields">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Find thier field</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Adding tasks and
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="PBAddInputFolder">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>Select taskdata folder</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="PBHelp">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>Help</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>In the Select a column that must be included in each point in the &quot;Most interesting&quot; column</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,0,0,0,0,0,0" columnstretch="0,0,0,0">
+       <item row="1" column="2">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="PBFindFields">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>Find thier field</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" rowspan="6">
+        <widget class="QTableWidget" name="TWISODataAll">
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999999</width>
+           <height>99999</height>
+          </size>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AnyKeyPressed</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" rowspan="6">
+        <widget class="QTableWidget" name="TWISODataSelect">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>250</height>
+          </size>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AnyKeyPressed</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Adding tasks and
 checking their field
 may take a while</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <spacer name="verticalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="1" rowspan="7">
-       <widget class="QTableWidget" name="TWISODataAll">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>300</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::AnyKeyPressed</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Select a column that
-must be included
-in each point</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="2">
-       <widget class="QLabel" name="LParams">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Parameters that could be analysed:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="PBAddParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>--&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" rowspan="4">
-       <widget class="QTableWidget" name="TWColumnNames">
-        <property name="minimumSize">
-         <size>
-          <width>620</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::AnyKeyPressed</set>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>Columns in the file:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="PBRemParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>&lt;--</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" rowspan="4">
-       <widget class="QTableWidget" name="TWtoParam">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="PBInsert">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedKingdom"/>
-      </property>
-      <property name="text">
-       <string>Store data</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer name="verticalSpacer_5">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-   </layout>
-  </widget>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="2">
+        <widget class="QLabel" name="LParams">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>Parameters that could be analysed:</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="PBAddParam">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>--&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" rowspan="4">
+        <widget class="QTableWidget" name="TWColumnNames">
+         <property name="minimumSize">
+          <size>
+           <width>620</width>
+           <height>250</height>
+          </size>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AnyKeyPressed</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>Columns in the file:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPushButton" name="PBRemParam">
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+         <property name="text">
+          <string>&lt;--</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" rowspan="4">
+        <widget class="QTableWidget" name="TWtoParam">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>250</height>
+          </size>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedKingdom"/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="PBInsert">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="locale">
+        <locale language="English" country="UnitedKingdom"/>
+       </property>
+       <property name="text">
+        <string>Store data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

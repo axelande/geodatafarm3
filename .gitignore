@@ -58,3 +58,4 @@ resources.py
 connection_data.ini
 zip_build/
 tests/test_data/TaskPotatis/*
+tests/__pycache__/*

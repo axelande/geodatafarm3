@@ -24,9 +24,15 @@ def etree_to_dict(t):
 
 
 def find_by_key(data_dict: dict, key_name: str, 
-                key_value: str) -> tuple[bool, str]:
-    """Returns a dict key where "key_name" equals the key_value """
+                key_value: str) -> tuple[bool, str, int]:
+    """Returns a dict key where "key_name" equals the key_value, if the dict is nested in a list,
+    also returns the index of the list where the key is found."""
     for key in data_dict.keys():
-        if data_dict[key][key_name] == key_value:
-            return True, key
-    return False, key_value
+        if isinstance(data_dict[key], list):
+            for i, item in enumerate(data_dict[key]):
+                if item[key_name] == key_value:
+                    return True, key, i
+        else:
+            if data_dict[key][key_name] == key_value:
+                return True, key, -1
+    return False, key_value, -1

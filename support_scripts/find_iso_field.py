@@ -115,11 +115,11 @@ class FindIsoField:
         self.py_agri = PyAgriculture(os.path.dirname(self.path))
         if self.parent.test_mode is False:
             task = QgsTask.fromFunction('Decode binary data', self.py_agri.gather_data, 
-                                        most_important=None,
+                                        most_importants=[],
                                         on_finished=self.populate_field_list2)
             self.parent.tsk_mngr.addTask(task)
         else:
-            self.py_agri.gather_data(qtask='debug', most_important=None)
+            self.py_agri.gather_data(qtask='debug', most_importants=[])
             self.populate_field_list2()
 
     def populate_field_list2(self: Self, res: None=None, 

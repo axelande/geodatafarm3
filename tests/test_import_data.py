@@ -56,9 +56,10 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.save_harvesting.importer.IXB.PBAddParam.click()
     suc = gdf.save_harvesting.importer.add_to_database()
     assert suc
+    gdf.save_harvesting.importer.close(True, [False, False])
     gdf.dock_widget.PBEditTables.click()
     items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     for text in items:
         if 'test_iso_field' in text:
             assert True
-    assert 'test_iso_field_potatoes_2023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')
+    assert 'test_iso_added_field2_potatoes_2023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')

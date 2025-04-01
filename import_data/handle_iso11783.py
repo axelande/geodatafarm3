@@ -99,8 +99,7 @@ class Iso11783:
                                                               QtWidgets.QFileDialog.ShowDirsOnly)
         if path != '':
             self.initiate_pyAgriculture(path)
-            self.populate_first_table()
-            self.populate_most_interesting()
+            self.populate_first_table()      
 
     def get_task_data(self: Self) -> dict:
         """For those tasks that are marked with include the script will gather their data.
@@ -153,28 +152,12 @@ UNION """
             self.IXB.TWISODataAll.setItem(i, 1, item2)
             self.IXB.TWISODataAll.setItem(i, 2, item3)
 
-    def populate_most_interesting(self: Self) -> None:
-        """Sets the combobox with all column names to select which all 
-        rows must contain."""
-        if 'DPD' not in self.py_agri.task_dicts:
-            QtWidgets.QMessageBox.information(None, self.tr("Error:"),
-                                              self.tr('No "DPD" data was found in the taskdata.xml, the file might be corrupt?'))
-            return
-        self.IXB.CBMostImportant.clear()
-        for k, dpd in self.py_agri.task_dicts['DPD'].items():
-            name = dpd['E']
-            self.IXB.CBMostImportant.addItem(f'{name.lower()}')
-        items = [self.IXB.CBMostImportant.itemText(i) for i in range(self.IXB.CBMostImportant.count())]
-        for i, key in enumerate(items):
-            if 'yield' in key.lower():
-                self.IXB.CBMostImportant.setCurrentIndex(i)
-                break
-
     def populate_second_table(self: Self) -> None:
         """Populates the list that is marked as include in the first table.
         Also calls py_agri to decode the binary data, this is done in a separate
         task."""
         self.tasks_to_include = []
+        most_importants = []
         for row in self.checkboxes1:
             if row[0].checkState() == 2:
                 self.tasks_to_include.append(row[2])
@@ -190,12 +173,12 @@ UNION """
         if self.parent.test_mode is False:
             task = QgsTask.fromFunction('Decode binary data', self.py_agri.gather_data, 
                                         self.tasks_to_include, 
-                                        self.IXB.CBMostImportant.currentText().lower(),
+                                        most_importants,
                                         on_finished=self.populate2)
             self.parent.tsk_mngr.addTask(task)
         else:
             self.py_agri.gather_data("debug", self.tasks_to_include, 
-                                     self.IXB.CBMostImportant.currentText().lower())
+                                     most_importants)
             self.populate2()
 
     def populate2(self: Self, res: str="", values: str="") -> None:
@@ -237,7 +220,7 @@ UNION """
             self.IXB.TWISODataSelect.setCellWidget(i, 3, crops)
             self.checkboxes3.append(field_column)
             self.checkboxes4.append(crops)
-            self.tasks.append(self.py_agri.tasks[i])
+            self.tasks.append(self.rename_duplicate_columns(self.py_agri.tasks[i]))
         self.set_column_list()
 
     def add_to_param_list(self: Self) -> None:
@@ -274,36 +257,56 @@ UNION """
             self.IXB.PBInsert.setEnabled(False)
 
     def set_column_list(self: Self) -> None:
-        """A function that retrieves the name of the columns from the first tasks"""
-        self.IXB.TWColumnNames.clear()
-        self.combo = []
+        """A function that retrieves the name of the columns from the first tasks."""
+        self.IXB.TWColumnNames.clear()  # Clear the table
+        self.IXB.TWColumnNames.setRowCount(0)  # Reset row count
+        self.IXB.TWColumnNames.setColumnCount(6)  # Set the number of columns
+
+        # Set the horizontal header labels
+        self.IXB.TWColumnNames.setHorizontalHeaderLabels([
+            self.tr('Column name'),
+            self.tr('Mean value'),
+            self.tr('Min value'),
+            self.tr('Max value'),
+            self.tr('Unit'),
+            self.tr('Scale')
+        ])
+
+        # Check if there are tasks to populate the table
+        if self.tasks is None or len(self.tasks) == 0:
+            return
+
+        # Populate the table with data
         self.IXB.TWColumnNames.setRowCount(len(self.tasks[0].columns))
-        self.IXB.TWColumnNames.setColumnCount(6)
-        self.IXB.TWColumnNames.setHorizontalHeaderLabels([self.tr('Column name'), self.tr('Mean value'), self.tr('Min value'), self.tr('Max value'), self.tr('Unit'), self.tr('Scale')])
         self.unit_boxes = {}
         self.IXB.TWColumnNames.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+
         for i, row in enumerate(self.tasks[0].columns):
             item1 = QtWidgets.QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
             self.IXB.TWColumnNames.setItem(i, 0, item1)
+
             try:
                 mean = str(round(self.tasks[0][row].mean(), 2))
             except:
                 mean = ''
             item2 = QtWidgets.QTableWidgetItem(mean)
             self.IXB.TWColumnNames.setItem(i, 1, item2)
+
             try:
                 _min = str(self.tasks[0][row].min())
             except:
                 _min = ''
             item3 = QtWidgets.QTableWidgetItem(_min)
             self.IXB.TWColumnNames.setItem(i, 2, item3)
+
             try:
                 _max = str(self.tasks[0][row].max())
             except:
                 _max = ''
             item4 = QtWidgets.QTableWidgetItem(_max)
             self.IXB.TWColumnNames.setItem(i, 3, item4)
+
             unit = self.tasks[0].attrs['unit_row'][i]
             unit_col = self.get_units_option(unit)
             self.unit_boxes[len(self.unit_boxes)] = {'box': unit_col, 'org_item': unit}
@@ -311,8 +314,17 @@ UNION """
             unit_col.__setattr__('org_item', unit)
             unit_col.currentTextChanged.connect(self.change_unit_type)
             self.IXB.TWColumnNames.setCellWidget(i, 4, unit_col)
+
             item6 = QtWidgets.QTableWidgetItem("1")
             self.IXB.TWColumnNames.setItem(i, 5, item6)
+
+    @staticmethod
+    def rename_duplicate_columns(df):
+        cols = pd.Series(df.columns)
+        for dup in cols[cols.duplicated()].unique():
+            cols[cols[cols == dup].index.values.tolist()] = [dup + '_' + str(i) if i != 0 else dup for i in range(sum(cols == dup))]
+        df.columns = cols
+        return df
 
     def change_unit_type(self):
         index = self.sender().index
@@ -514,7 +526,7 @@ UNION """
                     return False
                 
                 if not self.parent.test_mode:
-                    db = DB(None, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
+                    db = DB(self.parent.dock_widget, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
                     connected = db.set_conn(False)
                     task = QgsTask.fromFunction(f'Adding field: {field}{prep_data[5][i]}', insert_data,
                                                 db, df, self.data_type, 
@@ -525,6 +537,7 @@ UNION """
                     res = insert_data(None, self.db, df, self.data_type, 
                                                 insert_sql, table, field, focus_cols, 
                                                 col_types, i)
+                    # self.close(True, res)
                     return res[0]
             except Exception as e:
                 print(e)
@@ -595,13 +608,3 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
         return True, schema, tbl_name, focus_col
     except Exception as e:
         return False, e
-
-if __name__ == '__main__':
-    test_path = 'C:\\Users\\AxelHor\\Downloads\\TASKDATA-20240611T121749Z-001\\TASKDATA'
-    class AP:
-        db = None
-        populate = None
-    ap = AP()
-    iso = Iso11783(ap, 'harvest')
-    iso.initate_pyagriculture(test_path)
-    iso.get_task_names()
