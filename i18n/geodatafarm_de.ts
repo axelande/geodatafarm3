@@ -859,12 +859,12 @@ Die Liste der Felder, die links erscheint, ist auswählbar und nach einer kurzen
 <context>
     <name>FindIsoField</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="287"/>
+        <location filename="../support_scripts/find_iso_field.py" line="311"/>
         <source>Error:</source>
         <translation>Fehler:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="283"/>
+        <location filename="../support_scripts/find_iso_field.py" line="307"/>
         <source>Field name already exist, please select a new name</source>
         <translation>Der Feldname ist bereits vergeben, bitte wählen Sie einen neuen Namen</translation>
     </message>
@@ -1898,6 +1898,11 @@ isoxml taskdata</source>
         <translation>Felder aus
 ISOXML hinzufügen</translation>
     </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="941"/>
+        <source>Varerity:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ImportAndInterpolateHarvest</name>
@@ -2301,22 +2306,22 @@ folgender Spalte</translation>
         <translation>Eingabedatei hinzufügen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="225"/>
+        <location filename="../widgets/import_xml_bin.ui" line="218"/>
         <source>Columns in the file:</source>
         <translation>Spalten in der Datei:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="173"/>
+        <location filename="../widgets/import_xml_bin.ui" line="166"/>
         <source>Parameters that could be analysed:</source>
         <translation>Parameter, die analysiert werden könnten:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="235"/>
+        <location filename="../widgets/import_xml_bin.ui" line="228"/>
         <source>&lt;--</source>
         <translation>&lt;--</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="186"/>
+        <location filename="../widgets/import_xml_bin.ui" line="179"/>
         <source>--&gt;</source>
         <translation>--&gt;</translation>
     </message>
@@ -2508,7 +2513,7 @@ folgender Spalte</translation>
         <translation>Ordner &quot;Taskdata&quot; auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="157"/>
+        <location filename="../widgets/import_xml_bin.ui" line="150"/>
         <source>Adding tasks and
 checking their field
 may take a while</source>
@@ -2519,23 +2524,18 @@ kann eine Weile
 dauern</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="283"/>
+        <location filename="../widgets/import_xml_bin.ui" line="276"/>
         <source>Store data</source>
         <translation>Daten speichern</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="270"/>
+        <location filename="../widgets/import_xml_bin.ui" line="263"/>
         <source>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</source>
         <translation>Nachdem Sie überprüft haben, ob alles gut aussieht (dass die Spalten die richtige Einheit und Skalierung haben), drücken Sie &quot;Daten speichern&quot;, dies kann einige Zeit dauern</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="62"/>
-        <source>In the Select a column that must be included in each point in the &quot;Most interesting&quot; column</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/import_xml_bin.ui" line="87"/>
-        <source>Find thier field</source>
+        <location filename="../widgets/import_xml_bin.ui" line="80"/>
+        <source>Find their field</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2717,112 +2717,112 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 <context>
     <name>Iso11783</name>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="98"/>
+        <location filename="../import_data/handle_iso11783.py" line="104"/>
         <source>Open a folder</source>
         <translation>Öffnen Sie einen Ordner</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="140"/>
+        <location filename="../import_data/handle_iso11783.py" line="161"/>
         <source>Get more info</source>
         <translation>Mehr Information</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="140"/>
+        <location filename="../import_data/handle_iso11783.py" line="161"/>
         <source>Task name</source>
         <translation>Aufgabennname</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="445"/>
+        <location filename="../import_data/handle_iso11783.py" line="483"/>
         <source>Error:</source>
         <translation>Fehler:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="445"/>
+        <location filename="../import_data/handle_iso11783.py" line="483"/>
         <source>You need to select at least one of the tasks</source>
         <translation>Sie müssen mindestens eine der Aufgaben auswählen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="190"/>
+        <location filename="../import_data/handle_iso11783.py" line="223"/>
         <source>To include</source>
         <translation>Einschließen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="190"/>
+        <location filename="../import_data/handle_iso11783.py" line="223"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="190"/>
+        <location filename="../import_data/handle_iso11783.py" line="223"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="190"/>
+        <location filename="../import_data/handle_iso11783.py" line="223"/>
         <source>Crops</source>
         <translation>Kulturen</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="252"/>
+        <location filename="../import_data/handle_iso11783.py" line="283"/>
         <source>No row selected!</source>
         <translation>Keine Zeile ausgewählt!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Column name</source>
         <translation>Spaltenname</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Mean value</source>
         <translation>Durchschnitt</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Min value</source>
         <translation>Minimumwert</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Max value</source>
         <translation>Maximumwert</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Unit</source>
         <translation>Einheit</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="266"/>
+        <location filename="../import_data/handle_iso11783.py" line="297"/>
         <source>Scale</source>
         <translation>Skala</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="431"/>
+        <location filename="../import_data/handle_iso11783.py" line="469"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="438"/>
+        <location filename="../import_data/handle_iso11783.py" line="476"/>
         <source>You need to select a crop</source>
         <translation>Sie müssen sich für eine Kultur entscheiden</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="437"/>
+        <location filename="../import_data/handle_iso11783.py" line="475"/>
         <source>--- Select crop ---</source>
         <translation>--- Kultur auswählen ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="463"/>
+        <location filename="../import_data/handle_iso11783.py" line="505"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="463"/>
+        <location filename="../import_data/handle_iso11783.py" line="505"/>
         <source>The number must only contain numbers and .</source>
         <translation>Die Skala kann nur Zahlen enthalten und Dezimalstellen werden durch Eins getrennt.</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="126"/>
+        <location filename="../import_data/handle_iso11783.py" line="147"/>
         <source>At least one of the tasked was placed outside the field at approximate: </source>
         <translation>Zumindest einer der Aufträge wurde außerhalb des Feldes platziert bei ungefähr: </translation>
     </message>
@@ -2832,7 +2832,7 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
         <translation>Warnung:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="140"/>
+        <location filename="../import_data/handle_iso11783.py" line="161"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
@@ -2966,24 +2966,19 @@ Sind Sie sicher, dass ID, Benutzername und Passwort korrekt waren?</translation>
 <context>
     <name>PyAgriculture</name>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="46"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="48"/>
         <source>The specified path does not contain a taskdata.xml file</source>
         <translation>Der ausgewählte Pfad enthält keine Taskdata.xml Datei</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="165"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="170"/>
         <source>The TLG file {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml was not found.</source>
         <translation>Die TLG Datei {self.task_dicts['TLG'][tsk]['A']}.xml wurde nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="229"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="253"/>
         <source>Point data does not exist in all TLG files..</source>
         <translation>Punktdaten sind nicht in allen TLG-Dateien verfügbar.</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="153"/>
-        <source>This ISOXML format is yet not supported. Please send an e-mail to geodatafarm@gmail.com to get further help!</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
