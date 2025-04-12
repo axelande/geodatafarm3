@@ -591,11 +591,15 @@ def create_table(db: DB, schema: str, heading_row: list[str],
     sql = f"CREATE TABLE {schema}.temp_table{task_nr} (field_row_id serial PRIMARY KEY, "
     lat_lon_inserted = False
     date_inserted = False
+    lat_lon_inserted_c = 0
     for i, col_name in enumerate(heading_row):
+        if col_name in ['latitude', 'longitude', 'geometry']:
+            lat_lon_inserted_c += 1
         if isint(col_name[0]):
             col_name = '_' + col_name
         if column_units is not None:
-            col_name = col_name + column_units[i]
+            if (len(column_units) - lat_lon_inserted_c) > i:
+                col_name = col_name + column_units[i-lat_lon_inserted]
         if not lat_lon_inserted and (
                 col_name == longitude_col or col_name == latitude_col):
             sql += "pos geometry(POINT, 4326),"

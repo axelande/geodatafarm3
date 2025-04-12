@@ -24,7 +24,7 @@ def test_remove_iso_dataset(gdf: GeoDataFarm):
     items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     found = False
     for i, text in enumerate(items):
-        if 'test_iso_field' in text:
+        if 'test_iso' in text:
             gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(2)
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()

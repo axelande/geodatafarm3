@@ -86,7 +86,13 @@ class Iso11783:
             self.IXB.PBAddParam.clicked.disconnect()
             self.IXB.PBRemParam.clicked.disconnect()
             self.IXB.PBInsert.clicked.disconnect()
+            self.IXB.TWISODataSelect.itemChanged.disconnect(self.update_time_stamp)
+            self.IXB.TWISODataAll.clear()
+            self.IXB.TWISODataSelect.clear()
+            self.IXB.TWColumnNames.clear()
+            self.IXB.TWtoParam.clear()
             self.IXB.done(0)
+            self.py_agri = None
             return True
 
     def open_input_folder(self: Self) -> None:
@@ -107,17 +113,32 @@ class Iso11783:
         task_names = {}
         for task_nr, data_set in enumerate(self.py_agri.tasks):  # type: pd.DataFrame
             try:
-                lat = data_set['latitude']
-                lon = data_set['longitude']
-                time_stamp = data_set['time_stamp']
-                if lat is None or lon is None or time_stamp is None:
-                    continue
+                if 'time_stamp' in data_set.columns:
+                    time_stamp = data_set['time_stamp']
+                else:
+                    time_stamp = pd.Series(['1970-01-01'] * len(data_set))
+                    data_set['time_stamp'] = time_stamp
+                if 'geometry' in data_set.columns and 'longitude' not in data_set.columns:
+                    try:
+                        # Ensure the geometry column contains valid geometries
+                        if not data_set['geometry'].isnull().all():
+                            # Calculate centroids and create latitude and longitude columns
+                            data_set['centroid'] = data_set['geometry'].apply(lambda geom: geom.centroid if geom else None)
+                            data_set['latitude'] = data_set['centroid'].apply(lambda centroid: centroid.y if centroid else None)
+                            data_set['longitude'] = data_set['centroid'].apply(lambda centroid: centroid.x if centroid else None)
+                    except Exception as e:
+                        print(f"Error calculating centroids: {e}")
+                else:
+                    lat = data_set['latitude']
+                    lon = data_set['longitude']
+                    if lat is None or lon is None:
+                        continue
             except Exception as e:
                 print(f'error: {e}')
                 return
             fields = []
             sql = "with start_sel as ("
-            for index, row in data_set.iloc[::10].iterrows():
+            for index, row in data_set.iloc[::int(len(data_set)/10)].iterrows():
                 sql +=f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({row["longitude"]} {row["latitude"]})', 4326))
 UNION """
             sql = sql[:-6] + ") select field_name from start_sel group by field_name"
@@ -181,6 +202,18 @@ UNION """
                                      most_importants)
             self.populate2()
 
+    def update_time_stamp(self, item: QtWidgets.QTableWidgetItem) -> None:
+        """Updates the time_stamp in self.py_agri.tasks when the table is edited."""
+        if item.column() == 1:  # Assuming the 'time_stamp' column is at index 1
+            row = item.row()
+            new_value = item.text()
+            try:
+                # Update the corresponding value in self.py_agri.tasks
+                self.py_agri.tasks[row]['time_stamp'] = new_value
+                print(f"Updated time_stamp for task {row} to {new_value}")
+            except Exception as e:
+                print(f"Error updating time_stamp: {e}")
+
     def populate2(self: Self, res: str="", values: str="") -> None:
         """The end of populate the second table when all data is decoded 
         from the qtask"""
@@ -203,14 +236,11 @@ UNION """
             item1.setCheckState(QtCore.Qt.Checked)
             self.checkboxes2.append([i, j, item1])
             item2 = QtWidgets.QTableWidgetItem(row[0][1])
-            item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
+            item2.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable)
             field_column = RadioComboBox()
             self.combo.append(field_column)
             for field, _ in row:
                 field_column.addItem(field)
-            # for nr in range(field_column.count()):
-                # item = field_column.model().item(nr, 0)
-                # item.setCheckState(QtCore.Qt.Checked)
             field_column.setCurrentIndex(1)
             crops = QtWidgets.QComboBox()
             self.populate.reload_crops(crops)
@@ -221,6 +251,7 @@ UNION """
             self.checkboxes3.append(field_column)
             self.checkboxes4.append(crops)
             self.tasks.append(self.rename_duplicate_columns(self.py_agri.tasks[i]))
+        self.IXB.TWISODataSelect.itemChanged.connect(self.update_time_stamp)
         self.set_column_list()
 
     def add_to_param_list(self: Self) -> None:
@@ -275,13 +306,20 @@ UNION """
         # Check if there are tasks to populate the table
         if self.tasks is None or len(self.tasks) == 0:
             return
+        valid_columns = []
+        for column in self.tasks[0].columns:
+            if column not in ['latitude', 'longitude', 'geometry']:
+                # Check if the column contains any non-null data
+                if not self.tasks[0][column].isnull().all():
+                    if len(self.tasks[0].attrs['unit_row']) > len(valid_columns):
+                        valid_columns.append(column)
 
         # Populate the table with data
-        self.IXB.TWColumnNames.setRowCount(len(self.tasks[0].columns))
+        self.IXB.TWColumnNames.setRowCount(len(valid_columns))
         self.unit_boxes = {}
         self.IXB.TWColumnNames.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
-        for i, row in enumerate(self.tasks[0].columns):
+        for i, row in enumerate(valid_columns):
             item1 = QtWidgets.QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
             self.IXB.TWColumnNames.setItem(i, 0, item1)
@@ -448,7 +486,11 @@ UNION """
         return [True, fields, crops, dates, focus_cols, idxs]
 
     def scale_dfs(self: Self, df: "pandas.core.frame.DataFrame") -> list:
-        for col_id, col in enumerate(df.columns):
+        col_id = -1
+        for col in df.attrs['columns']:
+            if col in ['latitude', 'longitude', 'geometry']:
+                continue
+            col_id += 1
             scale_f = self.IXB.TWColumnNames.item(col_id, 5).text()
             if scale_f == 'C':
                 df[col] = self.far2cel(df[col])
@@ -550,8 +592,10 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
         count_db_insert = 0
         for row_nr, row in data.iterrows():
             lat_lon_insert = False
+            lat_lon_c = 0
             for col_nr, col in enumerate(data.columns):
                 if col in ['latitude', 'longitude']:
+                    lat_lon_c += 1
                     if not lat_lon_insert:
                         sql += f"ST_PointFromText('POINT({row['longitude']} {row['latitude']})', 4326), "
                         lat_lon_insert = True
@@ -563,7 +607,7 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
                     sql += f"Null, "
                 elif str(row[col]).lower() == 'none':
                     sql += f"Null, "
-                elif col_types[col_nr] == 2:
+                elif col_types[col_nr-lat_lon_c] == 2:
                     sql += f"'{row[col]}', "
                 else:
                     sql += f"{row[col]}, "

@@ -13,6 +13,7 @@ from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QMessageBox
 import numpy as np
 import matplotlib.pyplot as plt
+from ..support_scripts import isint
 from ..support_scripts.RG import rg
 __author__ = 'Axel'
 
@@ -150,6 +151,9 @@ class CreateLayer:
             for value, count in distinct:
                 if value is None:
                     continue
+                
+                if isint(value):
+                    value = int(value)
                 distinct_values.append(value)
                 distinct_count.append(count)
             if len(distinct_values) > 20:

@@ -127,11 +127,27 @@ class FindIsoField:
         """Populates the field list based on the pyagri tasks."""
         self.fifw.LWFields.clear()
         for i, task in enumerate(self.py_agri.tasks):
-            task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
-            gdf = gpd.GeoDataFrame(task, geometry='geometry')
-            gdf.set_crs(epsg=4326, inplace=True)
-            gdf = remove_invalid_points(gdf)
-            convex_hull = gdf.unary_union.convex_hull
+            if 'longitude' not in task.columns:
+                try:
+                    # Assuming `gdf` is your GeoDataFrame with geometries
+                    extent = task.total_bounds  # Get [min_x, min_y, max_x, max_y]
+
+                    # Create a bounding box polygon
+                    convex_hull = Polygon([
+                        (extent[0], extent[1]),  # Bottom-left corner (min_x, min_y)
+                        (extent[0], extent[3]),  # Top-left corner (min_x, max_y)
+                        (extent[2], extent[3]),  # Top-right corner (max_x, max_y)
+                        (extent[2], extent[1]),  # Bottom-right corner (max_x, min_y)
+                        (extent[0], extent[1])   # Close the polygon (back to bottom-left)
+                    ])
+                except:
+                    pass
+            else:
+                task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
+                gdf = gpd.GeoDataFrame(task, geometry='geometry')
+                gdf.set_crs(epsg=4326, inplace=True)
+                gdf = remove_invalid_points(gdf)
+                convex_hull = gdf.unary_union.convex_hull
             self.fields[f'Task {i}'] = convex_hull.wkt
             self.fifw.LWFields.addItem(f'Task {i}')
 
@@ -154,9 +170,7 @@ class FindIsoField:
         transformed_polygon = transform(project, polygon)
         return transformed_polygon
 
-    def _plot_polygon_on_map(self: Self, 
-                             polygon: "shapely.geometry.polygon.Polygon"
-                             ) -> "matplotlib.figure.Figure":
+    def _plot_polygon_on_map(self: Self, polygon: "shapely.geometry.polygon.Polygon") -> "matplotlib.figure.Figure":
         """Plots the polygon on a map with interactivity for zoom and node editing."""
         if polygon.is_empty:
             fig, ax = plt.subplots(figsize=(12, 9))
@@ -169,12 +183,18 @@ class FindIsoField:
         patch_collection = ax.fill(*polygon.exterior.xy, edgecolor='m', facecolor='none')
         if patch_collection:
             self.polygon_patch = patch_collection[0]
+
+        # Add the basemap
         if not self.parent.test_mode:
             ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
+
+        # Set the axis limits with padding
         padding = 0.15
         ax.set_xlim(minx - (maxx - minx) * padding, maxx + (maxx - minx) * padding)
         ax.set_ylim(miny - (maxy - miny) * padding)
         ax.set_axis_off()
+
+        # Add interactivity
         fig.canvas.mpl_connect('scroll_event', self.zoom)
         self.draggable_points = []
         for x, y in polygon.exterior.coords:
@@ -182,6 +202,7 @@ class FindIsoField:
             self.draggable_points.append(point)
         fig.canvas.mpl_connect('pick_event', self.on_pick)
         fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
         return fig
 
     def zoom(self, event):
@@ -193,10 +214,10 @@ class FindIsoField:
         y_min, y_max = ax.get_ylim()
         x_range = (x_max - x_min) * 0.1
         y_range = (y_max - y_min) * 0.1
-        if event.button == 'up':
+        if event.button == 'up':  # Zoom in
             ax.set_xlim([x_min + x_range, x_max - x_range])
             ax.set_ylim([y_min + y_range, y_max - y_range])
-        elif event.button == 'down':
+        elif event.button == 'down':  # Zoom out
             ax.set_xlim([x_min - x_range, x_max + x_range])
             ax.set_ylim([y_min - y_range, y_max + y_range])
         ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
@@ -239,13 +260,16 @@ class FindIsoField:
         """Loads a polygon from WKT and plots it on the map."""
         polygon = wkt.loads(polygon_wkt)
         fig = self._plot_polygon_on_map(polygon)
-        self.canvas = FigureCanvas(fig)
+        self.canvas = FigureCanvas(fig)  # Link the figure to the FigureCanvas
         self.canvas.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
+        # Add the canvas to the layout
         layout = self.fifw.WShowField.layout()
         if layout is None:
             layout = QtWidgets.QVBoxLayout()
             self.fifw.WShowField.setLayout(layout)
         else:
+            # Clear the existing layout
             for i in reversed(range(layout.count())):
                 widget = layout.itemAt(i).widget()
                 if widget is not None:

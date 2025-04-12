@@ -13,9 +13,11 @@ if __name__ == '__main__':
     sys.path.append(os.path.abspath(os.path.curdir))
     from support_scripts.__init__ import TR, getfile_insensitive
     from support_scripts.pyagriculture.sorting_utils import find_by_key
+    from support_scripts.pyagriculture.grid import Grid
 else:
     from .. import TR, getfile_insensitive
     from .sorting_utils import find_by_key
+    from .grid import Grid
 #from .cython_agri import read_static_binary_data, cython_read_dlvs
 
 
@@ -149,32 +151,35 @@ class PyAgriculture:
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         task_structure = self.get_structure(tree.getroot())
         if 'TSK' in task_structure.keys():
-            if 'TLG' not in self.task_dicts:
-                raise BaseException(self.tr('This ISOXML format is yet not supported. Please send an e-mail to geodatafarm@gmail.com to get further help!'))
-            for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
-                equipment = 'unknown'
-                try:
-                    equipment = self.task_dicts['DVC'][task_structure['TSK'][i]["child"]["CNN"][0]["C"]]["B"]
-                except:
-                    pass
-                try:
-                    file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
-                    branch = ET.parse(file)
-                except (FileNotFoundError, ET.ParseError):
-                    if not continue_on_fail:
-                        raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
-                    else:
-                        continue
-                tlg_dict = self.add_children({}, branch.getroot())
-                self.set_ptn_data(tlg_dict)
-                tlg_dict = self.combine_task_tlg_data(tlg_dict, task_data_dict)
-                self.task_infos.append(tlg_dict)
-                try:
-                    task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
-                except IndexError:
-                    task_name = 'unkown'
-                task_names.append(f"{equipment}-{task_name}")
-                file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
+            if 'GRD' in task_structure['TSK'][0]['child'].keys():
+                for i, tsk in enumerate(task_structure['TSK']):
+                    task_names.append(f'unknown - {tsk["B"]}')
+                    file_names.append(tsk['child']['GRD'][0]['G'])
+            else:
+                for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
+                    equipment = 'unknown'
+                    try:
+                        equipment = self.task_dicts['DVC'][task_structure['TSK'][i]["child"]["CNN"][0]["C"]]["B"]
+                    except:
+                        pass
+                    try:
+                        file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                        branch = ET.parse(file)
+                    except (FileNotFoundError, ET.ParseError):
+                        if not continue_on_fail:
+                            raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
+                        else:
+                            continue
+                    tlg_dict = self.add_children({}, branch.getroot())
+                    self.set_ptn_data(tlg_dict)
+                    tlg_dict = self.combine_task_tlg_data(tlg_dict, task_data_dict)
+                    self.task_infos.append(tlg_dict)
+                    try:
+                        task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
+                    except IndexError:
+                        task_name = 'unkown'
+                    task_names.append(f"{equipment}-{task_name}")
+                    file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
         return task_names, file_names
 
     def gather_data(self: Self, qtask: str, 
@@ -187,39 +192,58 @@ class PyAgriculture:
         tree = ET.parse(getfile_insensitive(self.path + 'TASKDATA.xml'))
         tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
-        if 'TLG' in self.task_dicts.keys():
-            nr_tlgs = len(list(self.task_dicts['TLG'].keys()))
-            for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
-                try:
-                    file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
-                    branch = ET.parse(file)
-                except (FileNotFoundError, ET.ParseError):
-                    continue
-                if len(only_tasks) > 0:
-                    if not self.task_dicts['TLG'][tsk]['A'] + '.xml' in only_tasks:
+        structure = self.get_structure(tree.getroot())
+        if 'TSK' in self.task_dicts.keys():
+            if 'GRD' in self.task_dicts.keys():
+                tasked_run = []
+                grid_data = Grid(self.path + 'TASKDATA.xml')
+                for i, tsk in enumerate(structure['TSK']):
+                    g = tsk['child']['GRD'][0]
+                    if tsk['A'] not in tasked_run:
+                        tasked_run.append(tsk['A'])
+                    else:
                         continue
-                self.dlvs = []
-                self.dlv_idx = {}
-                tlg_dict = self.add_children({}, branch.getroot())
-                self.set_ptn_data(tlg_dict)
-                tlg_dict = self.combine_task_tlg_data(tlg_dict, task_data_dict)
-                self.task_infos.append(tlg_dict)
-                columns = self.get_tlg_columns(tlg_dict)
-                try:
-                    task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
-                except IndexError:
-                    task_name = 'unkown'
-                if len(most_importants) == 0:
-                    most_important = None
-                else:
-                    most_important = most_importants[i]
-                path = self.path + self.task_dicts['TLG'][tsk]['A']
-                task = self.read_binaryfile(path, tlg_dict, columns,
-                                                       most_important, task_name, reset_columns)
-                if task is not None:
-                    self.tasks.append(task)
-                if qtask != "debug":
-                    qtask.setProgress(float(i/nr_tlgs * 90)+10)
+                    if len(only_tasks) > 0:
+                        if not g['G'] in only_tasks:
+                            continue
+                    gdp = grid_data.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
+                                              float(g['D']), int(g['F']), int(g['E']), tsk, self.task_dicts.get('VPN'))
+                    self.tasks.append(gdp)
+                    if qtask != "debug":
+                        qtask.setProgress(float(i/len(list(self.task_dicts['TSK'].keys())) * 90)+10)
+            else:                
+                nr_tlgs = len(list(self.task_dicts['TLG'].keys()))
+                for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
+                    try:
+                        file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                        branch = ET.parse(file)
+                    except (FileNotFoundError, ET.ParseError):
+                        continue
+                    if len(only_tasks) > 0:
+                        if not self.task_dicts['TLG'][tsk]['A'] + '.xml' in only_tasks:
+                            continue
+                    self.dlvs = []
+                    self.dlv_idx = {}
+                    tlg_dict = self.add_children({}, branch.getroot())
+                    self.set_ptn_data(tlg_dict)
+                    tlg_dict = self.combine_task_tlg_data(tlg_dict, task_data_dict)
+                    self.task_infos.append(tlg_dict)
+                    columns = self.get_tlg_columns(tlg_dict)
+                    try:
+                        task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
+                    except IndexError:
+                        task_name = 'unkown'
+                    if len(most_importants) == 0:
+                        most_important = None
+                    else:
+                        most_important = most_importants[i]
+                    path = self.path + self.task_dicts['TLG'][tsk]['A']
+                    task = self.read_binaryfile(path, tlg_dict, columns,
+                                                        most_important, task_name, reset_columns)
+                    if task is not None:
+                        self.tasks.append(task)
+                    if qtask != "debug":
+                        qtask.setProgress(float(i/nr_tlgs * 90)+10)
                 
         if self.convert_field:
             self.convert_yield_field()
