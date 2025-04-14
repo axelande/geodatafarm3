@@ -485,7 +485,7 @@ class PyAgriculture:
                     except IndexError and KeyError:
                         pass
         df = pd.DataFrame(to_tlg_df, columns=df_columns)
-        for i in range(nr_static - 1):
+        for i in range(nr_static - 3): #Exclude 1 + 2 for lat/lon
             unit_row.insert(i, '')
         df.attrs['task_name'] = task_name
         df.attrs['columns'] = df_columns

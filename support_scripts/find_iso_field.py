@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING, Never, Self
+import matplotlib
+matplotlib.use('Agg')
 if TYPE_CHECKING:
     import matplotlib.figure
     import pyproj.crs.crs
