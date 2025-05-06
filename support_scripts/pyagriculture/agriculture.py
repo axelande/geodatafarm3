@@ -151,23 +151,22 @@ class PyAgriculture:
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         task_structure = self.get_structure(tree.getroot())
         if 'TSK' in task_structure.keys():
-            if 'GRD' in task_structure['TSK'][0]['child'].keys():
-                for i, tsk in enumerate(task_structure['TSK']):
+            for i, tsk in enumerate(task_structure['TSK']):
+                if 'GRD' in tsk['child'].keys():
                     task_names.append(f'unknown - {tsk["B"]}')
                     file_names.append(tsk['child']['GRD'][0]['G'])
-            else:
-                for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
+                else:
                     equipment = 'unknown'
                     try:
                         equipment = self.task_dicts['DVC'][task_structure['TSK'][i]["child"]["CNN"][0]["C"]]["B"]
                     except:
                         pass
                     try:
-                        file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                        file = getfile_insensitive(f'{self.path}{tsk['child']['TLG'][0]["A"]}.xml')
                         branch = ET.parse(file)
                     except (FileNotFoundError, ET.ParseError):
                         if not continue_on_fail:
-                            raise FileNotFoundError(self.tr(f"The TLG file {self.task_dicts['TLG'][tsk]['A']}.xml was not found."))
+                            raise FileNotFoundError(self.tr(f"The TLG file {tsk['child']['TLG'][0]['A']}.xml was not found."))
                         else:
                             continue
                     tlg_dict = self.add_children({}, branch.getroot())
@@ -179,7 +178,7 @@ class PyAgriculture:
                     except IndexError:
                         task_name = 'unkown'
                     task_names.append(f"{equipment}-{task_name}")
-                    file_names.append(self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                    file_names.append(tsk['child']['TLG'][0]['A'] + '.xml')
         return task_names, file_names
 
     def gather_data(self: Self, qtask: str, 
@@ -197,7 +196,8 @@ class PyAgriculture:
             if 'GRD' in self.task_dicts.keys():
                 tasked_run = []
                 grid_data = Grid(self.path + 'TASKDATA.xml')
-                for i, tsk in enumerate(structure['TSK']):
+            for i, tsk in enumerate(structure['TSK']):
+                if 'GRD' in tsk['child'].keys():
                     g = tsk['child']['GRD'][0]
                     if tsk['A'] not in tasked_run:
                         tasked_run.append(tsk['A'])
@@ -206,21 +206,17 @@ class PyAgriculture:
                     if len(only_tasks) > 0:
                         if not g['G'] in only_tasks:
                             continue
-                    gdp = grid_data.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
-                                              float(g['D']), int(g['F']), int(g['E']), tsk, self.task_dicts.get('VPN'))
-                    self.tasks.append(gdp)
-                    if qtask != "debug":
-                        qtask.setProgress(float(i/len(list(self.task_dicts['TSK'].keys())) * 90)+10)
-            else:                
-                nr_tlgs = len(list(self.task_dicts['TLG'].keys()))
-                for i, tsk in enumerate(list(self.task_dicts['TLG'].keys())):
+                    task_res = grid_data.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
+                                              float(g['D']), int(g['F']), int(g['E']), tsk, treatment_zone_code=g.get('J', 0), 
+                                              vpns=self.task_dicts.get('VPN'), qtask=qtask)
+                elif 'TLG' in tsk['child'].keys():                
                     try:
-                        file = getfile_insensitive(self.path + self.task_dicts['TLG'][tsk]['A'] + '.xml')
+                        file = getfile_insensitive(self.path + tsk['child']['TLG'][0]['A'] + '.xml')
                         branch = ET.parse(file)
                     except (FileNotFoundError, ET.ParseError):
                         continue
                     if len(only_tasks) > 0:
-                        if not self.task_dicts['TLG'][tsk]['A'] + '.xml' in only_tasks:
+                        if not tsk['child']['TLG'][0]['A'] + '.xml' in only_tasks:
                             continue
                     self.dlvs = []
                     self.dlv_idx = {}
@@ -237,13 +233,16 @@ class PyAgriculture:
                         most_important = None
                     else:
                         most_important = most_importants[i]
-                    path = self.path + self.task_dicts['TLG'][tsk]['A']
-                    task = self.read_binaryfile(path, tlg_dict, columns,
+                    path = self.path + tsk['child']['TLG'][0]['A']
+                    task_res = self.read_binaryfile(path, tlg_dict, columns,
                                                         most_important, task_name, reset_columns)
-                    if task is not None:
-                        self.tasks.append(task)
-                    if qtask != "debug":
-                        qtask.setProgress(float(i/nr_tlgs * 90)+10)
+                else:
+                    print('Only tasks with TLG or GRD data are supported')
+                if task_res is not None:
+                    self.tasks.append(task_res)
+                if qtask != "debug":
+                    qtask.setProgress(float(i/len(list(self.task_dicts['TSK'].keys())) * 90)+10)
+                    
                 
         if self.convert_field:
             self.convert_yield_field()
@@ -333,8 +332,13 @@ class PyAgriculture:
                     # Check for DVP (Device Value Parameters) and assign scale, offset, and unit
                     if 'F' in dpd.keys():
                         if dpd['F'] not in task_data_dict['DVP']:
-                            return
+                            raise KeyError(f"Key {dpd['F']} is used in DPD, however it is as a DVP")
                         dvp = task_data_dict['DVP'][dpd['F']]
+                        if isinstance(dvp, list):
+                            for dvp_i in dvp:
+                                if dvp_i['parent_id'] == dpd['parent_id']:
+                                    dvp = dvp_i
+                                    break
                         tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = {
                             'nr_decimals': dvp['D'],
                             'scale': dvp['C'],
@@ -342,6 +346,8 @@ class PyAgriculture:
                         }
                         if 'E' in dvp.keys():
                             tlg_dict['DLV'][dlv_key][dlv_idx]['DVP']['unit'] = dvp['E']
+                    else:
+                        tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = False
                     return  # Exit after finding the correct DPD
 
         # If no matching DPD is found, check DPT
@@ -375,18 +381,15 @@ class PyAgriculture:
                               tlg_dict: dict[str, dict[str, dict[str, str]]], 
                               task_data_dict: dict[str, dict[str, dict[str, str]]]
                               ) -> dict[str, dict[str, dict[str, str]]]:
-        for dlv_key in tlg_dict['DLV'].keys():
-            dlvs = tlg_dict['DLV'][dlv_key]
+        for dlv_key, dlvs in tlg_dict['DLV'].items():
             if not isinstance(dlvs, list):
                 tlg_dict['DLV'][dlv_key] = [dlvs]
                 dlvs = [dlvs]
             for idx, dlv in enumerate(dlvs):
-                # Obtains the DeviceElementIdRef
+                # Obtains the DeviceElementIdRef (DET-ID)
                 de_id = dlv['C']
-                # Obtains the ProcessDataDDI
+                # Obtains the ProcessDataDDI (PDV B value)
                 pd_id = dlv['A']
-                # Adding the DeviceElement to the tlg dict
-                det_a = de_id  # Pass the DET's A value
                 if not isinstance(de_id, list):
                     dlv['DET'] = task_data_dict['DET'][de_id]
                     dlv['DET']['list'] = False
@@ -396,7 +399,7 @@ class PyAgriculture:
                     for i, de_i in enumerate(de_id):
                         dlv['DET'][i] = {}
                         dlv['DET'][i] = task_data_dict['DET'][de_i]
-                self._add_device(task_data_dict, dlv_key, idx, tlg_dict, pd_id, det_a)
+                self._add_device(task_data_dict, dlv_key, idx, tlg_dict, pd_id, de_id)
         return tlg_dict
 
     def _read_static_binary_python(self: Self, data_row: list, 
@@ -445,7 +448,13 @@ class PyAgriculture:
         
         for key, item in tlg_dict['DLV'].items():
             for item_i in item:
-                self.dlvs.append(item_i['DVP'])
+                if 'DVP' in item_i.keys():
+                    if item_i['DVP']:
+                        self.dlvs.append(item_i['DVP'])
+                    else:
+                        self.dlvs.append(False)
+                else:
+                    self.dlvs.append(False)
 
         while read_point < len(binary_data):
             # The first part of each "row" contains of static data, a timestamp and some satellite data.
@@ -502,11 +511,13 @@ class PyAgriculture:
                                      count=nr_dlvs, offset=read_point):
             read_point += 5
             dvp = dlvs[idx]
-            decimals = float(10**int(dvp['nr_decimals']))
-            dlv = int((dlv + float(dvp['offset'])) * float(dvp['scale']) * decimals + 0.5) / decimals
+            if dvp:
+                decimals = float(10**int(dvp['nr_decimals']))
+                dlv = int((dlv + float(dvp['offset'])) * float(dvp['scale']) * decimals + 0.5) / decimals
             if unit_row[idx + 1] is None:
-                if 'unit' in dvp.keys():
-                    unit_row[idx + 1] = dvp['unit']
+                if dvp:
+                    if 'unit' in dvp.keys():
+                        unit_row[idx + 1] = dvp['unit']
             try:
                 data_row[idx + nr_static] = dlv
             except:

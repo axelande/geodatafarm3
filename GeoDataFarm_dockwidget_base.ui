@@ -377,7 +377,21 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
-            <item row="2" column="4">
+            <item row="8" column="0">
+             <widget class="QPushButton" name="PBAddIsoField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add fields from 
+isoxml taskdata</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="4" rowspan="2">
              <widget class="QPushButton" name="PBWebbpage">
               <property name="minimumSize">
                <size>
@@ -393,21 +407,8 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
               <property name="text">
                <string>Help can be found at
-GeoDataFarms webpage</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QPushButton" name="PBAddIsoField">
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add fields from 
-isoxml taskdata</string>
+GeoDataFarms webpage
+http://www.geodatafarm.com</string>
               </property>
              </widget>
             </item>

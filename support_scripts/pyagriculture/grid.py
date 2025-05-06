@@ -65,11 +65,11 @@ class Grid:
             if isinstance(grd, list):
                 for g in grd:
                     gpd_ = self.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
-                                              float(g['D']), int(g['F']), int(g['E']))
+                                              float(g['D']), int(g['F']), int(g['E']), g.get('J', 0))
                     tasks.append(gpd_)
             else:
                 gpd_ = self.read_grid_binary_file(self.path + grd['G'], float(grd['A']), float(grd['B']), float(grd['C']),
-                                              float(grd['D']), int(grd['F']), int(grd['E']))
+                                              float(grd['D']), int(grd['F']), int(grd['E']), grd.get('J', 0))
             tasks.append(gpd_)
         return tasks
 
@@ -99,7 +99,7 @@ class Grid:
                     
 
     def read_grid_binary_file(self, file_path: str, n_start, e_start, n_delta, e_delta, nr_n_cols, nr_e_cols, tsk, vpns=None,
-                              ) -> gpd.GeoDataFrame:
+                              treatment_zone_code=0, qtask=None) -> gpd.GeoDataFrame:
         with open(file_path + '.bin', 'rb') as fin:
             binary_data = fin.read()
         read_point = 0
@@ -112,11 +112,12 @@ class Grid:
         tzn_data = self.get_pdv(tsk, vpns)
         for name in list(tzn_data.values())[0]['names']:
             pdvs[name] = []
-        if len(list(tzn_data.values())[0]['names']) == 1:
+        if treatment_zone_code == 0:
             data_type = (list(tzn_data.values())[0]['names'][0], np.dtype('uint8'))
             read_plus = 1
         else:
             read_plus = 4
+            pdvs_keys = list(pdvs.keys())
             for name in list(tzn_data.values())[0]['names']:
                 data_type = (name, np.dtype('int32'))
         while read_point < len(binary_data):
@@ -124,9 +125,15 @@ class Grid:
 
                 for values in np.frombuffer(binary_data, [data_type],
                                         count=1, offset=read_point):
+                    if qtask != 'debug':
+                        if qtask.isCanceled():
+                            return None
                     for idx, value in enumerate(values):
-                        pdv = tzn_data[value]
-                        pdvs[pdv['names'][idx]].append(pdv['values'][idx])
+                        if treatment_zone_code == 0:    
+                            pdv = tzn_data[value]
+                            pdvs[pdv['names'][idx]].append(pdv['values'][idx])
+                        else:
+                            pdvs[pdvs_keys[idx]].append(value)
                     read_point += read_plus
                     if east_count >= nr_e_cols:
                         east_count = 0

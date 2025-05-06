@@ -294,6 +294,18 @@ may take a while</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>PBAddInputFolder</tabstop>
+  <tabstop>TWISODataAll</tabstop>
+  <tabstop>PBFindFields</tabstop>
+  <tabstop>TWISODataSelect</tabstop>
+  <tabstop>TWColumnNames</tabstop>
+  <tabstop>PBAddParam</tabstop>
+  <tabstop>PBRemParam</tabstop>
+  <tabstop>TWtoParam</tabstop>
+  <tabstop>PBInsert</tabstop>
+  <tabstop>PBHelp</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

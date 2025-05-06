@@ -139,3 +139,4 @@ def getfile_insensitive(path: str) -> str:
         newpath = os.path.join(directory, f)
         if os.path.isfile(newpath) and f.lower() == filename:
             return newpath
+    return "Not found"

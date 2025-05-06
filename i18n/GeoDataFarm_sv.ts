@@ -11,7 +11,7 @@
     <message>
         <location filename="../support_scripts/add_field.py" line="140"/>
         <source>Do you want to delete </source>
-        <translation>Vill du ta bort </translation>
+        <translation>Vill du ta bort?</translation>
     </message>
     <message>
         <location filename="../support_scripts/add_field.py" line="197"/>
@@ -347,7 +347,7 @@ inträffade, här: {t}</translation>
     <message>
         <location filename="../database_scripts/create_new_farm.py" line="62"/>
         <source>The user name can not start with a number</source>
-        <translation type="unfinished"></translation>
+        <translation>Användarnamnet kan inte starta med en siffra</translation>
     </message>
 </context>
 <context>
@@ -856,12 +856,12 @@ Listan med fält som visas till vänster är valbara och efter en kort fördröj
 <context>
     <name>FindIsoField</name>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="311"/>
+        <location filename="../support_scripts/find_iso_field.py" line="287"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../support_scripts/find_iso_field.py" line="307"/>
+        <location filename="../support_scripts/find_iso_field.py" line="283"/>
         <source>Field name already exist, please select a new name</source>
         <translation>Fält namn finns redan, var god välj ett nytt namn</translation>
     </message>
@@ -963,7 +963,7 @@ Listan med fält som visas till vänster är valbara och efter en kort fördröj
         <source>GeoDataFarm automatically converts point data to
 polygon (except for harvest data). The polygons
 is generated with a Delaunay triangulation script
-which do not understand the concept of &#xe2;&#x80;&#x9c;rows&#xe2;&#x80;&#x9d;.
+which do not understand the concept of ârowsâ.
 
 This script updates the polygons geometry into
 &quot;rows&quot; it may take a few minutes to run!
@@ -971,7 +971,7 @@ This script updates the polygons geometry into
 This is only tested with a Miedema Sctrual potato planter,
 if you have any problems do not hesitate to
 contact me at geodatafarm@gmail.com</source>
-        <translation type="unfinished">GeoDataFarm konverterar automatiskt punktdata till
+        <translation>GeoDataFarm konverterar automatiskt punktdata till
 polygon (förutom skördedata). Polygonerna
 genereras med ett Delaunay-trianguleringsskript
 som inte förstår begreppet âraderâ.
@@ -2301,22 +2301,22 @@ följande kolumn</translation>
         <translation>Indata fil</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="218"/>
+        <location filename="../widgets/import_xml_bin.ui" line="225"/>
         <source>Columns in the file:</source>
         <translation>Kolumner i filen:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="166"/>
+        <location filename="../widgets/import_xml_bin.ui" line="173"/>
         <source>Parameters that could be analysed:</source>
         <translation>Parameterar som kan bli analyserade:</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="228"/>
+        <location filename="../widgets/import_xml_bin.ui" line="235"/>
         <source>&lt;--</source>
         <translation>&lt;--</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="179"/>
+        <location filename="../widgets/import_xml_bin.ui" line="186"/>
         <source>--&gt;</source>
         <translation>--&gt;</translation>
     </message>
@@ -2508,7 +2508,7 @@ följande kolumn</translation>
         <translation>Välj taskdata mapp</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="150"/>
+        <location filename="../widgets/import_xml_bin.ui" line="157"/>
         <source>Adding tasks and
 checking their field
 may take a while</source>
@@ -2519,19 +2519,24 @@ detta kan ta en
 stund</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="276"/>
+        <location filename="../widgets/import_xml_bin.ui" line="87"/>
+        <source>Find thier field</source>
+        <translation>Läs in och hitta</translation>
+    </message>
+    <message>
+        <location filename="../widgets/import_xml_bin.ui" line="283"/>
         <source>Store data</source>
         <translation>Spara data</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="263"/>
+        <location filename="../widgets/import_xml_bin.ui" line="270"/>
         <source>When all data looks correct (the columns have the correct unit and scale etc.) press &quot;Store data&quot; this process may take a while as well</source>
         <translation>När du har kontrollerat att allt ser bra ut (att kolumnerna har rätt enhet och skalning) tryck &quot;Spara data&quot;, detta kan lite tid</translation>
     </message>
     <message>
-        <location filename="../widgets/import_xml_bin.ui" line="80"/>
-        <source>Find their field</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/import_xml_bin.ui" line="62"/>
+        <source>In the Select a column that must be included in each point in the &quot;Most interesting&quot; column</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2709,112 +2714,112 @@ Are you sure that id, username and password was correct?</source>
 <context>
     <name>Iso11783</name>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="104"/>
+        <location filename="../import_data/handle_iso11783.py" line="98"/>
         <source>Open a folder</source>
         <translation>Öppna mapp</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="161"/>
+        <location filename="../import_data/handle_iso11783.py" line="140"/>
         <source>Get more info</source>
         <translation>Hämta data</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="161"/>
+        <location filename="../import_data/handle_iso11783.py" line="140"/>
         <source>Task name</source>
         <translation>Uppgift namn</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="483"/>
+        <location filename="../import_data/handle_iso11783.py" line="445"/>
         <source>Error:</source>
         <translation>Fel:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="483"/>
+        <location filename="../import_data/handle_iso11783.py" line="445"/>
         <source>You need to select at least one of the tasks</source>
         <translation>Du måste välja minst en uppgift</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="223"/>
+        <location filename="../import_data/handle_iso11783.py" line="190"/>
         <source>To include</source>
         <translation>Att inkludera</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="223"/>
+        <location filename="../import_data/handle_iso11783.py" line="190"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="223"/>
+        <location filename="../import_data/handle_iso11783.py" line="190"/>
         <source>Field</source>
         <translation>Fält</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="223"/>
+        <location filename="../import_data/handle_iso11783.py" line="190"/>
         <source>Crops</source>
         <translation>Gröda</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="283"/>
+        <location filename="../import_data/handle_iso11783.py" line="252"/>
         <source>No row selected!</source>
         <translation>Ingen rad vald!</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Column name</source>
         <translation>Namn</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Mean value</source>
         <translation>Medel</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Min value</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Max value</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Unit</source>
         <translation>Enhet</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="297"/>
+        <location filename="../import_data/handle_iso11783.py" line="266"/>
         <source>Scale</source>
         <translation>Skala</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="469"/>
+        <location filename="../import_data/handle_iso11783.py" line="431"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="476"/>
+        <location filename="../import_data/handle_iso11783.py" line="438"/>
         <source>You need to select a crop</source>
         <translation>Du måste välja en gröda</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="475"/>
+        <location filename="../import_data/handle_iso11783.py" line="437"/>
         <source>--- Select crop ---</source>
         <translation>--- Välj gröda ---</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="505"/>
+        <location filename="../import_data/handle_iso11783.py" line="463"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="505"/>
+        <location filename="../import_data/handle_iso11783.py" line="463"/>
         <source>The number must only contain numbers and .</source>
         <translation>Skalan får bara innehålla siffror och decimaler separeras med en .</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="147"/>
+        <location filename="../import_data/handle_iso11783.py" line="126"/>
         <source>At least one of the tasked was placed outside the field at approximate: </source>
         <translation>Åtminstånde en punkt bland uppgifterna var placerad utanför ett fält, ungerfär: </translation>
     </message>
@@ -2824,7 +2829,7 @@ Are you sure that id, username and password was correct?</source>
         <translation>Varning:</translation>
     </message>
     <message>
-        <location filename="../import_data/handle_iso11783.py" line="161"/>
+        <location filename="../import_data/handle_iso11783.py" line="140"/>
         <source>File name</source>
         <translation>Fil namn</translation>
     </message>
@@ -2842,17 +2847,17 @@ Are you sure that id, username and password was correct?</source>
     <message>
         <location filename="../support_scripts/multiedit.py" line="76"/>
         <source>&lt;font color=&apos;red&apos;&gt; Please select some elements into current &lt;b&gt;</source>
-        <translation>&lt;font color='red'&gt; Var god välj några område som du vill editera i &lt;b&gt;</translation>
+        <translation>&lt;font color=&apos;red&apos;&gt; Var god välj några område som du vill editera i &lt;b&gt;</translation>
     </message>
     <message>
         <location filename="../support_scripts/multiedit.py" line="84"/>
         <source>&lt;font color=&apos;red&apos;&gt; Layer &lt;b&gt;</source>
-        <translation>&lt;font color='red'&gt; lager &lt;b&gt;</translation>
+        <translation>&lt;font color=&apos;red&apos;&gt; lager &lt;b&gt;</translation>
     </message>
     <message>
         <location filename="../support_scripts/multiedit.py" line="91"/>
         <source>&lt;font color=&apos;red&apos;&gt; &lt;b&gt;No layer selected... Select a layer from the layer list...&lt;/b&gt;&lt;/font&gt;</source>
-        <translation>&lt;font color='red'&gt; &lt;b&gt;Ingen lager är valt... Var god välj lager från lagerlistan...&lt;/b&gt;&lt;/font&gt;</translation>
+        <translation>&lt;font color=&apos;red&apos;&gt; &lt;b&gt;Ingen lager är valt... Var god välj lager från lagerlistan...&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../support_scripts/multiedit.py" line="113"/>
@@ -2958,19 +2963,24 @@ Are you sure that id, username and password was correct?</source>
 <context>
     <name>PyAgriculture</name>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="48"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="46"/>
         <source>The specified path does not contain a taskdata.xml file</source>
         <translation>Den definierade sökvägen innehåller inte någon taskdata.xml fil</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="170"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="165"/>
         <source>The TLG file {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml was not found.</source>
-        <translation>Filen {self.task_dicts['TLG'][tsk]['A']}.xml hittades inte.</translation>
+        <translation>Filen {self.task_dicts[&apos;TLG&apos;][tsk][&apos;A&apos;]}.xml hittades inte.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/pyagriculture/agriculture.py" line="253"/>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="229"/>
         <source>Point data does not exist in all TLG files..</source>
         <translation>Punkt data finns inte i alla TLG filer..</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/pyagriculture/agriculture.py" line="153"/>
+        <source>This ISOXML format is yet not supported. Please send an e-mail to geodatafarm@gmail.com to get further help!</source>
+        <translation>Det här formatet av ISOXML stöds inte än, skicka ett mail till geodatafarm@gmail.com för att få hjälp att få lägga till det!</translation>
     </message>
 </context>
 <context>
@@ -3937,7 +3947,7 @@ Traceback: {t}</translation>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="112"/>
         <source>A variety  has to be set in order to save the data</source>
-        <translation>För att spara datan måste välja ett preparat</translation>
+        <translation>För att spara datan måste välja en sort</translation>
     </message>
     <message>
         <location filename="../import_data/save_spraying_data.py" line="45"/>
