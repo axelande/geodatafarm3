@@ -37,13 +37,13 @@ def check_text(text: str) -> str:
     Returns
     -------
     str
-        A text string with only ascii letters and numbers
+        A text string with only ascii letters and numbers but starting with a number
     """
     only_char = ''
-    for letter in text:
+    for i, letter in enumerate(text):
         if letter in ascii_letters:
             only_char += letter
-        elif letter in str_digits:
+        elif i > 0 and letter in str_digits:
             only_char += letter
         elif letter == '%':
             only_char += 'pct'

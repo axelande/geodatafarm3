@@ -595,8 +595,6 @@ def create_table(db: DB, schema: str, heading_row: list[str],
     for i, col_name in enumerate(heading_row):
         if col_name in ['latitude', 'longitude', 'geometry']:
             lat_lon_inserted_c += 1
-        if isint(col_name[0]):
-            col_name = '_' + col_name
         if column_units is not None:
             if (len(column_units) - lat_lon_inserted_c) > i:
                 col_name = col_name + column_units[i-lat_lon_inserted]

@@ -268,7 +268,7 @@ UNION """
             if item.column() == 0 and item.text() not in existing_values:
                 index = self.IXB.TWColumnNames.selectedIndexes()[i].row()
                 items_to_add.append(item.text() +
-                                    f'_{check_text(self.IXB.TWColumnNames.cellWidget(index, 4).currentText())}_')
+                                    f'_{check_text(self.IXB.TWColumnNames.cellWidget(index, 4).currentText())}')
         for i, item in enumerate(items_to_add):
             self.IXB.TWtoParam.setRowCount(rows_in_table + i + 1)
             item1 = QtWidgets.QTableWidgetItem(item)
@@ -457,7 +457,7 @@ UNION """
         idxs = []
         rows_in_table = self.IXB.TWtoParam.rowCount()
         for i in range(rows_in_table):
-            focus_col.append(check_text(self.IXB.TWtoParam.item(i, 0).text()))
+            focus_col.append(check_text(self.IXB.TWtoParam.item(i, 0).text().strip()))
         found = False
         for tbl_idx, check_idx,  cbox in self.checkboxes2:
             if cbox.checkState() == 2:
@@ -524,11 +524,11 @@ UNION """
 
     def get_col_units(self: Self) -> list:
         """returns a list with the unit of all columns, if None '' is added."""
-        col_units = []
+        col_units = ['']
         for index in range(self.IXB.TWColumnNames.rowCount()):
             new_unit = self.IXB.TWColumnNames.cellWidget(index, 4).currentText()
             if new_unit != '':
-                col_units.append(f'_{check_text(new_unit)}_')
+                col_units.append(f'_{check_text(new_unit)}')
             else:
                 col_units.append('')
         return col_units
@@ -558,7 +558,7 @@ UNION """
                 columns = []
                 table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
                 for col in df.columns:
-                    columns.append(check_text(col))
+                    columns.append(check_text(col.strip()))
                 suc, insert_sql, _ = create_table(self.db, self.data_type, columns, 
                                                 'latitude', 'longitude', 'time_stamp', '',
                                                 col_types, column_units=col_units, table=table, 
