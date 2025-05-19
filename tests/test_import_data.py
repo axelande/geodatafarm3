@@ -62,4 +62,4 @@ def test_import_iso(gdf:GeoDataFarm):
     for text in items:
         if 'test_iso_field' in text:
             assert True
-    assert 'test_iso_added_field2_potatoes_2023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')
+    assert 'test_iso_added_field2_potatoes__023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')
