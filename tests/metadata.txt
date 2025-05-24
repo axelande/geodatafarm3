@@ -1,0 +1,117 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=GeoDataFarm
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
+description=For farmers, tracking efforts on the field, planing for next season etc.
+version=2.12.4
+author=Axel Horteborn
+email=geodatafarm@gmail.com
+
+about=This is a plugin for farmers that both works as a log for different efforts on the field and also aims to determine the yield impact of different parameters. It is built for any crops and any field parameters, however it is mostly tested for potatoes. The program requires third party packages, matplotlib and reportlib, which is installed be default if not already installed. The plugin requires a stable internet connection. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com
+
+tracker=https://github.com/axelande/geodatafarm3/issues
+repository=https://github.com/axelande/geodatafarm3
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+changelog=
+  Version 2.12.4 (2025-05-24)
+  - [bug] Fixed unit handeling in ISOXML
+  Version 2.12.3 (2025-05-06)
+  - [bug] Fixed minor bugs in the adding of isoXML files
+  Version 2.12.2 (2025-04-14)
+  - [bug] Removed unused Figure canvas poping up while adding fields
+  - [bug] Fixed unit error
+  Version 2.12.1 (2025-04-12)
+  - [feature] Added support for reading ISOXML grid data
+  Version 2.12.0 (2025-04-01)
+  - [bug] Fixed the adding of some additional isoxml formats
+  Version 2.11.2 (2025-03-22)
+  - [bug] removed unvaild points while adding fields from the isoxml
+  Version 2.11.1 (2025-03-09)
+  - [bug] Fixed wrong projection when inserting data from isoxml
+  - [feature] Added more test cases
+  Version 2.11.0 (2025-01-04)
+  - [bug] Altering the user that username and farmname could not start with a number
+  - [feature] Added the possibility to add fields from ISOXML files (both predefined and based on data)
+  Version 2.10.1 (2024-10-12)
+  - [bug] fixed a minor import bug
+  Version 2.10.0 (2024-08-17)
+  - [feature] Now using qpip to handle the required python packages
+  Version 2.9.6 (2024-06-23)
+  - [fix] Improved the reading of ISO XML.
+  Version 2.9.5
+  - [fix] Updated some descriptions and ui layouts
+  Version 2.9.4
+  - [fix] Updated how the guiding file is generated
+  Version 2.9.3
+  - [fix] Added the possibility to different fields from the same task in the ISO XML import.
+  - [feature] Added more tests.
+  Version 2.9.2
+  - [fix] Some bugs related to ISO XML import.
+  - [feature] Added more tests.
+  
+  Version 2.9.1
+  - [fix] Some improvements when adding a dataset.
+  - [fix] Reporting problems
+  - [feature] A new row creator mechanism was added
+  Version 2.9.0
+  - [feature] Added the possibliity to remake the default delanuy triangles to row polygons
+  - [feature] Added ISO/XML output to planting, fertilizer and spraying input as well
+  - [fix] Restruture some of the code related to the analyse
+  Version 2.8.3
+  - [bug] Fixed some minor bugs with ISO11783 import
+  - [feature] added functionality to rescale parameter
+  Version 2.8.2
+  - [feature] added a functionality to remove data rows
+  - [bug] fixed minor bug in ISOtask where a debug save was in use
+  Version 2.8.1
+  - [bug] fixed minor bug so users can create new farms.
+  Version 2.8.0
+  - [feature] Import of isoxml files is now possible with the plugin
+  Version 2.7.3
+  - [bug] fixed bugs with shapefiles and guide files
+  Version 2.7.2
+  - [bug] fixed a bug when adding data from textfiles
+  Version 2.7.0
+  - [feature] added support for multiple harvest rows.
+  - [fix] changed some help functionality to point to the homepage directly
+  - [fix] various minor bug fixes
+  Version 2.6.0
+  - [feature] Added support for interpolating harvest data from a combiner
+  - [fix] solved some bugs connected to the report building
+  Version 2.5.3
+  - [fix] Improved scaling with the layout and minor bug fixes
+  Version 2.5.2
+  - [fix] Improve the layout for more screen sizes
+  Version 2.5.0
+  - [feature] Improved translation scripts and added German translation
+  Version 2.4.3
+  - [fix] Numbering of rows and minor ui changes
+  Version 2.4.1
+  - [fix] Removed accidental duplicates of items.
+  Version 2.4.0
+  - [feature] Added the possibility to convert polygons to proper "row polygon".
+
+# Tags are comma separated with spaces allowed
+tags=Farm, data analysis, csv file reader, agriculture
+
+homepage=http://www.geodatafarm.com
+category=Database
+icon=img\icon.png
+# experimental flag
+experimental=False
+# Plugin Dependencies
+plugin_dependencies=qpip
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
