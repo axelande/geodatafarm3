@@ -54,6 +54,10 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(i, 3).setCurrentIndex(1)
     gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(3)
     gdf.save_harvesting.importer.IXB.PBAddParam.click()
+    gdf.save_harvesting.importer.IXB.TWColumnNames.selectRow(5)
+    gdf.save_harvesting.importer.IXB.PBAddParam.click()
+    gdf.save_harvesting.importer.IXB.TWtoParam.selectRow(1)
+    gdf.save_harvesting.importer.IXB.PBRemParam.click()
     suc = gdf.save_harvesting.importer.add_to_database()
     assert suc
     gdf.save_harvesting.importer.close(True, [False, False])

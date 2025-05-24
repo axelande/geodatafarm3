@@ -267,13 +267,16 @@ UNION """
         for i, item in enumerate(self.IXB.TWColumnNames.selectedItems()):
             if item.column() == 0 and item.text() not in existing_values:
                 index = self.IXB.TWColumnNames.selectedIndexes()[i].row()
-                items_to_add.append(item.text() +
-                                    f'_{check_text(self.IXB.TWColumnNames.cellWidget(index, 4).currentText())}')
+                unit = self.IXB.TWColumnNames.cellWidget(index, 4).currentText()
+                if unit != item.text():
+                    items_to_add.append(f'{item.text()}_{check_text(unit)}')
+                else:
+                    items_to_add.append(f'{check_text(item.text())}')
         for i, item in enumerate(items_to_add):
             self.IXB.TWtoParam.setRowCount(rows_in_table + i + 1)
             item1 = QtWidgets.QTableWidgetItem(item)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
-            self.IXB.TWtoParam.setItem(i, 0, item1)
+            self.IXB.TWtoParam.setItem(i + rows_in_table, 0, item1)
         self.IXB.PBInsert.setEnabled(True)
 
     def remove_from_param_list(self):
@@ -522,15 +525,18 @@ UNION """
                 col_types.append(2)
         return col_types
 
-    def get_col_units(self: Self) -> list:
+    def get_col_units(self: Self) -> dict:
         """returns a list with the unit of all columns, if None '' is added."""
-        col_units = ['']
+        col_units = {}
         for index in range(self.IXB.TWColumnNames.rowCount()):
+            column = self.IXB.TWColumnNames.item(index, 0).text()
             new_unit = self.IXB.TWColumnNames.cellWidget(index, 4).currentText()
-            if new_unit != '':
-                col_units.append(f'_{check_text(new_unit)}')
+            if new_unit == column:
+                col_units[column] = '' 
+            elif new_unit != '':
+                col_units[column] = f'_{check_text(new_unit)}'
             else:
-                col_units.append('')
+                col_units[column] = ''
         return col_units
 
     def add_to_database(self: Self) -> bool:

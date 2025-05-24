@@ -11,11 +11,11 @@ import xml.etree.ElementTree as ET
 if __name__ == '__main__':
     import sys
     sys.path.append(os.path.abspath(os.path.curdir))
-    from support_scripts.__init__ import TR, getfile_insensitive
+    from support_scripts.__init__ import TR, getfile_insensitive, check_text
     from support_scripts.pyagriculture.sorting_utils import find_by_key
     from support_scripts.pyagriculture.grid import Grid
 else:
-    from .. import TR, getfile_insensitive
+    from .. import TR, getfile_insensitive, check_text
     from .sorting_utils import find_by_key
     from .grid import Grid
 #from .cython_agri import read_static_binary_data, cython_read_dlvs
@@ -299,10 +299,10 @@ class PyAgriculture:
             if isinstance(tlg_dict['DLV'][key], list):
                 for dlv in tlg_dict['DLV'][key]:
                     if 'Name' in dlv.keys():
-                        columns.append(dlv['Name'])
+                        columns.append(check_text(dlv['Name']))
             else:
                 if 'Name' in tlg_dict['DLV'][key].keys():
-                    columns.append(tlg_dict['DLV'][key]['Name'])
+                    columns.append(check_text(tlg_dict['DLV'][key]['Name']))
         return columns
 
     @staticmethod

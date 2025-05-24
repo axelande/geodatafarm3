@@ -47,6 +47,10 @@ def check_text(text: str) -> str:
             only_char += letter
         elif letter == '%':
             only_char += 'pct'
+        elif letter == '1':
+            only_char += 'one'
+        elif letter == '/':
+            only_char += '_per_'
         elif letter == ' ':
             only_char += '_'
         else:

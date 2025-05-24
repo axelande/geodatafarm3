@@ -583,7 +583,7 @@ def create_table(db: DB, schema: str, heading_row: list[str],
                  latitude_col: str, longitude_col:str, 
                  date_row:str, all_same_date: str,
                  column_types: list[int], 
-                 column_units: list[str]|None|None=None, 
+                 column_units: dict[str]|None|None=None, 
                  table: str='', ask_replace: bool=True, 
                  test_mode: bool=False, 
                  task_nr: int|str|str='') -> list[str]:
@@ -596,8 +596,8 @@ def create_table(db: DB, schema: str, heading_row: list[str],
         if col_name in ['latitude', 'longitude', 'geometry']:
             lat_lon_inserted_c += 1
         if column_units is not None:
-            if (len(column_units) - lat_lon_inserted_c) > i:
-                col_name = col_name + column_units[i-lat_lon_inserted]
+            if col_name in column_units.keys():
+                col_name = col_name + column_units[col_name]
         if not lat_lon_inserted and (
                 col_name == longitude_col or col_name == latitude_col):
             sql += "pos geometry(POINT, 4326),"

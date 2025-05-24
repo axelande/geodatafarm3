@@ -153,7 +153,7 @@ class CreateLayer:
                     continue
                 
                 if isint(value):
-                    value = int(value)
+                    value = int(float(value))
                 distinct_values.append(value)
                 distinct_count.append(count)
             if len(distinct_values) > 20:
