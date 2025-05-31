@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 from PyQt5.QtCore import QDate
 
@@ -69,6 +71,7 @@ def test_import_iso(gdf:GeoDataFarm):
     assert 'test_iso_added_field2_potatoes__023_08_17t18_44_14' in gdf.db.get_tables_in_db('harvest')
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Test runs only on Windows")
 def test_import_iso2(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
