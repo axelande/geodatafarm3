@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TIM A="" D="4">
+<PTN A="" B="" D="" F="" G=""/>
+<DLV A="010F" B="" C="DET-7"/>
+<DLV A="010A" B="" C="DET-7"/>
+<DLV A="0110" B="" C="DET-7"/>
+<DLV A="0111" B="" C="DET-7"/>
+<DLV A="008D" B="" C="DET-7"/>
+<DLV A="0086" B="" C="DET-2"/>
+<DLV A="E292" B="" C="DET-7"/>
+<DLV A="0087" B="" C="DET-2"/>
+<DLV A="0086" B="" C="DET-3"/>
+<DLV A="0086" B="" C="DET-4"/>
+<DLV A="E293" B="" C="DET-7"/>
+<DLV A="E290" B="" C="DET-7"/>
+<DLV A="0134" B="" C="DET-9"/>
+<DLV A="0134" B="" C="DET-8"/>
+<DLV A="0134" B="" C="DET-7"/>
+<DLV A="0190" B="" C="DET-5"/>
+<DLV A="008D" B="" C="DET-9"/>
+<DLV A="008D" B="" C="DET-8"/>
+<DLV A="0043" B="" C="DET-9"/>
+<DLV A="0043" B="" C="DET-8"/>
+<DLV A="008D" B="" C="DET-5"/>
+<DLV A="0007" B="" C="DET-9"/>
+<DLV A="0007" B="" C="DET-8"/>
+<DLV A="0007" B="" C="DET-7"/>
+<DLV A="E295" B="" C="DET-9"/>
+<DLV A="E295" B="" C="DET-8"/>
+<DLV A="E291" B="" C="DET-9"/>
+<DLV A="E291" B="" C="DET-8"/>
+<DLV A="00D7" B="" C="DET-5"/>
+<DLV A="018D" B="" C="DET-5"/>
+<DLV A="0186" B="" C="DET-9"/>
+<DLV A="0186" B="" C="DET-8"/>
+<DLV A="E294" B="" C="DET-7"/>
+<DLV A="004B" B="" C="DET-6"/>
+<DLV A="0006" B="" C="DET-7"/>
+</TIM>

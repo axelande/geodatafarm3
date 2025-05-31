@@ -29,7 +29,7 @@ def test_remove_iso_dataset(gdf: GeoDataFarm):
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
     assert found
-fields = ['test_field', 'test_iso_field', 'test_iso_added_field', 'test_iso_added_field2'] #, 'test_iso_field2']
+fields = ['test_field', 'test_iso_field', 'test_iso_added_field', 'test_iso_added_field2', 'test_iso_added_field3'] #, 'test_iso_field2']
 # @pytest.mark.depends(scope='session', on=['remove_text'], name='remove_field')
 @pytest.mark.parametrize('field_name', fields)
 def test_remove_xfield(gdf: GeoDataFarm, field_name):

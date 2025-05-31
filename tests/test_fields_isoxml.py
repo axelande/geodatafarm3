@@ -69,6 +69,21 @@ def test_polygon_coordinates_consistency(find_iso_field: FindIsoField):
     # Compare the coordinates
     assert original_polygon.equals_exact(saved_polygon, tolerance=1e-7), "The polygon coordinates should remain consistent before and after saving."
 
+def test_import_grid_task_field_from_isoxml(gdf):
+    W = FindIsoField(gdf, test_path='./tests/test_data/TASKDATA4/TASKDATA.XML')
+    W.zoom_level = 10
+    W.fifw.PBAddFolder.click()
+    W.fifw.PBGetAdditionalData.click()
+    W.on_item_clicked(W.fifw.LWFields.item(2))
+    W.fifw.LEFieldName.setText('test_iso_added_field3')
+    W.save_field()
+    field_added = False
+    for index in range(gdf.dock_widget.LWFields.count()):
+        if gdf.dock_widget.LWFields.item(index).text() == "test_iso_added_field3":
+            field_added = True
+    W.disconnect()
+    assert field_added
+
 
 if __name__ == '__main__':
     test_import_field_from_isoxml()

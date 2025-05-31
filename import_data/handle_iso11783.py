@@ -95,11 +95,10 @@ class Iso11783:
             self.py_agri = None
             return True
 
-    def open_input_folder(self: Self) -> None:
+    def open_input_folder(self: Self, path=False) -> None:
         """Opens a dialog and let the user select the folder where Taskdata are stored."""
-        if self.parent.test_mode:
-            if self.data_type == 'harvest':
-                path = './tests/test_data/TASKDATA2/'
+        if path is not False:
+            pass
         else:
             path = QtWidgets.QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
                                                               QtWidgets.QFileDialog.ShowDirsOnly)
@@ -230,6 +229,8 @@ UNION """
         self.IXB.TWISODataSelect.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         j = -1  # How may checkboxes that is added
         for i, row in enumerate(task_names.values()):
+            if len(row) == 0:
+                continue
             j += 1
             item1 = QtWidgets.QTableWidgetItem('Include')
             item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)

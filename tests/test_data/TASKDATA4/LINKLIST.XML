@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ISO11783LinkList VersionMajor="4" VersionMinor="2" ManagementSoftwareManufacturer="AgGateway" ManagementSoftwareVersion="1.0" TaskControllerManufacturer="" TaskControllerVersion="" DataTransferOrigin="1" FileVersion="">
+  <LGP A="LGP1" B="1" E="UUIDs">
+    <LNK A="CTR1" B="c771921f-0989-3897-9cfe-3d10bee7c234" C="http://www.deere.com" />
+    <LNK A="FRM1" B="2337d641-474f-42d2-88d5-742a11e764be" C="http://www.deere.com" />
+    <LNK A="PFD1" B="cfabc2e2-16bb-298a-7629-7cf6f440bb93" C="http://www.deere.com" />
+  </LGP>
+  <LGP A="LGP2" B="2" C="1100046503738" E="ADAPT_Context_Items:Grower">
+    <LNK A="CTR1" B="IsSetupOrDoc|Setup" />
+  </LGP>
+  <LGP A="LGP3" B="2" C="1100046503738" E="ADAPT_Context_Items:Farm">
+    <LNK A="FRM1" B="IsSetupOrDoc|Setup" />
+  </LGP>
+  <LGP A="LGP4" B="2" C="1100046503738" E="ADAPT_Context_Items:Field">
+    <LNK A="PFD1" B="IsSetupOrDoc|Setup" />
+  </LGP>
+</ISO11783LinkList>

@@ -61,16 +61,19 @@ class Grid:
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         tasks = []
         for key in task_data_dict['GRD']:
-            grd = task_data_dict['GRD'][key]
-            if isinstance(grd, list):
-                for g in grd:
-                    gpd_ = self.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
-                                              float(g['D']), int(g['F']), int(g['E']), g.get('J', 0))
-                    tasks.append(gpd_)
-            else:
-                gpd_ = self.read_grid_binary_file(self.path + grd['G'], float(grd['A']), float(grd['B']), float(grd['C']),
-                                              float(grd['D']), int(grd['F']), int(grd['E']), grd.get('J', 0))
-            tasks.append(gpd_)
+            try:
+                grd = task_data_dict['GRD'][key]
+                if isinstance(grd, list):
+                    for g in grd:
+                        gpd_ = self.read_grid_binary_file(self.path + g['G'], float(g['A']), float(g['B']), float(g['C']),
+                                                float(g['D']), int(g['F']), int(g['E']), g.get('J', 0))
+                        tasks.append(gpd_)
+                else:
+                    gpd_ = self.read_grid_binary_file(self.path + grd['G'], float(grd['A']), float(grd['B']), float(grd['C']),
+                                                float(grd['D']), int(grd['F']), int(grd['E']), grd.get('J', 0))
+                tasks.append(gpd_)
+            except FileNotFoundError as e:
+                pass
         return tasks
 
     def get_pdv(self, tsk, vpns):

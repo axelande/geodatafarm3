@@ -1,0 +1,2009 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ISO11783_TaskData VersionMajor="4" VersionMinor="2" ManagementSoftwareManufacturer="AgGateway"
+    ManagementSoftwareVersion="1.0" TaskControllerManufacturer="Amazonen Werke H. Dreyer"
+    TaskControllerVersion="0.1" DataTransferOrigin="2">
+    <CTR A="CTR1" B="Chris" />
+    <DVC A="DVC-1" B="john deere 7290" C="V01.01.00" D="A00086082B81EC0E" E="00001"
+        F="00000000000005" G="FF000000006E65">
+        <DET A="DET-1" B="1" C="1" D="john deere 7290" E="0" F="0" />
+        <DET A="DET-2" B="2" C="7" D="GPS-Sensor" E="1" F="1">
+            <DOR A="200" />
+            <DOR A="201" />
+        </DET>
+        <DET A="DET-3" B="3" C="6" D="Coupling rear" E="2" F="1">
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DET A="DET-4" B="4" C="6" D="Coupling front" E="3" F="1">
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DPD A="200" B="0086" C="1" D="8" E="NRP X GPS" F="500" />
+        <DPD A="201" B="0087" C="1" D="8" E="NRP Y GPS" F="500" />
+        <DPD A="300" B="0086" C="1" D="8" E="CRP X Coupling" F="500" />
+        <DPT A="301" B="0087" C="0" E="500" />
+        <DVP A="500" B="0" C="0.001" D="2" E="m" />
+    </DVC>
+    <DVC A="DVC-2" B="AMAZONE ZA-TS" C="NW188-H.011" D="A00A80002B809A00" E="ZA00039424"
+        F="57000000107B01" G="FF000000006564">
+        <DET A="DET-5" B="1" C="1" D="Streuer" E="0" F="0">
+            <DOR A="7007" />
+            <DOR A="7014" />
+            <DOR A="7084" />
+            <DOR A="7085" />
+            <DOR A="7078" />
+        </DET>
+        <DET A="DET-6" B="2000" C="3" D="Behaelter" E="1" F="1000">
+            <DOR A="7002" />
+            <DOR A="8004" />
+            <DOR A="8005" />
+        </DET>
+        <DET A="DET-7" B="1000" C="2" D="Streufaecher" E="2" F="1">
+            <DOR A="7003" />
+            <DOR A="7004" />
+            <DOR A="7005" />
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7013" />
+            <DOR A="7014" />
+            <DOR A="7017" />
+            <DOR A="7018" />
+            <DOR A="7054" />
+            <DOR A="7055" />
+            <DOR A="7056" />
+            <DOR A="7061" />
+            <DOR A="7079" />
+            <DOR A="7080" />
+            <DOR A="7081" />
+            <DOR A="7082" />
+            <DOR A="7086" />
+            <DOR A="7089" />
+            <DOR A="7090" />
+            <DOR A="7091" />
+            <DOR A="7097" />
+            <DOR A="7098" />
+            <DOR A="7019" />
+            <DOR A="7027" />
+            <DOR A="7035" />
+            <DOR A="7043" />
+        </DET>
+        <DET A="DET-8" B="1001" C="2" D="Streufaecher links" E="21" F="1000">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7014" />
+            <DOR A="7057" />
+            <DOR A="7059" />
+            <DOR A="7062" />
+            <DOR A="7063" />
+            <DOR A="7066" />
+            <DOR A="7067" />
+            <DOR A="7070" />
+            <DOR A="7087" />
+            <DOR A="7095" />
+        </DET>
+        <DET A="DET-9" B="1002" C="2" D="Streufaecher rechts" E="22" F="1000">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7014" />
+            <DOR A="7058" />
+            <DOR A="7060" />
+            <DOR A="7064" />
+            <DOR A="7065" />
+            <DOR A="7068" />
+            <DOR A="7069" />
+            <DOR A="7071" />
+            <DOR A="7088" />
+            <DOR A="7096" />
+        </DET>
+        <DET A="DET-10" B="3000" C="4" D="Teilbreite_1" E="100" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-11" B="3001" C="4" D="Teilbreite_2" E="101" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-12" B="3002" C="4" D="Teilbreite_3" E="102" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-13" B="3003" C="4" D="Teilbreite_4" E="103" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-14" B="3004" C="4" D="Teilbreite_5" E="104" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-15" B="3005" C="4" D="Teilbreite_6" E="105" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-16" B="3006" C="4" D="Teilbreite_7" E="106" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-17" B="3007" C="4" D="Teilbreite_8" E="107" F="1001">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-18" B="3500" C="4" D="Teilbreite_1" E="500" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-19" B="3501" C="4" D="Teilbreite_2" E="501" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-20" B="3502" C="4" D="Teilbreite_3" E="502" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-21" B="3503" C="4" D="Teilbreite_4" E="503" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-22" B="3504" C="4" D="Teilbreite_5" E="504" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-23" B="3505" C="4" D="Teilbreite_6" E="505" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-24" B="3506" C="4" D="Teilbreite_7" E="506" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-25" B="3507" C="4" D="Teilbreite_8" E="507" F="1002">
+            <DOR A="7009" />
+            <DOR A="7010" />
+            <DOR A="7011" />
+            <DOR A="7016" />
+        </DET>
+        <DET A="DET-26" B="5000" C="6" D="Kupplungspunkt" E="3" F="1">
+            <DOR A="7009" />
+            <DOR A="8001" />
+            <DOR A="8002" />
+            <DOR A="8003" />
+        </DET>
+        <DPD A="7002" B="004B" C="1" D="5" E="aktueller Behaelterinhalt" F="9006" />
+        <DPD A="7003" B="0007" C="1" D="11" E="Istwert Ausbringmenge" F="9003" />
+        <DPD A="7004" B="0006" C="3" D="0" E="Sollwert Ausbringmenge" F="9003" />
+        <DPD A="7005" B="00A0" C="2" D="9" E="SectionControlState" />
+        <DPD A="7007" B="DFFF" C="0" D="31" E="DefaultLogging" />
+        <DPD A="7009" B="0086" C="0" D="8" E="X Offset" F="9004" />
+        <DPD A="7010" B="0087" C="0" D="8" E="Y Offset" F="9004" />
+        <DPD A="7011" B="0043" C="0" D="8" E="Arbeitsbreite" F="9004" />
+        <DPD A="7013" B="009E" C="2" D="8" E="Prescription Control State" />
+        <DPD A="7014" B="008D" C="1" D="9" E="Arbeitsstellung" />
+        <DPD A="7016" B="00E2" C="0" D="8" E="Actual Working Length" F="9004" />
+        <DPD A="7017" B="00CD" C="2" D="9" E="SC Turn On Time" F="9007" />
+        <DPD A="7018" B="00CE" C="2" D="9" E="SC Turn Off Time" F="9007" />
+        <DPD A="7019" B="00A1" C="0" D="9" E="Condensed Work state 01 - 16" />
+        <DPD A="7027" B="0122" C="2" D="0" E="Setpoint Condensed WS 01 - 16" />
+        <DPD A="7035" B="E00D" C="2" D="0" E="SP Cond. Infield State 01 - 16" />
+        <DPD A="7043" B="016F" C="0" D="9" E="Section Override State 1-16" />
+        <DPD A="7054" B="0109" C="2" D="0" E="Restflaeche" F="9002" />
+        <DPD A="7055" B="0134" C="1" D="9" E="Istwert Ausbringm. in Prozent" F="9011" />
+        <DPD A="7056" B="008C" C="2" D="8" E="Sollwert Ausbringm. in Prozent" F="9011" />
+        <DPD A="7057" B="0186" C="1" D="1" E="Istwert Drehzahl links" F="9012" />
+        <DPD A="7058" B="0186" C="1" D="1" E="Istwert Drehzahl rechts" F="9012" />
+        <DPD A="7059" B="0185" C="0" D="8" E="Sollwert Drehzahl links" F="9012" />
+        <DPD A="7060" B="0185" C="0" D="8" E="Sollwert Drehzahl rechts" F="9012" />
+        <DPD A="7061" B="0046" C="0" D="9" E="Maximale Arbeitsbreite" F="9004" />
+        <DPD A="7062" B="0007" C="1" D="11" E="Istwert Ausbringmenge links" F="9003" />
+        <DPD A="7063" B="0006" C="2" D="0" E="Sollwert Ausbringmenge links" F="9003" />
+        <DPD A="7064" B="0007" C="1" D="11" E="Istwert Ausbringmenge rechts" F="9003" />
+        <DPD A="7065" B="0006" C="2" D="0" E="Sollwert Ausbringmenge rechts" F="9003" />
+        <DPD A="7066" B="0134" C="1" D="9" E="Istwert in Prozent links" F="9011" />
+        <DPD A="7067" B="008C" C="2" D="8" E="Sollwert in Prozent links" F="9011" />
+        <DPD A="7068" B="0134" C="1" D="9" E="Istwert in Prozent rechts" F="9011" />
+        <DPD A="7069" B="008C" C="2" D="8" E="Sollwert in Prozent rechts" F="9011" />
+        <DPD A="7070" B="0043" C="1" D="8" E="Arbeitsbreite links" F="9004" />
+        <DPD A="7071" B="0043" C="1" D="8" E="Arbeitsbreite rechts" F="9004" />
+        <DPD A="7078" B="00D7" C="1" D="17" E="Betriebsstunden" F="9014" />
+        <DPD A="7079" B="010F" C="1" D="17" E="Gesamtarbeitsfläche" F="9002" />
+        <DPD A="7080" B="010A" C="1" D="17" E="Menge gesamt" F="9001" />
+        <DPD A="7081" B="0110" C="1" D="19" E="Gesamtstrecke Streuscheibe An" F="9016" />
+        <DPD A="7082" B="0111" C="1" D="19" E="Gesamtstrecke Streuscheibe Aus" F="9016" />
+        <DPD A="7084" B="018D" C="1" D="9" E="Aktuelle Geschwindigkeit" F="9013" />
+        <DPD A="7085" B="0190" C="1" D="9" E="Geschwindigkeitsquelle" />
+        <DPD A="7086" B="E290" C="1" D="9" E="Kalibrierfaktor" />
+        <DPD A="7087" B="E291" C="1" D="9" E="Schieberposition links" F="9011" />
+        <DPD A="7088" B="E291" C="1" D="9" E="Schieberposition rechts" F="9011" />
+        <DPD A="7089" B="E292" C="1" D="9" E="Streuverfahren links" />
+        <DPD A="7090" B="E293" C="3" D="9" E="Streuverfahren rechts" />
+        <DPD A="7091" B="E294" C="1" D="9" E="Einleitsystemposition links" />
+        <DPD A="7095" B="E295" C="1" D="9" E="Wurfweite links" />
+        <DPD A="7096" B="E295" C="1" D="9" E="Wurfweite rechts" />
+        <DPD A="7097" B="FE20" C="0" D="9" />
+        <DPD A="7098" B="FE21" C="2" D="9" />
+        <DPT A="8004" B="008E" C="500" D="Sollwertverzoegerung" E="9007" />
+        <DPT A="8005" B="008F" C="200" D="Istwertverzoegerung" E="9007" />
+        <DPT A="8001" B="0087" C="0" D="Y Offset Kupplungspunkt " E="9004" />
+        <DPT A="8002" B="0088" C="0" D="Z Offset Kupplungspunkt " E="9004" />
+        <DPT A="8003" B="009D" C="3" D="Anhaengung" />
+        <DVP A="9000" B="0" C="0.000001" D="2" E="km" />
+        <DVP A="9001" B="0" C="1.0" D="0" E="kg" />
+        <DVP A="9002" B="0" C="0.0001" D="2" E="ha" />
+        <DVP A="9003" B="0" C="0.01" D="0" E="kg/ha" />
+        <DVP A="9004" B="0" C="0.001" D="2" E="m" />
+        <DVP A="9005" B="0" C="0.000277778" D="1" E="h" />
+        <DVP A="9006" B="0" C="0.001" D="0" E="kg" />
+        <DVP A="9007" B="0" C="1.0" D="0" E="ms" />
+        <DVP A="9008" B="-273150" C="0.001" D="1" E="°C" />
+        <DVP A="9009" B="0" C="0.001" D="1" E="m/s" />
+        <DVP A="9010" B="0" C="1.0" D="0" E="°" />
+        <DVP A="9011" B="0" C="0.0001" D="0" E="%" />
+        <DVP A="9012" B="0" C="0.0001" D="0" E="min-1" />
+        <DVP A="9013" B="0" C="0.0036" D="1" E="km/h" />
+        <DVP A="9014" B="0" C="0.050000001" D="1" E="h" />
+        <DVP A="9015" B="0" C="0.001" D="2" E="°" />
+        <DVP A="9016" B="0" C="0.001" D="2" E="km" />
+    </DVC>
+    <DVC A="DVC-3" B="Precea" C="NW110-L.004" D="A00884002B8309EF" E="PRE0000445" F="00000F24364E02"
+        G="FF000000006564">
+        <DET A="DET-27" B="1" C="1" D="Precea" E="0" F="0">
+            <DOR A="1000" />
+            <DOR A="1001" />
+            <DOR A="1002" />
+            <DOR A="1003" />
+            <DOR A="1020" />
+            <DOR A="1024" />
+            <DOR A="1025" />
+            <DOR A="1027" />
+            <DOR A="1028" />
+            <DOR A="1029" />
+            <DOR A="1039" />
+            <DOR A="1040" />
+            <DOR A="1030" />
+            <DOR A="1031" />
+            <DOR A="1052" />
+            <DOR A="1047" />
+            <DOR A="1035" />
+            <DOR A="1036" />
+        </DET>
+        <DET A="DET-28" B="4000" C="4" D="Reihe 1" E="256" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-29" B="4001" C="4" D="Reihe 2" E="257" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-30" B="4002" C="4" D="Reihe 3" E="258" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-31" B="4003" C="4" D="Reihe 4" E="259" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-32" B="4004" C="4" D="Reihe 5" E="260" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-33" B="4005" C="4" D="Reihe 6" E="261" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-34" B="4006" C="4" D="Reihe 7" E="262" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-35" B="4007" C="4" D="Reihe 8" E="263" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-36" B="4008" C="4" D="Reihe 9" E="264" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-37" B="4009" C="4" D="Reihe 10" E="265" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-38" B="4010" C="4" D="Reihe 11" E="266" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-39" B="4011" C="4" D="Reihe 12" E="267" F="4">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1037" />
+            <DOR A="1041" />
+            <DOR A="1042" />
+            <DOR A="1043" />
+            <DOR A="1044" />
+            <DOR A="1045" />
+        </DET>
+        <DET A="DET-40" B="4024" C="4" D="Reihe 1" E="512" F="7">
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1032" />
+        </DET>
+        <DET A="DET-41" B="3" C="6" D="Verbindung zum Traktor" E="3" F="1">
+            <DOR A="2000" />
+            <DOR A="2001" />
+            <DOR A="1046" />
+        </DET>
+        <DET A="DET-42" B="4" C="2" D="Abgabepunkt Saatgut" E="4" F="1">
+            <DOR A="1002" />
+            <DOR A="1009" />
+            <DOR A="1010" />
+            <DOR A="1012" />
+            <DOR A="1014" />
+            <DOR A="1016" />
+            <DOR A="1017" />
+            <DOR A="1004" />
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1007" />
+            <DOR A="1021" />
+        </DET>
+        <DET A="DET-43" B="5" C="3" D="Saatgutbehälter" E="5" F="4">
+            <DOR A="2002" />
+            <DOR A="2003" />
+            <DOR A="1002" />
+            <DOR A="1008" />
+            <DOR A="1038" />
+            <DOR A="1034" />
+            <DOR A="1018" />
+            <DOR A="1037" />
+            <DOR A="1019" />
+            <DOR A="1023" />
+            <DOR A="1021" />
+        </DET>
+        <DET A="DET-44" B="7" C="2" D="Abgabepunkt Dünger" E="7" F="1">
+            <DOR A="1002" />
+            <DOR A="1009" />
+            <DOR A="1010" />
+            <DOR A="1012" />
+            <DOR A="1014" />
+            <DOR A="1016" />
+            <DOR A="1017" />
+            <DOR A="1004" />
+            <DOR A="1005" />
+            <DOR A="1006" />
+            <DOR A="1007" />
+            <DOR A="1021" />
+        </DET>
+        <DET A="DET-45" B="9" C="3" D="Düngerbehälter" E="9" F="7">
+            <DOR A="2004" />
+            <DOR A="2005" />
+            <DOR A="1002" />
+            <DOR A="1008" />
+            <DOR A="1033" />
+            <DOR A="1034" />
+            <DOR A="1018" />
+            <DOR A="1032" />
+            <DOR A="1019" />
+            <DOR A="1022" />
+            <DOR A="1021" />
+            <DOR A="1026" />
+        </DET>
+        <DET A="DET-46" B="10" C="2" D="Fahrgasse" E="10" F="1">
+            <DOR A="1048" />
+            <DOR A="1049" />
+            <DOR A="1050" />
+            <DOR A="1051" />
+        </DET>
+        <DPD A="1000" B="010F" C="1" D="19" E="Gesamtfläche" F="3000" />
+        <DPD A="1001" B="0112" C="1" D="19" E="Gesamtzeit" F="3001" />
+        <DPD A="1002" B="008D" C="1" D="9" E="Arbeitsstellung" />
+        <DPD A="1003" B="DFFF" C="0" D="31" E="Default Logging" />
+        <DPD A="1004" B="0086" C="1" D="9" E="Abstand in X-Richtung" F="3002" />
+        <DPD A="1005" B="0087" C="1" D="9" E="Abstand in Y-Richtung" F="3002" />
+        <DPD A="1006" B="0043" C="1" D="9" E="Istarbeitsbreite" F="3002" />
+        <DPD A="1007" B="0046" C="1" D="9" E="Maximale Arbeitsbreite" F="3002" />
+        <DPD A="1008" B="009E" C="3" D="9" E="Prescription Control State" />
+        <DPD A="1009" B="00A0" C="3" D="9" E="Section Control State" />
+        <DPD A="1010" B="0122" C="2" D="9" E="Sollarbeitsstellung" />
+        <DPD A="1012" B="00A1" C="0" D="9" E="Istarbeitsstellung" />
+        <DPD A="1014" B="016F" C="0" D="9" E="Übersteuerung Teilbreiten" />
+        <DPD A="1016" B="00CD" C="3" D="9" E="Einschaltverzögerung" F="3005" />
+        <DPD A="1017" B="00CE" C="3" D="9" E="Ausschaltverzögerung" F="3005" />
+        <DPD A="1018" B="008E" C="1" D="9" E="Sollwertverzögerung" F="3005" />
+        <DPD A="1019" B="008F" C="1" D="9" E="Istwertverzögerung" F="3005" />
+        <DPD A="1020" B="0077" C="3" D="19" E="Zeit in Arbeitsstellung" F="3001" />
+        <DPD A="1021" B="0074" C="3" D="19" E="Fläche" F="3000" />
+        <DPD A="1022" B="0051" C="3" D="19" E="Menge" F="3003" />
+        <DPD A="1023" B="0052" C="3" D="19" E="Ausgebrachte Körner" />
+        <DPD A="1024" B="0075" C="3" D="19" E="Strecke beim Säen" F="3002" />
+        <DPD A="1025" B="0076" C="3" D="19" E="Strecke ohne zu säen" F="3002" />
+        <DPD A="1026" B="004B" C="1" D="9" E="Behälterinhalt" F="3006" />
+        <DPD A="1027" B="018C" C="1" D="9" E="Sollgeschwindigkeit" F="3007" />
+        <DPD A="1028" B="018D" C="1" D="9" E="Istgeschwindigkeit" F="3007" />
+        <DPD A="1029" B="0190" C="1" D="9" E="Quelle Geschwindigkeitssignal" />
+        <DPD A="1030" B="0186" C="1" D="9" E="Ist-Gebläsedrehzahl" F="3008" />
+        <DPD A="1031" B="0187" C="1" D="9" E="Soll-Gebläsedrehzahl" F="3008" />
+        <DPD A="1032" B="0007" C="1" D="15" E="Istmenge" F="3004" />
+        <DPD A="1033" B="0006" C="3" D="15" E="Sollmenge" F="3004" />
+        <DPD A="1034" B="008C" C="3" D="15" E="Prozentuale Sollmenge" F="3010" />
+        <DPD A="1035" B="FE20" C="0" D="8" E="SC auto counter client" />
+        <DPD A="1036" B="FE21" C="2" D="0" E="SC auto counter server" />
+        <DPD A="1037" B="000C" C="1" D="15" E="Istmenge" F="3009" />
+        <DPD A="1038" B="000B" C="3" D="15" E="Sollmenge" F="3009" />
+        <DPD A="1039" B="018E" C="1" D="9" E="Minimale Geschwindigkeit" F="3007" />
+        <DPD A="1040" B="018F" C="1" D="9" E="Maximale Geschwindigkeit" F="3007" />
+        <DPD A="1041" B="019F" C="1" D="9" E="Anteil Sollstellen" F="3010" />
+        <DPD A="1042" B="01A1" C="1" D="9" E="Anteil Fehlstellen" F="3010" />
+        <DPD A="1043" B="01A3" C="1" D="9" E="Anteil Doppelstellen" F="3010" />
+        <DPD A="1044" B="01A5" C="1" D="9" E="Standardabweichung" F="3011" />
+        <DPD A="1045" B="01A7" C="1" D="9" E="Variationskoeffizient" F="3010" />
+        <DPD A="1046" B="009D" C="1" D="9" E="Art der Verbindung" />
+        <DPD A="1047" B="01FA" C="2" D="9" E="Setpoint Tramline Control Level" />
+        <DPD A="1048" B="01FB" C="2" D="0" E="Tramline Sequence Number" />
+        <DPD A="1049" B="01FD" C="2" D="9" E="Actual Track Number" />
+        <DPD A="1050" B="01FE" C="2" D="9" E="Track Number to the right" />
+        <DPD A="1051" B="01FF" C="2" D="9" E="Track Number to the left" />
+        <DPD A="1052" B="01F9" C="1" D="9" E="Tramline Control Level" />
+        <DPT A="2000" B="0086" C="0" D="Abstand in X-Richtung" E="3002" />
+        <DPT A="2001" B="0087" C="0" D="Abstand in Y-Richtung" E="3002" />
+        <DPT A="2002" B="00B2" C="0" D="Behälternummer" />
+        <DPT A="2003" B="00B3" C="2" D="Tätigkeit" />
+        <DPT A="2004" B="00B2" C="1" D="Behälternummer" />
+        <DPT A="2005" B="00B3" C="1" D="Tätigkeit" />
+        <DVP A="3000" B="0" C="0.0001" D="2" E="ha" />
+        <DVP A="3001" B="0" C="0.000277777" D="1" E="h" />
+        <DVP A="3002" B="0" C="0.001" D="2" E="m" />
+        <DVP A="3003" B="0" C="1.0" D="0" E="kg" />
+        <DVP A="3004" B="0" C="0.01" D="1" E="kg/ha" />
+        <DVP A="3005" B="0" C="1.0" D="0" E="ms" />
+        <DVP A="3006" B="0" C="0.001" D="0" E="kg" />
+        <DVP A="3007" B="0" C="0.0036" D="1" E="km/h" />
+        <DVP A="3008" B="0" C="0.0001" D="0" E="1/min" />
+        <DVP A="3009" B="0" C="10.0" D="0" E="K/ha" />
+        <DVP A="3010" B="0" C="0.0001" D="0" E="%" />
+        <DVP A="3011" B="0" C="1.0" D="0" E="mm" />
+    </DVC>
+    <DVC A="DVC-4" C="V01.01.00" D="A00400002B81EC0E" E="00001" F="0000000000015F"
+        G="FF000000006E65">
+        <DET A="DET-47" B="1" C="1" D="DVC" E="0" F="0">
+            <DOR A="400" />
+            <DOR A="401" />
+            <DOR A="402" />
+            <DOR A="452" />
+        </DET>
+        <DET A="DET-48" B="3" C="6" D="CRP" E="2" F="1">
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DET A="DET-49" B="1000" C="4" D="SC0" E="1000" F="1">
+            <DOR A="600" />
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DPD A="300" B="0086" C="0" D="8" E="Offset X" F="500" />
+        <DPD A="301" B="0087" C="0" D="8" E="Offset Y" F="500" />
+        <DPD A="600" B="0043" C="0" D="8" E="actual working width" F="500" />
+        <DPD A="400" B="008D" C="2" D="8" E="device working state" />
+        <DPD A="401" B="00A0" C="2" D="8" E="section control state" />
+        <DPD A="402" B="00A1" C="0" D="8" E="actual condensed workstate" />
+        <DPD A="452" B="0122" C="2" D="0" E="setpoint condensed workstate" />
+        <DVP A="500" B="0" C="0.001" D="2" E="m" />
+    </DVC>
+    <DVC A="DVC-5" C="V01.01.00" D="A00400082B81EC0E" E="00001" F="00000000000160"
+        G="FF000000006E65">
+        <DET A="DET-50" B="1" C="1" D="DVC" E="0" F="0">
+            <DOR A="400" />
+            <DOR A="401" />
+            <DOR A="402" />
+            <DOR A="452" />
+        </DET>
+        <DET A="DET-51" B="3" C="6" D="CRP" E="2" F="1">
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DET A="DET-52" B="1000" C="4" D="SC0" E="1000" F="1">
+            <DOR A="600" />
+            <DOR A="300" />
+            <DOR A="301" />
+        </DET>
+        <DPD A="300" B="0086" C="0" D="8" E="Offset X" F="500" />
+        <DPD A="301" B="0087" C="0" D="8" E="Offset Y" F="500" />
+        <DPD A="600" B="0043" C="0" D="8" E="actual working width" F="500" />
+        <DPD A="400" B="008D" C="2" D="8" E="device working state" />
+        <DPD A="401" B="00A0" C="2" D="8" E="section control state" />
+        <DPD A="402" B="00A1" C="0" D="8" E="actual condensed workstate" />
+        <DPD A="452" B="0122" C="2" D="0" E="setpoint condensed workstate" />
+        <DVP A="500" B="0" C="0.001" D="2" E="m" />
+    </DVC>
+    <PGP A="PGP1" B="CropType" />
+    <TSK A="TSK-8" B="Auftrag_20250407_1522" E="PFD-6" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-07T15:22:47.000" B="2025-04-07T15:24:10.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-07T15:22:47.000" B="2025-04-07T15:24:10.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-07T15:22:47.000" B="2025-04-07T15:24:10.000" D="4">
+            <DLV A="0111" B="264917" C="DET-7" />
+            <DLV A="0110" B="314978" C="DET-7" />
+            <DLV A="010A" B="179522" C="DET-7" />
+            <DLV A="00D7" B="1393" C="DET-5" />
+            <DLV A="010F" B="7281241" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00000" C="1" />
+    </TSK>
+    <TSK A="TSK-9" B="Auftrag_20250407_1524" E="PFD-7" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-07T15:24:10.000" B="2025-04-07T15:24:49.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-07T15:24:10.000" B="2025-04-07T15:24:49.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-07T15:24:10.000" B="2025-04-07T15:24:49.000" D="4">
+            <DLV A="0111" B="264917" C="DET-7" />
+            <DLV A="0110" B="314978" C="DET-7" />
+            <DLV A="010A" B="179522" C="DET-7" />
+            <DLV A="00D7" B="1393" C="DET-5" />
+            <DLV A="010F" B="7281241" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00001" C="1" />
+    </TSK>
+    <TSK A="TSK-10" B="TSP-NP-hi-Wald" E="PFD-7" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-07T15:24:50.000" B="2025-04-07T17:27:55.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-07T15:24:50.000" B="2025-04-07T17:27:55.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T07:23:04.000" B="2025-04-08T07:46:33.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T07:23:16.000" B="2025-04-08T07:46:33.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T08:19:14.000" B="2025-04-08T09:28:52.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T08:19:24.000" B="2025-04-08T09:28:52.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:00.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:00.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:45.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:45.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.0980599409259" B="11.7741887407350" C="0.0000500000000" D="0.0000500000000"
+            E="324" F="244" G="GRD00001" I="2" J="1" />
+        <TIM A="2025-04-07T15:24:50.000" B="2025-04-07T17:27:55.000" D="4">
+            <DLV A="0111" B="269113" C="DET-7" />
+            <DLV A="0110" B="333478" C="DET-7" />
+            <DLV A="010A" B="186213" C="DET-7" />
+            <DLV A="00D7" B="1434" C="DET-5" />
+            <DLV A="010F" B="7797299" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-08T07:22:54.000" B="2025-04-08T07:46:33.000" D="4">
+            <DLV A="0111" B="269280" C="DET-7" />
+            <DLV A="0110" B="333478" C="DET-7" />
+            <DLV A="010A" B="186213" C="DET-7" />
+            <DLV A="00D7" B="1441" C="DET-5" />
+            <DLV A="010F" B="7797299" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-08T08:19:09.000" B="2025-04-08T09:28:52.000" D="4">
+            <DLV A="0111" B="274554" C="DET-7" />
+            <DLV A="0110" B="344127" C="DET-7" />
+            <DLV A="010A" B="189812" C="DET-7" />
+            <DLV A="00D7" B="1475" C="DET-5" />
+            <DLV A="010F" B="8044535" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:00.000" D="4">
+            <DLV A="0111" B="352488" C="DET-7" />
+            <DLV A="0110" B="583461" C="DET-7" />
+            <DLV A="010A" B="243998" C="DET-7" />
+            <DLV A="00D7" B="2056" C="DET-5" />
+            <DLV A="010F" B="13588459" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-11T15:26:00.000" B="2025-04-11T15:26:45.000" D="4">
+            <DLV A="0111" B="352494" C="DET-7" />
+            <DLV A="0110" B="583461" C="DET-7" />
+            <DLV A="010A" B="243998" C="DET-7" />
+            <DLV A="00D7" B="2056" C="DET-5" />
+            <DLV A="010F" B="13588459" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00002" C="1" />
+        <TZN A="0">
+            <PDV A="0006" B="0" D="DET-7" E="VPN-2" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="0006" B="0" E="VPN-2" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-11" B="Auftrag_20250408_0928" E="PFD-8" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T09:28:52.000" B="2025-04-08T09:29:16.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T09:28:52.000" B="2025-04-08T09:29:16.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-08T09:28:52.000" B="2025-04-08T09:29:16.000" D="4">
+            <DLV A="0111" B="274554" C="DET-7" />
+            <DLV A="0110" B="344127" C="DET-7" />
+            <DLV A="010A" B="189812" C="DET-7" />
+            <DLV A="00D7" B="1475" C="DET-5" />
+            <DLV A="010F" B="8044535" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00003" C="1" />
+        <TZN A="0">
+            <PDV A="0006" B="0" D="DET-7" E="VPN-2" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-12" B="TSP-NP-hi-Wald" E="PFD-8" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T09:29:16.000" B="2025-04-08T10:35:03.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T09:29:16.000" B="2025-04-08T10:35:03.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.0980599409259" B="11.7741887407350" C="0.0000500000000" D="0.0000500000000"
+            E="324" F="244" G="GRD00002" I="2" J="1" />
+        <TIM A="2025-04-08T09:29:16.000" B="2025-04-08T10:35:03.000" D="4">
+            <DLV A="0111" B="282021" C="DET-7" />
+            <DLV A="0110" B="347957" C="DET-7" />
+            <DLV A="010A" B="191223" C="DET-7" />
+            <DLV A="00D7" B="1497" C="DET-5" />
+            <DLV A="010F" B="8138278" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00004" C="1" />
+        <TZN A="0">
+            <PDV A="0006" B="0" D="DET-7" E="VPN-10" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="0006" B="0" E="VPN-10" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-13" B="Auftrag_20250408_1035" E="PFD-9" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T10:35:03.000" B="2025-04-08T12:39:56.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T10:35:04.000" B="2025-04-08T12:39:56.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T13:08:10.000" B="2025-04-08T15:17:49.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T13:08:22.000" B="2025-04-08T15:17:49.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-08T10:35:03.000" B="2025-04-08T12:39:56.000" D="4">
+            <DLV A="0111" B="284884" C="DET-7" />
+            <DLV A="0110" B="366920" C="DET-7" />
+            <DLV A="010A" B="196506" C="DET-7" />
+            <DLV A="00D7" B="1538" C="DET-5" />
+            <DLV A="010F" B="8578284" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-08T13:08:00.000" B="2025-04-08T15:17:49.000" D="4">
+            <DLV A="0111" B="291464" C="DET-7" />
+            <DLV A="0110" B="385692" C="DET-7" />
+            <DLV A="010A" B="201968" C="DET-7" />
+            <DLV A="00D7" B="1581" C="DET-5" />
+            <DLV A="010F" B="9033324" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00005" C="1" />
+        <TZN A="0">
+            <PDV A="0006" B="0" D="DET-7" E="VPN-2" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-14" B="Auftrag_20250408_1517" E="PFD-10" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-08T15:17:49.000" B="2025-04-08T17:18:49.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-08T15:17:50.000" B="2025-04-08T17:18:49.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T07:42:59.000" B="2025-04-09T07:44:04.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T07:43:12.000" B="2025-04-09T07:44:04.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T08:02:03.000" B="2025-04-09T08:31:25.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T08:02:15.000" B="2025-04-09T08:31:25.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-08T15:17:49.000" B="2025-04-08T17:18:49.000" D="4">
+            <DLV A="0111" B="294231" C="DET-7" />
+            <DLV A="0110" B="407447" C="DET-7" />
+            <DLV A="010A" B="208204" C="DET-7" />
+            <DLV A="00D7" B="1621" C="DET-5" />
+            <DLV A="010F" B="9551816" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T07:42:49.000" B="2025-04-09T07:44:03.000" D="4">
+            <DLV A="0111" B="294277" C="DET-7" />
+            <DLV A="0110" B="407447" C="DET-7" />
+            <DLV A="010A" B="208204" C="DET-7" />
+            <DLV A="00D7" B="1621" C="DET-5" />
+            <DLV A="010F" B="9551816" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T08:01:52.000" B="2025-04-09T08:31:25.000" D="4">
+            <DLV A="0111" B="298710" C="DET-7" />
+            <DLV A="0110" B="409497" C="DET-7" />
+            <DLV A="010A" B="208713" C="DET-7" />
+            <DLV A="00D7" B="1631" C="DET-5" />
+            <DLV A="010F" B="9594135" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00006" C="1" />
+    </TSK>
+    <TSK A="TSK-15" B="Auftrag_20250409_0831" E="PFD-11" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T08:31:25.000" B="2025-04-09T10:47:10.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T08:31:25.000" B="2025-04-09T10:47:10.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T11:16:08.000" B="2025-04-09T11:17:49.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T11:16:20.000" B="2025-04-09T11:17:49.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T11:19:21.000" B="2025-04-09T11:28:09.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T11:19:33.000" B="2025-04-09T11:28:09.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T11:43:52.000" B="2025-04-09T11:47:07.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T11:44:04.000" B="2025-04-09T11:47:07.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T13:13:24.000" B="2025-04-09T14:02:22.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T13:13:36.000" B="2025-04-09T14:02:22.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-09T08:31:25.000" B="2025-04-09T10:47:10.000" D="4">
+            <DLV A="0111" B="304842" C="DET-7" />
+            <DLV A="0110" B="428296" C="DET-7" />
+            <DLV A="010A" B="214462" C="DET-7" />
+            <DLV A="00D7" B="1676" C="DET-5" />
+            <DLV A="010F" B="10072008" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T11:15:57.000" B="2025-04-09T11:17:49.000" D="4">
+            <DLV A="0111" B="304842" C="DET-7" />
+            <DLV A="0110" B="428296" C="DET-7" />
+            <DLV A="010A" B="214462" C="DET-7" />
+            <DLV A="00D7" B="1676" C="DET-5" />
+            <DLV A="010F" B="10072008" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T11:19:11.000" B="2025-04-09T11:28:09.000" D="4">
+            <DLV A="0111" B="305062" C="DET-7" />
+            <DLV A="0110" B="428296" C="DET-7" />
+            <DLV A="010A" B="214462" C="DET-7" />
+            <DLV A="00D7" B="1679" C="DET-5" />
+            <DLV A="010F" B="10072008" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T11:33:25.000" D="4">
+            <DLV A="0111" B="310964" C="DET-7" />
+            <DLV A="0110" B="431641" C="DET-7" />
+            <DLV A="010A" B="215210" C="DET-7" />
+            <DLV A="00D7" B="1696" C="DET-5" />
+            <DLV A="010F" B="10134270" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T11:43:41.000" B="2025-04-09T11:47:07.000" D="4">
+            <DLV A="0111" B="305064" C="DET-7" />
+            <DLV A="0110" B="428296" C="DET-7" />
+            <DLV A="010A" B="214462" C="DET-7" />
+            <DLV A="00D7" B="1680" C="DET-5" />
+            <DLV A="010F" B="10072008" C="DET-7" />
+        </TIM>
+        <TIM A="2025-04-09T13:13:14.000" B="2025-04-09T14:02:22.000" D="4">
+            <DLV A="0111" B="310964" C="DET-7" />
+            <DLV A="0110" B="431641" C="DET-7" />
+            <DLV A="010A" B="215210" C="DET-7" />
+            <DLV A="00D7" B="1696" C="DET-5" />
+            <DLV A="010F" B="10134270" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00007" C="1" />
+    </TSK>
+    <TSK A="TSK-16" B="Auftrag_20250409_1402" E="PFD-12" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T14:02:22.000" B="2025-04-09T14:17:31.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T14:02:22.000" B="2025-04-09T14:17:31.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-09T14:02:22.000" B="2025-04-09T14:17:31.000" D="4">
+            <DLV A="0111" B="311020" C="DET-7" />
+            <DLV A="0110" B="434503" C="DET-7" />
+            <DLV A="010A" B="215913" C="DET-7" />
+            <DLV A="00D7" B="1701" C="DET-5" />
+            <DLV A="010F" B="10204120" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00008" C="1" />
+    </TSK>
+    <TSK A="TSK-17" B="Auftrag_20250409_1417" E="PFD-13" G="4">
+        <CNN A="DVC-1" B="DET-3" C="DVC-2" D="DET-26" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-09T14:17:31.000" B="2025-04-09T14:37:25.000" D="4" />
+        </DAN>
+        <DAN A="A00A80002B809A00" B="FFFFFFFFFFFFFFFF" C="DVC-2">
+            <ASP A="2025-04-09T14:17:31.000" B="2025-04-09T14:37:25.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <TIM A="2025-04-09T14:17:31.000" B="2025-04-09T14:37:25.000" D="4">
+            <DLV A="0111" B="313834" C="DET-7" />
+            <DLV A="0110" B="436137" C="DET-7" />
+            <DLV A="010A" B="216271" C="DET-7" />
+            <DLV A="00D7" B="1708" C="DET-5" />
+            <DLV A="010F" B="10239837" C="DET-7" />
+        </TIM>
+        <TLG A="TLG00009" C="1" />
+    </TSK>
+    <TSK A="TSK-33" B="pflaster-rechts-crosbey" E="PFD-24" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-3" D="DET-41" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T11:33:14.000" B="2025-04-25T12:22:15.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-25T11:33:14.000" B="2025-04-25T12:22:15.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T12:50:17.000" B="2025-04-25T13:01:45.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-25T12:50:45.000" B="2025-04-25T13:01:45.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-25T12:59:05.000" B="2025-04-25T13:01:45.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T13:03:07.000" B="2025-04-25T13:07:02.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-25T13:03:30.000" B="2025-04-25T13:03:54.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-25T13:04:14.000" B="2025-04-25T13:07:02.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T13:08:16.000" B="2025-04-25T13:17:33.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-25T13:10:51.000" B="2025-04-25T13:16:41.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-25T13:17:14.000" B="2025-04-25T13:17:33.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T13:25:20.000" B="2025-04-25T15:37:59.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-25T13:25:48.000" B="2025-04-25T15:37:59.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T15:39:27.000" B="2025-04-25T17:24:51.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-25T15:39:54.000" B="2025-04-25T17:24:51.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-25T17:58:14.000" B="2025-04-25T18:15:13.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-25T17:58:41.000" B="2025-04-25T18:15:13.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T06:57:22.000" B="2025-04-26T06:58:41.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T06:57:50.000" B="2025-04-26T06:58:41.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T07:45:39.000" B="2025-04-26T07:46:48.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T08:09:40.000" B="2025-04-26T08:17:06.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:11:54.000" B="2025-04-26T08:16:30.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:16:34.000" B="2025-04-26T08:17:06.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T08:18:06.000" B="2025-04-26T08:20:14.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:19:17.000" B="2025-04-26T08:19:49.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:20:00.000" B="2025-04-26T08:20:14.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T08:21:30.000" B="2025-04-26T08:24:16.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:21:58.000" B="2025-04-26T08:22:27.000" D="4" />
+        </DAN>
+        <DAN A="A00400082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-5">
+            <ASP A="2025-04-26T08:22:46.000" B="2025-04-26T08:23:01.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:23:08.000" B="2025-04-26T08:23:26.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-26T08:23:44.000" B="2025-04-26T08:24:16.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T08:25:20.000" B="2025-04-26T08:25:39.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T08:27:07.000" B="2025-04-26T09:51:22.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T08:27:33.000" B="2025-04-26T09:51:22.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T09:52:38.000" B="2025-04-26T11:17:07.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T09:53:05.000" B="2025-04-26T11:17:07.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T11:18:07.000" B="2025-04-26T12:25:10.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T11:18:34.000" B="2025-04-26T12:25:10.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T12:52:41.000" B="2025-04-26T15:31:07.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T12:53:08.000" B="2025-04-26T15:31:07.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-26T15:44:07.000" B="2025-04-26T18:29:38.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-26T15:44:35.000" B="2025-04-26T18:29:38.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T07:28:07.000" B="2025-04-28T07:35:55.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T07:35:46.000" B="2025-04-28T07:35:55.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T07:36:57.000" B="2025-04-28T07:38:29.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T07:37:25.000" B="2025-04-28T07:38:29.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T07:41:24.000" B="2025-04-28T08:00:30.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T07:49:52.000" B="2025-04-28T07:50:37.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T07:50:46.000" B="2025-04-28T07:50:59.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T07:51:14.000" B="2025-04-28T07:56:15.000" D="4" />
+        </DAN>
+        <DAN A="A00400082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-5">
+            <ASP A="2025-04-28T07:56:28.000" B="2025-04-28T08:00:30.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:01:37.000" B="2025-04-28T08:03:11.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:02:36.000" B="2025-04-28T08:03:11.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:04:39.000" B="2025-04-28T08:05:19.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:05:07.000" B="2025-04-28T08:05:19.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:06:30.000" B="2025-04-28T08:07:04.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:08:10.000" B="2025-04-28T08:13:49.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:12:31.000" B="2025-04-28T08:12:55.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:13:10.000" B="2025-04-28T08:13:49.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:15:07.000" B="2025-04-28T08:18:17.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:17:34.000" B="2025-04-28T08:18:17.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:20:07.000" B="2025-04-28T08:22:09.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:20:50.000" B="2025-04-28T08:22:09.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:23:16.000" B="2025-04-28T08:27:56.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:24:36.000" B="2025-04-28T08:25:06.000" D="4" />
+        </DAN>
+        <DAN A="A00400082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-5">
+            <ASP A="2025-04-28T08:25:10.000" B="2025-04-28T08:25:39.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:25:50.000" B="2025-04-28T08:27:10.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:27:27.000" B="2025-04-28T08:27:56.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:29:07.000" B="2025-04-28T08:30:59.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:29:34.000" B="2025-04-28T08:30:59.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:32:08.000" B="2025-04-28T08:37:56.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:34:17.000" B="2025-04-28T08:35:24.000" D="4" />
+        </DAN>
+        <DAN A="A00400002B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-4">
+            <ASP A="2025-04-28T08:35:30.000" B="2025-04-28T08:36:53.000" D="4" />
+        </DAN>
+        <DAN A="A00400082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-5">
+            <ASP A="2025-04-28T08:36:58.000" B="2025-04-28T08:37:56.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:41:18.000" B="2025-04-28T08:43:50.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:41:45.000" B="2025-04-28T08:43:50.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1345433130202" B="11.7547519837880" C="0.0000500000000" D="0.0000500000000"
+            E="479" F="100" G="GRD00004" I="2" J="1" />
+        <TIM A="2025-04-25T11:33:14.000" B="2025-04-25T12:22:15.000" D="4">
+            <DLV A="010F" B="19940247" C="DET-27" />
+            <DLV A="0112" B="1355048" C="DET-27" />
+            <DLV A="0074" B="21285" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-44" />
+            <DLV A="0051" B="427" C="DET-45" />
+            <DLV A="0074" B="21285" C="DET-45" />
+            <DLV A="0077" B="1261" C="DET-27" />
+            <DLV A="0075" B="3941758" C="DET-27" />
+            <DLV A="0076" B="1874583" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T12:50:07.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T12:55:55.000" B="2025-04-25T13:01:45.000" D="4">
+            <DLV A="010F" B="19940247" C="DET-27" />
+            <DLV A="0112" B="1355048" C="DET-27" />
+            <DLV A="0074" B="21285" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-44" />
+            <DLV A="0051" B="427" C="DET-45" />
+            <DLV A="0074" B="21285" C="DET-45" />
+            <DLV A="0077" B="1261" C="DET-27" />
+            <DLV A="0075" B="3941758" C="DET-27" />
+            <DLV A="0076" B="1874583" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T13:02:57.000" B="2025-04-25T13:07:02.000" D="4">
+            <DLV A="010F" B="19940247" C="DET-27" />
+            <DLV A="0112" B="1355048" C="DET-27" />
+            <DLV A="0074" B="21285" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-44" />
+            <DLV A="0051" B="427" C="DET-45" />
+            <DLV A="0074" B="21285" C="DET-45" />
+            <DLV A="0077" B="1261" C="DET-27" />
+            <DLV A="0075" B="3941758" C="DET-27" />
+            <DLV A="0076" B="1874583" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T13:08:05.000" B="2025-04-25T13:17:33.000" D="4">
+            <DLV A="010F" B="19940247" C="DET-27" />
+            <DLV A="0112" B="1355048" C="DET-27" />
+            <DLV A="0074" B="21285" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-43" />
+            <DLV A="0074" B="21285" C="DET-44" />
+            <DLV A="0051" B="427" C="DET-45" />
+            <DLV A="0074" B="21285" C="DET-45" />
+            <DLV A="0077" B="1261" C="DET-27" />
+            <DLV A="0075" B="3941758" C="DET-27" />
+            <DLV A="0076" B="1874583" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T13:25:10.000" B="2025-04-25T15:37:59.000" D="4">
+            <DLV A="010F" B="20016541" C="DET-27" />
+            <DLV A="0112" B="1359643" C="DET-27" />
+            <DLV A="0074" B="97579" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="97579" C="DET-43" />
+            <DLV A="0074" B="97579" C="DET-44" />
+            <DLV A="0051" B="1921" C="DET-45" />
+            <DLV A="0074" B="97579" C="DET-45" />
+            <DLV A="0077" B="5856" C="DET-27" />
+            <DLV A="0075" B="18070378" C="DET-27" />
+            <DLV A="0076" B="5076230" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T15:39:16.000" B="2025-04-25T17:24:51.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="11990476" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-25T17:58:04.000" B="2025-04-25T18:15:13.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12033607" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T06:57:12.000" B="2025-04-26T06:58:41.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T07:45:28.000" B="2025-04-26T07:46:48.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T08:09:30.000" B="2025-04-26T08:17:06.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T08:17:55.000" B="2025-04-26T08:20:14.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T08:21:19.000" B="2025-04-26T08:24:16.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T08:25:10.000" B="2025-04-26T08:25:39.000" D="4">
+            <DLV A="010F" B="20057636" C="DET-27" />
+            <DLV A="0112" B="1361979" C="DET-27" />
+            <DLV A="0074" B="138674" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-43" />
+            <DLV A="0074" B="138674" C="DET-44" />
+            <DLV A="0051" B="2731" C="DET-45" />
+            <DLV A="0074" B="138674" C="DET-45" />
+            <DLV A="0077" B="8192" C="DET-27" />
+            <DLV A="0075" B="25680745" C="DET-27" />
+            <DLV A="0076" B="12041871" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T08:26:57.000" B="2025-04-26T09:51:22.000" D="4">
+            <DLV A="010F" B="20122148" C="DET-27" />
+            <DLV A="0112" B="1365660" C="DET-27" />
+            <DLV A="0074" B="203186" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="203186" C="DET-43" />
+            <DLV A="0074" B="203186" C="DET-44" />
+            <DLV A="0051" B="3997" C="DET-45" />
+            <DLV A="0074" B="203186" C="DET-45" />
+            <DLV A="0077" B="11873" C="DET-27" />
+            <DLV A="0075" B="37627510" C="DET-27" />
+            <DLV A="0076" B="13805832" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T09:52:28.000" B="2025-04-26T11:17:07.000" D="4">
+            <DLV A="010F" B="20170949" C="DET-27" />
+            <DLV A="0112" B="1368624" C="DET-27" />
+            <DLV A="0074" B="252032" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="252032" C="DET-43" />
+            <DLV A="0074" B="252032" C="DET-44" />
+            <DLV A="0051" B="4949" C="DET-45" />
+            <DLV A="0074" B="252032" C="DET-45" />
+            <DLV A="0077" B="14841" C="DET-27" />
+            <DLV A="0075" B="46673160" C="DET-27" />
+            <DLV A="0076" B="15231776" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T11:17:56.000" B="2025-04-26T12:25:10.000" D="4">
+            <DLV A="010F" B="20188440" C="DET-27" />
+            <DLV A="0112" B="1369660" C="DET-27" />
+            <DLV A="0074" B="269478" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="269478" C="DET-43" />
+            <DLV A="0074" B="269478" C="DET-44" />
+            <DLV A="0051" B="5285" C="DET-45" />
+            <DLV A="0074" B="269478" C="DET-45" />
+            <DLV A="0077" B="15873" C="DET-27" />
+            <DLV A="0075" B="49903918" C="DET-27" />
+            <DLV A="0076" B="21067072" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T12:52:30.000" B="2025-04-26T15:31:07.000" D="4">
+            <DLV A="010F" B="20301770" C="DET-27" />
+            <DLV A="0112" B="1376194" C="DET-27" />
+            <DLV A="0074" B="382808" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="382808" C="DET-43" />
+            <DLV A="0074" B="382808" C="DET-44" />
+            <DLV A="0051" B="7496" C="DET-45" />
+            <DLV A="0074" B="382808" C="DET-45" />
+            <DLV A="0077" B="22407" C="DET-27" />
+            <DLV A="0075" B="70891009" C="DET-27" />
+            <DLV A="0076" B="26990141" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-26T15:43:57.000" B="2025-04-26T18:29:38.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36421530" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T07:27:56.000" B="2025-04-28T07:35:55.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36421530" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T07:36:47.000" B="2025-04-28T07:38:29.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T07:41:14.000" B="2025-04-28T08:00:30.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:01:26.000" B="2025-04-28T08:03:11.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:04:28.000" B="2025-04-28T08:05:19.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:06:20.000" B="2025-04-28T08:07:04.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:08:00.000" B="2025-04-28T08:13:49.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:14:57.000" B="2025-04-28T08:18:17.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:19:57.000" B="2025-04-28T08:22:09.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:23:06.000" B="2025-04-28T08:27:56.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:28:57.000" B="2025-04-28T08:30:59.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:31:58.000" B="2025-04-28T08:37:55.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:41:07.000" B="2025-04-28T08:43:50.000" D="4">
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+            <DLV A="0074" B="480631" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-43" />
+            <DLV A="0074" B="480631" C="DET-44" />
+            <DLV A="0051" B="9401" C="DET-45" />
+            <DLV A="0074" B="480631" C="DET-45" />
+            <DLV A="0077" B="27755" C="DET-27" />
+            <DLV A="0075" B="89006516" C="DET-27" />
+            <DLV A="0076" B="36502108" C="DET-27" />
+        </TIM>
+        <TLG A="TLG00025" C="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-34" B="pflaster-links-abelardo" E="PFD-25" G="4" H="0" I="3" J="2">
+        <CNN A="DVC-1" B="DET-3" C="DVC-3" D="DET-41" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:43:50.000" B="2025-04-28T08:48:43.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:43:51.000" B="2025-04-28T08:48:43.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:49:50.000" B="2025-04-28T08:57:15.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:50:18.000" B="2025-04-28T08:57:15.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:58:08.000" B="2025-04-28T09:00:01.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:58:08.000" B="2025-04-28T09:00:01.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T09:00:01.000" B="2025-04-28T11:01:21.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T09:00:02.000" B="2025-04-28T11:01:21.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T14:40:48.000" B="2025-04-28T17:54:25.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T14:40:49.000" B="2025-04-28T17:54:25.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T18:03:03.000" B="2025-04-28T19:54:19.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T18:03:30.000" B="2025-04-28T19:54:19.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T07:24:19.000" B="2025-04-29T07:48:09.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T07:24:47.000" B="2025-04-29T07:48:09.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T07:49:55.000" B="2025-04-29T07:50:47.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T07:49:56.000" B="2025-04-29T07:50:47.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T07:50:47.000" B="2025-04-29T07:51:03.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T07:50:48.000" B="2025-04-29T07:51:03.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T07:51:04.000" B="2025-04-29T08:09:49.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T07:51:04.000" B="2025-04-29T08:09:49.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T08:10:47.000" B="2025-04-29T09:58:01.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T08:11:15.000" B="2025-04-29T09:58:01.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-29T10:18:38.000" B="2025-04-29T11:29:12.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-29T10:19:05.000" B="2025-04-29T11:29:12.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1282326310364" B="11.7611028605123" C="0.0000500000000" D="0.0000500000000"
+            E="290" F="133" G="GRD00005" I="2" J="1" />
+        <TIM A="2025-04-28T08:43:50.000" B="2025-04-28T08:48:43.000" D="4">
+            <DLV A="0077" B="0" C="DET-27" />
+            <DLV A="0075" B="0" C="DET-27" />
+            <DLV A="0076" B="0" C="DET-27" />
+            <DLV A="0074" B="0" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="0" C="DET-43" />
+            <DLV A="0074" B="0" C="DET-44" />
+            <DLV A="0051" B="0" C="DET-45" />
+            <DLV A="0074" B="0" C="DET-45" />
+            <DLV A="010F" B="20399593" C="DET-27" />
+            <DLV A="0112" B="1381542" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:49:40.000" B="2025-04-28T08:57:15.000" D="4">
+            <DLV A="0077" B="54" C="DET-27" />
+            <DLV A="0075" B="102602" C="DET-27" />
+            <DLV A="0076" B="18385" C="DET-27" />
+            <DLV A="0074" B="554" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="554" C="DET-43" />
+            <DLV A="0074" B="554" C="DET-44" />
+            <DLV A="0051" B="11" C="DET-45" />
+            <DLV A="0074" B="554" C="DET-45" />
+            <DLV A="010F" B="20400147" C="DET-27" />
+            <DLV A="0112" B="1381596" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T08:58:08.000" B="2025-04-28T09:00:01.000" D="4">
+            <DLV A="0077" B="54" C="DET-27" />
+            <DLV A="0075" B="102602" C="DET-27" />
+            <DLV A="0076" B="28408" C="DET-27" />
+            <DLV A="0074" B="554" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="554" C="DET-43" />
+            <DLV A="0074" B="554" C="DET-44" />
+            <DLV A="0051" B="11" C="DET-45" />
+            <DLV A="0074" B="554" C="DET-45" />
+            <DLV A="010F" B="20400147" C="DET-27" />
+            <DLV A="0112" B="1381596" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T09:00:01.000" B="2025-04-28T11:01:21.000" D="4">
+            <DLV A="0077" B="4226" C="DET-27" />
+            <DLV A="0075" B="12089445" C="DET-27" />
+            <DLV A="0076" B="1412854" C="DET-27" />
+            <DLV A="0074" B="65283" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="65283" C="DET-43" />
+            <DLV A="0074" B="65283" C="DET-44" />
+            <DLV A="0051" B="1298" C="DET-45" />
+            <DLV A="0074" B="65283" C="DET-45" />
+            <DLV A="010F" B="20464876" C="DET-27" />
+            <DLV A="0112" B="1385768" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T14:40:48.000" B="2025-04-28T17:54:25.000" D="4">
+            <DLV A="0077" B="11585" C="DET-27" />
+            <DLV A="0075" B="36967698" C="DET-27" />
+            <DLV A="0076" B="11924700" C="DET-27" />
+            <DLV A="0074" B="199625" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="199625" C="DET-43" />
+            <DLV A="0074" B="199625" C="DET-44" />
+            <DLV A="0051" B="3942" C="DET-45" />
+            <DLV A="0074" B="199625" C="DET-45" />
+            <DLV A="010F" B="20692530" C="DET-27" />
+            <DLV A="0112" B="1398470" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T18:02:53.000" B="2025-04-28T19:54:19.000" D="4">
+            <DLV A="0077" B="15963" C="DET-27" />
+            <DLV A="0075" B="52429898" C="DET-27" />
+            <DLV A="0076" B="18615886" C="DET-27" />
+            <DLV A="0074" B="283120" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-44" />
+            <DLV A="0051" B="5587" C="DET-45" />
+            <DLV A="0074" B="283120" C="DET-45" />
+            <DLV A="010F" B="20776025" C="DET-27" />
+            <DLV A="0112" B="1402848" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T07:24:09.000" B="2025-04-29T07:48:09.000" D="4">
+            <DLV A="0077" B="15963" C="DET-27" />
+            <DLV A="0075" B="52429898" C="DET-27" />
+            <DLV A="0076" B="18976306" C="DET-27" />
+            <DLV A="0074" B="283120" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-44" />
+            <DLV A="0051" B="5587" C="DET-45" />
+            <DLV A="0074" B="283120" C="DET-45" />
+            <DLV A="010F" B="20776025" C="DET-27" />
+            <DLV A="0112" B="1402848" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T07:49:55.000" B="2025-04-29T07:50:47.000" D="4">
+            <DLV A="0077" B="15963" C="DET-27" />
+            <DLV A="0075" B="52429898" C="DET-27" />
+            <DLV A="0076" B="18976306" C="DET-27" />
+            <DLV A="0074" B="283120" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-44" />
+            <DLV A="0051" B="5587" C="DET-45" />
+            <DLV A="0074" B="283120" C="DET-45" />
+            <DLV A="010F" B="20776025" C="DET-27" />
+            <DLV A="0112" B="1402848" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T07:50:47.000" B="2025-04-29T07:51:03.000" D="4">
+            <DLV A="0077" B="15963" C="DET-27" />
+            <DLV A="0075" B="52429898" C="DET-27" />
+            <DLV A="0076" B="18976306" C="DET-27" />
+            <DLV A="0074" B="283120" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-44" />
+            <DLV A="0051" B="5587" C="DET-45" />
+            <DLV A="0074" B="283120" C="DET-45" />
+            <DLV A="010F" B="20776025" C="DET-27" />
+            <DLV A="0112" B="1402848" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T07:51:04.000" B="2025-04-29T08:09:49.000" D="4">
+            <DLV A="0077" B="15963" C="DET-27" />
+            <DLV A="0075" B="52429898" C="DET-27" />
+            <DLV A="0076" B="21663711" C="DET-27" />
+            <DLV A="0074" B="283120" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-43" />
+            <DLV A="0074" B="283120" C="DET-44" />
+            <DLV A="0051" B="5587" C="DET-45" />
+            <DLV A="0074" B="283120" C="DET-45" />
+            <DLV A="010F" B="20776025" C="DET-27" />
+            <DLV A="0112" B="1402848" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T08:10:37.000" B="2025-04-29T09:58:01.000" D="4">
+            <DLV A="0077" B="19436" C="DET-27" />
+            <DLV A="0075" B="63766369" C="DET-27" />
+            <DLV A="0076" B="25051425" C="DET-27" />
+            <DLV A="0074" B="344336" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="344336" C="DET-43" />
+            <DLV A="0074" B="344336" C="DET-44" />
+            <DLV A="0051" B="6791" C="DET-45" />
+            <DLV A="0074" B="344336" C="DET-45" />
+            <DLV A="010F" B="20837241" C="DET-27" />
+            <DLV A="0112" B="1406321" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-29T10:18:28.000" B="2025-04-29T11:29:12.000" D="4">
+            <DLV A="0077" B="21671" C="DET-27" />
+            <DLV A="0075" B="70795269" C="DET-27" />
+            <DLV A="0076" B="30539341" C="DET-27" />
+            <DLV A="0074" B="382292" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="382292" C="DET-43" />
+            <DLV A="0074" B="382292" C="DET-44" />
+            <DLV A="0051" B="7531" C="DET-45" />
+            <DLV A="0074" B="382292" C="DET-45" />
+            <DLV A="010F" B="20875197" C="DET-27" />
+            <DLV A="0112" B="1408556" C="DET-27" />
+        </TIM>
+        <TLG A="TLG00026" C="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+        <TZN A="2">
+            <PDV A="000B" B="8500" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="3">
+            <PDV A="000B" B="8500" D="DET-43" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-35" B="pflaster-links-abelardo" E="PFD-25" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-3" D="DET-41" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T08:57:15.000" B="2025-04-28T08:58:07.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T08:57:15.000" B="2025-04-28T08:58:07.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1282326310364" B="11.7611028605123" C="0.0000500000000" D="0.0000500000000"
+            E="290" F="133" G="GRD00006" I="2" J="1" />
+        <TIM A="2025-04-28T08:57:15.000" B="2025-04-28T08:58:07.000" D="4">
+            <DLV A="010F" B="20400147" C="DET-27" />
+            <DLV A="0112" B="1381596" C="DET-27" />
+            <DLV A="0074" B="0" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="0" C="DET-43" />
+            <DLV A="0074" B="0" C="DET-44" />
+            <DLV A="0051" B="0" C="DET-45" />
+            <DLV A="0074" B="0" C="DET-45" />
+            <DLV A="0077" B="0" C="DET-27" />
+            <DLV A="0075" B="0" C="DET-27" />
+            <DLV A="0076" B="0" C="DET-27" />
+        </TIM>
+        <TLG A="TLG00027" C="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-36" B="pflaster-links-abelardo" E="PFD-25" G="1" H="0">
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1282326310364" B="11.7611028605123" C="0.0000500000000" D="0.0000500000000"
+            E="290" F="133" G="GRD00007" I="2" J="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-37" B="pflaster-rechts-crosbey" E="PFD-24" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-3" D="DET-41" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T11:01:21.000" B="2025-04-28T11:04:54.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T11:01:22.000" B="2025-04-28T11:04:54.000" D="4" />
+        </DAN>
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T11:04:54.000" B="2025-04-28T11:07:42.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T11:04:54.000" B="2025-04-28T11:07:42.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1345433130202" B="11.7547519837880" C="0.0000500000000" D="0.0000500000000"
+            E="479" F="100" G="GRD00008" I="2" J="1" />
+        <TIM A="2025-04-28T11:01:21.000" B="2025-04-28T11:04:54.000" D="4">
+            <DLV A="010F" B="20464964" C="DET-27" />
+            <DLV A="0112" B="1385780" C="DET-27" />
+            <DLV A="0074" B="88" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="88" C="DET-43" />
+            <DLV A="0074" B="88" C="DET-44" />
+            <DLV A="0051" B="2" C="DET-45" />
+            <DLV A="0074" B="88" C="DET-45" />
+            <DLV A="0077" B="12" C="DET-27" />
+            <DLV A="0075" B="16325" C="DET-27" />
+            <DLV A="0076" B="83481" C="DET-27" />
+        </TIM>
+        <TIM A="2025-04-28T11:04:54.000" B="2025-04-28T11:07:42.000" D="4">
+            <DLV A="010F" B="20465000" C="DET-27" />
+            <DLV A="0112" B="1385786" C="DET-27" />
+            <DLV A="0074" B="124" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="124" C="DET-43" />
+            <DLV A="0074" B="124" C="DET-44" />
+            <DLV A="0051" B="4" C="DET-45" />
+            <DLV A="0074" B="124" C="DET-45" />
+            <DLV A="0077" B="18" C="DET-27" />
+            <DLV A="0075" B="23120" C="DET-27" />
+            <DLV A="0076" B="89625" C="DET-27" />
+        </TIM>
+        <TLG A="TLG00028" C="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <TSK A="TSK-38" B="pflaster-rechts-crosbey" E="PFD-26" G="4" H="0">
+        <CNN A="DVC-1" B="DET-3" C="DVC-3" D="DET-41" />
+        <DAN A="A00086082B81EC0E" B="FFFFFFFFFFFFFFFF" C="DVC-1">
+            <ASP A="2025-04-28T11:07:43.000" B="2025-04-28T14:40:48.000" D="4" />
+        </DAN>
+        <DAN A="A00884002B8309EF" B="FFFFFFFFFFFFFFFF" C="DVC-3">
+            <ASP A="2025-04-28T11:07:43.000" B="2025-04-28T14:40:48.000" D="4" />
+        </DAN>
+        <DLT A="DFFF" B="1" />
+        <GRD A="53.1345433130202" B="11.7547519837880" C="0.0000500000000" D="0.0000500000000"
+            E="479" F="100" G="GRD00009" I="2" J="1" />
+        <TIM A="2025-04-28T11:07:43.000" B="2025-04-28T14:40:48.000" D="4">
+            <DLV A="010F" B="20558188" C="DET-27" />
+            <DLV A="0112" B="1391111" C="DET-27" />
+            <DLV A="0074" B="93188" C="DET-42" />
+            <DLV A="0052" B="0" C="DET-43" />
+            <DLV A="0074" B="93188" C="DET-43" />
+            <DLV A="0074" B="93188" C="DET-44" />
+            <DLV A="0051" B="1830" C="DET-45" />
+            <DLV A="0074" B="93188" C="DET-45" />
+            <DLV A="0077" B="5325" C="DET-27" />
+            <DLV A="0075" B="17256895" C="DET-27" />
+            <DLV A="0076" B="7883543" C="DET-27" />
+        </TIM>
+        <TLG A="TLG00029" C="1" />
+        <TZN A="0">
+            <PDV A="000B" B="0" D="DET-43" E="VPN-11" />
+        </TZN>
+        <TZN A="1">
+            <PDV A="000B" B="0" E="VPN-11" />
+        </TZN>
+    </TSK>
+    <VPN A="VPN-1" B="0" C="0.0001" D="2" E="l/ha" />
+    <VPN A="VPN-2" B="0" C="0.01" D="2" E="kg/ha" />
+    <VPN A="VPN-3" B="0" C="10.0" D="2" E="1/ha" />
+    <VPN A="VPN-4" B="0" C="0.000010691" D="2" E="gal/ac" />
+    <VPN A="VPN-5" B="0" C="0.000008902" D="2" E="gal/ac" />
+    <VPN A="VPN-6" B="0" C="0.008921791" D="2" E="lb/ac" />
+    <VPN A="VPN-7" B="0" C="4.04685642" D="2" E="1/ac" />
+    <VPN A="VPN-8" B="0" C="0.0001" D="0" E="%" />
+    <VPN A="VPN-9" B="0" C="0.0001" D="2" E="l/ha" />
+    <VPN A="VPN-10" B="0" C="0.01" D="2" E="kg/ha" />
+    <VPN A="VPN-11" B="0" C="10.0" D="2" E="1/ha" />
+    <VPN A="VPN-12" B="0" C="0.000010691" D="2" E="gal/ac" />
+    <VPN A="VPN-13" B="0" C="0.000008902" D="2" E="gal/ac" />
+    <VPN A="VPN-14" B="0" C="0.008921791" D="2" E="lb/ac" />
+    <VPN A="VPN-15" B="0" C="4.04685642" D="2" E="1/ac" />
+    <VPN A="VPN-16" B="0" C="0.0001" D="0" E="%" />
+</ISO11783_TaskData>
