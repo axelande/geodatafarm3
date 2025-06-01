@@ -206,6 +206,8 @@ class DB:
                         schema=schema,
                         tbl=table_name))
                     return False
+            else:
+                return True
         return False
 
     def create_table(self: Self, sql: str, tbl_name: str,
