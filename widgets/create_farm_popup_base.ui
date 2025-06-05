@@ -93,13 +93,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
-     <widget class="QDateEdit" name="DEFirstYear">
-      <property name="displayFormat">
-       <string>yyyy</string>
-      </property>
-     </widget>
-    </item>
     <item row="6" column="0" colspan="2">
      <widget class="QPushButton" name="PBCreateDatabase">
       <property name="enabled">
@@ -120,6 +113,19 @@
       </property>
       <property name="centerButtons">
        <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QSpinBox" name="DEFirstYear">
+      <property name="minimum">
+       <number>2000</number>
+      </property>
+      <property name="maximum">
+       <number>2050</number>
+      </property>
+      <property name="value">
+       <number>2025</number>
       </property>
      </widget>
     </item>
