@@ -160,11 +160,11 @@ class PyAgriculture:
                     else:
                         equipment = 'unknown'
                         try:
-                            equipment = self.task_dicts['DVC'][task_structure['TSK'][i]["child"]["CNN"][0]["C"]]["B"]
+                            equipment = self.task_dicts["DVC"][task_structure["TSK"][i]["child"]["CNN"][0]["C"]]["B"]
                         except:
                             pass
                         try:
-                            file = getfile_insensitive(f'{self.path}{tsk['child']['TLG'][0]["A"]}.xml')
+                            file = getfile_insensitive(f'{self.path}{tsk["child"]["TLG"][0]["A"]}.xml')
                             branch = ET.parse(file)
                         except (FileNotFoundError, ET.ParseError):
                             if not continue_on_fail:
