@@ -39,3 +39,4 @@ def test_remove_xfield(gdf: GeoDataFarm, field_name):
         if field_name in text:
             gdf.dock_widget.LWFields.item(i).setCheckState(2)
     gdf.add_field.remove_field()
+    assert field_name not in [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]

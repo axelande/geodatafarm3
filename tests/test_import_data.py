@@ -12,7 +12,7 @@ def test_import_plant_text(gdf:GeoDataFarm):
     gdf.dock_widget.CBPFileType.setCurrentIndex(1)
     gdf.dock_widget.PBPAddFile.click()
     gdf.save_planting.importer.ITD.PBAddInputFile.click()
-    gdf.save_planting.importer.ITD.CBField.setCurrentIndex(1)
+    gdf.save_planting.importer.ITD.CBField.setCurrentIndex(2) #Tabbehus is 1 and test_field is 2
     gdf.save_planting.importer.ITD.CBCrop.setCurrentIndex(1)
     for i in [6, 13, 16, 19]:
         gdf.save_planting.importer.ITD.TWColumnNames.selectRow(i)
@@ -29,7 +29,7 @@ def test_import_harvest_text(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(1)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.ITD.PBAddInputFile.click()
-    gdf.save_harvesting.importer.ITD.CBField.setCurrentIndex(1)
+    gdf.save_harvesting.importer.ITD.CBField.setCurrentIndex(2) #Tabbehus is 1 and test_field is 2
     gdf.save_harvesting.importer.ITD.CBCrop.setCurrentIndex(1)
     for i in [2]:
         gdf.save_harvesting.importer.ITD.TWColumnNames.selectRow(i)
