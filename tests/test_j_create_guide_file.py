@@ -15,7 +15,7 @@ def test_create_guide_file(gdf: GeoDataFarm):
     gdf.guide.add_to_param_list(3, 0)
     gdf.guide.CGF.TWSelected.selectRow(1)
     gdf.guide.remove_from_param_list()
-    gdf.guide.CGF.CBFields.setCurrentIndex(1)
+    gdf.guide.CGF.CBFields.setCurrentIndex(2) # 1 is Tabbehus, 2 is test_field
     gdf.guide.update_max_min()
     gdf.guide.set_output_path()
     gdf.guide.create_file()
