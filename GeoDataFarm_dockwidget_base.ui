@@ -73,13 +73,78 @@
             <property name="sizeConstraint">
              <enum>QLayout::SetNoConstraint</enum>
             </property>
-            <item row="6" column="3" rowspan="5">
-             <widget class="QListWidget" name="LWCrops">
+            <item row="5" column="3">
+             <widget class="QLabel" name="Label3_2">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>250</width>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Your crops:</string>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QPushButton" name="PBAddField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="text">
+               <string>Add field manually</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QLabel" name="LIcon"/>
+            </item>
+            <item row="2" column="4" rowspan="2">
+             <widget class="QPushButton" name="PBWebbpage">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Help can be found at
+GeoDataFarms webpage
+http://www.geodatafarm.com</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="2">
+             <widget class="QPushButton" name="PBAddCrop">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add crop</string>
               </property>
              </widget>
             </item>
@@ -99,6 +164,105 @@
               </property>
               <property name="text">
                <string>View fields</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="2">
+             <widget class="QPushButton" name="PBRemoveCrop">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Remove crop </string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QPushButton" name="PBRemoveField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Remove field </string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1" rowspan="6">
+             <widget class="QListWidget" name="LWFields">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="PBConnect2Farm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Connect to an
+ exciting farm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="PBAddNewFarm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Create new farm</string>
               </property>
              </widget>
             </item>
@@ -149,105 +313,8 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="PBAddNewFarm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Create new farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="2">
-             <widget class="QPushButton" name="PBRemoveCrop">
-              <property name="minimumSize">
-               <size>
-                <width>130</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Remove crop </string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QPushButton" name="PBAddField">
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add field</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <widget class="QLineEdit" name="LECropName">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>130</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0">
-             <widget class="QPushButton" name="PBRemoveField">
-              <property name="maximumSize">
-               <size>
-                <width>130</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Remove field </string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1" rowspan="5">
-             <widget class="QListWidget" name="LWFields">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>300</height>
-               </size>
-              </property>
+            <item row="6" column="3" rowspan="6">
+             <widget class="QListWidget" name="LWCrops">
               <property name="maximumSize">
                <size>
                 <width>250</width>
@@ -281,19 +348,6 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
-            <item row="10" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="5" column="1">
              <widget class="QLabel" name="Label3">
               <property name="minimumSize">
@@ -319,61 +373,28 @@ If you have questions, experience any errors or have any suggestions do not hesi
               </property>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QLabel" name="LIcon"/>
-            </item>
-            <item row="7" column="2">
-             <widget class="QPushButton" name="PBAddCrop">
+            <item row="6" column="2">
+             <widget class="QLineEdit" name="LECropName">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>130</width>
-                <height>16777215</height>
+                <height>20</height>
                </size>
               </property>
-              <property name="text">
-               <string>Add crop</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QPushButton" name="PBConnect2Farm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Connect to an
- exciting farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="3">
-             <widget class="QLabel" name="Label3_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Your crops:</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
               </property>
              </widget>
             </item>
@@ -391,24 +412,17 @@ isoxml taskdata</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="4" rowspan="2">
-             <widget class="QPushButton" name="PBWebbpage">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="9" column="0">
+             <widget class="QPushButton" name="PBAddShapeField">
               <property name="maximumSize">
                <size>
-                <width>200</width>
+                <width>130</width>
                 <height>16777215</height>
                </size>
               </property>
               <property name="text">
-               <string>Help can be found at
-GeoDataFarms webpage
-http://www.geodatafarm.com</string>
+               <string>Add fields from 
+a shape file</string>
               </property>
              </widget>
             </item>
@@ -3986,6 +4000,8 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBConnect2Farm</tabstop>
   <tabstop>PBViewFields</tabstop>
   <tabstop>PBAddField</tabstop>
+  <tabstop>PBAddIsoField</tabstop>
+  <tabstop>PBAddShapeField</tabstop>
   <tabstop>PBRemoveField</tabstop>
   <tabstop>LWFields</tabstop>
   <tabstop>LECropName</tabstop>
@@ -4074,7 +4090,6 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBSoAddFile</tabstop>
   <tabstop>DESoil</tabstop>
   <tabstop>CBSoField</tabstop>
-  <tabstop>PBSavePlan</tabstop>
   <tabstop>LESoClay</tabstop>
   <tabstop>LESoHumus</tabstop>
   <tabstop>LESoPh</tabstop>
@@ -4103,15 +4118,14 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>RBNdviIndex</tabstop>
   <tabstop>RBMsavi2Index</tabstop>
   <tabstop>PBSelectZipFile</tabstop>
+  <tabstop>CheckBPlanned</tabstop>
   <tabstop>PBUpdateGraph</tabstop>
   <tabstop>LEVal_1</tabstop>
   <tabstop>LEVal_2</tabstop>
   <tabstop>LEVal_3</tabstop>
   <tabstop>LEVal_4</tabstop>
   <tabstop>LEVal_5</tabstop>
-  <tabstop>CheckBPlanned</tabstop>
   <tabstop>CWPlannedDate</tabstop>
-  <tabstop>PBUpdatePlaning</tabstop>
   <tabstop>PBGenerateGuideFile</tabstop>
   <tabstop>mMapLayerComboBox</tabstop>
   <tabstop>RBNomalized</tabstop>
@@ -4134,21 +4148,23 @@ If you are missing a report / something in a report please send a e-mail to geod
   <tabstop>PBReportPerOperation</tabstop>
   <tabstop>PBReportPerField</tabstop>
   <tabstop>PBReportPerCrop</tabstop>
-  <tabstop>PBUpdateSummary</tabstop>
-  <tabstop>CBWeather</tabstop>
   <tabstop>CBPlanting</tabstop>
-  <tabstop>TWPlan</tabstop>
+  <tabstop>CBSpraying</tabstop>
   <tabstop>CBFertilizing</tabstop>
+  <tabstop>CBOther</tabstop>
   <tabstop>CBHarvest</tabstop>
   <tabstop>CBPlowing</tabstop>
-  <tabstop>DEPlanYear</tabstop>
-  <tabstop>CBIrrigation</tabstop>
-  <tabstop>CBSoil</tabstop>
-  <tabstop>LWPlanSummary</tabstop>
-  <tabstop>PBViewPlan</tabstop>
-  <tabstop>CBSpraying</tabstop>
   <tabstop>CBHarrowing</tabstop>
-  <tabstop>CBOther</tabstop>
+  <tabstop>CBIrrigation</tabstop>
+  <tabstop>CBWeather</tabstop>
+  <tabstop>CBSoil</tabstop>
+  <tabstop>PBUpdatePlaning</tabstop>
+  <tabstop>TWPlan</tabstop>
+  <tabstop>LWPlanSummary</tabstop>
+  <tabstop>PBUpdateSummary</tabstop>
+  <tabstop>PBSavePlan</tabstop>
+  <tabstop>DEPlanYear</tabstop>
+  <tabstop>PBViewPlan</tabstop>
  </tabstops>
  <resources/>
  <connections/>
