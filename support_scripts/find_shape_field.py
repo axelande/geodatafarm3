@@ -18,7 +18,7 @@ from shapely.ops import transform
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 
-from widgets.find_shape_fields import FindShapeFieldWidget
+from ..widgets.find_shape_fields import FindShapeFieldWidget
 
 class FindShapeField:
     def __init__(self: Self, parent, test_path: str = '') -> None:

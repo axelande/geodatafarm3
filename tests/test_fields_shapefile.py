@@ -3,11 +3,12 @@ import pytest
 from shapely.geometry import Polygon
 from shapely import wkt
 
-from support_scripts.find_shape_field import FindShapeField
 from . import gdf
 
 def test_import_field_from_shapefile(gdf):
-    W = FindShapeField(gdf, test_path='./tests/test_data/tabbehus.shp')
+    gdf.add_shape_field()
+    W = gdf.find_shape_field
+    W.path='./tests/test_data/tabbehus.shp'
     W.zoom_level = 10
     W.fsfw.PBAddShapeFile.click()
     # Select the first field name column
@@ -26,7 +27,9 @@ def test_import_field_from_shapefile(gdf):
     assert field_added
 
 def test_polygon_coordinates_consistency_shapefile(gdf):
-    W = FindShapeField(gdf, test_path='./tests/test_data/tabbehus.shp')
+    gdf.add_shape_field()
+    W = gdf.find_shape_field
+    W.path = './tests/test_data/tabbehus.shp'
     W.fsfw.PBAddShapeFile.click()
     if W.fsfw.CBFieldNames.count() > 0:
         W.fsfw.CBFieldNames.setCurrentIndex(0)

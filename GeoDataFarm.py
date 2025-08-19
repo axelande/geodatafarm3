@@ -245,7 +245,8 @@ class GeoDataFarm:
 
     def add_shape_field(self):
         self.find_shape_field = FindShapeField(self)
-        self.find_shape_field.run()
+        if self.test_mode:
+            self.find_shape_field.run()
 
     def reload_layer(self):
         """Reloads a layer be create a CreateLayer object and call
