@@ -134,10 +134,20 @@ class Iso11783:
                         continue
             except Exception as e:
                 print(f'error: {e}')
-                return
+                task_names[task_nr] = []
+                continue
+            # Remove rows where both latitude and longitude are 0
+            data_set = data_set[~((data_set['latitude'] == 0) & (data_set['longitude'] == 0))]
+            if len(data_set) == 0:
+                task_names[task_nr] = []
+                continue
             fields = []
+            if len(data_set) < 100:
+                divider = len(data_set)
+            else:
+                divider = 10
             sql = "with start_sel as ("
-            for index, row in data_set.iloc[::int(len(data_set)/10)].iterrows():
+            for index, row in data_set.iloc[::int(len(data_set)/divider)].iterrows():
                 sql +=f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({row["longitude"]} {row["latitude"]})', 4326))
 UNION """
             sql = sql[:-6] + ") select field_name from start_sel group by field_name"
@@ -217,7 +227,11 @@ UNION """
         """The end of populate the second table when all data is decoded 
         from the qtask"""
         task_names = self.get_task_data()
-        self.IXB.TWISODataSelect.setRowCount(len(self.tasks_to_include))
+        valids = 0
+        for row in task_names.values():
+            if len(row) > 0:
+                valids += 1
+        self.IXB.TWISODataSelect.setRowCount(valids)
         self.IXB.TWISODataSelect.setColumnCount(4)
         self.IXB.TWISODataSelect.setHorizontalHeaderLabels([self.tr('To include'), self.tr('Date'), self.tr('Field'),
                                                             self.tr('Crops')])
@@ -235,7 +249,7 @@ UNION """
             item1 = QtWidgets.QTableWidgetItem('Include')
             item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item1.setCheckState(QtCore.Qt.Checked)
-            self.checkboxes2.append([i, j, item1])
+            self.checkboxes2.append([j, j, item1])
             item2 = QtWidgets.QTableWidgetItem(row[0][1])
             item2.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable)
             field_column = RadioComboBox()
@@ -245,10 +259,10 @@ UNION """
             field_column.setCurrentIndex(1)
             crops = QtWidgets.QComboBox()
             self.populate.reload_crops(crops)
-            self.IXB.TWISODataSelect.setItem(i, 0, item1)
-            self.IXB.TWISODataSelect.setItem(i, 1, item2)
-            self.IXB.TWISODataSelect.setCellWidget(i, 2, field_column)
-            self.IXB.TWISODataSelect.setCellWidget(i, 3, crops)
+            self.IXB.TWISODataSelect.setItem(j, 0, item1)
+            self.IXB.TWISODataSelect.setItem(j, 1, item2)
+            self.IXB.TWISODataSelect.setCellWidget(j, 2, field_column)
+            self.IXB.TWISODataSelect.setCellWidget(j, 3, crops)
             self.checkboxes3.append(field_column)
             self.checkboxes4.append(crops)
             self.tasks.append(self.rename_duplicate_columns(self.py_agri.tasks[i]))
@@ -648,7 +662,9 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
         if suc[2] == 0:
             return False, True, 'No data was found on that field.'
         if schema != 'harvest':
-            create_polygons(db, schema, tbl_name, field)
+            r = create_polygons(db, schema, tbl_name, field)
+        if not suc[0]:
+            return False, True, r[1]
         db.execute_sql(f"DROP TABLE {schema}.temp_table{tsk_nr}")
         if qtask is not None:
             qtask.setProgress(90)

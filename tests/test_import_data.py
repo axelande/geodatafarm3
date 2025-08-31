@@ -76,7 +76,7 @@ def test_import_iso2(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.open_input_folder(path='./tests/test_data/TASKDATA4/')
-    gdf.save_harvesting.importer.IXB.TWISODataAll.item(1, 0).setCheckState(2)
+    gdf.save_harvesting.importer.IXB.TWISODataAll.item(2, 0).setCheckState(2)
     gdf.save_harvesting.importer.IXB.PBFindFields.click()
     i = 0 #for i in range(gdf.save_harvesting.importer.IXB.TWISODataSelect.rowCount()):
     gdf.save_harvesting.importer.IXB.TWISODataSelect.cellWidget(i, 2).setCurrentIndex(0)
@@ -90,9 +90,4 @@ def test_import_iso2(gdf:GeoDataFarm):
     suc = gdf.save_harvesting.importer.add_to_database()
     assert suc
     gdf.save_harvesting.importer.close(True, [False, False])
-    gdf.dock_widget.PBEditTables.click()
-    items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
-    for text in items:
-        if 'test_iso_field' in text:
-            assert True
-    assert 'test_iso_added_field3_potatoes__025_04_08t15_24_49' in gdf.db.get_tables_in_db('harvest')
+    assert 'test_iso_added_field3_potatoes_one970_01_01' in gdf.db.get_tables_in_db('harvest')

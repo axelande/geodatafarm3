@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, Never, Self
+import os
+import xml.etree.ElementTree as ET
+
 import matplotlib
 matplotlib.use('Agg')
 if TYPE_CHECKING:
     import matplotlib.figure
     import pyproj.crs.crs
     import shapely.geometry.polygon
-import os
-import xml.etree.ElementTree as ET
-
 import contextily as ctx
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -15,14 +15,32 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import pyproj
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from PyQt5.QtGui import QMovie
 from psycopg2 import IntegrityError, InternalError
 from qgis.core import QgsTask
 from shapely import wkt
 from shapely.ops import transform
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Point, Polygon
 
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
+
+
+def get_auto_zoom_level(minx, miny, maxx, maxy, max_zoom=17, min_zoom=10):
+    """Estimate a suitable zoom level for the given bounds in meters (EPSG:3857)."""
+    width = abs(maxx - minx)
+    # These thresholds are tuned for Web Mercator (meters)
+    if width < 100:         # < 100 m
+        return max_zoom
+    elif width < 1000:      # < 1 km
+        return max_zoom - 2
+    elif width < 10000:     # < 10 km
+        return max_zoom - 4
+    elif width < 100000:    # < 100 km
+        return max_zoom - 6
+    else:
+        return min_zoom
+
 
 def remove_invalid_points(gdf):
     """Removes rows with invalid latitude and longitude values from the GeoDataFrame."""
@@ -31,7 +49,11 @@ def remove_invalid_points(gdf):
     valid_lon_range = (-180, 180)
 
     # Filter out rows with invalid latitude and longitude values
-    valid_gdf = gdf[(gdf['latitude'].between(*valid_lat_range)) & (gdf['longitude'].between(*valid_lon_range))]
+    valid_gdf = gdf[
+        (gdf['latitude'].between(*valid_lat_range)) &
+        (gdf['longitude'].between(*valid_lon_range)) &
+        ~((gdf['latitude'] == 0) & (gdf['longitude'] == 0))
+    ]
 
     return valid_gdf
 
@@ -115,6 +137,8 @@ class FindIsoField:
     def find_from_tasks(self: Self) -> None:
         """Finds additional data from Pyagriculture tasks"""
         self.py_agri = PyAgriculture(os.path.dirname(self.path))
+        self.show_loading_animation() # <-- Show spinner before starting task
+        #self.parent.tsk_mngr.addTask(self.loading_tsk)
         if self.parent.test_mode is False:
             task = QgsTask.fromFunction('Decode binary data', self.py_agri.gather_data, 
                                         most_importants=[],
@@ -124,42 +148,86 @@ class FindIsoField:
             self.py_agri.gather_data(qtask='debug', most_importants=[])
             self.populate_field_list2()
 
-    def populate_field_list2(self: Self, res: None=None, 
-                             values: None=None) -> None:
+    def clear_layout(self):
+        """Remove all widgets from a given layout."""
+        layout = self.fifw.WShowField.layout()
+        # Stop and remove the loading animation if present
+        if hasattr(self, "movie"):
+            self.movie.stop()
+        if hasattr(self, "loading_label") and self.loading_label in [layout.itemAt(i).widget() for i in range(layout.count())]:
+            layout.removeWidget(self.loading_label)
+            self.loading_label.deleteLater()
+            del self.loading_label
+        if layout is not None:
+            for i in reversed(range(layout.count())):
+                widget = layout.itemAt(i).widget()
+                if widget is not None:
+                    widget.setParent(None)
+
+    def show_loading_animation(self: Self) -> None:
+        """Show a spinning/loading animation in the canvas area."""
+        layout = self.fifw.WShowField.layout()
+        if layout is None:
+            layout = QtWidgets.QVBoxLayout()
+            self.fifw.WShowField.setLayout(layout)
+        else:
+            self.clear_layout()
+        # Create and add the loading animation
+        print('run')
+        self.loading_label = QtWidgets.QLabel()
+        gif_path = os.path.join(os.path.dirname(__file__),"..", "img", "loading.gif")
+        if not os.path.exists(gif_path):
+            self.loading_label.setText("Loading...")
+        else:
+            self.movie = QMovie(gif_path)
+            self.loading_label.setMovie(self.movie)
+            self.movie.start()
+        layout.addWidget(self.loading_label)
+        
+    def populate_field_list2(self: Self, res: None=None, values: None=None) -> None:
         """Populates the field list based on the pyagri tasks."""
+        self.clear_layout()
         self.fifw.LWFields.clear()
         for i, task in enumerate(self.py_agri.tasks):
             if 'longitude' not in task.columns:
                 try:
-                    # Assuming `gdf` is your GeoDataFrame with geometries
-                    extent = task.total_bounds  # Get [min_x, min_y, max_x, max_y]
-
-                    # Create a bounding box polygon
+                    extent = task.total_bounds
                     convex_hull = Polygon([
-                        (extent[0], extent[1]),  # Bottom-left corner (min_x, min_y)
-                        (extent[0], extent[3]),  # Top-left corner (min_x, max_y)
-                        (extent[2], extent[3]),  # Top-right corner (max_x, max_y)
-                        (extent[2], extent[1]),  # Bottom-right corner (max_x, min_y)
-                        (extent[0], extent[1])   # Close the polygon (back to bottom-left)
+                        (extent[0], extent[1]),
+                        (extent[0], extent[3]),
+                        (extent[2], extent[3]),
+                        (extent[2], extent[1]),
+                        (extent[0], extent[1])
                     ])
                 except:
-                    pass
+                    continue
             else:
                 task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
                 gdf = gpd.GeoDataFrame(task, geometry='geometry')
                 gdf.set_crs(epsg=4326, inplace=True)
                 gdf = remove_invalid_points(gdf)
-                convex_hull = gdf.unary_union.convex_hull
-            self.fields[f'Task {i}'] = convex_hull.wkt
-            self.fifw.LWFields.addItem(f'Task {i}')
+                convex_hull = gdf.union_all().convex_hull
+
+            # Only create a new polygon if there are at least 3 points left
+            if len(convex_hull.exterior.coords) < 3:
+                continue  # Not enough points for a valid polygon
+
+            name = task.attrs.get('task_name', f'Task {i}')
+            self.fields[name] = convex_hull.wkt
+            self.fifw.LWFields.addItem(name)
 
     def on_item_clicked(self: Self, item: QListWidgetItem) -> None:
         """Handles the event when an item in the field list is clicked."""
         item_name = item.text()
+        self.show_loading_animation()
         if self.current_polygon != '':
             self.save_updated_polygon()
         if item_name != '':
-            self.load_wkt(self.fields[item_name])
+            self.load_wkt(polygon_wkt=self.fields[item_name])
+            #tsk = QgsTask.fromFunction('Load polygon', self.load_wkt, 
+            #                            polygon_wkt=self.fields[item_name],
+            #                            on_finished=None)
+            #self.parent.tsk_mngr.addTask(tsk)
             self.current_polygon = self.fields[item_name]
 
     def _set_new_crs(self: Self, 
@@ -173,22 +241,28 @@ class FindIsoField:
         return transformed_polygon
 
     def _plot_polygon_on_map(self: Self, polygon: "shapely.geometry.polygon.Polygon") -> "matplotlib.figure.Figure":
-        """Plots the polygon on a map with interactivity for zoom and node editing."""
+        """Plots the polygon or point on a map with interactivity for zoom and node editing."""
         if polygon.is_empty:
             fig, ax = plt.subplots(figsize=(12, 9))
             ax.text(0.5, 0.5, 'No data points were found', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=15)
             ax.set_axis_off()
             return fig
+
+        # Handle Polygon geometry as before
         polygon = self._set_new_crs(polygon)
         minx, miny, maxx, maxy = polygon.bounds
+
+        # Calculate zoom level automatically
+        zoom = get_auto_zoom_level(minx, miny, maxx, maxy, max_zoom=17, min_zoom=10)
+
         fig, ax = plt.subplots(figsize=(12, 9))
         patch_collection = ax.fill(*polygon.exterior.xy, edgecolor='m', facecolor='none')
         if patch_collection:
             self.polygon_patch = patch_collection[0]
 
-        # Add the basemap
+        # Add the basemap with the calculated zoom
         if not self.parent.test_mode:
-            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
+            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=zoom)
 
         # Set the axis limits with padding
         padding = 0.15
@@ -254,13 +328,15 @@ class FindIsoField:
         """Handles the event when a dragged point is released."""
         if not hasattr(self, 'dragging_point'):
             return
-        self.dragging_point.set_animated(False)
+        if self.dragging_point is not None:
+            self.dragging_point.set_animated(False)
         self.dragging_point = None
         self.canvas.draw()
 
     def load_wkt(self: Self, polygon_wkt: str) -> None:
         """Loads a polygon from WKT and plots it on the map."""
         polygon = wkt.loads(polygon_wkt)
+        self.clear_layout()
         fig = self._plot_polygon_on_map(polygon)
         self.canvas = FigureCanvas(fig)  # Link the figure to the FigureCanvas
         self.canvas.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -284,8 +360,7 @@ class FindIsoField:
         new_polygon = Polygon(new_coords)
         for key, value in self.fields.items():
             if value == self.current_polygon:
-                new_wkt = self._set_new_crs(new_polygon, source_proj = pyproj.CRS('EPSG:3857'), 
-                                                          target_proj = pyproj.CRS('EPSG:4326'))
+                new_wkt = self._set_new_crs(new_polygon, source_proj=pyproj.CRS('EPSG:3857'), target_proj=pyproj.CRS('EPSG:4326'))
                 self.fields[key] = new_wkt.wkt
                 break
         self.current_polygon = new_wkt.wkt

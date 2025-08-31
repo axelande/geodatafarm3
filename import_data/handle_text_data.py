@@ -635,7 +635,7 @@ def create_table(db: DB, schema: str, heading_row: list[str],
 
 
 def create_polygons(db: DB, schema: str, tbl_name: str, 
-                    field: str) -> None:
+                    field: str) -> list:
     sql = """drop table if exists {schema}.temp_tbl2;
         WITH voronoi_temp2 AS (
         SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
@@ -647,9 +647,10 @@ def create_polygons(db: DB, schema: str, tbl_name: str,
         SET polygon = st_multi(ST_Intersection(geom, (select polygon 
             from fields where field_name = '{field}')))
         FROM {schema}.temp_tbl2
-        WHERE st_intersects(pos, geom)""".format(schema=schema, tbl=tbl_name, field=field)
-    db.execute_sql(sql)
+        WHERE st_intersects(pos, geom) AND ST_IsValid(geom)""".format(schema=schema, tbl=tbl_name, field=field)
+    res = db.execute_sql(sql, return_failure=True)
     db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
+    return res
 
 
 def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
@@ -793,12 +794,14 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
         if task != 'debug':
             task.setProgress(70)
         if schema != 'harvest':
-            create_polygons(db, schema, tbl_name, field)
+            r = create_polygons(db, schema, tbl_name, field)
+            if not r[0]:
+                return [False, r[1], '', 'Creating polygons failed']
         db.create_indexes(tbl_name, focus_col, schema, primary_key=False)
         if params['move']:
             suc = move_points(db, params['move_x'], params['move_y'], tbl_name, task)
             if not suc[0]:
-                True, no_miss_heading, some_wrong_len, sql
+                return [False, no_miss_heading, some_wrong_len, sql]
             else:
                 task = suc[1]
         if task != 'debug':
