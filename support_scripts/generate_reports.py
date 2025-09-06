@@ -397,13 +397,14 @@ class RapportGen:
                      'soil': {'simple': False, 'advanced': False}
                      }
 
-        def get_temp_ans(sql: str, list_: bool):
+        def get_temp_ans(sql: str, return_list: bool):
             temp_ans = data['db'].execute_and_return(sql, return_failure=True)
             if isinstance(temp_ans, str) or temp_ans[0] is False:
-                return False
-            if not list_:
-                temp_ans = temp_ans[0][0]
-            return temp_ans
+                return [False, '']
+            if return_list:
+                return [True, temp_ans[1][0]]
+            else:
+                return [True, temp_ans[1][0][0]]
 
         def retrieve_date(meta_data, schema, year) -> Paragraph:
             if meta_data['date'][:2] == 'c_':
@@ -414,8 +415,8 @@ class RapportGen:
                 if year is not None:
                     sql += f""" where extract(year from date_) = {year}"""
                 _date_ = ''
-                temp_date = get_temp_ans(sql, True)
-                if temp_date is not None and temp_date:
+                suc, temp_date = get_temp_ans(sql, True)
+                if suc:
                     for temp in temp_date:
                         _date_ += temp.isoformat() + ', '
                 _date_ = Paragraph(_date_[:-2], styleN)
@@ -431,8 +432,8 @@ class RapportGen:
 from {schema}.{table}"""
                 if year is not None:
                     sql += f""" where extract(year from date_) = {year}"""
-                temp_var = get_temp_ans(sql, True)
-                if temp_var is not None and temp_var:
+                suc, temp_var = get_temp_ans(sql, True)
+                if suc:
                     variable = Paragraph(str(temp_var)[1:-1], styleN)
                 else:
                     variable = ''
@@ -448,8 +449,8 @@ from {schema}.{table}"""
                 from {schema}.{tbl}"""
                 if year is not None:
                     sql += f""" where extract(year from date_) = {year}"""
-                temp_var = get_temp_ans(sql, False)
-                if temp_var is not None and temp_var:
+                suc, temp_var = get_temp_ans(sql, False)
+                if suc:
                     variable = Paragraph(str(temp_var), styleN)
                 else:
                     variable = ''
