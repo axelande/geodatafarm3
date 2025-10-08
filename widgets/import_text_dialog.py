@@ -1,24 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-/***************************************************************************
- CheckHarvestDependentDialog
-                                 A QGIS plugin
- A simple program that calculate the impact on the harvest of different factors
-                             -------------------
-        begin                : 2016-03-04
-        git sha              : $Format:%H$
-        copyright            : (C) 2016 by Axel Horteborn
-        email                : axel.n.c.andersson@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 """
 from typing import Self
 
@@ -39,3 +20,34 @@ class ImportTextDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        
+        self.ComBNorth: QtWidgets.QComboBox
+        self.ComBEast: QtWidgets.QComboBox
+        self.ComBDate: QtWidgets.QComboBox
+        self.ComBDate_2: QtWidgets.QComboBox
+        self.ComBYield: QtWidgets.QComboBox
+        self.CBField: QtWidgets.QComboBox
+        self.CBType: QtWidgets.QComboBox
+        self.LEEPSG: QtWidgets.QLineEdit
+        self.buttonBox: QtWidgets.QDialogButtonBox
+        self.label_7: QtWidgets.QLabel
+        self.label_8: QtWidgets.QLabel
+        self.label_9: QtWidgets.QLabel
+        self.label_10: QtWidgets.QLabel
+        self.label_11: QtWidgets.QLabel
+        self.label_12: QtWidgets.QLabel
+        self.label_13: QtWidgets.QLabel
+        self.label_14: QtWidgets.QLabel
+        self.RBSemi: QtWidgets.QRadioButton
+        self.RBTab: QtWidgets.QRadioButton
+        self.RBComma: QtWidgets.QRadioButton
+        self.LEOwnSep: QtWidgets.QRadioButton
+        self.LEMinYield: QtWidgets.QLineEdit
+        self.LEMaxYield: QtWidgets.QLineEdit
+        self.LEMoveX: QtWidgets.QLineEdit
+        self.LEMoveY: QtWidgets.QLineEdit
+        self.PBContinue: QtWidgets.QPushButton
+        self.PBAddInputFile: QtWidgets.QPushButton
+        self.PBHelp: QtWidgets.QPushButton
+        self.PBInsertDataIntoDB: QtWidgets.QPushButton
+

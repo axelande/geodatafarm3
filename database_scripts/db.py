@@ -10,6 +10,7 @@ import psycopg2.extras
 import traceback
 import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMessageBox, QInputDialog
 try:
     from ..support_scripts.__init__ import TR
@@ -57,6 +58,7 @@ class DB:
         tr: tr
             The translation function of GeoDataFarm
         """
+        self.qsettings: QSettings = QSettings()
 
         self.dock_widget = dock_widget
         self.path = path
@@ -80,16 +82,10 @@ class DB:
         """
         try:
             if not self.test_mode:
-                if not os.path.exists(os.path.join(self.path, 'database_scripts', 'connection_data.ini')):
-                    return False
                 if self.dbname is None:
-                    with open(os.path.join(self.path, 'database_scripts', 'connection_data.ini'), 'r') as f:
-                        text = f.readline()
-                        [username, password, farmname] = text.split(',')
-            
-                    self.dbname = farmname
-                    self.dbuser = username
-                    self.dbpass = password
+                    self.dbname = self.qsettings.value("geodatafarm/farmname", "")
+                    self.dbuser = self.qsettings.value("geodatafarm/username", "")
+                    self.dbpass = self.qsettings.value("geodatafarm/dbpass", "")
         except IOError:
             raise psycopg2.OperationalError("Could not make a stable connection to the GeoDataFarm server")
         if not self.test_mode:

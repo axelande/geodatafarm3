@@ -20,7 +20,6 @@ class InputShpHandler:
     def __init__(self, parent_widget, schema, spec_columns):
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
-        self.col_types = None
         self.param_row_count = 0
         self.params_to_evaluate = []
         self.combo = []
@@ -92,12 +91,14 @@ class InputShpHandler:
             type_ = gk_lyr[0].GetFieldDefnRef(i).GetTypeName()
             self.col_names.append(name)
             _types.append(type_)
-            if type_ == 'Integer':
+            if type_ in ['Integer', 'Integer64', 'Date', 'Time', 'DateTime']:
                 self.col_types.append(0)
-            if type_ == 'Real':
+            elif type_ == 'Real':
                 self.col_types.append(1)
-            if type_ == 'String':
+            elif 'String' in type_:
                 self.col_types.append(2)
+            else:
+                raise ValueError(self.tr('Unknown type found in shp file'))
         self.sample_data = []
         sec_row = True
         c_i = 0
@@ -232,8 +233,9 @@ class InputShpHandler:
             manual_date = 'c_' + self.ISD.DE.text()
             table_date = self.ISD.DE.text()
         self.tbl_name = check_text(self.tbl_name + '_' + table_date)
-        self.mff.insert_manual_data(manual_date, self.ISD.CBField.currentText(),
-                                    self.tbl_name, self.schema)
+        if self.schema != 'soil':
+            self.mff.insert_manual_data(manual_date, self.ISD.CBField.currentText(),
+                                        self.tbl_name, self.schema)
         task = QgsTask.fromFunction('Run import text data', self.import_data,
                                     date_dict, on_finished=self.show_data)
         self.tsk_mngr.addTask(task)

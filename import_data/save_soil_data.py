@@ -36,7 +36,7 @@ class SaveSoil:
                 'Support for databasefiles are not implemented 100% yet'))
             return
         elif self.dw.CBSoFileType.currentText() == self.tr('Shape file (.shp)'):
-            shp_file = InputShpHandler(self.parent, 'planting', columns)
+            shp_file = InputShpHandler(self.parent, 'soil', columns)
             shp_file.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Georeferenced Raster (.tif; .geotif)'):
             ir = ImportRaster(self.parent, self.dw.DESoil, self.dw.CBSoField, 'soil')

@@ -97,7 +97,7 @@ def isint(x: str) -> bool:
         return a == b
 
 
-def check_date_format(sample, column, format_):
+def check_date_format(sample: list, column: str, format_: str) -> tuple[bool, datetime | None]:
     """Checks that the date format matches the selected format
 
     Parameters

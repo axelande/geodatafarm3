@@ -1,5 +1,6 @@
 from typing import Self
 import os
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMessageBox
 import requests
 import hashlib
@@ -20,6 +21,7 @@ class CreateFarm:
             True if the user creates new farm,
             False if user connects to a farm
         """
+        self.qsettings: QSettings = QSettings()
         if new_farm:
             from ..widgets.create_farm_popup import CreateFarmPopup
             self.CF = CreateFarmPopup()
@@ -100,8 +102,8 @@ class CreateFarm:
         else:
             insertion_ok = True
         if not self.parent_widget.test_mode:
-            with open(os.path.join(self.plugin_dir, 'database_scripts', 'connection_data.ini'), 'w') as f:
-                f.write(username + ',' + password + ',' + farmname)
+            for key, value in zip(["username", "dbpass", "farmname"], [username, password, farmname]):
+                self.qsettings.setValue(f"geodatafarm/{key}", value)
         self.parent_widget.dock_widget.LFarmName.setText(farmname + ' is set\nas your farm')
         self._connect_to_db()
         self.parent_widget.db = self.db
@@ -131,8 +133,8 @@ class CreateFarm:
         password = hashlib.sha256(password).hexdigest()
 
         if not self.parent_widget.test_mode:
-            with open(os.path.join(self.plugin_dir, 'database_scripts', 'connection_data.ini'), 'w') as f:
-                f.write(username + ',' + password + ',' + farmname)
+            for key, value in zip(["username", "dbpass", "farmname"], [username, password, farmname]):
+                self.qsettings.setValue(f"geodatafarm/{key}", value)
             self.parent_widget.dock_widget.LFarmName.setText(farmname +
                                                          ' is set\nas your farm')
         self._connect_to_db()

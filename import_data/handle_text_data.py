@@ -346,10 +346,10 @@ class InputTextHandler(object):
                 else:
                     self.sample_data.append(row)
                     for j, col in enumerate(row):
-                        if isint(col):
+                        if isint(col.replace(',', '.')):
                             row_types[j] += 0
                             continue
-                        if isfloat(col):
+                        if isfloat(col.replace(',', '.')):
                             row_types[j] += 1
                             continue
                         else:
@@ -373,13 +373,14 @@ class InputTextHandler(object):
         params['encoding'] = self.encoding
         params['file_name_with_path'] = self.file_name_with_path
         params['field'] = self.ITD.CBField.currentText()
-        params['longitude_col'] = self.longitude_col
-        params['latitude_col'] = self.latitude_col
+        params['longitude_col'] = check_text(self.ITD.ComBEast.currentText())
+        params['latitude_col'] = check_text(self.ITD.ComBNorth.currentText())
         params['focus_col'] = []
         if self.ITD.RBDateOnly.isChecked():
             is_ok, first_date = check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()),
                                                   self.ITD.ComBDate_2.currentText())
             if not is_ok:
+                assert isinstance(first_date, datetime)
                 QMessageBox.information(None, self.tr('Error'),
                                         self.tr("The date format didn't match the selected format, please change"))
                 return
@@ -387,13 +388,13 @@ class InputTextHandler(object):
             params['date_format'] = self.ITD.ComBDate_2.currentText()
             params['all_same_date'] = ''
             manual_date = 'date_'
-            table_date = first_date
+            table_date = first_date.date().isoformat()
         else:
             params['all_same_date'] = self.ITD.DE.text()
             manual_date = 'c_' + self.ITD.DE.text()
             table_date = self.ITD.DE.text()
             params['date_row'] = ''
-        self.tbl_name = check_text(self.ITD.CBField.currentText() + '_' + self.data_type + '_' + table_date)
+        self.tbl_name = check_text(f'{self.ITD.CBField.currentText()}_{self.data_type}_{table_date}')
         params['tbl_name'] = self.tbl_name
         if self.db.check_table_exists(self.tbl_name, self.data_type):
             return [False]
@@ -490,7 +491,7 @@ class InputTextHandler(object):
 def check_row_failed(row: list[str], heading_row: list[str], 
                      n_coord: str, e_coord: str, yield_col: bool|str, 
                      max_yield: float, min_yield: float) -> bool:
-    if len(row) != len(heading_row) and len(row) < 3:
+    if (len(row) != len(heading_row)) or len(row) < 2:
         return True
     try:
         if float(row[heading_row.index(n_coord)]) < 0.1 or float(
@@ -707,6 +708,8 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
             for row_count, row in enumerate(read_all):
                 row_value = '('
                 row = re.split((sep + ' |' + sep), row)
+                for i in range(len(row)):
+                    row[i] = row[i].replace(",", ".")
                 lat_lon_inserted = False
                 if first_row:
                     heading_row = []
@@ -771,7 +774,8 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
                 else:
                     count_db_insert += 1
             #print(inserting_text[:-1])
-            db.execute_sql(inserting_text[:-1])
+            if count_db_insert > 0:
+                db.execute_sql(inserting_text[:-1])
         no_miss_heading = True
         if some_wrong_len > 0:
             no_miss_heading = False
