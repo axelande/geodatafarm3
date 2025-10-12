@@ -5,8 +5,8 @@ import os
 from osgeo import osr, ogr
 from psycopg2 import ProgrammingError
 from PyQt5 import QtCore
-from PyQt5.QtCore import QVariant
-from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog, QComboBox
 from qgis.core import QgsProject, QgsVectorLayer
 

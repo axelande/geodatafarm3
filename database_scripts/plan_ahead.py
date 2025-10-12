@@ -1,6 +1,6 @@
 from typing import Self
 from datetime import datetime
-from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
+from qgis.PyQt.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..support_scripts.__init__ import TR
 

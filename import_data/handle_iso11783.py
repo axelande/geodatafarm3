@@ -51,7 +51,7 @@ class Iso11783:
         self.IXB.PBRemParam.clicked.connect(self.remove_from_param_list)
         self.IXB.PBInsert.clicked.connect(self.add_to_database)
         if not self.parent.test_mode:
-            self.IXB.exec_()
+            self.IXB.exec()
 
     def add_to_canvas(self, schema, tbl, focus_cols):
         """At the end add the layers to the canvas, one layer for 

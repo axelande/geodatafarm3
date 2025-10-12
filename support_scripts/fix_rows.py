@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsTask
 import traceback
 from ..widgets.fix_rows import FixRowsDialog
@@ -26,7 +26,7 @@ class RowFixer:
         self.FRD.PBUpdateGeom.clicked.connect(self.initiate_update)
         self.FRD.CBMaxRows.setCurrentIndex(3)
         self.FRD.show()
-        self.FRD.exec_()
+        self.FRD.exec()
 
     def fill_cb(self):
         """Updates the ComboBox with names from the different schemas in the

@@ -17,7 +17,7 @@ class actionToggleEditing:
     def trigger(self: Self) -> None:
         pass
 
-from PyQt5.QtCore import QSettings, QDate
+from qgis.PyQt.QtCore import QSettings, QDate
 
 from ..GeoDataFarm import GeoDataFarm
 from ..database_scripts.db import DB

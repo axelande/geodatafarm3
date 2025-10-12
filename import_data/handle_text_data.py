@@ -3,7 +3,7 @@ import webbrowser
 from qgis.core import QgsTask
 import traceback
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, \
+from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, \
                              QMessageBox)
 import re
 import math
@@ -97,7 +97,7 @@ class InputTextHandler(object):
         if self.data_type == 'soil':
             self.ITD.CBCrop.setEnabled(False)
         if not self.parent_widget.test_mode:
-            self.ITD.exec_()
+            self.ITD.exec()
 
     def show_abbreviations(self):
         """Shows a messageBox with the time abbreviations"""
@@ -199,7 +199,7 @@ class InputTextHandler(object):
         self.combo = []
         self.ITD.TWColumnNames.setRowCount(len(heading_row))
         self.ITD.TWColumnNames.setColumnCount(3)
-        self.ITD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.ITD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(heading_row):
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))

@@ -2,7 +2,7 @@ import tempfile
 import time
 import codecs
 import os
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 from PyQt5 import QtCore
 from qgis.core import QgsMapLayer
 from os import R_OK
@@ -76,7 +76,7 @@ class MultiEdit:
                         infoString = self.tr(
                             "<font color='red'> Please select some elements into current <b>" + self.layer.name() + "</b> layer</font>")
                         self.MED.label.setText(infoString)
-                        self.MED.buttonBox.button(QDialogButtonBox.Ok).setEnabled(
+                        self.MED.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(
                             False)
                         self.MED.QLEvalore.setEnabled(False)
                         self.MED.CBfields.setEnabled(False)
@@ -84,21 +84,21 @@ class MultiEdit:
             infoString = self.tr(
                 "<font color='red'> Layer <b>" + self.layer.name() + "</b> is not a vector layer</font>")
             self.MED.label.setText(infoString)
-            self.MED.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.MED.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
             self.MED.QLEvalore.setEnabled(False)
             self.MED.CBfields.setEnabled(False)
         else:
             infoString = self.tr(
                 "<font color='red'> <b>No layer selected... Select a layer from the layer list...</b></font>")
             self.MED.label.setText(infoString)
-            self.MED.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.MED.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
             self.MED.QLEvalore.setEnabled(False)
             self.MED.CBfields.setEnabled(False)
 
     def show(self):
         """Displays the widget"""
         self.MED.show()
-        self.MED.exec_()
+        self.MED.exec()
 
     def run(self):
         """Change the values, if it is a postgres database source it does the

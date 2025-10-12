@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from ..support_scripts.__init__ import TR
 from ..widgets.drop_un_real import DropUnRealWidget
@@ -19,7 +19,7 @@ class DropUnReal:
         """Displays the widget"""
         self.connect_boxes()
         self.DUR.show()
-        self.DUR.exec_()
+        self.DUR.exec()
 
     def connect_boxes(self):
         self.DUR.CBTypes.currentIndexChanged.connect(self.get_tables)
@@ -76,7 +76,7 @@ class DropUnReal:
         sql = f"""select count(*) FROM {self.schema}.{self.table} where {attribute} {operator} {value}"""
         rows_affected = self.db.execute_and_return(sql)[0][0]
         question = QMessageBox.question(None, 'Proceed?', f'The action will remove all rows where {attribute} {operator} {value}\nThis will remove: {rows_affected}, are you sure that you want to proceed?')
-        if question == QMessageBox.Yes:
+        if question == QMessageBox.StandardButton.Yes:
             sql = f'DELETE FROM {self.schema}.{self.table} where {attribute} {operator} {value}'
             self.db.execute_sql(sql)
             self.cancel()

@@ -10,7 +10,7 @@ import copy
 import traceback
 import time
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from qgis.PyQt.QtWidgets import QMessageBox, QTableWidgetItem
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint, TR
 from ..support_scripts.add_field import AddField
@@ -64,7 +64,7 @@ class Analyze:
         self.dlg.show()
         self.dlg.pButRun.clicked.connect(self.update_pic)
         self.dlg.PBSelectArea.clicked.connect(partial(self.add_field.clicked_define_field, ignore_name=True))
-        self.dlg.exec_()
+        self.dlg.exec()
 
     def check_consistency(self: Self) -> bool:
         """Checks that the harvest tables is intersecting some of the input data

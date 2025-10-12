@@ -3,7 +3,7 @@ from datetime import datetime
 from string import ascii_letters, digits as str_digits
 import os
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class TR:

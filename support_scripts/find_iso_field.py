@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import pyproj
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
-from PyQt5.QtGui import QMovie
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from qgis.PyQt.QtGui import QMovie
 from psycopg2 import IntegrityError, InternalError
 from qgis.core import QgsTask
 from shapely import wkt
@@ -84,7 +84,7 @@ class FindIsoField:
         """Shows the widget and executes it if not in test mode."""
         self.fifw.show()
         if not self.parent.test_mode:
-            self.fifw.exec_()
+            self.fifw.exec()
 
     def open_input_folder(self: Self) -> None:
         """Opens a dialog and lets the user select the folder where Taskdata are stored."""

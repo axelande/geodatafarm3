@@ -25,7 +25,7 @@ from typing import Self
 import os
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'GeoDataFarm_dockwidget_base.ui'))

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 from datetime import datetime
 # Import the code for the dialog
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
@@ -31,7 +31,7 @@ class IrrigationHandler:
         self.IIR.show()
         self.IIR.PBCreateYear.clicked.connect(self.create_grid_year)
         self.IIR.PBGetData.clicked.connect(self.get_grid_data)
-        self.IIR.exec_()
+        self.IIR.exec()
 
     def _connect(self):
         self.client_id = self.IIR.LEClientId.text()

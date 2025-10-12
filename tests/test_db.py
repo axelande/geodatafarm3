@@ -1,6 +1,6 @@
 import hashlib
-from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QInputDialog
-from PyQt5.QtCore import Qt
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QInputDialog
+from qgis.PyQt.QtCore import Qt
 from psycopg2.errors import UndefinedTable
 import pytest
 from unittest.mock import patch, MagicMock
@@ -150,8 +150,8 @@ def test_table_management_save_table(table_management):
     table_management.current_table = 'table'
     table_management.current_schema = 'schema'
     table_management.params_in_table = [QListWidgetItem('col1'), QListWidgetItem('col2')]
-    table_management.params_in_table[0].setCheckState(Qt.Checked)
-    table_management.params_in_table[1].setCheckState(Qt.Unchecked)
+    table_management.params_in_table[0].setCheckState(Qt.CheckState.Checked)
+    table_management.params_in_table[1].setCheckState(Qt.CheckState.Unchecked)
     table_management.db.get_indexes = MagicMock(return_value={0: {'index_col': 'col2'}})
     table_management.db.execute_sql = MagicMock()
 

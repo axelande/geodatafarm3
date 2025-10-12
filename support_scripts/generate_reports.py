@@ -7,7 +7,7 @@ from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from datetime import date
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import QgsTask
 from functools import partial
 import traceback

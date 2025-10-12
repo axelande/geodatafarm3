@@ -3,7 +3,7 @@ import sys
 import subprocess
 import platform
 
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 def check_and_install_requirements():
     try:

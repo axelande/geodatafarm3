@@ -1,6 +1,6 @@
 from typing import Self
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QDate
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QDate
 
 from ..import_data.handle_text_data import InputTextHandler
 from ..import_data.handle_raster import ImportRaster

@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING, Self
 if TYPE_CHECKING:
     import geodatafarm.database_scripts.db
     import geodatafarm.widgets.import_text_dialog
-from PyQt5.QtWidgets import QLabel, QLineEdit, QComboBox, QCheckBox
+
+from qgis.PyQt.QtWidgets import QLabel, QLineEdit, QComboBox, QCheckBox
 from ..support_scripts import check_text
 from ..support_scripts.__init__ import TR
 
@@ -81,7 +82,7 @@ class ManualFromFile:
         ----------
         date_: str
             The column where the dates is listed or one date that is the same
-            for all rows (than it starts with c\_)
+            for all rows (than it starts with c/_)
 
         Returns
         -------

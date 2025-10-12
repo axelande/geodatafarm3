@@ -3,8 +3,8 @@ if TYPE_CHECKING:
     import PyQt5.QtWidgets
 from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
-from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from ..support_scripts.__init__ import TR
 
 

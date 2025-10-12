@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
-from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, QComboBox
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QFileDialog, QAbstractItemView, QComboBox
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 import sqlite3
 import os
 from operator import xor
@@ -78,7 +78,7 @@ class DBFileHandler:
         self.IDB.TWExamples.setRowCount(10)
         self.IDB.TWExamples.setColumnCount(len(colums))
         self.IDB.TWExamples.setSelectionBehavior(
-            QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectRows)
         self.IDB.TWExamples.setHorizontalHeaderLabels([str(x) for x in colums])
         for i, row in enumerate(data_example):
             for j, col in enumerate(row):
@@ -89,10 +89,10 @@ class DBFileHandler:
         self.IDB.TWTableNames.setRowCount(len(self.tbl_names))
         self.IDB.TWTableNames.setColumnCount(1)
         self.IDB.TWTableNames.setSelectionBehavior(
-            QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(self.tbl_names):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.IDB.TWTableNames.setItem(i, 0, item1)
             #self.combo[i].view().pressed.connect(self.change_col_type)
             self.IDB.TWTableNames.itemDoubleClicked.connect(self._change_example)
@@ -105,7 +105,7 @@ class DBFileHandler:
         self.IDB.TWFinalExample.setRowCount(len(data_example) + 3)
         self.IDB.TWFinalExample.setColumnCount(len(colums))
         self.IDB.TWFinalExample.setSelectionBehavior(
-            QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectRows)
         self.IDB.TWFinalExample.setHorizontalHeaderLabels([str(x) for x in colums])
         other_tbls = self.tbl_names
         other_tbls.remove(self.tbl_names[tbl])
@@ -183,5 +183,5 @@ class DBFileHandler:
         self.IDB.pButContinue.clicked.connect(self._change_example)
         self.IDB.ComBMainTable.addItems(self.tbl_names)
         self.IDB.ComBMainTable.view().pressed.connect(self._selected_main)
-        quit = self.IDB.exec_()
+        quit = self.IDB.exec()
         print('end')

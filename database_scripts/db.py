@@ -1,17 +1,15 @@
 from typing import TYPE_CHECKING, Callable, Never, Self
 if TYPE_CHECKING:
-    import psycopg2.errors
     import psycopg2.extensions
     import qgis._core
-import os
 import psycopg2
 import psycopg2.pool
 import psycopg2.extras
 import traceback
 import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QMessageBox, QInputDialog
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
 try:
     from ..support_scripts.__init__ import TR
 except ImportError:

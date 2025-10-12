@@ -1,7 +1,7 @@
 import os
 from osgeo import gdal
 from osgeo import osr
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from functools import partial
 import subprocess
 from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,

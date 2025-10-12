@@ -1,7 +1,7 @@
 from typing import Self
 from PyQt5 import QtCore
 from qgis.core import QgsTask
-from PyQt5.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
+from qgis.PyQt.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
 try:
     from widgets.table_managment_dialog import TableMgmtDialog
@@ -45,7 +45,7 @@ class TableManagement:
         self.update_table_list()
         self.TMD.show()
         if not self.parent.test_mode:
-            self.TMD.exec_()
+            self.TMD.exec()
 
     def merge_tbls(self: Self) -> None:
         """Merging two data sets into one."""
@@ -243,12 +243,12 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
         """Removes the selected tables from the database"""
         msgBox = QMessageBox()
         msgBox.setText(self.tr('Do you really want to remove the selected tables from the database?'))
-        msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
-        msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
+        msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.ButtonRole.YesRole)
+        msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.ButtonRole.NoRole)
         if self.parent.test_mode:
             ret = 0
         else:
-            ret = msgBox.exec_()
+            ret = msgBox.exec()
         if ret == 1:
             return
         model = self.TMD.SATables.model()

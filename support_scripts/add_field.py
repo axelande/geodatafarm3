@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     import qgis.core.additions.qgstaskwrapper
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from psycopg2 import IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom

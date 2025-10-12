@@ -1,8 +1,8 @@
 from typing import Self
 __author__ = 'Axel Horteborn'
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtGui import QStandardItemModel
+from qgis.PyQt.QtWidgets import QComboBox
+from qgis.PyQt.QtGui import QStandardItemModel
 
 
 class RadioComboBox(QComboBox):

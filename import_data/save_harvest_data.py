@@ -2,8 +2,8 @@ from typing import Self
 from ..import_data.handle_text_data import InputTextHandler
 from ..import_data.handle_iso11783 import Iso11783
 from ..import_data.handle_input_shp_data import InputShpHandler
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QDate
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QDate
 from ..support_scripts.__init__ import TR
 
 

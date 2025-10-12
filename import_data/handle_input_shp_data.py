@@ -2,7 +2,7 @@ __author__ = 'Axel Horteborn'
 from qgis.core import QgsTask
 from PyQt5 import QtCore
 import traceback
-from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView,
+from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView,
                              QMessageBox)
 from osgeo import osr, ogr
 import os
@@ -57,7 +57,7 @@ class InputShpHandler:
         self.ISD.pButInsertDataIntoDB.clicked.connect(self.prepare_shp_file)
         self.populate.reload_fields(self.ISD.CBField)
         self.populate.reload_crops(self.ISD.CBCrop)
-        self.ISD.exec_()
+        self.ISD.exec()
 
     def open_input_file(self):
         """Open the file dialog and let the user choose which file that should
@@ -115,7 +115,7 @@ class InputShpHandler:
         self.ISD.TWColumnNames.setRowCount(len(self.col_names))
         self.ISD.TWColumnNames.setColumnCount(2)
         self.ISD.TWColumnNames.setSelectionBehavior(
-            QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(self.col_names):
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))

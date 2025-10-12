@@ -1,7 +1,7 @@
 from typing import Self
 import os
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
 import requests
 import hashlib
 from ..support_scripts.__init__ import check_text, TR, isint
@@ -40,7 +40,7 @@ class CreateFarm:
     def run(self):
         """Presents the sub widget CreateFarm"""
         self.CF.show()
-        self.CF.exec_()
+        self.CF.exec()
 
     def create_new_farm(self):
         """Sends a request to the server and asks it to create the database for

@@ -2,7 +2,7 @@ import webbrowser
 from qgis.core import QgsTask
 import traceback
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, QMessageBox)
+from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, QMessageBox)
 import re
 import math
 from operator import xor, itemgetter
@@ -59,7 +59,7 @@ class ConvertToAreas:
         self.IIHD.RBOwnSep.clicked.connect(self.change_sep)
         self.populate.reload_fields(self.IIHD.CBField)
         self.populate.reload_crops(self.IIHD.CBCrop)
-        self.IIHD.exec_()
+        self.IIHD.exec()
 
     def open_input_file(self):
         """Open the file dialog and let the user choose which file that should
@@ -148,7 +148,7 @@ class ConvertToAreas:
         self.combo = []
         self.IIHD.TWColumnNames.setRowCount(len(heading_row))
         self.IIHD.TWColumnNames.setColumnCount(3)
-        self.IIHD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.IIHD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(heading_row):
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))

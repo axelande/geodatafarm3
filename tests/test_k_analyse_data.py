@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QMessageBox, QLineEdit, QLabel
+from qgis.PyQt.QtWidgets import QMessageBox, QLineEdit, QLabel
 from PyQt5 import QtGui, QtWidgets
 import pytest
 
@@ -95,7 +95,7 @@ def test_check_consistency_only_harvest_returns_false(gdf: GeoDataFarm, monkeypa
 
 def test_default_layout_populates_layout_dict_and_panels(gdf, monkeypatch):
     # Patch QMessageBox to avoid popups if any error occurs
-    from PyQt5.QtWidgets import QMessageBox
+    from qgis.PyQt.QtWidgets import QMessageBox
     monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: None)
     # Use real tables for a valid overlap
     names = [["plant", "test_field_plant_2023_04_15"], ["harvest", "test_field_harvest_2023_09_15"]]

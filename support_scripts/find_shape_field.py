@@ -16,7 +16,7 @@ import pyproj
 from shapely.ops import transform
 
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 
 from ..widgets.find_shape_fields import FindShapeFieldWidget
 
@@ -41,7 +41,7 @@ class FindShapeField:
         """Shows the widget and executes it if not in test mode."""
         self.fsfw.show()
         if not self.parent.test_mode:
-            self.fsfw.exec_()
+            self.fsfw.exec()
 
 
     def open_shapefile(self: Self) -> None:

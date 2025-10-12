@@ -35,9 +35,9 @@ else:
     sys.path.append('/usr/share/qgis/python/plugins')
 from qgis.core import QgsApplication
 from PyQt5 import QtGui
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt5.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
-from PyQt5.QtGui import QIcon, QImage
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
+from qgis.PyQt.QtGui import QIcon, QImage
 from psycopg2 import IntegrityError
 import os
 

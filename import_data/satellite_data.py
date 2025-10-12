@@ -1,4 +1,7 @@
-from typing import Self
+try:
+    from typing import Self
+except ImportError:
+    Self = None
 import webbrowser
 import os
 import shutil
@@ -9,8 +12,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QPushButton
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QPushButton
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsFeature,QgsProcessingFeedback, QgsRasterBandStats,
                        QgsExpression, QgsField)
@@ -282,9 +285,9 @@ class SatelliteData:
         if os.path.isfile(file_name):
             msgBox = QMessageBox()
             msgBox.setText(self.tr('You have already created a guide file for this field today, do you want to replace it?'))
-            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
-            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
-            res = msgBox.exec_()
+            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.ButtonRole.YesRole)
+            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.ButtonRole.NoRole)
+            res = msgBox.exec()
             if res == 1:
                 return
             try:
@@ -342,9 +345,9 @@ class SatelliteData:
         if s_date == datetime.date(datetime.today()).isoformat():
             msgBox = QMessageBox()
             msgBox.setText(self.tr('Are you planning to use it today?'))
-            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.YesRole)
-            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.NoRole)
-            res = msgBox.exec_()
+            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.ButtonRole.YesRole)
+            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.ButtonRole.NoRole)
+            res = msgBox.exec()
             if res == 1:
                 return
         tbl = check_text(self.file_name[self.path.index('tmp_files123')+11:-4] + '_' + s_date)

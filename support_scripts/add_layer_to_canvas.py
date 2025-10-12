@@ -1,6 +1,6 @@
 from qgis.core import QgsProject
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QListWidgetItem
+from qgis.PyQt.QtWidgets import QApplication, QListWidgetItem
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..widgets.add_to_canvas import AddToCanvas
 
@@ -32,7 +32,7 @@ class AddLayerToCanvas:
             self.populate_widget()
             self.dlg.show()
             self.dlg.PBAddData.clicked.connect(self.add_selected)
-            self.dlg.exec_()
+            self.dlg.exec()
 
     def get_tables(self):
         """Fills the dict 'parameters' with an int as key and a dict as the value

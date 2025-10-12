@@ -9,8 +9,8 @@ from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsTextFormat, QgsPalLayerSettings, QgsTextBufferSettings, \
     QgsVectorLayerSimpleLabeling, QgsRasterLayer, QgsCoordinateReferenceSystem, \
     QgsRectangle
-from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtWidgets import QMessageBox
 import numpy as np
 import matplotlib.pyplot as plt
 from ..support_scripts import isint
