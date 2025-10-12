@@ -88,6 +88,8 @@ class DB:
                     self.dbpass = self.qsettings.value("geodatafarm/dbpass", "")
         except IOError:
             raise psycopg2.OperationalError("Could not make a stable connection to the GeoDataFarm server")
+        if self.dbname == '' or self.dbuser == '' or self.dbpass == '':
+            return False
         if not self.test_mode:
             self.dock_widget.LFarmName.setText(self.dbname +
                                            self.tr(' is set as your farm'))

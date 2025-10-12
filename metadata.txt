@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.14.0
+version=2.14.1
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,8 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.14.1 (2025-10-12)
+  - [bug] Minor fix related to login!
   Version 2.14.0 (2025-10-08)
   - [feature] Changed from a file containg connections to information stored in Qsettings (not to be reset in each update of the plugin)
   - [bug] Minor fixes for shape files and text files.
