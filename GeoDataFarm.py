@@ -495,8 +495,17 @@ class GeoDataFarm:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
                 img = QImage(icon_path)
-                pimg = QPixmap.fromImage(img).scaled(91, 91,
-                                                                QtCore.Qt.KeepAspectRatio)
+                
+                if hasattr(QtCore.Qt, "AspectRatioMode"):  # Qt6+
+                    KeepAspectRatio = QtCore.Qt.AspectRatioMode.KeepAspectRatio
+                    SmoothTransformation = QtCore.Qt.TransformationMode.SmoothTransformation
+                else:  # Qt5
+                    KeepAspectRatio = QtCore.Qt.KeepAspectRatio
+                    SmoothTransformation = QtCore.Qt.SmoothTransformation
+
+                # Now your original line, compatible with both:
+                pimg = QPixmap.fromImage(img).scaled(91, 91, KeepAspectRatio, SmoothTransformation)
+
                 self.dock_widget.LIcon.setPixmap(pimg)
             if self.get_database_connection():
                 self.set_buttons()
