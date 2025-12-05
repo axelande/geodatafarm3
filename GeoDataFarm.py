@@ -17,7 +17,12 @@ it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE.
 ***************************************************************************
 
 """
-from typing import TYPE_CHECKING, Self
+try:
+    from typing import TYPE_CHECKING, Self
+except ImportError:
+    from qgis.PyQt.QtWidgets import QMessageBox
+    QMessageBox.information(None, "Import Error",
+                            "Your python version within QGIS is too old, please update to python 3.11 or higher")
 if TYPE_CHECKING:
     import pytest_qgis.qgis_interface
 # TODO: ensure that no calls to the database within tasks handel errors correctly
