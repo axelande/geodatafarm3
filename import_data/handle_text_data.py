@@ -2,7 +2,7 @@ from typing import Self
 import webbrowser
 from qgis.core import QgsTask
 import traceback
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView, \
                              QMessageBox)
 import re
@@ -134,7 +134,7 @@ class InputTextHandler(object):
             row_count += 1
             self.ITD.TWtoParam.setRowCount(row_count)
             item1 = QTableWidgetItem(item)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.ITD.TWtoParam.setItem(i, 0, item1)
         self.add_to_param_row_count = row_count
         self.ITD.PBContinue.setEnabled(True)
@@ -202,18 +202,18 @@ class InputTextHandler(object):
         self.ITD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(heading_row):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             item2 = QTableWidgetItem(second_row[i])
-            item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
+            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
             self.combo.append(RadioComboBox())
             for nr, t in enumerate(combo_box_options):
                 self.combo[i].addItem(t)
                 item = self.combo[i].model().item(nr, 0)
                 if self.col_types[i] == nr:
-                    item.setCheckState(QtCore.Qt.Checked)
+                    item.setCheckState(Qt.CheckState.Checked)
                     self.combo[i].setCurrentIndex(nr)
                 else:
-                    item.setCheckState(QtCore.Qt.Unchecked)
+                    item.setCheckState(Qt.CheckState.Unchecked)
             self.combo[i].currentTextChanged.connect(self.change_col_type)
             self.ITD.TWColumnNames.setItem(i, 0, item1)
             self.ITD.TWColumnNames.setItem(i, 1, item2)
@@ -764,7 +764,7 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
                         except (ValueError, OverflowError):
                             row_value += '{s}, '.format(s=0)
                     else:
-                        row_value += "'{s}', ".format(s=check_text(col_data))
+                        row_value += "'{s}', ".format(s=check_text(col_data, allow_first_digit=True))
                 inserting_text += row_value[:-2] + '),'
                 if count_db_insert > 10000:
                     #print(inserting_text)

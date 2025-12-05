@@ -1,6 +1,6 @@
 __author__ = 'Axel Horteborn'
 from qgis.core import QgsTask
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import Qt, QDate
 import traceback
 from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView,
                              QMessageBox)
@@ -118,9 +118,9 @@ class InputShpHandler:
             QAbstractItemView.SelectionBehavior.SelectRows)
         for i, row in enumerate(self.col_names):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             item2 = QTableWidgetItem(str(second_row[i]))
-            item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
+            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
             self.ISD.TWColumnNames.setItem(i, 0, item1)
             self.ISD.TWColumnNames.setItem(i, 1, item2)
         self.column_count = i
@@ -144,7 +144,7 @@ class InputShpHandler:
             row_count += 1
             self.ISD.TWtoParam.setRowCount(row_count)
             item1 = QTableWidgetItem(item)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.ISD.TWtoParam.setItem(i, 0, item1)
         self.param_row_count = row_count
         self.ISD.pButContinue.setEnabled(True)
@@ -485,7 +485,7 @@ class InputShpHandler:
         self.ISD.TWtoParam.setRowCount(0)
         self.ISD.pButContinue.setEnabled(False)
         self.ISD.RBDateOnly.setEnabled(False)
-        self.ISD.DE.setDate(QtCore.QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
+        self.ISD.DE.setDate(QDate.fromString('2000-01-01', 'yyyy-MM-dd'))
         self.ISD.ComBDate.clear()
         self.ISD.pButInsertDataIntoDB.setEnabled(False)
         self.ISD.param_row_count = 0

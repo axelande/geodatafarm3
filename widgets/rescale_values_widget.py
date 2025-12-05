@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtWidgets, uic
+from qgis.PyQt import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'rescale_values_widget.ui'))

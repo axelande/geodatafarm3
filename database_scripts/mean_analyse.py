@@ -9,8 +9,11 @@ from functools import partial
 import copy
 import traceback
 import time
-from PyQt5 import QtCore, QtWidgets, QtGui
-from qgis.PyQt.QtWidgets import QMessageBox, QTableWidgetItem
+from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel, QBrush, QColor
+
+from qgis.PyQt.QtWidgets import (QMessageBox, QWidget, QButtonGroup, QLabel, QLineEdit,
+QRadioButton, QCheckBox, QGroupBox, QComboBox, QVBoxLayout)
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint, TR
 from ..support_scripts.add_field import AddField
@@ -48,8 +51,8 @@ class Analyze:
         self.tables = tables_to_analyse
         self.cb = []
         self.harvest_tbls = {}
-        self.scrollWidget = QtWidgets.QWidget()
-        self.radio_group = QtWidgets.QButtonGroup()
+        self.scrollWidget = QWidget()
+        self.radio_group = QButtonGroup()
         self.overlapping_tables = {}
         self.layout_dict = {}
         self.top_right_panel = []
@@ -280,8 +283,8 @@ class Analyze:
 
         """
         if None in analyse_params['distinct_values']:
-            QtWidgets.QLabel('Include No Data:', qbox).move(380, 15)
-            cb_none = QtWidgets.QCheckBox('', qbox)
+            QLabel('Include No Data:', qbox).move(380, 15)
+            cb_none = QCheckBox('', qbox)
             cb_none.move(434, 34)
             cb_none.setChecked(True)
             analyse_params['distinct_values'].remove(None)
@@ -294,24 +297,24 @@ class Analyze:
         self.layout_dict[col]['checked'] = []
         self.layout_dict[col]['checked_items'] = []
         names = analyse_params['distinct_values']
-        model = QtGui.QStandardItemModel(len(names), 1)
-        firstItem = QtGui.QStandardItem("---- Select ----")
-        firstItem.setBackground(QtGui.QBrush(QtGui.QColor(200, 200, 200)))
+        model = QStandardItemModel(len(names), 1)
+        firstItem = QStandardItem("---- Select ----")
+        firstItem.setBackground(QBrush(QColor(200, 200, 200)))
         firstItem.setSelectable(False)
         model.setItem(0, 0, firstItem)
         name_text = ''
         for i, name in enumerate(names):
-            item = QtGui.QStandardItem(name)
+            item = QStandardItem(name)
             name_text += name + ' '
             item.setFlags(
-                QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
+                Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+            item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
             self.layout_dict[col]['checked'].append(name)
             self.layout_dict[col]['checked_items'].append(item)
             model.setItem(i + 1, 0, item)
-        param_label = QtWidgets.QLabel(name_text, self.top_right_panel[nbr])
+        param_label = QLabel(name_text, self.top_right_panel[nbr])
         param_label.move(10, 20)
-        QComb = QtWidgets.QComboBox(qbox)
+        QComb = QComboBox(qbox)
         QComb.setModel(model)
         QComb.move(83, 34)
         self.layout_dict[col]['model'] = model
@@ -331,8 +334,8 @@ class Analyze:
 
         """
         if None in analyse_params['distinct_values']:
-            QtWidgets.QLabel('Include No Data:', qbox).move(380, 15)
-            cb_none = QtWidgets.QCheckBox('', qbox)
+            QLabel('Include No Data:', qbox).move(380, 15)
+            cb_none = QCheckBox('', qbox)
             cb_none.move(434, 34)
             cb_none.setChecked(True)
             analyse_params['distinct_values'].remove(None)
@@ -341,17 +344,17 @@ class Analyze:
             self.layout_dict[col]['None'] = False
         if len(analyse_params['distinct_values']) == 0:
             analyse_params['distinct_values'] = [0, 1]
-        QtWidgets.QLabel('Min:', qbox).move(93, 34)
-        min_value = QtWidgets.QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
+        QLabel('Min:', qbox).move(93, 34)
+        min_value = QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(118, 32)
         min_value.setFixedWidth(80)
-        org_min = QtWidgets.QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
+        org_min = QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
         org_min.move(120, 15)
-        QtWidgets.QLabel('Max:', qbox).move(263, 34)
-        max_value = QtWidgets.QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
+        QLabel('Max:', qbox).move(263, 34)
+        max_value = QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
         max_value.move(295, 32)
         max_value.setFixedWidth(80)
-        org_max = QtWidgets.QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
+        org_max = QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
         org_max.move(292, 15)
         self.layout_dict[col]['type'] = 'max_min'
         self.layout_dict[col]['min'] = np.nanmin(analyse_params['distinct_values'])
@@ -361,11 +364,11 @@ class Analyze:
         self.layout_dict[col]['max_text'] = max_value
         self.layout_dict[col]['max_label_text'] = org_max
         if isfloat(max_value.text()):
-            param_label = QtWidgets.QLabel('Min: ' + str(
+            param_label = QLabel('Min: ' + str(
                 round(float(min_value.text()), 2)) + ' Max: ' + str(
                 round(float(max_value.text()), 2)), self.top_right_panel[nbr])
         else:
-            param_label = QtWidgets.QLabel(
+            param_label = QLabel(
                 'Min: ' + str(min_value.text()) + ' Max: ' + str(
                     max_value.text()), self.top_right_panel[nbr])
         param_label.move(10, 20)
@@ -400,11 +403,11 @@ class Analyze:
                 if name in name_text:
                     continue
                 i += 1
-                item = QtGui.QStandardItem(name)
+                item = QStandardItem(name)
                 name_text += name + ' '
                 item.setFlags(
-                    QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-                item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
+                    Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+                item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                 self.layout_dict[col]['checked'].append(name)
                 self.layout_dict[col]['checked_items'].append(item)
                 model.setItem(i, 0, item)
@@ -422,9 +425,9 @@ class Analyze:
                   'blue', 'red', 'green', 'blue', 'red', 'green', 'blue', 'red']
         #for key in mplib_colors.cnames.keys():
         #    colors.append(key)
-        scroll_area_layout = QtWidgets.QVBoxLayout()
-        constraint_area = QtWidgets.QWidget()
-        constraint_layout = QtWidgets.QVBoxLayout()
+        scroll_area_layout = QVBoxLayout()
+        constraint_area = QWidget()
+        constraint_layout = QVBoxLayout()
         first_radio = True
         harvest_nbr = 0
         nbr = -1
@@ -471,23 +474,23 @@ class Analyze:
                     self.layout_dict[table['index_col']]['harvest'].append(
                         self.overlapping_tables[key]['ha'])
                     ## set top right data basic data
-                    self.top_right_panel.append(QtWidgets.QGroupBox())
-                    self.top_right_panel[nbr].setMinimumSize(QtCore.QSize(30, 35))
+                    self.top_right_panel.append(QGroupBox())
+                    self.top_right_panel[nbr].setMinimumSize(QSize(30, 35))
                     self.top_right_panel[nbr].setStyleSheet("border:0px;")
-                    param_label = QtWidgets.QLabel(table['index_col'].replace('_', ' '), self.top_right_panel[nbr])
+                    param_label = QLabel(table['index_col'].replace('_', ' '), self.top_right_panel[nbr])
                     param_label.move(10, 5)
                     constraint_layout.addWidget(self.top_right_panel[nbr])
 
                     ## Set bottom group basic data
-                    qbox = QtWidgets.QGroupBox()
+                    qbox = QGroupBox()
                     qbox.setTitle(table['index_col'].replace('_', ' '))
-                    qbox.setMinimumSize(QtCore.QSize(100, 55))
+                    qbox.setMinimumSize(QSize(100, 55))
                     qbox.setStyleSheet('QWidget{color:' + colors[nbr] + '}')
                     scroll_area_layout.addWidget(qbox)
-                    QtWidgets.QLabel('Show:', qbox).move(10, 15)
-                    QtWidgets.QLabel('Limit:', qbox).move(50, 34)
+                    QLabel('Show:', qbox).move(10, 15)
+                    QLabel('Limit:', qbox).move(50, 34)
 
-                    self.cb.append(QtWidgets.QRadioButton('', qbox))
+                    self.cb.append(QRadioButton('', qbox))
                     if first_radio:
                         self.cb[nbr].setChecked(True)
                         first_radio = False
@@ -764,12 +767,12 @@ class Analyze:
         self.canvas = FigureCanvas(fig)
         self.dlg.mplvl.addWidget(self.canvas)
         self.canvas.draw()
-        model = QtGui.QStandardItemModel()
+        model = QStandardItemModel()
         model.setRowCount(len(filtered_data[0]))
         model.setColumnCount(3)
-        model.setHorizontalHeaderItem(0, QtGui.QStandardItem(self.column_investigated.replace('_', ' ')))
-        model.setHorizontalHeaderItem(1, QtGui.QStandardItem(self.tr('Average yield')))
-        model.setHorizontalHeaderItem(2, QtGui.QStandardItem(self.tr('Yield samples')))
+        model.setHorizontalHeaderItem(0, QStandardItem(self.column_investigated.replace('_', ' ')))
+        model.setHorizontalHeaderItem(1, QStandardItem(self.tr('Average yield')))
+        model.setHorizontalHeaderItem(2, QStandardItem(self.tr('Yield samples')))
         for i, m_yield in enumerate(filtered_data[0]):
             try:
                 current_value = filtered_data[1][i].replace("'", "")
@@ -780,11 +783,11 @@ class Analyze:
                     current_value = filtered_data[1][i]
             current_count = filtered_data[2][i]
             m_yield = round(m_yield, 2)
-            item1 = QtGui.QStandardItem()
+            item1 = QStandardItem()
             item1.setText(str(current_value))
-            item2 = QtGui.QStandardItem()
+            item2 = QStandardItem()
             item2.setText(str(m_yield))
-            item3 = QtGui.QStandardItem()
+            item3 = QStandardItem()
             item3.setText(str(current_count))
             model.setItem(i, 0, item1)
             model.setItem(i, 1, item2)

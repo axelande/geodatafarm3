@@ -15,8 +15,8 @@ from shapely import wkt
 import pyproj
 from shapely.ops import transform
 
-from PyQt5 import QtWidgets, QtCore
-from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication, QSizePolicy, QVBoxLayout, QFileDialog
 
 from ..widgets.find_shape_fields import FindShapeFieldWidget
 
@@ -48,7 +48,7 @@ class FindShapeField:
         if self.parent.test_mode:
             path = self.path
         else:
-            path, _ = QtWidgets.QFileDialog.getOpenFileName(None, self.parent.tr("Open a shapefile"), '',
+            path, _ = QFileDialog.getOpenFileName(None, self.parent.tr("Open a shapefile"), '',
                                                             "Shapefile (*.shp)")
         if path:
             self.path = path
@@ -116,10 +116,10 @@ class FindShapeField:
         polygon = wkt.loads(polygon_wkt)
         fig = self._plot_polygon_on_map(polygon)
         self.canvas = FigureCanvas(fig)
-        self.canvas.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         layout = self.fsfw.WShowField.layout()
         if layout is None:
-            layout = QtWidgets.QVBoxLayout()
+            layout = QVBoxLayout()
             self.fsfw.WShowField.setLayout(layout)
         else:
             for i in reversed(range(layout.count())):
@@ -144,5 +144,5 @@ class FindShapeField:
                 return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-        item.setCheckState(QtCore.Qt.Unchecked)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+        item.setCheckState(Qt.CheckState.Unchecked)

@@ -24,7 +24,7 @@ from typing import Self
 
 import os
 
-from PyQt5 import QtWidgets, uic
+from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(

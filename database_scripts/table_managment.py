@@ -1,5 +1,5 @@
 from typing import Self
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.core import QgsTask
 from qgis.PyQt.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
 # Import the code for the dialog
@@ -138,15 +138,15 @@ class TableManagement:
             if param_name[:3] == '...':
                 continue
             item_name = str(param_name)
-            testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
+            testcase_name = QCoreApplication.translate("qadashboard", item_name, None)
             item = QListWidgetItem(testcase_name, self.TMD.SAParams)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
             if param_name in checked_params:
-                item.setCheckState(QtCore.Qt.Checked)
+                item.setCheckState(Qt.CheckState.Checked)
             else:
-                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setCheckState(Qt.CheckState.Unchecked)
             self.params_in_list += 1
-        self.params_in_table = self.TMD.SAParams.findItems('', QtCore.Qt.MatchContains)
+        self.params_in_table = self.TMD.SAParams.findItems('', Qt.MatchFlag.MatchContains)
 
     def save_table(self):
         """Updates the attribute indexes that are checked in the list widget"""
@@ -232,12 +232,12 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 if str(name) in ['harrowing_manual', 'plowing_manual', 'manual']:
                     continue
                 item_name = schema + '.' + str(name)
-                testcase_name = QtCore.QCoreApplication.translate("qadashboard", item_name, None)
+                testcase_name = QCoreApplication.translate("qadashboard", item_name, None)
                 item = QListWidgetItem(testcase_name, self.TMD.SATables)
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+                item.setCheckState(Qt.CheckState.Unchecked)
                 self.tables_in_db += 1
-        self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
+        self.items_in_table = self.TMD.SATables.findItems('', Qt.MatchFlag.MatchContains)
 
     def remove_table_from_db(self: Self) -> None:
         """Removes the selected tables from the database"""
@@ -258,7 +258,7 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 qIndex = self.TMD.SATables.indexFromItem(item)
                 model.removeRow(qIndex.row())
                 self.tables_in_db -= 1
-        self.items_in_table = self.TMD.SATables.findItems('', QtCore.Qt.MatchContains)
+        self.items_in_table = self.TMD.SATables.findItems('', Qt.MatchFlag.MatchContains)
 
     def make_rows(self: Self) -> None:
         suc, s_table = self.check_multiple()

@@ -41,5 +41,7 @@ def test_collect_data_no_data(gdf):
     assert result[0] is True
     data_dict = result[1]
     for op in data_dict:
+        if op == "year":
+            continue  # The Year is an integer, skip it
         assert data_dict[op]["simple"] is False
         assert data_dict[op]["advanced"] is False

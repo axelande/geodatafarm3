@@ -3,7 +3,7 @@ import time
 import codecs
 import os
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
-from PyQt5 import QtCore
+
 from qgis.core import QgsMapLayer
 from os import R_OK
 import sys
@@ -34,8 +34,8 @@ class MultiEdit:
             QMessageBox.information(None, self.tr("Error"),
                                     self.tr("Please select a layer"))
             return
-        if self.layer.type() == QgsMapLayer.VectorLayer:
-            if self.layer.type() == QgsMapLayer.VectorLayer:
+        if self.layer.type() == QgsMapLayer.LayerType.VectorLayer:
+            if self.layer.type() == QgsMapLayer.LayerType.VectorLayer:
                 provider = self.layer.dataProvider()
                 fields = provider.fields()
                 self.MED.QLEvalore.setText("")
@@ -80,7 +80,7 @@ class MultiEdit:
                             False)
                         self.MED.QLEvalore.setEnabled(False)
                         self.MED.CBfields.setEnabled(False)
-        elif self.layer.type() != QgsMapLayer.VectorLayer:
+        elif self.layer.type() != QgsMapLayer.LayerType.VectorLayer:
             infoString = self.tr(
                 "<font color='red'> Layer <b>" + self.layer.name() + "</b> is not a vector layer</font>")
             self.MED.label.setText(infoString)

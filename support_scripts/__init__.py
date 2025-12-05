@@ -27,7 +27,7 @@ class TR:
         return QCoreApplication.translate(self.class_name, message)
 
 
-def check_text(text: str) -> str:
+def check_text(text: str, allow_first_digit: bool=False) -> str:
     """Checks that the text only contains ascii letters and numbers
 
     Parameters
@@ -42,6 +42,8 @@ def check_text(text: str) -> str:
     only_char = ''
     for i, letter in enumerate(text):
         if letter in ascii_letters:
+            only_char += letter
+        elif allow_first_digit and i == 0 and letter in str_digits:
             only_char += letter
         elif i > 0 and letter in str_digits:
             only_char += letter

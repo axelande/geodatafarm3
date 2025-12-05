@@ -1,7 +1,7 @@
 import os
 
-from qgis.PyQt.QtWidgets import QMessageBox, QLineEdit, QLabel
-from PyQt5 import QtGui, QtWidgets
+from qgis.PyQt.QtWidgets import QMessageBox, QLineEdit, QLabel, QMessageBox
+from qgis.PyQt.QtGui import QStandardItemModel
 import pytest
 
 from ..GeoDataFarm import GeoDataFarm
@@ -95,7 +95,6 @@ def test_check_consistency_only_harvest_returns_false(gdf: GeoDataFarm, monkeypa
 
 def test_default_layout_populates_layout_dict_and_panels(gdf, monkeypatch):
     # Patch QMessageBox to avoid popups if any error occurs
-    from qgis.PyQt.QtWidgets import QMessageBox
     monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: None)
     # Use real tables for a valid overlap
     names = [["plant", "test_field_plant_2023_04_15"], ["harvest", "test_field_harvest_2023_09_15"]]
@@ -116,10 +115,10 @@ def test_update_layout_min_max_and_checked(gdf):
         'type': 'max_min',
         'min': 10,
         'max': 20,
-        'min_text': QtWidgets.QLineEdit("10"),
-        'min_label_text': QtWidgets.QLabel("10"),
-        'max_text': QtWidgets.QLineEdit("20"),
-        'max_label_text': QtWidgets.QLabel("20")
+        'min_text': QLineEdit("10"),
+        'min_label_text': QLabel("10"),
+        'max_text': QLineEdit("20"),
+        'max_label_text': QLabel("20")
     }
     # Simulate new analyse_params with a lower min and higher max
     analyse_params_num = {'distinct_values': [5, 10, 15, 25], 'distinct_count': [1, 1, 1, 1]}
@@ -128,8 +127,8 @@ def test_update_layout_min_max_and_checked(gdf):
     assert analyse.layout_dict[col_num]['max'] == 25
     # Checked column setup
     col_str = "crop_type"
-    model = QtGui.QStandardItemModel(0, 1)
-    param_label = QtWidgets.QLabel()
+    model = QStandardItemModel(0, 1)
+    param_label = QLabel()
     analyse.layout_dict[col_str] = {
         'type': 'checked',
         'checked': ['A'],

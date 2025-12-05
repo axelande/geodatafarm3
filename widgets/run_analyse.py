@@ -25,7 +25,7 @@ from typing import Self
 import os
 import io
 import csv
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
+from qgis.PyQt import QtWidgets, uic, QtCore, QtGui
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'Run_analyse_base.ui'))

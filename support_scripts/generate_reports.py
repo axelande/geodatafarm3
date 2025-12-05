@@ -290,11 +290,11 @@ class RapportGen:
             return
         operation_dict = values[1]
         cur_date = date.today().isoformat()
-        growing_year = self.dw.DEReportYear.text()
+        growing_year = operation_dict['year']
         doc = MyDocTemplate(self.report_name, self.plugin_dir, growing_year, cur_date)
         story = []
         field_dict = {}
-        for field in self.db.execute_and_return('select field_name from fields'):
+        for field in self.db.execute_and_return('select field_name from fields order by field_name'):
             field = field[0]
             if field is None:
                 QMessageBox.information(None, self.tr('Error'),
@@ -334,13 +334,21 @@ class RapportGen:
                         temp_row.append(col)
                     field_dict[row[field_col].text]['tables'].append(temp_row)
             if operation_dict[operation]['advanced']:
-                if self.tr('Field') not in operation_dict[operation]['adv_heading']:
-                    continue
-                field_col = operation_dict[operation]['adv_heading'].index(self.tr('Field'))
                 data_found = True
-                operation_dict[operation]['adv_heading'][field_col] = self.tr('Operation')
-                head_row = operation_dict[operation]['adv_heading']
-                for row in operation_dict[operation]['advance_dat']:
+                if isinstance(operation_dict[operation]['adv_heading'][0], list):
+                    head_row = operation_dict[operation]['adv_heading'][0]
+                    if self.tr('Field') not in head_row:
+                        continue
+                    operation_dict[operation]['adv_heading'][0][field_col] = self.tr('Operation')
+                else:
+                    head_row = operation_dict[operation]['adv_heading']
+                    if self.tr('Field') not in head_row:
+                        continue
+                    field_col = head_row.index(self.tr('Field'))
+                    operation_dict[operation]['adv_heading'][field_col] = self.tr('Operation')
+                for i, row in enumerate(operation_dict[operation]['advance_dat']):
+                    if isinstance(operation_dict[operation]['adv_heading'][0], list):
+                        head_row = operation_dict[operation]['adv_heading'][i]
                     field_dict[row[field_col].text]['headings'].append(head_row)
                     temp_row = []#[None] * len(field_dict[row[field_col].text]['headings'])
                     for i, col in enumerate(row):
@@ -475,8 +483,11 @@ from {schema}.{table}"""
             if 'yield' in meta_data.keys():
                 return_list.append(retrieve_avg(meta_data['yield'], meta_data['tbl'], data['year'], schema))
             if 'total_yield' in meta_data.keys():
-                if meta_data['total_yield'][:2] == 'c_':
-                    _total_yield_ = meta_data['total_yield'][2:]
+                if meta_data['total_yield'] is not None:
+                    if meta_data['total_yield'][:2] == 'c_':
+                        _total_yield_ = meta_data['total_yield'][2:]
+                    else:
+                        _total_yield_ = ''
                 else:
                     _total_yield_ = ''
                 return_list.append(_total_yield_)
@@ -495,9 +506,10 @@ from {schema}.{table}"""
             if task != 'debug':
                 task.setProgress(5)
             sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety from plant.manual 
-            where table_ = 'None' """
+            where table_ = 'None'"""
             if data['year'] is not None:
                 sql += """and extract(year from date_) = {y}""".format(y=data['year'])
+            sql +=" ORDER BY field, date_"
             simple_plant_data = data['db'].execute_and_return(sql)
             if len(simple_plant_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety')]
@@ -517,8 +529,8 @@ from {schema}.{table}"""
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
+            sql += " ORDER BY field, date_text"
             planting_data_advanced = data['db'].execute_and_return(sql)
-            print(planting_data_advanced)
             if len(planting_data_advanced) > 0:
                 adv_data = []
                 for date_, field, crop, variety, table_ in planting_data_advanced:
@@ -537,6 +549,7 @@ from {schema}.{table}"""
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
+            sql += " ORDER BY field, date_"
             if task != 'debug':
                 task.setProgress(15)
             simple_ferti_data = data['db'].execute_and_return(sql)
@@ -557,6 +570,7 @@ from {schema}.{table}"""
             where table_ <> 'None'"""
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(y=data['year'])
+            sql += " ORDER BY field, date_text"
             fertilizing_data_advanced = data['db'].execute_and_return(sql)
             if len(fertilizing_data_advanced) > 0:
                 adv_data = []
@@ -574,10 +588,11 @@ from {schema}.{table}"""
             if task != 'debug':
                 task.setProgress(25)
             sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate from spray.manual 
-            where table_ = 'None' """
+            where table_ = 'None'"""
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
+            sql += " ORDER BY field, date_"
             simple_data = data['db'].execute_and_return(sql)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Rate')]
@@ -597,6 +612,7 @@ from {schema}.{table}"""
             spraying_data_advanced = data['db'].execute_and_return(sql)
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y}""".format(y=data['year'])
+            sql += " ORDER BY field, date_text"
             if len(spraying_data_advanced) > 0:
                 adv_data = []
                 for date_, field, crop, variety, rate, table_ in spraying_data_advanced:
@@ -616,6 +632,7 @@ from {schema}.{table}"""
             where table_ = 'None' """
             if data['year'] is not None:
                 sql += """and extract(year from date_) = {y}""".format(y=data['year'])
+            sql += " ORDER BY field, date_"
             simple_data = data['db'].execute_and_return(sql)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Total yield'), data['tr']('Yield (kg/ha)')]
@@ -634,16 +651,22 @@ from {schema}.{table}"""
             if data['year'] is not None:
                 sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
                     y=data['year'])
+            sql += " ORDER BY field, date_text"
             data_advanced = data['db'].execute_and_return(sql)
             if len(data_advanced) > 0:
                 adv_data = []
+                adv_heading = []
                 for date_, field, crop, yield_, total_yield, table_ in data_advanced:
                     dat = {'date': date_, 'field': field, 'crop': crop, 'yield': yield_,
                            'tbl': table_, 'total_yield': total_yield}
+                    if '_t_' in yield_:
+                        yield_heading = data['tr']('Yield (t/ha)')
+                    else:
+                        yield_heading = data['tr']('Yield (kg/ha)')
                     [_date_, field, crop, _yield_, _total_yield_] = get_data(dat, 'harvest')
                     adv_data.append([_date_, field, crop, _yield_, _total_yield_])
+                    adv_heading.append([data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), yield_heading, data['tr']('Total Yield')])
                 if len(adv_data) > 0:
-                    adv_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Yield (kg/ha)'), data['tr']('Total Yield')]
                     data_dict['harvesting']['advanced'] = True
                     data_dict['harvesting']['advance_dat'] = adv_data
                     data_dict['harvesting']['adv_heading'] = adv_heading
@@ -653,6 +676,7 @@ from {schema}.{table}"""
             sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth from other.plowing_manual"""
             if data['year'] is not None:
                 sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
+            sql += " ORDER BY field, date_"
             simple_data = data['db'].execute_and_return(sql)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Depth')]
@@ -721,6 +745,7 @@ from {schema}.{table}"""
                 data_dict['soil']['adv_heading'] = adv_heading
             if task != 'debug':
                 task.setProgress(95)
+            data_dict['year'] = data['year']
             return [True, data_dict]
         except Exception as e:
             return [False, e, traceback.format_exc()]

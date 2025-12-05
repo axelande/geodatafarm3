@@ -176,7 +176,7 @@ class CreateLayer:
                                                      str(distinct_values[i]) + ' - ' + str(distinct_values[i + 1]),
                                                      QColor(int(red*255),int(green*255), int(blue*255), 128) ) )
             renderer = QgsGraduatedSymbolRenderer(field, range_list)
-            renderer.setMode(QgsGraduatedSymbolRenderer.Custom )
+            renderer.setMode(QgsGraduatedSymbolRenderer.Mode.Custom )
         else:
             categories = []
             for i in range(len(distinct_values)):
@@ -301,7 +301,7 @@ class CreateLayer:
                                             int(green * 255),
                                             int(blue * 255), 128)))
         renderer = QgsGraduatedSymbolRenderer(field, range_list)
-        renderer.setMode(QgsGraduatedSymbolRenderer.Custom)
+        renderer.setMode(QgsGraduatedSymbolRenderer.Mode.Custom)
         layer.setRenderer(renderer)
         return layer
 

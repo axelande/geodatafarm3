@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import QDate
 import pytest
 
 from ..database_scripts.db import DB
@@ -17,7 +17,7 @@ def test_create_new_farm(gdf):
     cf.CF.pass_word.setText('pytest_pass')
     cf.CF.farm_name.setText('pytest_farm')
     cf.CF.email_field.setText('pytest@test.com')
-    cf.CF.DEFirstYear.setDate(QtCore.QDate.fromString('2020-01-01', 'yyyy-MM-dd'))
+    cf.CF.DEFirstYear.setDate(QDate.fromString('2020-01-01', 'yyyy-MM-dd'))
     suc1 = cf.create_new_farm()
     suc2 = gdf.db.execute_sql(f'GRANT ALL ON DATABASE pytest_farm TO {RESET_USER};', return_failure=True)
     suc3 = gdf.db.execute_sql(f'GRANT pytest_user TO {RESET_USER} WITH ADMIN OPTION;', return_failure=True)

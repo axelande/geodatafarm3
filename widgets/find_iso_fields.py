@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Self
 import os
-from PyQt5 import QtWidgets, uic
+from qgis.PyQt import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'findIsoFields.ui'))

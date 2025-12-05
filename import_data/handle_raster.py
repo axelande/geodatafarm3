@@ -124,7 +124,7 @@ class ImportRaster:
         """
         if not successful:
             QgsMessageLog.logMessage('Task finished unsucessfully',
-                                     MESSAGE_CATEGORY, Qgis.Warning)
+                                     MESSAGE_CATEGORY, Qgis.MessageLevel.Warning)
         else:
             #task = QgsTask.fromFunction('Importing data to storage',
             #                            self.import_to_db,

@@ -4,7 +4,8 @@ if TYPE_CHECKING:
 import numpy as np
 from operator import xor
 import pandas as pd
-from PyQt5 import QtWidgets, QtCore
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QTableWidgetItem, QComboBox, QHeaderView
 from qgis.core import QgsTask
 
 from ..database_scripts.db import DB
@@ -24,7 +25,7 @@ class Iso11783:
         self.populate = parent_widget.populate
         self.parent = parent_widget
         self.data_type = type_
-        self.sender = QtWidgets.QWidget().sender
+        self.sender = QWidget().sender
         self.IXB = ImportXmlBin()
         self.py_agri = None
         translate = TR('ImportXmlBin')
@@ -77,7 +78,7 @@ class Iso11783:
             self.add_to_canvas(values[1], values[2], values[3])
         else:
              if values[1]:
-                QtWidgets.QMessageBox.information(None, self.tr("Warning:"),
+                QMessageBox.information(None, self.tr("Warning:"),
                                             values[2])
         self.added_nbrs += 1
         if self.added_nbrs == self.tasks_to_run:
@@ -100,8 +101,8 @@ class Iso11783:
         if path is not False:
             pass
         else:
-            path = QtWidgets.QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
-                                                              QtWidgets.QFileDialog.ShowDirsOnly)
+            path = QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
+                                                              QFileDialog.ShowDirsOnly)
         if path != '':
             self.initiate_pyAgriculture(path)
             self.populate_first_table()      
@@ -153,7 +154,7 @@ UNION """
             sql = sql[:-6] + ") select field_name from start_sel group by field_name"
             fields_ = self.db.execute_and_return(sql)
             if len(fields_) == 0 and not self.parent.test_mode:
-                QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+                QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('At least one of the tasked was placed outside the field at approximate: ') + 
                                                       f'{round(lat, 4)}, {round(lon, 4)}')
             for field in fields_:
@@ -168,16 +169,16 @@ UNION """
         self.IXB.TWISODataAll.setRowCount(len(task_names))
         self.IXB.TWISODataAll.setColumnCount(3)
         self.IXB.TWISODataAll.setHorizontalHeaderLabels([self.tr('Get more info'), self.tr('Task name'), self.tr('File name')])
-        self.IXB.TWISODataAll.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.IXB.TWISODataAll.setSelectionBehavior(QAbstractItemView.SelectRows)
         for i, row in enumerate(task_names):
-            item1 = QtWidgets.QTableWidgetItem('Include')
-            item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item1.setCheckState(QtCore.Qt.Unchecked)
+            item1 = QTableWidgetItem('Include')
+            item1.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+            item1.setCheckState(Qt.CheckState.Unchecked)
             self.checkboxes1.append([item1, row, file_names[i]])
-            item2 = QtWidgets.QTableWidgetItem(row)
-            item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
-            item3 = QtWidgets.QTableWidgetItem(file_names[i])
-            item3.setFlags(xor(item3.flags(), QtCore.Qt.ItemIsEditable))
+            item2 = QTableWidgetItem(row)
+            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
+            item3 = QTableWidgetItem(file_names[i])
+            item3.setFlags(xor(item3.flags(), Qt.ItemFlag.ItemIsEditable))
             self.IXB.TWISODataAll.setItem(i, 0, item1)
             self.IXB.TWISODataAll.setItem(i, 1, item2)
             self.IXB.TWISODataAll.setItem(i, 2, item3)
@@ -192,7 +193,7 @@ UNION """
             if row[0].checkState() == 2:
                 self.tasks_to_include.append(row[2])
         if len(self.tasks_to_include) == 0:
-            QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+            QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('You need to select at least one of the tasks'))
             return
         self.py_agri.tasks = []
@@ -211,7 +212,7 @@ UNION """
                                      most_importants)
             self.populate2()
 
-    def update_time_stamp(self, item: QtWidgets.QTableWidgetItem) -> None:
+    def update_time_stamp(self, item: QTableWidgetItem) -> None:
         """Updates the time_stamp in self.py_agri.tasks when the table is edited."""
         if item.column() == 1:  # Assuming the 'time_stamp' column is at index 1
             row = item.row()
@@ -236,28 +237,28 @@ UNION """
         self.IXB.TWISODataSelect.setHorizontalHeaderLabels([self.tr('To include'), self.tr('Date'), self.tr('Field'),
                                                             self.tr('Crops')])
         header = self.IXB.TWISODataSelect.horizontalHeader()       
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        self.IXB.TWISODataSelect.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.IXB.TWISODataSelect.setSelectionBehavior(QAbstractItemView.SelectRows)
         j = -1  # How may checkboxes that is added
         for i, row in enumerate(task_names.values()):
             if len(row) == 0:
                 continue
             j += 1
-            item1 = QtWidgets.QTableWidgetItem('Include')
-            item1.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item1.setCheckState(QtCore.Qt.Checked)
+            item1 = QTableWidgetItem('Include')
+            item1.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+            item1.setCheckState(Qt.CheckState.Checked)
             self.checkboxes2.append([j, j, item1])
-            item2 = QtWidgets.QTableWidgetItem(row[0][1])
-            item2.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable)
+            item2 = QTableWidgetItem(row[0][1])
+            item2.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable)
             field_column = RadioComboBox()
             self.combo.append(field_column)
             for field, _ in row:
                 field_column.addItem(field)
             field_column.setCurrentIndex(1)
-            crops = QtWidgets.QComboBox()
+            crops = QComboBox()
             self.populate.reload_crops(crops)
             self.IXB.TWISODataSelect.setItem(j, 0, item1)
             self.IXB.TWISODataSelect.setItem(j, 1, item2)
@@ -289,8 +290,8 @@ UNION """
                     items_to_add.append(f'{check_text(item.text())}')
         for i, item in enumerate(items_to_add):
             self.IXB.TWtoParam.setRowCount(rows_in_table + i + 1)
-            item1 = QtWidgets.QTableWidgetItem(item)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1 = QTableWidgetItem(item)
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.IXB.TWtoParam.setItem(i + rows_in_table, 0, item1)
         self.IXB.PBInsert.setEnabled(True)
 
@@ -298,7 +299,7 @@ UNION """
         """Removes the selected columns from the list of fields that should be
         treated as "special" in the database"""
         if self.IXB.TWtoParam.selectedItems() is None:
-            QtWidgets.QMessageBox.information(None, self.tr("Error:"), self.tr('No row selected!'))
+            QMessageBox.information(None, self.tr("Error:"), self.tr('No row selected!'))
             return
         for item in self.IXB.TWtoParam.selectedItems():
             self.IXB.TWtoParam.removeRow(item.row())
@@ -335,32 +336,32 @@ UNION """
         # Populate the table with data
         self.IXB.TWColumnNames.setRowCount(len(valid_columns))
         self.unit_boxes = {}
-        self.IXB.TWColumnNames.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.IXB.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         for i, row in enumerate(valid_columns):
-            item1 = QtWidgets.QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1 = QTableWidgetItem(row)
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.IXB.TWColumnNames.setItem(i, 0, item1)
 
             try:
                 mean = str(round(self.tasks[0][row].mean(), 2))
             except:
                 mean = ''
-            item2 = QtWidgets.QTableWidgetItem(mean)
+            item2 = QTableWidgetItem(mean)
             self.IXB.TWColumnNames.setItem(i, 1, item2)
 
             try:
                 _min = str(self.tasks[0][row].min())
             except:
                 _min = ''
-            item3 = QtWidgets.QTableWidgetItem(_min)
+            item3 = QTableWidgetItem(_min)
             self.IXB.TWColumnNames.setItem(i, 2, item3)
 
             try:
                 _max = str(self.tasks[0][row].max())
             except:
                 _max = ''
-            item4 = QtWidgets.QTableWidgetItem(_max)
+            item4 = QTableWidgetItem(_max)
             self.IXB.TWColumnNames.setItem(i, 3, item4)
 
             unit = self.tasks[0].attrs['unit_row'][i]
@@ -371,7 +372,7 @@ UNION """
             unit_col.currentTextChanged.connect(self.change_unit_type)
             self.IXB.TWColumnNames.setCellWidget(i, 4, unit_col)
 
-            item6 = QtWidgets.QTableWidgetItem("1")
+            item6 = QTableWidgetItem("1")
             self.IXB.TWColumnNames.setItem(i, 5, item6)
 
     @staticmethod
@@ -485,20 +486,20 @@ UNION """
                 dates.append(self.IXB.TWISODataSelect.item(tbl_idx, 1).text())
                 field = self.checkboxes3[check_idx].currentText()
                 if field == self.tr('--- Select field ---'):
-                    QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+                    QMessageBox.information(None, self.tr("Error:"),
                                                       self.tr('You need to select a crop'))
                     return [False]
                 fields.append(field)
                 crop = self.checkboxes4[check_idx].currentText()
                 if crop == self.tr('--- Select crop ---'):
-                    QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+                    QMessageBox.information(None, self.tr("Error:"),
                                                       self.tr('You need to select a crop'))
                     return [False]
                 crops.append(crop)
                 focus_cols.append(focus_col)
                 idxs.append(tbl_idx)
         if not found:
-            QtWidgets.QMessageBox.information(None, self.tr("Error:"),
+            QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('You need to select at least one of the tasks'))
             return [False]
         return [True, fields, crops, dates, focus_cols, idxs]
@@ -520,7 +521,7 @@ UNION """
                 value = float(scale_f)
                 df[col] = df[col] * value
             except ValueError:
-                QtWidgets.QMessageBox(None, self.tr('Error'), self.tr('The number must only contain numbers and .'))
+                QMessageBox(None, self.tr('Error'), self.tr('The number must only contain numbers and .'))
                 return [False]
             except TypeError:
                 pass

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     import qgis._core
     import qgis.core.additions.qgstaskwrapper
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from psycopg2 import IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
@@ -249,8 +249,8 @@ class AddField:
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWFields)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-        item.setCheckState(QtCore.Qt.Unchecked)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+        item.setCheckState(Qt.CheckState.Unchecked)
         self.defined_field = name
         self.view_fields()
         if not res[0]:

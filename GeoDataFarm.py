@@ -34,10 +34,10 @@ else:
     sys.path.append('/usr/lib/qgis')
     sys.path.append('/usr/share/qgis/python/plugins')
 from qgis.core import QgsApplication
-from PyQt5 import QtGui
+
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
-from qgis.PyQt.QtGui import QIcon, QImage
+from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 from psycopg2 import IntegrityError
 import os
 
@@ -490,7 +490,7 @@ class GeoDataFarm:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
                 img = QImage(icon_path)
-                pimg = QtGui.QPixmap.fromImage(img).scaled(91, 91,
+                pimg = QPixmap.fromImage(img).scaled(91, 91,
                                                                 QtCore.Qt.KeepAspectRatio)
                 self.dock_widget.LIcon.setPixmap(pimg)
             if self.get_database_connection():

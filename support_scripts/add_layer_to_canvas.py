@@ -1,5 +1,5 @@
 from qgis.core import QgsProject
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QApplication, QListWidgetItem
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..widgets.add_to_canvas import AddToCanvas
@@ -85,13 +85,13 @@ class AddLayerToCanvas:
             item_name = tbl_name + '_' + target_field
             _name = QApplication.translate("qadashboard", item_name, None)
             item = QListWidgetItem(_name, self.dlg.LWAttributes)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
+            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+            item.setCheckState(Qt.CheckState.Unchecked)
 
     def add_selected(self):
         """All checked items in the ListWidget is added to the canvas. Afterwards the button
         becomes disconnected and this widget closes"""
-        lw = self.dlg.LWAttributes.findItems('', QtCore.Qt.MatchContains)
+        lw = self.dlg.LWAttributes.findItems('', Qt.MatchFlag.MatchContains)
         if len(self.parameters) == 0:
             self.get_tables()
         for i, item in enumerate(lw):

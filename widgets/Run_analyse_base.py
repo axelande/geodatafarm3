@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtWidgets
+from qgis.PyQt import QtWidgets, QtCore
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

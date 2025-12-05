@@ -1,7 +1,6 @@
 import sys
 import os
 
-from PyQt5 import QtWidgets
 import pytest
 from shapely.geometry import Polygon
 from shapely import wkt

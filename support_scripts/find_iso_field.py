@@ -13,8 +13,8 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import pyproj
-from PyQt5 import QtWidgets, QtCore
-from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication, QSizePolicy, QVBoxLayout, QFileDialog, QLabel
 from qgis.PyQt.QtGui import QMovie
 from psycopg2 import IntegrityError, InternalError
 from qgis.core import QgsTask
@@ -91,7 +91,7 @@ class FindIsoField:
         if self.parent.test_mode:
             path = self.path
         else:
-            path = QtWidgets.QFileDialog.getOpenFileName(None, self.parent.tr("Open a taskdata"), '',
+            path = QFileDialog.getOpenFileName(None, self.parent.tr("Open a taskdata"), '',
                                                               "Taskdata (TASKDATA.xml taskdata.xml)")[0]
         if path != '':
             self._populate_field_table(path)
@@ -168,13 +168,13 @@ class FindIsoField:
         """Show a spinning/loading animation in the canvas area."""
         layout = self.fifw.WShowField.layout()
         if layout is None:
-            layout = QtWidgets.QVBoxLayout()
+            layout = QVBoxLayout()
             self.fifw.WShowField.setLayout(layout)
         else:
             self.clear_layout()
         # Create and add the loading animation
         print('run')
-        self.loading_label = QtWidgets.QLabel()
+        self.loading_label = QLabel()
         gif_path = os.path.join(os.path.dirname(__file__),"..", "img", "loading.gif")
         if not os.path.exists(gif_path):
             self.loading_label.setText("Loading...")
@@ -339,12 +339,12 @@ class FindIsoField:
         self.clear_layout()
         fig = self._plot_polygon_on_map(polygon)
         self.canvas = FigureCanvas(fig)  # Link the figure to the FigureCanvas
-        self.canvas.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # Add the canvas to the layout
         layout = self.fifw.WShowField.layout()
         if layout is None:
-            layout = QtWidgets.QVBoxLayout()
+            layout = QVBoxLayout()
             self.fifw.WShowField.setLayout(layout)
         else:
             # Clear the existing layout
@@ -390,5 +390,5 @@ class FindIsoField:
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-        item.setCheckState(QtCore.Qt.Unchecked)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+        item.setCheckState(Qt.CheckState.Unchecked)

@@ -4,8 +4,7 @@ import os
 
 from osgeo import osr, ogr
 from psycopg2 import ProgrammingError
-from PyQt5 import QtCore
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog, QComboBox
 from qgis.core import QgsProject, QgsVectorLayer
@@ -109,7 +108,7 @@ class CreateGuideFile:
                                             exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'")
             # self.CGF.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
             item1 = QTableWidgetItem('{row}'.format(row=row))
-            item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
             self.CGF.TWColumnNames.setItem(i, 0, item1)
             popup_menu = QComboBox()
             popup_menu.addItems(attributes)
@@ -127,11 +126,11 @@ class CreateGuideFile:
         row_count += 1
         self.CGF.TWSelected.setRowCount(row_count)
         item1 = QTableWidgetItem(self.attributes[row]['tbl'])
-        item1.setFlags(xor(item1.flags(), QtCore.Qt.ItemIsEditable))
+        item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
         item2 = QTableWidgetItem(self.attributes[row]['attributes'][index])
-        item2.setFlags(xor(item2.flags(), QtCore.Qt.ItemIsEditable))
+        item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
         item3 = QTableWidgetItem(f'[{len(self.selected)}]')
-        item3.setFlags(xor(item3.flags(), QtCore.Qt.ItemIsEditable))
+        item3.setFlags(xor(item3.flags(), Qt.ItemFlag.ItemIsEditable))
         self.CGF.TWSelected.setItem(row_count - 1, 0, item1)
         self.CGF.TWSelected.setItem(row_count - 1, 1, item2)
         self.CGF.TWSelected.setItem(row_count - 1, 2, item3)
