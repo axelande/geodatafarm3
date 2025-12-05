@@ -1,11 +1,11 @@
 # GeoDataFarm
 
-This is QGIS plugin, intended to be used by farmers that wants to analyze their field data. The first version of the plugin was released to [plugins.qgis.org](https://plugins.qgis.org) in 2018 and since then has many updates been added. The plugin is 100% free and the development is performed as an active hobby project.
+This is QGIS plugin, intended to be used by farmers that wants to analyze their field data. The first version of the plugin was released to [plugins.qgis.org](https://plugins.qgis.org/plugins/geodatafarm/) in 2018 and since then has many updates been added. The plugin is 100% free and the development is performed as an active hobby project. If you like the work that I'm doing considering to [Sponsor me](https://github.com/sponsors/axelande).
 
 For guidance on the usage of the plugin please have a look at [geodatafarm.com](http://www.geodatafarm.com) 
 
 ## Contributions
-To contribute to the project please fork the repository and create Pull requests with suggested updates/ new features. If possible try to create requests as simple as possible regarding only one topic. Also before creating any pull requests make sure that all tests passes (`pytest tests`)
+To contribute to the project please fork the repository and create Pull requests with suggested updates / new features. If possible try to create requests as simple as possible regarding only one topic. Also before creating any pull requests make sure that all tests passes (`pytest tests`)
 
 ### How to setup development environment
 If you are running on Windows and want to help and contribute to the project it could be a good idea to download `VSCode`. I also recommend to use the Network installer to install QGIS. If you have installed the network installer it is recommended to add a `VSCode.bat` in the `C:\OSGeo4W\etc\ini` folder. The content of the `VSCode.bat` could look something like this:
