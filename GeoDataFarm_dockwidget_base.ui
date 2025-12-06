@@ -73,6 +73,42 @@
             <property name="sizeConstraint">
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="PBConnect2Farm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Connect to an
+ exciting farm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QPushButton" name="PBViewFields">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View fields</string>
+              </property>
+             </widget>
+            </item>
             <item row="5" column="3">
              <widget class="QLabel" name="Label3_2">
               <property name="minimumSize">
@@ -98,6 +134,54 @@
               </property>
              </widget>
             </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="PBAddNewFarm">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>Create new farm</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="9" column="0">
+             <widget class="QPushButton" name="PBAddShapeField">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add fields from 
+a shape file</string>
+              </property>
+             </widget>
+            </item>
             <item row="7" column="0">
              <widget class="QPushButton" name="PBAddField">
               <property name="maximumSize">
@@ -110,9 +194,6 @@
                <string>Add field manually</string>
               </property>
              </widget>
-            </item>
-            <item row="1" column="4">
-             <widget class="QLabel" name="LIcon"/>
             </item>
             <item row="2" column="4" rowspan="2">
              <widget class="QPushButton" name="PBWebbpage">
@@ -135,8 +216,8 @@ http://www.geodatafarm.com</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="2">
-             <widget class="QPushButton" name="PBAddCrop">
+            <item row="10" column="0">
+             <widget class="QPushButton" name="PBRemoveField">
               <property name="maximumSize">
                <size>
                 <width>130</width>
@@ -144,26 +225,17 @@ http://www.geodatafarm.com</string>
                </size>
               </property>
               <property name="text">
-               <string>Add crop</string>
+               <string>Remove field </string>
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QPushButton" name="PBViewFields">
-              <property name="minimumSize">
-               <size>
-                <width>130</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="6" column="3" rowspan="6">
+             <widget class="QListWidget" name="LWCrops">
               <property name="maximumSize">
                <size>
-                <width>130</width>
+                <width>250</width>
                 <height>16777215</height>
                </size>
-              </property>
-              <property name="text">
-               <string>View fields</string>
               </property>
              </widget>
             </item>
@@ -186,8 +258,8 @@ http://www.geodatafarm.com</string>
               </property>
              </widget>
             </item>
-            <item row="10" column="0">
-             <widget class="QPushButton" name="PBRemoveField">
+            <item row="7" column="2">
+             <widget class="QPushButton" name="PBAddCrop">
               <property name="maximumSize">
                <size>
                 <width>130</width>
@@ -195,7 +267,7 @@ http://www.geodatafarm.com</string>
                </size>
               </property>
               <property name="text">
-               <string>Remove field </string>
+               <string>Add crop</string>
               </property>
              </widget>
             </item>
@@ -215,131 +287,28 @@ http://www.geodatafarm.com</string>
               </property>
              </widget>
             </item>
-            <item row="11" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+            <item row="1" column="4">
+             <widget class="QLabel" name="LIcon"/>
             </item>
-            <item row="2" column="0">
-             <widget class="QPushButton" name="PBConnect2Farm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
+            <item row="6" column="2">
+             <widget class="QLineEdit" name="LECropName">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Connect to an
- exciting farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="PBAddNewFarm">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>Create new farm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" rowspan="2" colspan="3">
-             <widget class="QLabel" name="label_5">
               <property name="minimumSize">
                <size>
-                <width>500</width>
-                <height>160</height>
+                <width>130</width>
+                <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>500</width>
-                <height>160</height>
+                <width>130</width>
+                <height>20</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:700;&quot;&gt;Welcome to GeoDataFarm!&lt;/span&gt;&lt;br/&gt;GeoDataFarm is a QGIS plugin designed to help farmers visualize and analyze field data. You can load position logs from farm equipment, and if yield logs are available, analyze their variation across the field.&lt;/p&gt;&lt;p&gt;The plugin offers advanced functionality, each step is explained in detail at &lt;a href=&quot;http://www.geodatafarm.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#003e92;&quot;&gt;www.geodatafarm.com&lt;/span&gt;&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;If you have questions, encounter errors, or have suggestions, please submit an issue on the &lt;a href=&quot;https://github.com/axelande/geodatafarm3&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#003e92;&quot;&gt;github.com/axelande/geodatafarm3&lt;/span&gt;&lt;/a&gt; or email me at geodatafarm@gmail.com. If you find the plugin useful, consider sponsoring the project on GitHub to support ongoing development.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::AutoText</enum>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="openExternalLinks">
-               <bool>true</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::NoTextInteraction</set>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="3" rowspan="6">
-             <widget class="QListWidget" name="LWCrops">
-              <property name="maximumSize">
-               <size>
-                <width>250</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0" colspan="2">
-             <widget class="QLabel" name="LFarmName">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedKingdom"/>
-              </property>
-              <property name="text">
-               <string>No farm database created</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -368,25 +337,28 @@ http://www.geodatafarm.com</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="2">
-             <widget class="QLineEdit" name="LECropName">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+            <item row="4" column="0" colspan="2">
+             <widget class="QLabel" name="LFarmName">
               <property name="minimumSize">
                <size>
-                <width>130</width>
-                <height>0</height>
+                <width>0</width>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>130</width>
-                <height>20</height>
+                <width>16777215</width>
+                <height>25</height>
                </size>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
+              <property name="text">
+               <string>No farm database created</string>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -404,17 +376,45 @@ isoxml taskdata</string>
               </property>
              </widget>
             </item>
-            <item row="9" column="0">
-             <widget class="QPushButton" name="PBAddShapeField">
-              <property name="maximumSize">
+            <item row="1" column="1" rowspan="2" colspan="3">
+             <widget class="QLabel" name="label_5">
+              <property name="minimumSize">
                <size>
-                <width>130</width>
-                <height>16777215</height>
+                <width>500</width>
+                <height>160</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>700</width>
+                <height>160</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedKingdom"/>
+              </property>
               <property name="text">
-               <string>Add fields from 
-a shape file</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:704;&quot;&gt;Welcome to GeoDataFarm!&lt;/span&gt;&lt;br/&gt;GeoDataFarm is a QGIS plugin designed to help farmers visualize and analyze field data. You can load position logs from farm equipment, and if yield logs are available, analyze their variation across the field. &lt;/p&gt;&lt;p&gt;The plugin offers advanced functionality, and each step is explained in detail at &lt;a href=&quot;https://www.geodatafarm.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.geodatafarm.com&lt;/span&gt;&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;If you have questions, encounter errors, or have suggestions, please submit an issue on &lt;a href=&quot;https://github.com/axelande/geodatafarm3&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;github.com/axelande/geodatafarm3&lt;/span&gt;&lt;/a&gt; or email me at geodatafarm@gmail.com . If you find the plugin useful, consider sponsoring the project on GitHub to support ongoing development.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::RichText</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="openExternalLinks">
+               <bool>true</bool>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
@@ -2236,7 +2236,7 @@ a shape file</string>
                 <second>0</second>
                 <year>2018</year>
                 <month>12</month>
-                <day>31</day>
+                <day>30</day>
                </datetime>
               </property>
               <property name="displayFormat">
