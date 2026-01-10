@@ -16,7 +16,7 @@ author=Axel Horteborn
 email=geodatafarm@gmail.com
 supportsQt6=True
 
-about=This is a plugin for farmers that both works as a log for different efforts on fields and also aims to determine the yield impact of different parameters. It is built for any crops and any field parameters, however it is mostly tested for potatoes. The program requires third party packages, which should be installed be default with the QGIS plugin QPIP. The plugin requires a stable internet connection. For all questions and request for modifications etc. please contact: geodatafarm@gmail.com . The plugin is 100 % free, however if you like it please considering to sponsor me @ [github](https://github.com/sponsors/axelande) .
+about=This plugin is designed for farmers as both a log for various field operations and a tool to analyze the yield impact of different parameters. It supports all crop types and field parameters, though it has been primarily tested on potatoes. The plugin requires third-party packages, which are typically installed by default with the QGIS plugin QPIP. A stable internet connection is necessary for proper functionality. For questions, feature requests, or modifications, please contact: geodatafarm@gmail.com . The plugin is completely free. If you find it useful, please consider sponsoring the project on [github](https://github.com/sponsors/axelande) to support ongoing development .
 
 tracker=https://github.com/axelande/geodatafarm3/issues
 repository=https://github.com/axelande/geodatafarm3
