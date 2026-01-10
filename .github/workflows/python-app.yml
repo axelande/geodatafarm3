@@ -30,9 +30,7 @@ jobs:
           --volume $(pwd):/app \
           -w=/app \
           qgis/qgis:stable sh -c "
-            apt-get update && \
-            apt-get install -y python3-numpy && \
-            python3 -m pip install -r requirements_dev.txt --break-system-packages
+            python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
           "
         docker commit qgis_container qgis_with_deps
 
