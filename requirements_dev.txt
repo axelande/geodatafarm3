@@ -1,7 +1,6 @@
 matplotlib
 numpy
 pandas
-psycopg2
 psycopg2_binary
 PyQt5
 reportlab
