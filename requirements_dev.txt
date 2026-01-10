@@ -2,7 +2,6 @@ matplotlib
 numpy
 pandas
 psycopg2_binary
-PyQt5
 reportlab
 requests
 pytest
