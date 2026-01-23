@@ -1,5 +1,34 @@
 import sys
 import types
+import os
+
+# Add project root to sys.path and create 'geodatafarm' package alias
+# This allows tests to use 'from geodatafarm.xxx import yyy' without installing the package
+_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
+
+# Create a 'geodatafarm' module that points to the project root
+# This enables imports like 'from geodatafarm.support_scripts.xxx import yyy'
+if 'geodatafarm' not in sys.modules:
+    import importlib.util
+    _init_path = os.path.join(_project_root, '__init__.py')
+    # Create __init__.py if it doesn't exist (for package discovery)
+    if not os.path.exists(_init_path):
+        # Use a spec with submodule_search_locations to make it a package
+        _spec = importlib.util.spec_from_file_location(
+            'geodatafarm',
+            None,
+            submodule_search_locations=[_project_root]
+        )
+        _geodatafarm = importlib.util.module_from_spec(_spec)
+        _geodatafarm.__path__ = [_project_root]
+        sys.modules['geodatafarm'] = _geodatafarm
+    else:
+        _spec = importlib.util.spec_from_file_location('geodatafarm', _init_path)
+        _geodatafarm = importlib.util.module_from_spec(_spec)
+        _geodatafarm.__path__ = [_project_root]
+        sys.modules['geodatafarm'] = _geodatafarm
 
 # Provide a minimal `qgis` package for tests by mapping `qgis.PyQt` to available PySide6/PyQt5
 # This avoids import errors when the real QGIS Python API isn't present.
