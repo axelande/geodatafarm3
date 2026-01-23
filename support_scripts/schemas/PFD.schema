@@ -7,6 +7,6 @@
  "F": {"Attribute_name":"FarmIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"FRM", "length": "4 - 14", "comment":"Reference to XML element Farm Format: (FRM|FRM-)([0–9])+"},
  "G": {"Attribute_name":"CropTypeIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CTP", "length": "4 - 14", "comment":"Reference to XML element CropType Format: (CTP|CTP-)([0–9])+"},
  "H": {"Attribute_name":"CropVarietyIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"CVT", "length": "4 - 14", "comment":"Reference to XML element CropVariety Format: (CVT|CVT-)([0–9])+"},
- "I": {"Attribute_name":"FieldIdRef", "Use":"0", "Type": "xs:IDREF", "Ref_id":"PFD", "length": "4 - 14", "comment":"Unique identifier of Partfield, Used as parent Partfield Format: (PFD|PFD-)([0–9])+ Records generated on MICS have negative IDs"},
+ "I": {"Attribute_name":"FieldIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"PFD", "length": "4 - 14", "comment":"Unique identifier of Partfield, Used as parent Partfield Format: (PFD|PFD-)([0–9])+ Records generated on MICS have negative IDs"},
  "includes": {"PLN": {"Use": "o"}, "LSG": {"Use": "o"}, "PTN": {"Use": "o"}, "GGP": {"Use": "o"}}
 }

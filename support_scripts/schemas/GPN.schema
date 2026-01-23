@@ -1,7 +1,19 @@
 {
   "Name": "GuidancePattern",
-  "A":{"Attribute_name":"GuidancePatternId", "Use":"r", "Type": "xs:ID", "length": "4 to 14", "comment": "Unique identifier of GuidanceGroup\nFormat: (GGP|GGP-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "A":{"Attribute_name":"GuidancePatternId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment": "Unique identifier of GuidancePattern\nFormat: (GPN|GPN-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
   "B": {"Attribute_name":"GuidancePatternDesignator", "Use":"o", "Type": "xs:string", "length": "max. 32", "comment": "Designator of GuidancePattern"},
-  "C": {"Attribute_name":"GuidancePatternType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["AB", "A+", "Curve", "Pivot", "Spiral"], "length": "1 - 5", "comment":"Selection of type:\n1 = AB\n2 = A+\n3 = Curve\n4 = Pivot\n5 = Spiral"},
-  "includes": {"LSG": {"Use": "r"}}
+  "C": {"Attribute_name":"GuidancePatternType", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["", "AB", "A+", "Curve", "Pivot", "Spiral"], "length": "1 - 5", "comment":"Selection of type:\n1 = AB\n2 = A+\n3 = Curve\n4 = Pivot\n5 = Spiral"},
+  "D": {"Attribute_name":"GuidancePatternOptions", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "Clockwise", "Counter-clockwise", "Full Circle"], "length": "1 - 3", "comment":"1 = Clockwise - for pivot\n2 = Counter-clockwise - for pivot\n3 = Full Circle - for pivot"},
+  "E": {"Attribute_name":"GuidancePatternPropagationDirection", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "Both directions", "Left direction only", "Right direction only", "No propagation"], "length": "1 - 4", "comment":"1 = Both directions\n2 = Left direction only\n3 = Right direction only\n4 = No propagation\nThe direction is defined while\nstanding on the first point (A)\nand looking to the next point."},
+  "F": {"Attribute_name":"GuidancePatternExtension", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "From both first and last point", "From first point (A) only", "From last point (B) only", "No extensions"], "length": "1 - 4", "comment":"1 = From both first and last point\n2 = From first point (A) only\n3 = From last point (B) only\n4 = No extensions"},
+  "G": {"Attribute_name":"GuidancePatternHeading", "Use":"o", "Type": "xs:decimal", "length": "0.0 to 360.0", "comment":"Decimal degrees counting clockwise relative to the true north"},
+  "H": {"Attribute_name":"GuidancePatternRadius", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to 2^32-2", "comment":"Pivot radius information in mm"},
+  "I": {"Attribute_name":"GuidancePatternGNSSMethod", "Use":"o", "Type": "xs:NMTOKEN", "nm_list": ["", "GNSS fix", "DGNSS fix", "Precise GNSS", "RTK Fixed Integer", "RTK Float", "Estimated (DR) mode", "Manual Input", "Simulate mode", "", "", "", "", "", "", "", "Desktop generated data", "Other"], "length": "0 - 17", "comment":"Reference to NMEA 2000 GNSS Method parameter:\n1 = GNSS fix\n2 = DGNSS fix\n3 = Precise GNSS\n4 = RTK Fixed Integer\n5 = RTK Float\n6 = Estimated (DR) mode\n7 = Manual Input\n8 = Simulate mode\n16 = Desktop generated data\n17 = Other"},
+  "J": {"Attribute_name":"GuidancePatternHorizontalAccuracy", "Use":"o", "Type": "xs:decimal", "length": "0.0 to 65.0", "comment":"Horizontal estimated accuracy (RMS error) in m"},
+  "K": {"Attribute_name":"GuidancePatternVerticalAccuracy", "Use":"o", "Type": "xs:decimal", "length": "0.0 to 65.0", "comment":"Vertical estimated accuracy (RMS error) in m"},
+  "L": {"Attribute_name":"BaseStationIdRef", "Use":"o", "Type": "xs:IDREF", "Ref_id":"BSN", "length": "min. 4 to max. 14", "comment":"Reference to XML element BaseStation\nFormat: (BSN|BSN-)([0–9])+"},
+  "M": {"Attribute_name":"OriginalSRID", "Use":"o", "Type": "xs:string", "length": "max. 32", "comment":"Coordinate system and projection method used by the guidance system at the time of creating the GuidancePattern."},
+  "N": {"Attribute_name":"NumberOfSwathsLeft", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to 2^32-2", "comment":"Number of swathes to propagate GuidancePattern to the left."},
+  "O": {"Attribute_name":"NumberOfSwathsRight", "Use":"o", "Type": "xs:unsignedLong", "length": "0 to 2^32-2", "comment":"Number of swathes to propagate GuidancePattern to the right."},
+  "includes": {"LSG": {"Use": "r"}, "PLN": {"Use": "o"}}
 }

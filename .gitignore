@@ -59,3 +59,9 @@ connection_data.ini
 zip_build/
 tests/test_data/TaskPotatis/*
 tests/__pycache__/*
+
+# Meta data XML files (contain personal data)
+# Use *.xml.template files as starting point
+support_scripts/pyagriculture/meta_data/*.xml
+!support_scripts/pyagriculture/meta_data/*.xml.template
+iso_standarder/*

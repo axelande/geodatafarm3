@@ -1,0 +1,6 @@
+{
+  "Name": "CodedCommentGroup",
+  "A": {"Attribute_name":"CodedCommentGroupId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment": "Unique identifier of CodedCommentGroup\nFormat: (CCG|CCG-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B": {"Attribute_name":"CodedCommentGroupDesignator", "Use":"r", "Type": "xs:string", "length": "max. 32", "comment": "Designator of the CodedCommentGroup"},
+  "includes": {"CCT": {"Use": "r"}}
+}

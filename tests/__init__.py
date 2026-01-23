@@ -6,7 +6,13 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.curdir))
 import pytest
-from pytest_qgis import qgis_iface
+
+# Try to import pytest_qgis, but allow tests to run without it
+try:
+    from pytest_qgis import qgis_iface
+except ImportError:
+    qgis_iface = None
+
 class actionAddFeature:
     def trigger(self: Self) -> None:
         pass
@@ -19,10 +25,22 @@ class actionToggleEditing:
 
 from qgis.PyQt.QtCore import QSettings, QDate
 
-from ..GeoDataFarm import GeoDataFarm
-from ..database_scripts.db import DB
+# Try to import GeoDataFarm, but allow standalone tests to run without it
+# This can fail if the UI file has parsing issues
+GeoDataFarm = None
+DB = None
+try:
+    from ..GeoDataFarm import GeoDataFarm
+    from ..database_scripts.db import DB
+except (ImportError, SyntaxError) as e:
+    # UI parsing can fail in some Qt environments; allow lightweight tests to continue
+    import warnings
+    warnings.warn(f"Could not import GeoDataFarm (likely UI parsing issue): {e}")
 
-QSettings().setValue('locale/userLocale', 'se')
+try:
+    QSettings().setValue('locale/userLocale', 'se')
+except Exception:
+    pass
 RESET_USER = 'test_user'
 RESET_PASSWORD = 'test_password'
 

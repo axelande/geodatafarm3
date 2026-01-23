@@ -12,7 +12,7 @@ def test_remove_test_field_datasets(gdf: GeoDataFarm):
     items = [gdf.tabel_mgmt.TMD.SATables.item(i).text() for i in range(gdf.tabel_mgmt.TMD.SATables.count())]
     found = False
     for i, text in enumerate(items):
-        if 'test_field' in text:
+        if 'test_field' in text or 'tabbehus' in text:
             gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(2)
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
@@ -29,7 +29,7 @@ def test_remove_iso_dataset(gdf: GeoDataFarm):
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
     assert found
-fields = ['test_field', 'test_iso_field', 'test_iso_added_field', 'test_iso_added_field2', 'test_iso_added_field3', 'test_shape_added_field'] #, 'test_iso_field2']
+fields = ['test_field', 'test_iso_field', 'test_iso_added_field', 'test_iso_added_field2', 'test_iso_added_field3', 'test_shape_added_field', 'Tabbehus'] #, 'test_iso_field2']
 # @pytest.mark.depends(scope='session', on=['remove_text'], name='remove_field')
 @pytest.mark.parametrize('field_name', fields)
 def test_remove_xfield(gdf: GeoDataFarm, field_name):

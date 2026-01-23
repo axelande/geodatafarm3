@@ -1,0 +1,9 @@
+<ISO11783_TaskData>
+    <PFD A="" C="" D="" />
+    <TSK A="" B="" E="" G="" H="">
+        <GRD A="" B="" C="" D="" E="" F="" G="" H="" I="" J="" />
+        <TZN A="" B="">
+            <PDV A="" B="" />
+        </TZN>
+    </TSK>
+</ISO11783_TaskData>

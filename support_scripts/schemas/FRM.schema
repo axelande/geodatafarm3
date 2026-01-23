@@ -1,5 +1,5 @@
 { "Name": "Farm",
-  "A": {"Attribute_name":"FarmId","Use":"r", "Type": "xs:UnsignedShort", "length": "min. 4 to max 14", "comment": "Unique identifier of Farm\nFormat: (FRM|FRM-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
+  "A": {"Attribute_name":"FarmId","Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment": "Unique identifier of Farm\nFormat: (FRM|FRM-)([0–9])+\nRecords generated on MICS have\nnegative IDs"},
   "B": {"Attribute_name":"FarmDesignator","Use":"r", "Type": "xs:string", "length": "max 32", "comment": "Farm designator/name"},
   "C": {"Attribute_name":"FarmStreet","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "Street"},
   "D": {"Attribute_name":"FarmPOBox","Use":"o", "Type": "xs:string", "length": "max 32", "comment": "PO Box"},

@@ -1,0 +1,7 @@
+{
+  "Name": "CodedComment",
+  "A": {"Attribute_name":"CodedCommentId", "Use":"r", "Type": "xs:ID", "length": "min. 4 to max. 14", "comment": "Unique identifier of CodedComment\nFormat: (CCT|CCT-)([0–9])+\nRecords generated on MICS\nhave negative IDs"},
+  "B": {"Attribute_name":"CodedCommentDesignator", "Use":"r", "Type": "xs:string", "length": "max. 32", "comment": "Designator of the CodedComment"},
+  "C": {"Attribute_name":"CodedCommentScope", "Use":"r", "Type": "xs:NMTOKEN", "nm_list": ["", "Point", "Global", "Continuous"], "length": "1 - 3", "comment": "Scope of the CodedComment\n1 = Point\n2 = Global\n3 = Continuous"},
+  "includes": {}
+}

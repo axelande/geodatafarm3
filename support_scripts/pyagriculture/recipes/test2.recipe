@@ -1,0 +1,9 @@
+<ISO11783_TaskData>
+    <CTR A="" B="" C="" />
+    <DVC A="" B="" D="" F="" G="">
+        <DET A="" B="" C="" D="" E="" F="" />
+    </DVC>
+    <GRD A="" B="" C="" D="" E="" F="" G="" I="" />
+    <PFD A="" B="" C="" D="" E="" F="" />
+    <FRM A="" B="" I="" />
+</ISO11783_TaskData>

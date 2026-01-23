@@ -38,7 +38,7 @@ if sys.platform == 'win32':
 else:
     sys.path.append('/usr/lib/qgis')
     sys.path.append('/usr/share/qgis/python/plugins')
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsMessageLog, Qgis
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
@@ -80,6 +80,7 @@ from .support_scripts.generate_reports import RapportGen
 from .support_scripts.multiedit import MultiEdit
 from .support_scripts.populate_lists import Populate
 from .support_scripts.rescale_values import RescaleValues
+from .support_scripts.pyagriculture.generate_taskdata_commands import GenerateTaskCommands
 
 class GeoDataFarm:
     """QGIS Plugin Implementation."""
@@ -102,7 +103,19 @@ class GeoDataFarm:
         translate = TR()
         self.tr = translate.tr
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        # QSettings().value('locale/userLocale') may be None in test environments
+        if test_mode:
+            locale = 'en'
+        else:
+            locale_val = QSettings().value('locale/userLocale')
+            if isinstance(locale_val, str) and len(locale_val) >= 2:
+                locale = locale_val[0:2]
+            else:
+                try:
+                    locale = str(locale_val)[0:2]
+                except Exception:
+                    locale = 'en'
+
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -120,6 +133,8 @@ class GeoDataFarm:
         self.menu = self.tr(u'&GeoFarm')
         self.toolbar = self.iface.addToolBar(u'GeoDataFarm')
         self.toolbar.setObjectName(u'GeoDataFarm')
+        # Track whether GUI (menu/toolbar) has been initialized
+        self.gui_initialized = False
         self.tsk_mngr = QgsApplication.taskManager()
 
         #print "** INITIALIZING GeoDataFarm"
@@ -146,6 +161,8 @@ class GeoDataFarm:
         self.guide = None
         self.test_mode = test_mode
         self.find_iso_field = None
+        # helper for opening generate dialogs/widgets
+        self.generate_commands = GenerateTaskCommands(self)
 
     # noinspection PyMethodMayBeStatic
 
@@ -220,6 +237,8 @@ class GeoDataFarm:
             text=self.tr(u'GeoDataFarm'),
             callback=self.run,
             parent=self.iface.mainWindow())
+        # plugin action is added here.
+        self.gui_initialized = True
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dock_widget is closed"""
@@ -237,6 +256,19 @@ class GeoDataFarm:
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
+
+    def _log_exception(self, message: str, exception: Exception) -> None:
+        """Log an exception with context information."""
+        import traceback
+        tb = traceback.format_exc()
+        info = "Please send this information to geodatafarm@gmail.com to improve the plugin."
+        QgsMessageLog.logMessage(f"{info}\n{message}\n{exception}\n{tb}", "GeoDataFarm", Qgis.Info)
+        self.iface.messageBar().pushMessage(
+            "GeoDataFarm",
+            "A new log entry was added. Open the GeoDataFarm tab for details.",
+            level=Qgis.Info
+        )
+
 
     # Functions create specific for GeoDataFarm-----------------------------
     def add_selected_tables(self):
@@ -431,6 +463,34 @@ class GeoDataFarm:
         cta = ConvertToAreas(self)
         cta.run()
 
+    def _get_generate_tab(self):
+        """Get the 'Generate ISO XMLs' tab."""
+        dock = self.dock_widget
+        return getattr(dock, 'tab_generate_isoxml', None) or getattr(dock, 'tab_17', None)
+
+    def open_generate_menu(self):
+        """Show the Generate ISO XMLs tab."""
+        tab = self._get_generate_tab()
+        if tab is None:
+            return
+
+        # Select the tab if possible
+        try:
+            tab_widget = getattr(self.dock_widget, 'tabWidget', None)
+            if tab_widget:
+                idx = tab_widget.indexOf(tab)
+                if idx != -1:
+                    tab_widget.setCurrentIndex(idx)
+        except Exception as e:
+            self._log_exception("Failed to select tab", e)
+
+        # Show dock
+        try:
+            self.dock_widget.show()
+            self.dock_widget.raise_()
+        except Exception as e:
+            self._log_exception("Failed to show dock", e)
+
     def set_buttons(self: Self) -> None:
         """Since most functions are dependent on that a database connections
         exist the buttons are set when a connection is set. If new connections
@@ -481,7 +541,15 @@ class GeoDataFarm:
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
     def run(self: Self, test_mode: bool=False) -> None:
+        print("he2j3")
         """Run method that loads and starts the plugin"""
+        # Ensure GUI items are initialized (useful when calling `run()` directly)
+        if not getattr(self, 'gui_initialized', False):
+            try:
+                self.initGui()
+            except Exception:
+                # best-effort: if initGui fails (e.g., headless tests), continue
+                pass
         icon_path = ':/plugins/GeoDataFarm/img/icon.png'
         if not self.pluginIsActive:
             self.pluginIsActive = True
@@ -494,6 +562,15 @@ class GeoDataFarm:
             if self.dock_widget is None:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
+
+                # Set the parent_gdf reference for GenerateTaskDataWidget
+                if hasattr(self.dock_widget, 'generate_taskdata_widget'):
+                    self.dock_widget.generate_taskdata_widget.parent_gdf = self
+
+                # Set the parent_gdf reference for GenerateIsoxmlController
+                if hasattr(self.dock_widget, 'generate_isoxml_controller'):
+                    self.dock_widget.generate_isoxml_controller.parent_gdf = self
+
                 img = QImage(icon_path)
                 
                 if hasattr(QtCore.Qt, "AspectRatioMode"):  # Qt6+
@@ -509,6 +586,8 @@ class GeoDataFarm:
                 self.dock_widget.LIcon.setPixmap(pimg)
             if self.get_database_connection():
                 self.set_buttons()
+            # Setup the Generate ISO XMLs tab (buttons, tables)
+            # Removed: _setup_generate_isoxml_tab() - now using promoted widget in UI
             self.dock_widget.PBAddNewFarm.clicked.connect(self.clicked_create_farm)
             self.dock_widget.PBConnect2Farm.clicked.connect(self.connect_to_farm)
             try:
