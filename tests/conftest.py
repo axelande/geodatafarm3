@@ -8,6 +8,17 @@ _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
+# Create meta_data XML files from templates if they don't exist
+# This ensures tests can run in CI where the actual XML files are gitignored
+import shutil
+import glob
+_meta_data_dir = os.path.join(_project_root, 'support_scripts', 'pyagriculture', 'meta_data')
+if os.path.isdir(_meta_data_dir):
+    for template_path in glob.glob(os.path.join(_meta_data_dir, '*.xml.template')):
+        xml_path = template_path.replace('.template', '')
+        if not os.path.exists(xml_path):
+            shutil.copy(template_path, xml_path)
+
 # Create a 'geodatafarm' module that points to the project root
 # This enables imports like 'from geodatafarm.support_scripts.xxx import yyy'
 if 'geodatafarm' not in sys.modules:
