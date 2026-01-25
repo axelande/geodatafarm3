@@ -7,6 +7,7 @@ from unittest.mock import patch, MagicMock
 
 from database_scripts.db import DB
 from database_scripts.table_managment import TableManagement
+from support_scripts.qt_data import _check_state
 
 @pytest.fixture
 def db():
@@ -150,8 +151,8 @@ def test_table_management_save_table(table_management):
     table_management.current_table = 'table'
     table_management.current_schema = 'schema'
     table_management.params_in_table = [QListWidgetItem('col1'), QListWidgetItem('col2')]
-    table_management.params_in_table[0].setCheckState(Qt.CheckState.Checked)
-    table_management.params_in_table[1].setCheckState(Qt.CheckState.Unchecked)
+    table_management.params_in_table[0].setCheckState(_check_state('Checked'))
+    table_management.params_in_table[1].setCheckState(_check_state('Unchecked'))
     table_management.db.get_indexes = MagicMock(return_value={0: {'index_col': 'col2'}})
     table_management.db.execute_sql = MagicMock()
 

@@ -68,6 +68,7 @@ from .import_data.save_soil_data import SaveSoil
 from .import_data.convert_harvest_to_area import ConvertToAreas
 from .import_data.satellite_data import SatelliteData
 from .support_scripts.__init__ import isint, TR
+from .support_scripts.qt_data import _check_state, _item_flag
 from .support_scripts.add_field import AddField
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
 from .support_scripts.create_layer import CreateLayer
@@ -426,8 +427,8 @@ class GeoDataFarm:
                 return
         _name = QApplication.translate("qadashboard", crop_name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWCrops)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-        item.setCheckState(QtCore.Qt.Unchecked)
+        item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+        item.setCheckState(_check_state('Unchecked'))
         self.populate.reload_crops()
 
     def remove_crop_name(self: Self) -> None:

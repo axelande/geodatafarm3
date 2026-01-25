@@ -11,6 +11,8 @@ from qgis.core import QgsTask
 from ..database_scripts.db import DB
 from ..import_data.handle_text_data import create_table, create_polygons
 from ..support_scripts.__init__ import (TR, check_text)
+from ..support_scripts.qt_data import (_check_state, _enum_select_rows, _file_dialog_option,
+                                       _header_view_resize_mode, _item_flag)
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
@@ -102,7 +104,7 @@ class Iso11783:
             pass
         else:
             path = QFileDialog.getExistingDirectory(None, self.tr("Open a folder"), '',
-                                                              QFileDialog.ShowDirsOnly)
+                                                              _file_dialog_option('ShowDirsOnly'))
         if path != '':
             self.initiate_pyAgriculture(path)
             self.populate_first_table()      
@@ -169,16 +171,16 @@ UNION """
         self.IXB.TWISODataAll.setRowCount(len(task_names))
         self.IXB.TWISODataAll.setColumnCount(3)
         self.IXB.TWISODataAll.setHorizontalHeaderLabels([self.tr('Get more info'), self.tr('Task name'), self.tr('File name')])
-        self.IXB.TWISODataAll.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.IXB.TWISODataAll.setSelectionBehavior(_enum_select_rows())
         for i, row in enumerate(task_names):
             item1 = QTableWidgetItem('Include')
-            item1.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-            item1.setCheckState(Qt.CheckState.Unchecked)
+            item1.setFlags(_item_flag('ItemIsUserCheckable') | _item_flag('ItemIsEnabled'))
+            item1.setCheckState(_check_state('Unchecked'))
             self.checkboxes1.append([item1, row, file_names[i]])
             item2 = QTableWidgetItem(row)
-            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
+            item2.setFlags(xor(item2.flags(), _item_flag('ItemIsEditable')))
             item3 = QTableWidgetItem(file_names[i])
-            item3.setFlags(xor(item3.flags(), Qt.ItemFlag.ItemIsEditable))
+            item3.setFlags(xor(item3.flags(), _item_flag('ItemIsEditable')))
             self.IXB.TWISODataAll.setItem(i, 0, item1)
             self.IXB.TWISODataAll.setItem(i, 1, item2)
             self.IXB.TWISODataAll.setItem(i, 2, item3)
@@ -237,22 +239,22 @@ UNION """
         self.IXB.TWISODataSelect.setHorizontalHeaderLabels([self.tr('To include'), self.tr('Date'), self.tr('Field'),
                                                             self.tr('Crops')])
         header = self.IXB.TWISODataSelect.horizontalHeader()       
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        self.IXB.TWISODataSelect.setSelectionBehavior(QAbstractItemView.SelectRows)
+        header.setSectionResizeMode(0, _header_view_resize_mode('ResizeToContents'))
+        header.setSectionResizeMode(1, _header_view_resize_mode('ResizeToContents'))
+        header.setSectionResizeMode(2, _header_view_resize_mode('Stretch'))
+        header.setSectionResizeMode(3, _header_view_resize_mode('ResizeToContents'))
+        self.IXB.TWISODataSelect.setSelectionBehavior(_enum_select_rows())
         j = -1  # How may checkboxes that is added
         for i, row in enumerate(task_names.values()):
             if len(row) == 0:
                 continue
             j += 1
             item1 = QTableWidgetItem('Include')
-            item1.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-            item1.setCheckState(Qt.CheckState.Checked)
+            item1.setFlags(_item_flag('ItemIsUserCheckable') | _item_flag('ItemIsEnabled'))
+            item1.setCheckState(_check_state('Checked'))
             self.checkboxes2.append([j, j, item1])
             item2 = QTableWidgetItem(row[0][1])
-            item2.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable)
+            item2.setFlags(_item_flag('ItemIsSelectable') | _item_flag('ItemIsEnabled') | _item_flag('ItemIsEditable'))
             field_column = RadioComboBox()
             self.combo.append(field_column)
             for field, _ in row:
@@ -291,7 +293,7 @@ UNION """
         for i, item in enumerate(items_to_add):
             self.IXB.TWtoParam.setRowCount(rows_in_table + i + 1)
             item1 = QTableWidgetItem(item)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.IXB.TWtoParam.setItem(i + rows_in_table, 0, item1)
         self.IXB.PBInsert.setEnabled(True)
 
@@ -336,11 +338,11 @@ UNION """
         # Populate the table with data
         self.IXB.TWColumnNames.setRowCount(len(valid_columns))
         self.unit_boxes = {}
-        self.IXB.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.IXB.TWColumnNames.setSelectionBehavior(_enum_select_rows())
 
         for i, row in enumerate(valid_columns):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.IXB.TWColumnNames.setItem(i, 0, item1)
 
             try:

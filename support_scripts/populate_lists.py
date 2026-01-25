@@ -5,6 +5,7 @@ from qgis.core import QgsProject, QgsVectorLayer, QgsApplication
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from ..support_scripts.__init__ import TR
+from ..support_scripts.qt_data import _check_state, _item_flag
 
 
 class Populate:
@@ -78,8 +79,8 @@ class Populate:
             for field_name in fields:
                 _na = QApplication.translate("qadashboard", field_name[0], None)
                 item = QListWidgetItem(_na, self.dw.LWFields)
-                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-                item.setCheckState(Qt.CheckState.Unchecked)
+                item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+                item.setCheckState(_check_state('Unchecked'))
         else:
             cmd_box = [cmd_box]
         fields_ = self.db.execute_and_return("select field_name from fields order by field_name")
@@ -115,8 +116,8 @@ class Populate:
             for crop_name in crops:
                 _nam = QApplication.translate("qadashboard", crop_name[0], None)
                 item = QListWidgetItem(_nam, self.dw.LWCrops)
-                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-                item.setCheckState(Qt.CheckState.Unchecked)
+                item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+                item.setCheckState(_check_state('Unchecked'))
         else:
             cmd_box = [cmd_box]
         crops_ = self.db.execute_and_return("select crop_name from crops order by crop_name")
@@ -150,8 +151,8 @@ class Populate:
                         continue
                 _name = QApplication.translate("qadashboard", name, None)
                 item = QListWidgetItem(_name, lw)
-                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-                item.setCheckState(Qt.CheckState.Unchecked)
+                item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+                item.setCheckState(_check_state('Unchecked'))
                 self.tables_in_db[i] += 1
             self.items_in_table[i][0] = lw.findItems('', Qt.MatchFlag.MatchContains)
             self.items_in_table[i][1] = schema

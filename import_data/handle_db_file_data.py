@@ -7,6 +7,7 @@ from operator import xor
 from collections import OrderedDict
 # Import the code for the dialog
 from ..widgets.import_db_file_dialog import ImportDBFileDialog
+from ..support_scripts.qt_data import _enum_select_rows, _item_flag
 __author__ = 'Axel Horteborn'
 
 
@@ -78,7 +79,7 @@ class DBFileHandler:
         self.IDB.TWExamples.setRowCount(10)
         self.IDB.TWExamples.setColumnCount(len(colums))
         self.IDB.TWExamples.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            _enum_select_rows())
         self.IDB.TWExamples.setHorizontalHeaderLabels([str(x) for x in colums])
         for i, row in enumerate(data_example):
             for j, col in enumerate(row):
@@ -89,10 +90,10 @@ class DBFileHandler:
         self.IDB.TWTableNames.setRowCount(len(self.tbl_names))
         self.IDB.TWTableNames.setColumnCount(1)
         self.IDB.TWTableNames.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            _enum_select_rows())
         for i, row in enumerate(self.tbl_names):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.IDB.TWTableNames.setItem(i, 0, item1)
             #self.combo[i].view().pressed.connect(self.change_col_type)
             self.IDB.TWTableNames.itemDoubleClicked.connect(self._change_example)
@@ -105,7 +106,7 @@ class DBFileHandler:
         self.IDB.TWFinalExample.setRowCount(len(data_example) + 3)
         self.IDB.TWFinalExample.setColumnCount(len(colums))
         self.IDB.TWFinalExample.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            _enum_select_rows())
         self.IDB.TWFinalExample.setHorizontalHeaderLabels([str(x) for x in colums])
         other_tbls = self.tbl_names
         other_tbls.remove(self.tbl_names[tbl])

@@ -9,6 +9,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont
 
 from .errors import MsgError
+from ..qt_data import _widget_attribute
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -20,7 +21,7 @@ class MetaData(QDialog):
         super(MetaData, self).__init__(parent_widget)
         # top-level dialog and ensure it is deleted on close to avoid lingering
         try:
-            self.setAttribute(Qt.WA_DeleteOnClose)
+            self.setAttribute(_widget_attribute('WA_DeleteOnClose'))
             self.setModal(True)
         except Exception:
             pass

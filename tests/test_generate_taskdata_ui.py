@@ -10,7 +10,7 @@ def test_generate_widget_api():
     assert not hasattr(w, 'generate_menu')
     # Ensure command-facing methods still exist
     expected_methods = {
-        'create_new_recipe', 'create_farm', 'create_customer', 'create_worker', 'create_device', 'load_schemas', 'reset_recipe'
+        'create_new_recipe', 'load_schemas', 'reset_recipe'
     }
     for m in expected_methods:
         assert hasattr(w, m)

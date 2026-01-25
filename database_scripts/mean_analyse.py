@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import (QMessageBox, QWidget, QButtonGroup, QLabel, QLi
 QRadioButton, QCheckBox, QGroupBox, QComboBox, QVBoxLayout)
 from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint, TR
+from ..support_scripts.qt_data import _check_state, _item_data_role, _item_flag
 from ..support_scripts.add_field import AddField
 
 __author__ = 'Axel Horteborn'
@@ -307,8 +308,8 @@ class Analyze:
             item = QStandardItem(name)
             name_text += name + ' '
             item.setFlags(
-                Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-            item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
+                _item_flag('ItemIsUserCheckable') | _item_flag('ItemIsEnabled'))
+            item.setData(_check_state('Checked'), _item_data_role('CheckStateRole'))
             self.layout_dict[col]['checked'].append(name)
             self.layout_dict[col]['checked_items'].append(item)
             model.setItem(i + 1, 0, item)
@@ -406,8 +407,8 @@ class Analyze:
                 item = QStandardItem(name)
                 name_text += name + ' '
                 item.setFlags(
-                    Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-                item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
+                    _item_flag('ItemIsUserCheckable') | _item_flag('ItemIsEnabled'))
+                item.setData(_check_state('Checked'), _item_data_role('CheckStateRole'))
                 self.layout_dict[col]['checked'].append(name)
                 self.layout_dict[col]['checked_items'].append(item)
                 model.setItem(i, 0, item)

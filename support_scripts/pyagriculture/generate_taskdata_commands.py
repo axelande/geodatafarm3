@@ -24,7 +24,16 @@ class GenerateTaskCommands:
         except Exception:
             return None
 
-    def create_new_recipe(self, parent=None):
+    def create_new_recipe(self, parent=None, on_recipe_saved=None):
+        """Open the CreateRecipe dialog.
+
+        Parameters
+        ----------
+        parent : QWidget, optional
+            Parent widget for the dialog.
+        on_recipe_saved : callable, optional
+            Callback function to call with the saved recipe path after the dialog closes.
+        """
         main_win = self._main_window() or parent
         dlg = CreateRecipe(main_win if main_win is not None else None, parent_gdf=self.parent_gdf)
         # Avoid blocking modal exec() during tests
@@ -39,6 +48,9 @@ class GenerateTaskCommands:
         if callable(exec_fn):
             try:
                 exec_fn()
+                # After dialog closes, check if a recipe was saved and notify caller
+                if dlg.saved_recipe_path and on_recipe_saved:
+                    on_recipe_saved(dlg.saved_recipe_path)
                 return dlg
             except Exception:
                 pass

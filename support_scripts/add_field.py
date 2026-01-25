@@ -12,6 +12,7 @@ from psycopg2 import IntegrityError, InternalError
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
 from ..support_scripts.__init__ import TR
+from ..support_scripts.qt_data import _check_state, _item_flag
 import traceback
 import time
 #import pydevd
@@ -249,8 +250,8 @@ class AddField:
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWFields)
-        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-        item.setCheckState(Qt.CheckState.Unchecked)
+        item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+        item.setCheckState(_check_state('Unchecked'))
         self.defined_field = name
         self.view_fields()
         if not res[0]:

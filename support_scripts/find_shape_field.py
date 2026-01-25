@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication, QSizePolicy, QVBoxLayout, QFileDialog
 
 from ..widgets.find_shape_fields import FindShapeFieldWidget
+from ..support_scripts.qt_data import _check_state, _item_flag
 
 class FindShapeField:
     def __init__(self: Self, parent, test_path: str = '') -> None:
@@ -144,5 +145,5 @@ class FindShapeField:
                 return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)
-        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-        item.setCheckState(Qt.CheckState.Unchecked)
+        item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+        item.setCheckState(_check_state('Unchecked'))

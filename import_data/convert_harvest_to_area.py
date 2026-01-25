@@ -11,6 +11,7 @@ from ..widgets.import_interpolate_harvest_dialog import ImportInterpolateHarvest
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import (TR, check_text, isfloat, isint, error_in_sign)
+from ..support_scripts.qt_data import _check_state, _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
 __author__ = 'Axel Horteborn'
 
@@ -148,21 +149,21 @@ class ConvertToAreas:
         self.combo = []
         self.IIHD.TWColumnNames.setRowCount(len(heading_row))
         self.IIHD.TWColumnNames.setColumnCount(3)
-        self.IIHD.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.IIHD.TWColumnNames.setSelectionBehavior(_enum_select_rows())
         for i, row in enumerate(heading_row):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             item2 = QTableWidgetItem(second_row[i])
-            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
+            item2.setFlags(xor(item2.flags(), _item_flag('ItemIsEditable')))
             self.combo.append(RadioComboBox())
             for nr, t in enumerate(combo_box_options):
                 self.combo[i].addItem(t)
                 item = self.combo[i].model().item(nr, 0)
                 if self.col_types[i] == nr:
-                    item.setCheckState(Qt.CheckState.Checked)
+                    item.setCheckState(_check_state('Checked'))
                     self.combo[i].setCurrentIndex(nr)
                 else:
-                    item.setCheckState(Qt.CheckState.Unchecked)
+                    item.setCheckState(_check_state('Unchecked'))
             self.combo[i].currentTextChanged.connect(self.change_col_type)
             self.IIHD.TWColumnNames.setItem(i, 0, item1)
             self.IIHD.TWColumnNames.setItem(i, 1, item2)

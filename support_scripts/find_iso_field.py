@@ -24,6 +24,7 @@ from shapely.geometry import Point, Polygon
 
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
+from ..support_scripts.qt_data import _check_state, _item_flag
 
 
 def get_auto_zoom_level(minx, miny, maxx, maxy, max_zoom=17, min_zoom=10):
@@ -390,5 +391,5 @@ class FindIsoField:
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)
-        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-        item.setCheckState(Qt.CheckState.Unchecked)
+        item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+        item.setCheckState(_check_state('Unchecked'))

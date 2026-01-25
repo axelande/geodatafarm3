@@ -3992,7 +3992,14 @@ If you are missing a report / something in a report please send a e-mail to geod
               <item>
                <widget class="QLabel" name="labelRecipeIntro">
                 <property name="text">
-                 <string>Welcome to GeoDataFarm Taskdata file generator</string>
+                 <string>Welcome to the GeoDataFarm ISOXML Taskdata Generator!
+
+This tool helps you create ISOXML taskdata files for precision agriculture equipment. You can create recipes to define your task structure, then generate taskdata files ready for use with compatible farm machinery.
+
+Note: This feature is experimental. If you encounter any issues or have suggestions for improvements, please send an email to geodatafarm@gmail.com</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

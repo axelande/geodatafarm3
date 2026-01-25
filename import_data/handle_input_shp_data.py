@@ -11,6 +11,7 @@ from operator import xor
 from ..widgets.import_shp_dialog import ImportShpDialog
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, check_date_format, TR
+from ..support_scripts.qt_data import _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
 q_info = QMessageBox.information
 
@@ -115,12 +116,12 @@ class InputShpHandler:
         self.ISD.TWColumnNames.setRowCount(len(self.col_names))
         self.ISD.TWColumnNames.setColumnCount(2)
         self.ISD.TWColumnNames.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            _enum_select_rows())
         for i, row in enumerate(self.col_names):
             item1 = QTableWidgetItem(row)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             item2 = QTableWidgetItem(str(second_row[i]))
-            item2.setFlags(xor(item2.flags(), Qt.ItemFlag.ItemIsEditable))
+            item2.setFlags(xor(item2.flags(), _item_flag('ItemIsEditable')))
             self.ISD.TWColumnNames.setItem(i, 0, item1)
             self.ISD.TWColumnNames.setItem(i, 1, item2)
         self.column_count = i
@@ -144,7 +145,7 @@ class InputShpHandler:
             row_count += 1
             self.ISD.TWtoParam.setRowCount(row_count)
             item1 = QTableWidgetItem(item)
-            item1.setFlags(xor(item1.flags(), Qt.ItemFlag.ItemIsEditable))
+            item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.ISD.TWtoParam.setItem(i, 0, item1)
         self.param_row_count = row_count
         self.ISD.pButContinue.setEnabled(True)

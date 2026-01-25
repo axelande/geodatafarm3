@@ -315,7 +315,7 @@ class PyAgriculture:
             columns.append('hdop')
         if 'G' in tlg_dict['PTN'][''].keys():
             columns.append('nr_sat')
-        if 'H' and 'I' in tlg_dict['PTN'][''].keys():
+        if 'H' in tlg_dict['PTN'][''].keys() and 'I' in tlg_dict['PTN'][''].keys():
             columns.append('GPS time')
 
         for key in tlg_dict['DLV'].keys():
@@ -443,7 +443,7 @@ class PyAgriculture:
             if key in ['C', 'D', 'E', 'F', 'G']:
                 data_row[nr_d] = np_data[0][nr_d + 1]
                 nr_d += 1
-        if 'H' and 'I' in tlg_dict['PTN'][''].keys():
+        if 'H' in tlg_dict['PTN'][''].keys() and 'I' in tlg_dict['PTN'][''].keys():
             millis_from_midnight = int(np_data[0][nr_d + 1])
             days = int(np_data[0][nr_d + 2])
             actual_time = self.start_date + timedelta(days=days, milliseconds=millis_from_midnight)
@@ -546,7 +546,7 @@ class PyAgriculture:
                         unit_row[idx + 1] = dvp['unit']
             try:
                 data_row[idx + nr_static] = dlv
-            except:
+            except IndexError:
                 pass
         return [read_point, data_row, unit_row]
 

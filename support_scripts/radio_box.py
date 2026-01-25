@@ -3,6 +3,7 @@ __author__ = 'Axel Horteborn'
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.PyQt.QtGui import QStandardItemModel
+from .qt_data import _check_state
 
 
 class RadioComboBox(QComboBox):
@@ -14,8 +15,8 @@ class RadioComboBox(QComboBox):
     def handle_item_pressed(self, index):
         item = self.model().itemFromIndex(index)
         target_row = item.index().row()
-        if item.checkState() != Qt.CheckState.Checked:
-            item.setCheckState(Qt.CheckState.Checked)
+        if item.checkState() != _check_state('Checked'):
+            item.setCheckState(_check_state('Checked'))
         self.check_others(target_row)
 
     def check_others(self, target_row):
@@ -24,4 +25,4 @@ class RadioComboBox(QComboBox):
                 continue
             else:
                 item = self.model().item(i)
-                item.setCheckState(Qt.CheckState.Unchecked)
+                item.setCheckState(_check_state('Unchecked'))

@@ -3,6 +3,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QApplication, QListWidgetItem
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..widgets.add_to_canvas import AddToCanvas
+from ..support_scripts.qt_data import _check_state, _item_flag
 
 
 class AddLayerToCanvas:
@@ -85,8 +86,8 @@ class AddLayerToCanvas:
             item_name = tbl_name + '_' + target_field
             _name = QApplication.translate("qadashboard", item_name, None)
             item = QListWidgetItem(_name, self.dlg.LWAttributes)
-            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            item.setCheckState(Qt.CheckState.Unchecked)
+            item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
+            item.setCheckState(_check_state('Unchecked'))
 
     def add_selected(self):
         """All checked items in the ListWidget is added to the canvas. Afterwards the button

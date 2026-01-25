@@ -41,6 +41,7 @@ class CreateRecipe(QDialog):
         super(CreateRecipe, self).__init__(parent_widget)
         self.parent_widget = parent
         self.parent_gdf = parent_gdf
+        self.saved_recipe_path = None  # Path to the saved recipe file
         self.main_layout = QGridLayout()
         intro_label = QLabel(self, text=('Here you define what the ISOXML files should contain, in the first table to '
                                          'the left you select which schemas and "sub schemas" to include, in the second'
@@ -233,6 +234,7 @@ class CreateRecipe(QDialog):
 
         with open(path, 'w') as f:
             f.write(ET.tostring(xml_tree, encoding='unicode'))
+        self.saved_recipe_path = path  # Store the path so caller can load it
         self.available_attributes_list.clear()
         self.included_schemas_list.clear()
         self.recipe_name_edit.clear()

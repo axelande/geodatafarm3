@@ -1,4 +1,4 @@
-from qgis.PyQt.QtWidgets import QAbstractItemView, QSizePolicy
+from qgis.PyQt.QtWidgets import QAbstractItemView, QFileDialog, QHeaderView, QSizePolicy
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtCore import Qt
 
@@ -90,3 +90,31 @@ def _match_flag(name: str):
         return getattr(Qt, name)
 
 
+def _file_dialog_option(name: str):
+    """Return a QFileDialog option compatible with PyQt5/PyQt6."""
+    try:
+        # PyQt6: Option namespace
+        return getattr(QFileDialog.Option, name)
+    except AttributeError:
+        # PyQt5: direct attribute on QFileDialog
+        return getattr(QFileDialog, name)
+
+
+def _header_view_resize_mode(name: str):
+    """Return a QHeaderView ResizeMode enum compatible with PyQt5/PyQt6."""
+    try:
+        # PyQt6: ResizeMode namespace
+        return getattr(QHeaderView.ResizeMode, name)
+    except AttributeError:
+        # PyQt5: direct attribute on QHeaderView
+        return getattr(QHeaderView, name)
+
+
+def _item_data_role(name: str):
+    """Return a Qt ItemDataRole enum compatible with PyQt5/PyQt6."""
+    try:
+        # PyQt6: ItemDataRole namespace
+        return getattr(Qt.ItemDataRole, name)
+    except AttributeError:
+        # PyQt5: direct attribute on Qt
+        return getattr(Qt, name)
