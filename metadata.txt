@@ -26,7 +26,7 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
-  Version 2.16.0
+  Version 2.16.0 (2026-01-26)
   - [feature] Added generation of ISOXML files
   - [bug] fixed issues regarding QT5/QT6 issues 
   Version 2.15.0 (2025-10-12)
