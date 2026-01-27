@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.15
+version=2.16.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 supportsQt6=True
@@ -26,6 +26,9 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.16.0
+  - [feature] Added generation of ISOXML files
+  - [bug] fixed issues regarding QT5/QT6 issues 
   Version 2.15.0 (2025-10-12)
   - [feature] Added compability with QT6 and QGIS4
   Version 2.14.1 (2025-10-12)
