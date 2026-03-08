@@ -77,7 +77,6 @@ jobs:
       shell: cmd
       run: |
         call C:\OSGeo4W\bin\o4w_env.bat
-        call C:\OSGeo4W\bin\py3_env.bat
         set PYTHONPATH=C:\OSGeo4W\apps\qgis\python;%PYTHONPATH%
         set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
         python3 -m pip install --ignore-installed -r requirements_dev.txt
@@ -86,7 +85,7 @@ jobs:
       shell: cmd
       run: |
         call C:\OSGeo4W\bin\o4w_env.bat
-        call C:\OSGeo4W\bin\py3_env.bat
         set PYTHONPATH=C:\OSGeo4W\apps\qgis\python;%PYTHONPATH%;%CD%
         set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
+        set QT_QPA_PLATFORM=offscreen
         python3 -m pytest tests -s
