@@ -15,21 +15,24 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  build-linux:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        qgis-image: ['qgis/qgis:stable', 'qgis/qgis:latest']
+      fail-fast: false
 
     steps:
     - uses: actions/checkout@v3
     - name: Pull qgis image
-      run: docker pull qgis/qgis:stable
+      run: docker pull ${{ matrix.qgis-image }}
 
     - name: Pip install
       run: |
         docker run --name qgis_container \
           --volume $(pwd):/app \
           -w=/app \
-          qgis/qgis:stable sh -c "
+          ${{ matrix.qgis-image }} sh -c "
             python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
           "
         docker commit qgis_container qgis_with_deps
@@ -46,3 +49,37 @@ jobs:
           export PYTHONPATH=\$PYTHONPATH:/app && \
           xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s
         "
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install QGIS via OSGeo4W
+      shell: cmd
+      run: |
+        curl -L -o osgeo4w-setup.exe https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe
+        start /wait osgeo4w-setup.exe ^
+          --autoaccept --advanced --arch x86_64 ^
+          --root C:\OSGeo4W ^
+          --site https://download.osgeo.org/osgeo4w/v2 ^
+          --packages qgis-full ^
+          --quiet-mode
+        if not exist C:\OSGeo4W\bin\qgis-bin.exe (
+          echo QGIS installation failed
+          exit /b 1
+        )
+
+    - name: Install test dependencies
+      shell: cmd
+      run: |
+        call C:\OSGeo4W\bin\o4w_env.bat
+        python3 -m pip install --ignore-installed -r requirements_dev.txt
+
+    - name: Run tests
+      shell: cmd
+      run: |
+        call C:\OSGeo4W\bin\o4w_env.bat
+        set PYTHONPATH=%PYTHONPATH%;%CD%
+        python3 -m pytest tests -s
