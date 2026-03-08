@@ -21,6 +21,7 @@ jobs:
       matrix:
         qgis-image: ['qgis/qgis:stable', 'qgis/qgis:latest']
       fail-fast: false
+      max-parallel: 1
 
     steps:
     - uses: actions/checkout@v3
@@ -51,6 +52,7 @@ jobs:
         "
 
   build-windows:
+    needs: build-linux
     runs-on: windows-latest
 
     steps:
