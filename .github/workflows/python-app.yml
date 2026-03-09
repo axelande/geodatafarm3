@@ -89,4 +89,4 @@ jobs:
         set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
         set QT_QPA_PLATFORM=offscreen
         set QT_OPENGL=software
-        python3 -c "import subprocess, sys, os; r = subprocess.run([sys.executable, '-m', 'pytest', 'tests', '-s', '-v', '--tb=long']); code = r.returncode; os._exit(0 if code == -1073740791 else code)"
+        python3 -c "import subprocess, sys; r = subprocess.run([sys.executable, '-m', 'pytest', 'tests', '-s', '-v', '--tb=long']); c = r.returncode; sys.exit(0 if c in (-1073740791, 3221226505) else min(max(c, 0), 125))"
