@@ -2,10 +2,8 @@ name: Test plugin
 
 on:
   schedule:
-    # runs once a week
-    # - cron: '0 6 * * 0'
-    # runs every day
-    - cron: '0 12 * * *'
+    - cron: '0 12 * * *'    # daily: ubuntu stable
+    - cron: '0 6 * * 0'     # weekly (sunday): ubuntu latest + windows
   push:
     branches: [ "master", "try_ci-1" ]
   pull_request:
@@ -15,45 +13,64 @@ permissions:
   contents: read
 
 jobs:
-  # build-linux:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       qgis-image: ['qgis/qgis:stable', 'qgis/qgis:latest']
-  #     fail-fast: false
-  #     max-parallel: 1
+  build-linux-stable:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Pull qgis image
-  #     run: docker pull ${{ matrix.qgis-image }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Pull qgis image
+      run: docker pull qgis/qgis:stable
 
-  #   - name: Pip install
-  #     run: |
-  #       docker run --name qgis_container \
-  #         --volume $(pwd):/app \
-  #         -w=/app \
-  #         ${{ matrix.qgis-image }} sh -c "
-  #           python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
-  #         "
-  #       docker commit qgis_container qgis_with_deps
+    - name: Pip install
+      run: |
+        docker run --name qgis_container \
+          --volume $(pwd):/app \
+          -w=/app \
+          qgis/qgis:stable sh -c "
+            python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
+          "
+        docker commit qgis_container qgis_with_deps
 
-  #   - name: Debug - List directory
-  #     run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "ls -la /app"
+    - name: Run tests
+      run: |
+        docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "
+          export PYTHONPATH=\$PYTHONPATH:/app && \
+          xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s
+        "
 
-  #   - name: Debug - Print PYTHONPATH
-  #     run: docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "echo \$PYTHONPATH"
+  build-linux-latest:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'schedule' || github.event.schedule == '0 6 * * 0'
 
-  #   - name: Run tests
-  #     run: |
-  #       docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "
-  #         export PYTHONPATH=\$PYTHONPATH:/app && \
-  #         xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s
-  #       "
+    needs: build-linux-stable
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Pull qgis image
+      run: docker pull qgis/qgis:latest
+
+    - name: Pip install
+      run: |
+        docker run --name qgis_container \
+          --volume $(pwd):/app \
+          -w=/app \
+          qgis/qgis:latest sh -c "
+            python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
+          "
+        docker commit qgis_container qgis_with_deps
+
+    - name: Run tests
+      run: |
+        docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "
+          export PYTHONPATH=\$PYTHONPATH:/app && \
+          xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s
+        "
 
   build-windows:
-    # needs: build-linux
     runs-on: windows-latest
+    if: github.event_name != 'schedule' || github.event.schedule == '0 6 * * 0'
+
+    needs: build-linux-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -89,4 +106,4 @@ jobs:
         set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
         set QT_QPA_PLATFORM=offscreen
         set QT_OPENGL=software
-        python3 -c "import subprocess, sys; r = subprocess.run([sys.executable, '-m', 'pytest', 'tests', '-s', '-v', '--tb=long']); c = r.returncode; sys.exit(0 if c in (-1073740791, 3221226505) else min(max(c, 0), 125))"
+        python3 -c "import subprocess, sys; r = subprocess.run([sys.executable, '-m', 'pytest', 'tests', '-s']); c = r.returncode; sys.exit(0 if c in (-1073740791, 3221226505) else min(max(c, 0), 125))"
