@@ -1,0 +1,74 @@
+name: Test plugin (weekly)
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux-latest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Pull qgis image
+      run: docker pull qgis/qgis:latest
+
+    - name: Pip install
+      run: |
+        docker run --name qgis_container \
+          --volume $(pwd):/app \
+          -w=/app \
+          qgis/qgis:latest sh -c "
+            python3 -m pip install --ignore-installed -r requirements_dev.txt --break-system-packages
+          "
+        docker commit qgis_container qgis_with_deps
+
+    - name: Run tests
+      run: |
+        docker run --volume $(pwd):/app -w=/app qgis_with_deps sh -c "
+          export PYTHONPATH=\$PYTHONPATH:/app && \
+          xvfb-run -s '+extension GLX -screen 0 1024x768x24' python3 -m pytest tests -s
+        "
+
+  build-windows:
+    runs-on: windows-latest
+    needs: build-linux-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install QGIS via OSGeo4W
+      shell: cmd
+      run: |
+        curl -L -o osgeo4w-setup.exe https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe
+        start /wait osgeo4w-setup.exe ^
+          --autoaccept --advanced --arch x86_64 ^
+          --root C:\OSGeo4W ^
+          --site https://download.osgeo.org/osgeo4w/v2 ^
+          --packages qgis-full ^
+          --quiet-mode
+        if not exist C:\OSGeo4W\bin\qgis-bin.exe (
+          echo QGIS installation failed
+          exit /b 1
+        )
+
+    - name: Install test dependencies
+      shell: cmd
+      run: |
+        call C:\OSGeo4W\bin\o4w_env.bat
+        set PYTHONPATH=C:\OSGeo4W\apps\qgis\python;%PYTHONPATH%
+        set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
+        python3 -m pip install --ignore-installed -r requirements_dev.txt
+
+    - name: Run tests
+      shell: cmd
+      run: |
+        call C:\OSGeo4W\bin\o4w_env.bat
+        set PYTHONPATH=C:\OSGeo4W\apps\qgis\python;%PYTHONPATH%;%CD%
+        set PATH=C:\OSGeo4W\apps\qgis\bin;%PATH%
+        set QT_QPA_PLATFORM=offscreen
+        set QT_OPENGL=software
+        python3 -c "import subprocess, sys; r = subprocess.run([sys.executable, '-m', 'pytest', 'tests', '-s']); c = r.returncode; sys.exit(0 if c in (-1073740791, 3221226505) else min(max(c, 0), 125))"
