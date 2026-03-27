@@ -1,6 +1,6 @@
 from qgis.PyQt.QtWidgets import QAbstractItemView, QFileDialog, QHeaderView, QSizePolicy
-from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QFont, QKeySequence
+from qgis.PyQt.QtCore import Qt, QEvent
 
 
 def _size_policy(policy_name: str):
@@ -118,3 +118,23 @@ def _item_data_role(name: str):
     except AttributeError:
         # PyQt5: direct attribute on Qt
         return getattr(Qt, name)
+
+
+def _event_type(name: str):
+    """Return a QEvent type enum compatible with PyQt5/PyQt6."""
+    try:
+        # PyQt6: Type namespace
+        return getattr(QEvent.Type, name)
+    except AttributeError:
+        # PyQt5: direct attribute on QEvent
+        return getattr(QEvent, name)
+
+
+def _key_sequence(name: str):
+    """Return a QKeySequence standard key compatible with PyQt5/PyQt6."""
+    try:
+        # PyQt6: StandardKey namespace
+        return getattr(QKeySequence.StandardKey, name)
+    except AttributeError:
+        # PyQt5: direct attribute on QKeySequence
+        return getattr(QKeySequence, name)

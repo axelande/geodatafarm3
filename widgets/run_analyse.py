@@ -25,7 +25,8 @@ from typing import Self
 import os
 import io
 import csv
-from qgis.PyQt import QtWidgets, uic, QtCore, QtGui
+from qgis.PyQt import QtWidgets, uic
+from support_scripts.qt_data import _event_type, _key_sequence
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'Run_analyse_base.ui'))
@@ -45,8 +46,8 @@ class RunAnalyseDialog(QtWidgets.QDialog, FORM_CLASS):
         self.TVValues.installEventFilter(self)
 
     def eventFilter(self, source, event):
-        if (event.type() == QtCore.QEvent.KeyPress and
-            event.matches(QtGui.QKeySequence.Copy)):
+        if (event.type() == _event_type('KeyPress') and
+            event.matches(_key_sequence('Copy'))):
             self.copySelection()
             return True
         return super(RunAnalyseDialog, self).eventFilter(source, event)
