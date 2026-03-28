@@ -43,6 +43,11 @@ from qgis.core import QgsApplication, QgsMessageLog, Qgis
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
 from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
+
+# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+if not hasattr(QMessageBox, 'Yes'):
+    QMessageBox.Yes = QMessageBox.StandardButton.Yes
+    QMessageBox.No = QMessageBox.StandardButton.No
 from psycopg2 import IntegrityError
 import os
 
@@ -352,11 +357,11 @@ class GeoDataFarm:
             if self.test_mode:
                 return False
             else:
-                from support_scripts.qt_data import _message_box_button
-                ret = QMessageBox().question(None, 'Message',
+                qm = QMessageBox()
+                ret = qm.question(None, 'Message',
                                 self.tr("The name of the data set already exist in your database, would you like to replace it?"),
-                                _message_box_button('Yes'), _message_box_button('No'))
-                if ret == _message_box_button('No'):
+                                qm.Yes, qm.No)
+                if ret == qm.No:
                     return False
                 else:
                     self.db.execute_sql(

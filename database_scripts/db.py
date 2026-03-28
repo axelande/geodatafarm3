@@ -10,6 +10,11 @@ import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
+
+# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+if not hasattr(QMessageBox, 'Yes'):
+    QMessageBox.Yes = QMessageBox.StandardButton.Yes
+    QMessageBox.No = QMessageBox.StandardButton.No
 try:
     from ..support_scripts.__init__ import TR
 except ImportError:
@@ -187,12 +192,12 @@ class DB:
         res = self.execute_and_return(sql)
         if res[0][0] > 0:
             if ask_replace:
-                from support_scripts.qt_data import _message_box_button
-                res_qm = QMessageBox().question(None, self.tr('Message'),
+                qm = QMessageBox
+                res_qm = qm().question(None, self.tr('Message'),
                                 self.tr(
                                     "The name of the data set already exist in your database, would you like to replace it? (If not please rename the file)"),
-                                _message_box_button('Yes'), _message_box_button('No'))
-                if res_qm == _message_box_button('No'):
+                                qm.Yes, qm.No)
+                if res_qm == qm.No:
                     return True
                 else:
                     self.execute_sql("""DROP TABLE {schema}.{tbl};

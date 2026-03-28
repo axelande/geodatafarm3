@@ -1,4 +1,4 @@
-from qgis.PyQt.QtWidgets import QAbstractItemView, QFileDialog, QHeaderView, QMessageBox, QSizePolicy
+from qgis.PyQt.QtWidgets import QAbstractItemView, QFileDialog, QHeaderView, QSizePolicy
 from qgis.PyQt.QtGui import QFont, QKeySequence
 from qgis.PyQt.QtCore import Qt, QEvent
 
@@ -118,16 +118,6 @@ def _item_data_role(name: str):
     except AttributeError:
         # PyQt5: direct attribute on Qt
         return getattr(Qt, name)
-
-
-def _message_box_button(name: str):
-    """Return a QMessageBox standard button compatible with PyQt5/PyQt6."""
-    try:
-        # PyQt6: StandardButton namespace
-        return getattr(QMessageBox.StandardButton, name)
-    except AttributeError:
-        # PyQt5: direct attribute on QMessageBox
-        return getattr(QMessageBox, name)
 
 
 def _event_type(name: str):

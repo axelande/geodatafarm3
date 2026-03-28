@@ -9,6 +9,11 @@ from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from psycopg2 import IntegrityError, InternalError
+
+# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+if not hasattr(QMessageBox, 'Yes'):
+    QMessageBox.Yes = QMessageBox.StandardButton.Yes
+    QMessageBox.No = QMessageBox.StandardButton.No
 from ..widgets.add_field import AddFieldFileDialog
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
 from ..support_scripts.__init__ import TR
@@ -137,11 +142,11 @@ class AddField:
             if item.checkState() == 2:
                 field_name = item.text()
                 if not self.parent.test_mode:
-                    from support_scripts.qt_data import _message_box_button
-                    res = QMessageBox().question(None, self.tr('Question'),
+                    qm = QMessageBox()
+                    res = qm.question(None, self.tr('Question'),
                                     self.tr("Do you want to delete ") + str(field_name),
-                                    _message_box_button('Yes'), _message_box_button('No'))
-                    if res == _message_box_button('No'):
+                                    qm.Yes, qm.No)
+                    if res == qm.No:
                         continue
                 field_names = []
                 for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
