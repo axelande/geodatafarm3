@@ -79,7 +79,9 @@ class CreateGuideFile:
         lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil', 'other']
         self.CGF.CBDataSource.clear()
         self.CGF.CBDataSource.addItems(lw_list)
-        self.CGF.CBDataSource.activated[str].connect(self.possible_attr)
+        self.CGF.CBDataSource.activated.connect(
+            lambda idx: self.possible_attr(self.CGF.CBDataSource.currentText())
+        )
 
     def possible_attr(self: Self, schema: str) -> None:
         """Adds the name of the table which the user than can use as base for

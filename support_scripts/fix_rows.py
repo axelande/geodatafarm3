@@ -52,7 +52,9 @@ class RowFixer:
                     continue
                 names.append(schema + '.' + str(name))
         self.FRD.CBDataSource.addItems(names)
-        self.FRD.CBDataSource.activated[str].connect(self.set_possible_columns)
+        self.FRD.CBDataSource.activated.connect(
+            lambda idx: self.set_possible_columns(self.FRD.CBDataSource.currentText())
+        )
 
     def set_possible_columns(self, text):
         """Adds the columns that could be used.

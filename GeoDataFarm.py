@@ -542,7 +542,6 @@ class GeoDataFarm:
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
     def run(self: Self, test_mode: bool=False) -> None:
-        print("he2j3")
         """Run method that loads and starts the plugin"""
         # Ensure GUI items are initialized (useful when calling `run()` directly)
         if not getattr(self, 'gui_initialized', False):

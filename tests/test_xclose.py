@@ -1,9 +1,10 @@
 import pytest
 from . import gdf, GeoDataFarm
+from support_scripts.qt_data import _check_state
 
 # @pytest.mark.depends(on=['remove_sec_field'], scope='session')
 def test_remove_crop(gdf: GeoDataFarm):
-    gdf.dock_widget.LWCrops.itemAt(0, 0).setCheckState(2)
+    gdf.dock_widget.LWCrops.itemAt(0, 0).setCheckState(_check_state('Checked'))
     gdf.dock_widget.PBRemoveCrop.click()
 
 # @pytest.mark.depends(on=['import_text'], name='remove_text')
@@ -13,7 +14,7 @@ def test_remove_test_field_datasets(gdf: GeoDataFarm):
     found = False
     for i, text in enumerate(items):
         if 'test_field' in text or 'tabbehus' in text:
-            gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(2)
+            gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(_check_state('Checked'))
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
     assert found
@@ -25,7 +26,7 @@ def test_remove_iso_dataset(gdf: GeoDataFarm):
     found = False
     for i, text in enumerate(items):
         if 'test_iso' in text:
-            gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(2)
+            gdf.tabel_mgmt.TMD.SATables.item(i).setCheckState(_check_state('Checked'))
             found = True
     gdf.tabel_mgmt.TMD.pButRemove.click()
     assert found
@@ -37,6 +38,6 @@ def test_remove_xfield(gdf: GeoDataFarm, field_name):
     items = [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
     for i, text in enumerate(items):
         if field_name in text:
-            gdf.dock_widget.LWFields.item(i).setCheckState(2)
+            gdf.dock_widget.LWFields.item(i).setCheckState(_check_state('Checked'))
     gdf.add_field.remove_field()
     assert field_name not in [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
