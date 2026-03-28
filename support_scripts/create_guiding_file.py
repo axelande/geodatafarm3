@@ -4,7 +4,7 @@ import os
 
 from osgeo import osr, ogr
 from psycopg2 import ProgrammingError
-from qgis.PyQt.QtCore import QVariant, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog, QComboBox
 from qgis.core import QgsProject, QgsVectorLayer
@@ -266,9 +266,9 @@ class CreateGuideFile:
         layer = ds.CreateLayer('', None, ogr.wkbPolygon)
         # Add one attribute
         if float_type:
-            fd = ogr.FieldDefn(attr_name[:10], QVariant.Double)
+            fd = ogr.FieldDefn(attr_name[:10], ogr.OFTReal)
         else:
-            fd = ogr.FieldDefn(attr_name[:10], QVariant.Int)
+            fd = ogr.FieldDefn(attr_name[:10], ogr.OFTInteger)
         layer.CreateField(fd)
         defn = layer.GetLayerDefn()
         for poly, value in data:

@@ -352,11 +352,11 @@ class GeoDataFarm:
             if self.test_mode:
                 return False
             else:
-                qm = QMessageBox()
-                ret = qm.question(None, 'Message',
+                from support_scripts.qt_data import _message_box_button
+                ret = QMessageBox().question(None, 'Message',
                                 self.tr("The name of the data set already exist in your database, would you like to replace it?"),
-                                qm.Yes, qm.No)
-                if ret == qm.No:
+                                _message_box_button('Yes'), _message_box_button('No'))
+                if ret == _message_box_button('No'):
                     return False
                 else:
                     self.db.execute_sql(

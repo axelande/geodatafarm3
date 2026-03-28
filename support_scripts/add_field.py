@@ -137,11 +137,11 @@ class AddField:
             if item.checkState() == 2:
                 field_name = item.text()
                 if not self.parent.test_mode:
-                    qm = QMessageBox()
-                    res = qm.question(None, self.tr('Question'),
+                    from support_scripts.qt_data import _message_box_button
+                    res = QMessageBox().question(None, self.tr('Question'),
                                     self.tr("Do you want to delete ") + str(field_name),
-                                    qm.Yes, qm.No)
-                    if res == qm.No:
+                                    _message_box_button('Yes'), _message_box_button('No'))
+                    if res == _message_box_button('No'):
                         continue
                 field_names = []
                 for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
