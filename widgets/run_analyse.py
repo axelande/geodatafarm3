@@ -26,7 +26,7 @@ import os
 import io
 import csv
 from qgis.PyQt import QtWidgets, uic
-from support_scripts.qt_data import _event_type, _key_sequence
+from ..support_scripts.qt_data import _event_type, _key_sequence
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'Run_analyse_base.ui'))

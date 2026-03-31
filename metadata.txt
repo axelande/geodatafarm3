@@ -11,10 +11,9 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=2.16.1
+version=2.16.2
 author=Axel Horteborn
 email=geodatafarm@gmail.com
-supportsQt6=True
 
 about=This plugin is designed for farmers as both a log for various field operations and a tool to analyze the yield impact of different parameters. It supports all crop types and field parameters, though it has been primarily tested on potatoes. The plugin requires third-party packages, which are typically installed by default with the QGIS plugin QPIP. A stable internet connection is necessary for proper functionality. For questions, feature requests, or modifications, please contact: geodatafarm@gmail.com . The plugin is completely free. If you find it useful, please consider sponsoring the project on [github](https://github.com/sponsors/axelande) to support ongoing development .
 
@@ -26,6 +25,8 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 2.16.2 (2026-03-31)
+  - [bug] fixed relative path issue for support_scripts
   Version 2.16.1 (2026-03-28)
   - [bug] fixed qt5/qt6 related issues
   Version 2.16.0 (2026-01-26)

@@ -3,7 +3,7 @@ import json
 
 
 class MyRainDancer:
-    def __init__(self, client='000001', username='Demo', password='Demo'):
+    def __init__(self, client='', username='', password=''):
         """Creates a Raindancer object with auth
 
         Parameters
