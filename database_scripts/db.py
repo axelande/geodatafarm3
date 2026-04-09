@@ -353,6 +353,44 @@ class DB:
             columns.append(col[0])
         return columns
 
+    def get_numeric_columns(self: Self, table: str, schema: str,
+                            exclude: str = "''") -> list:
+        """Get only numeric columns of a table.
+
+        Parameters
+        ----------
+        table: str
+        schema: str
+        exclude: str, optional, string with comma sep names
+
+        Returns
+        -------
+        list
+            A list of numeric column names
+        """
+        sql = """select
+        a.attname as column_name
+        from
+        pg_class t
+        JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,
+        pg_attribute a,
+        pg_type ty
+        where
+        a.attrelid = t.oid
+        and a.atttypid = ty.oid
+        and t.relkind = 'r'
+        and t.relname = '{table}'
+        and n.nspname = '{schema}'
+        and attisdropped is False
+        and attstattarget < 0
+        and a.attname not in ({exclude})
+        and ty.typname in ('int2', 'int4', 'int8', 'float4', 'float8', 'numeric')
+        group by t.relname,
+        a.attname order by a.attname""".format(table=table, schema=schema,
+                                               exclude=exclude)
+        cols = self.execute_and_return(sql)
+        return [col[0] for col in cols]
+
     def update_row_id(self, schema, table):
         """Update the field_row_id
         Parameters

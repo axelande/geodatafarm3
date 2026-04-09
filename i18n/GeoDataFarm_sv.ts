@@ -429,220 +429,211 @@ inträffade, här: {t}</translation>
 <context>
     <name>CreateGuideFile</name>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="145"/>
-        <source>No row selected!</source>
-        <translation>Ingen rad vald!</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="184"/>
-        <source>The selected data must be integers or floats!</source>
-        <translation>Den valda datan måste vara heltal eller decimaltal!</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="307"/>
-        <source>Help:</source>
-        <translation>Hjälp:</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="169"/>
-        <source>You need to select at least one row</source>
-        <translation>Du måste välja minst en rad</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="213"/>
-        <source>Float (1.234)</source>
-        <translation>Decimaltal (1,234)</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="162"/>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="163"/>
-        <source>A field must be selected</source>
-        <translation>Ett fält måste vara valt</translation>
+        <source>Float (1.234)</source>
+        <translation>Decimaltal (1,234)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="206"/>
-        <source>Cell size must be integer</source>
-        <translation>Cell storleken mpste vara angivet som ett heltal</translation>
+        <source>Please select a row to remove.</source>
+        <translation>Välj en rad att ta bort.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="307"/>
-        <source>Here you create a guide file.
-1. Start with select which data you want to base the guide file on in the top left corner.
-2. Select your field.
-3. Select which of the data sets and attributes you want to use as base of calculation.
-4. Now, change the equation to the right (default 100 + [0] * 2) to fit your idea and press update. (use the equivalent [number] to include each data set)
-5. When you press update the max and min value should be updated.
-6. Depending on your machine (that you want to feed with the guide file) you might want to use integers or float values.
-7. The attribute name and File name is for you, the output path is where the guide file will be stored.
-8. Cell size, how big grid you want for the guide file, EPSG let it be 4326 unless your machine require it!
-9. There is also an option for you if you want to rotate your grid.
-10. Finally press Create guide file and you are all set to go!</source>
-        <translation>Här skapar du en guidefil:
+        <source>The equation is empty.</source>
+        <translation>Ekvationen är tom.</translation>
+    </message>
+    <message>
+        <source>The equation must contain at least one attribute reference like [0], [1], etc.</source>
+        <translation>Ekvationen måste innehålla minst en attributreferens som [0], [1] osv.</translation>
+    </message>
+    <message>
+        <source>The equation references {refs} but only {n} attribute(s) are selected ([0] to [{max}]).
 
-1. Börja med att välja vilka data du vill basera guidefilen på i det övre vänstra hörnet.
-2. Välj ditt fält.
-3. Identifiera vilka datamängder och attribut du vill använda som grund för dina beräkningar.
-4. Anpassa ekvationen till höger (standard: 100 + [0] * 2) för att passa din idé och tryck på “Uppdatera”. (Använd motsvarande [nummer] för att inkludera varje datamängd.)
-5. När du trycker på “Uppdatera” bör max- och minvärdena uppdateras.
-6. Beroende på din maskin (den du vill mata med guidefilen) kanske du vill använda heltal eller flyttalsvärden.
-7. Attributnamnet och filnamnet är för dig, och utmatningsvägen är där guidefilen kommer att sparas.
-8. Cellyta, hur stort rutnät vill du ha för guidefilen, låt EPSG vara 4326 om inte din maskin kräver annat!
-9. Det finns också en möjlighet för dig att rotera rutnätet.
-10. Tryck slutligen på “Skapa guidefil”, och du är redo att köra!</translation>
+Please remove the invalid references or add more attributes.</source>
+        <translation>Ekvationen refererar till {refs} men bara {n} attribut är valda ([0] till [{max}]).
+
+Ta bort de ogiltiga referenserna eller lägg till fler attribut.</translation>
+    </message>
+    <message>
+        <source>Please select a field in Step 1 before calculating.</source>
+        <translation>Välj ett fält i Steg 1 innan du beräknar.</translation>
+    </message>
+    <message>
+        <source>Please select at least one attribute in Step 2 before calculating.</source>
+        <translation>Välj minst ett attribut i Steg 2 innan du beräknar.</translation>
+    </message>
+    <message>
+        <source>Could not query attribute “{attr}” from “{tbl}”.
+
+Make sure the selected attribute contains numeric data.</source>
+        <translation>Kunde inte hämta attribut “{attr}” från “{tbl}”.
+
+Kontrollera att det valda attributet innehåller numeriska data.</translation>
+    </message>
+    <message>
+        <source>No data found for attribute “{attr}” in “{tbl}” for field “{field}”.
+
+The table may be empty or have no data in this field.</source>
+        <translation>Ingen data hittades för attribut “{attr}” i “{tbl}” för fält “{field}”.
+
+Tabellen kan vara tom eller sakna data för detta fält.</translation>
+    </message>
+    <message>
+        <source>The equation could not be evaluated.
+
+Please check that the equation syntax is valid and only uses numbers, operators (+, -, *, /), and attribute references like [0], [1].</source>
+        <translation>Ekvationen kunde inte beräknas.
+
+Kontrollera att ekvationens syntax är korrekt och bara använder siffror, operatorer (+, -, *, /) och attributreferenser som [0], [1].</translation>
+    </message>
+    <message>
+        <source>Cell size must be a whole number (e.g. 25).</source>
+        <translation>Cellstorleken måste vara ett heltal (t.ex. 25).</translation>
+    </message>
+    <message>
+        <source>&lt;ol&gt;&lt;li&gt;&lt;b&gt;Step 1&lt;/b&gt; — Select a &lt;b&gt;data source&lt;/b&gt; (e.g. harvest, plant) and a &lt;b&gt;field&lt;/b&gt;. The table list will filter to show only data for that field.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Step 2&lt;/b&gt; — Click an attribute in the left table to add it to the selected list. Each gets a reference number like [0], [1].&lt;/li&gt;&lt;li&gt;Write your &lt;b&gt;equation&lt;/b&gt; using these references, e.g. &lt;code&gt;100 + [0] * 2&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Press &lt;b&gt;Calculate min/max&lt;/b&gt; to preview the output range.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Step 3&lt;/b&gt; — Set the output options:&lt;br/&gt;&amp;bull; &lt;b&gt;Data type&lt;/b&gt;: Integer or Float depending on your machine&lt;br/&gt;&amp;bull; &lt;b&gt;Cell size&lt;/b&gt;: Grid resolution in meters&lt;br/&gt;&amp;bull; &lt;b&gt;EPSG&lt;/b&gt;: Leave as 4326 unless your machine requires another CRS&lt;br/&gt;&amp;bull; &lt;b&gt;Rotation&lt;/b&gt;: Rotate the grid if needed&lt;/li&gt;&lt;li&gt;Select an &lt;b&gt;output folder&lt;/b&gt; and press &lt;b&gt;Create Guide File&lt;/b&gt;.&lt;/li&gt;&lt;/ol&gt;</source>
+        <translation>&lt;ol&gt;&lt;li&gt;&lt;b&gt;Steg 1&lt;/b&gt; — Välj en &lt;b&gt;datakälla&lt;/b&gt; (t.ex. skörd, plantering) och ett &lt;b&gt;fält&lt;/b&gt;. Tabellistan filtreras för att bara visa data för det fältet.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Steg 2&lt;/b&gt; — Klicka på ett attribut i den vänstra tabellen för att lägga till det. Varje attribut får ett referensnummer som [0], [1].&lt;/li&gt;&lt;li&gt;Skriv din &lt;b&gt;ekvation&lt;/b&gt; med dessa referenser, t.ex. &lt;code&gt;100 + [0] * 2&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Tryck &lt;b&gt;Beräkna min/max&lt;/b&gt; för att förhandsgranska resultatintervallet.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Steg 3&lt;/b&gt; — Ställ in utdataalternativen:&lt;br/&gt;&amp;bull; &lt;b&gt;Datatyp&lt;/b&gt;: Heltal eller decimaltal beroende på din maskin&lt;br/&gt;&amp;bull; &lt;b&gt;Cellstorlek&lt;/b&gt;: Rutnätsupplösning i meter&lt;br/&gt;&amp;bull; &lt;b&gt;EPSG&lt;/b&gt;: Låt vara 4326 om inte din maskin kräver annat&lt;br/&gt;&amp;bull; &lt;b&gt;Rotation&lt;/b&gt;: Rotera rutnätet vid behov&lt;/li&gt;&lt;li&gt;Välj en &lt;b&gt;utdatamapp&lt;/b&gt; och tryck &lt;b&gt;Skapa styrfil&lt;/b&gt;.&lt;/li&gt;&lt;/ol&gt;</translation>
     </message>
 </context>
 <context>
     <name>CreateGuideFileBase</name>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="191"/>
-        <source>Cell size (m):</source>
-        <translation>Cell storlek (m):</translation>
+        <source>Step 1: Select data source and field</source>
+        <translation>Steg 1: Välj datakälla och fält</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="32"/>
         <source>Data source:</source>
-        <translation>Data källa:</translation>
+        <translation>Datakälla:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="128"/>
-        <source>100 +  [0] *2 </source>
-        <translation>100 + [0] *2 </translation>
+        <source>Field:</source>
+        <translation>Fält:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="163"/>
-        <source>EPSG:</source>
-        <translation>EPSG:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="71"/>
-        <source>Update</source>
-        <translation>Updatera</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="57"/>
-        <source>Max value: Not selected</source>
-        <translation>Max värde: Ej valt</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="233"/>
-        <source>4326</source>
-        <translation>4326</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="178"/>
-        <source>Integer (1)</source>
-        <translation>Heltal</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="183"/>
-        <source>Float (1.234)</source>
-        <translation>Decimaltal (1,234)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="64"/>
-        <source>Attribute:</source>
-        <translation>Attribut:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="78"/>
-        <source>Write your equation here, 
-denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</source>
-        <translation>Skriv din ekvation här, 
-benämn ditt attribut som [0], [1] etc.:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="219"/>
-        <source>25</source>
-        <translation>25</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="47"/>
         <source>-- Select base file --</source>
-        <translation>-- Välj fil att utgå från --</translation>
+        <translation>-- Välj datakälla --</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="138"/>
-        <source>&lt;--</source>
-        <translation>&lt;--</translation>
+        <source>-- Select field --</source>
+        <translation>-- Välj fält --</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="149"/>
-        <source>Store to a file:</source>
-        <translation>Spara till fil:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="212"/>
-        <source>Data type:</source>
-        <translation>Data typ:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="115"/>
-        <source>Min value: Not selected</source>
-        <translation>Min värde: Ej valt</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="198"/>
-        <source>Setting_distance</source>
-        <translation>satt_avstand</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="240"/>
-        <source>New attr name:</source>
-        <translation>Nytt attributnamn:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="250"/>
-        <source>Select Outputpath</source>
-        <translation>Välj plats att spara filen på</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="267"/>
-        <source>Create Guide File</source>
-        <translation>Skapa styrfil</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="257"/>
-        <source>Path not selected</source>
-        <translation>Plats att spara på är ej definerad</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="170"/>
-        <source>File name</source>
-        <translation>Fil namn</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="226"/>
-        <source>guide_file</source>
-        <translation>styrfil</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="156"/>
-        <source>Rotation: (deg):</source>
-        <translation>Rotatation (grad):</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="205"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="39"/>
         <source>Help</source>
         <translation>Hjälp</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="14"/>
-        <source>Create guide file</source>
+        <source>Step 2: Select attributes and build equation</source>
+        <translation>Steg 2: Välj attribut och bygg ekvation</translation>
+    </message>
+    <message>
+        <source>Available attributes (click to add):</source>
+        <translation>Tillgängliga attribut (klicka för att lägga till):</translation>
+    </message>
+    <message>
+        <source>Selected attributes:</source>
+        <translation>Valda attribut:</translation>
+    </message>
+    <message>
+        <source>Remove selected</source>
+        <translation>Ta bort markerad</translation>
+    </message>
+    <message>
+        <source>Equation (use [0], [1] etc. for attributes):</source>
+        <translation>Ekvation (använd [0], [1] osv. för attribut):</translation>
+    </message>
+    <message>
+        <source>100 +  [0] *2 </source>
+        <translation>100 + [0] *2 </translation>
+    </message>
+    <message>
+        <source>Calculate min/max</source>
+        <translation>Beräkna min/max</translation>
+    </message>
+    <message>
+        <source>Max value: Not selected</source>
+        <translation>Maxvärde: Ej valt</translation>
+    </message>
+    <message>
+        <source>Min value: Not selected</source>
+        <translation>Minvärde: Ej valt</translation>
+    </message>
+    <message>
+        <source>Step 3: Configure output and create file</source>
+        <translation>Steg 3: Konfigurera utdata och skapa fil</translation>
+    </message>
+    <message>
+        <source>Data type:</source>
+        <translation>Datatyp:</translation>
+    </message>
+    <message>
+        <source>Integer (1)</source>
+        <translation>Heltal (1)</translation>
+    </message>
+    <message>
+        <source>Float (1.234)</source>
+        <translation>Decimaltal (1,234)</translation>
+    </message>
+    <message>
+        <source>Cell size (m):</source>
+        <translation>Cellstorlek (m):</translation>
+    </message>
+    <message>
+        <source>25</source>
+        <translation>25</translation>
+    </message>
+    <message>
+        <source>EPSG:</source>
+        <translation>EPSG:</translation>
+    </message>
+    <message>
+        <source>4326</source>
+        <translation>4326</translation>
+    </message>
+    <message>
+        <source>Rotation (deg):</source>
+        <translation>Rotation (grad):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>Attribute name:</source>
+        <translation>Attributnamn:</translation>
+    </message>
+    <message>
+        <source>Setting_distance</source>
+        <translation>satt_avstand</translation>
+    </message>
+    <message>
+        <source>File name:</source>
+        <translation>Filnamn:</translation>
+    </message>
+    <message>
+        <source>guide_file</source>
+        <translation>styrfil</translation>
+    </message>
+    <message>
+        <source>Output:</source>
+        <translation>Utdata:</translation>
+    </message>
+    <message>
+        <source>Select folder...</source>
+        <translation>Välj mapp...</translation>
+    </message>
+    <message>
+        <source>No path selected</source>
+        <translation>Ingen sökväg vald</translation>
+    </message>
+    <message>
+        <source>Create Guide File</source>
         <translation>Skapa styrfil</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="284"/>
-        <source>-- Select field --</source>
-        <translation>--- Välj fält ---</translation>
+        <source>Create guide file</source>
+        <translation>Skapa styrfil</translation>
     </message>
 </context>
 <context>

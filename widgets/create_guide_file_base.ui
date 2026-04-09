@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1120</width>
-    <height>552</height>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,162 +16,343 @@
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>
   </property>
-  <widget class="QWidget" name="gridLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>1101</width>
-     <height>555</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Data source:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="PBHelp">
-      <property name="text">
-       <string>Help</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="CBDataSource">
-      <item>
-       <property name="text">
-        <string>-- Select base file --</string>
+  <property name="styleSheet">
+   <string notr="true">
+/* === Global === */
+* {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 9pt;
+}
+
+/* === Buttons === */
+QPushButton {
+  background-color: #3574b0;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 8pt;
+}
+QPushButton:hover {
+  background-color: #2a5f8f;
+}
+QPushButton:pressed {
+  background-color: #1e4a6e;
+}
+QPushButton:disabled {
+  background-color: #b0b0b0;
+  color: #e0e0e0;
+}
+
+/* === Inputs === */
+QLineEdit, QPlainTextEdit, QTextEdit {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
+  border: 1px solid #3574b0;
+}
+
+/* === Combo boxes === */
+QComboBox {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+QComboBox:hover {
+  border: 1px solid #3574b0;
+}
+QComboBox::drop-down {
+  border: none;
+  width: 20px;
+}
+
+/* === Group boxes === */
+QGroupBox {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  margin-top: 8px;
+  padding-top: 8px;
+  font-weight: bold;
+  font-size: 8pt;
+}
+QGroupBox::title {
+  subcontrol-origin: margin;
+  left: 8px;
+  padding: 0 3px;
+}
+
+/* === Labels === */
+QLabel {
+  font-size: 8pt;
+}
+
+/* === Table === */
+QTableWidget, QTableView {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  gridline-color: #e0e0e0;
+}
+QHeaderView::section {
+  background-color: #f0f0f0;
+  border: none;
+  border-bottom: 1px solid #c0c0c0;
+  border-right: 1px solid #e0e0e0;
+  padding: 3px 6px;
+  font-weight: bold;
+  font-size: 8pt;
+}
+
+/* === Spin boxes === */
+QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <!-- ============================================ -->
+   <!-- Step 1: Select Data Source                    -->
+   <!-- ============================================ -->
+   <item>
+    <layout class="QHBoxLayout" name="topBarLayout">
+     <item>
+      <widget class="QGroupBox" name="groupStep1">
+       <property name="title">
+        <string>Step 1: Select data source and field</string>
        </property>
+       <layout class="QHBoxLayout" name="step1Layout">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Data source:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="CBDataSource">
+          <property name="minimumSize">
+           <size>
+            <width>180</width>
+            <height>0</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>-- Select base file --</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_field">
+          <property name="text">
+           <string>Field:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="CBFields">
+          <property name="minimumSize">
+           <size>
+            <width>180</width>
+            <height>0</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>-- Select field --</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="step1Spacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBHelp">
+          <property name="text">
+           <string>Help</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <!-- ============================================ -->
+   <!-- Step 2: Build Equation                        -->
+   <!-- ============================================ -->
+   <item>
+    <widget class="QGroupBox" name="groupStep2">
+     <property name="title">
+      <string>Step 2: Select attributes and build equation</string>
+     </property>
+     <layout class="QHBoxLayout" name="step2OuterLayout">
+      <!-- Left: Available attributes table -->
+      <item>
+       <layout class="QVBoxLayout" name="step2LeftLayout">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Available attributes (click to add):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="TWColumnNames">
+          <property name="minimumSize">
+           <size>
+            <width>350</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="locale">
+           <locale language="English" country="UnitedKingdom"/>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::AnyKeyPressed</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="3" column="3">
-       <widget class="QLabel" name="LMaxVal">
-        <property name="text">
-         <string>Max value: Not selected</string>
-        </property>
-       </widget>
+      <!-- Middle: Selected attributes + remove button -->
+      <item>
+       <layout class="QVBoxLayout" name="step2MidLayout">
+        <item>
+         <widget class="QLabel" name="label_selected">
+          <property name="text">
+           <string>Selected attributes:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="TWSelected">
+          <property name="minimumSize">
+           <size>
+            <width>350</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="locale">
+           <locale language="English" country="UnitedKingdom"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBRemParam">
+          <property name="locale">
+           <locale language="English" country="UnitedKingdom"/>
+          </property>
+          <property name="text">
+           <string>Remove selected</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Attribute:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QPushButton" name="PBUpdate">
-        <property name="text">
-         <string>Update</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Write your equation here, 
-denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" rowspan="4">
-       <widget class="QTableWidget" name="TWSelected">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" rowspan="4">
-       <widget class="QTableWidget" name="TWColumnNames">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::AnyKeyPressed</set>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="3">
-       <widget class="QLabel" name="LMinVal">
-        <property name="text">
-         <string>Min value: Not selected</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPlainTextEdit" name="TEEquation">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="plainText">
-         <string>100 +  [0] *2 </string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QPushButton" name="PBRemParam">
-        <property name="locale">
-         <locale language="English" country="UnitedKingdom"/>
-        </property>
-        <property name="text">
-         <string>&lt;--</string>
-        </property>
-       </widget>
+      <!-- Right: Equation + update + min/max -->
+      <item>
+       <layout class="QVBoxLayout" name="step2RightLayout">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Equation (use [0], [1] etc. for attributes):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="TEEquation">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="plainText">
+           <string>100 +  [0] *2 </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBUpdate">
+          <property name="text">
+           <string>Calculate min/max</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="LMaxVal">
+          <property name="text">
+           <string>Max value: Not selected</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="LMinVal">
+          <property name="text">
+           <string>Min value: Not selected</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="step2Spacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
-    </item>
-    <item row="4" column="0" colspan="2">
+    </widget>
+   </item>
+   <!-- ============================================ -->
+   <!-- Step 3: Output Settings                       -->
+   <!-- ============================================ -->
+   <item>
+    <widget class="QGroupBox" name="groupStep3">
+     <property name="title">
+      <string>Step 3: Configure output and create file</string>
+     </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
+       <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>Store to a file:</string>
+         <string>Data type:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>Rotation: (deg):</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>EPSG:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>File name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
+      <item row="0" column="1">
        <widget class="QComboBox" name="CBDataType">
         <item>
          <property name="text">
@@ -185,21 +366,42 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
         </item>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="0" column="2">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Cell size (m):</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="LEAttrName">
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="LECellSize">
         <property name="text">
-         <string>Setting_distance</string>
+         <string>25</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>EPSG:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLineEdit" name="LEEPSG">
+        <property name="text">
+         <string>4326</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Rotation (deg):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
        <widget class="QLineEdit" name="LERotation">
         <property name="text">
          <string>0</string>
@@ -207,58 +409,58 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Data type:</string>
+         <string>Attribute name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="LEAttrName">
+        <property name="text">
+         <string>Setting_distance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>File name:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QLineEdit" name="LECellSize">
-        <property name="text">
-         <string>25</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
        <widget class="QLineEdit" name="LEFileName">
         <property name="text">
          <string>guide_file</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="LEEPSG">
+      <item row="1" column="4">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>4326</string>
+         <string>Output:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>New attr name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
+      <item row="1" column="5">
        <widget class="QPushButton" name="PBSelectOutput">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Select Outputpath</string>
+         <string>Select folder...</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="1" column="6" colspan="2">
        <widget class="QLabel" name="LOutputPath">
         <property name="text">
-         <string>Path not selected</string>
+         <string>No path selected</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
+      <item row="2" column="6" colspan="2">
        <widget class="QPushButton" name="PBCreateFile">
         <property name="enabled">
          <bool>false</bool>
@@ -266,28 +468,17 @@ denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</string>
         <property name="text">
          <string>Create Guide File</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background-color: #2e7d32; font-weight: bold; padding: 6px 16px; }
+QPushButton:hover { background-color: #1b5e20; }
+QPushButton:disabled { background-color: #b0b0b0; color: #e0e0e0; font-weight: bold; }</string>
+        </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="CBFields">
-      <item>
-       <property name="text">
-        <string>-- Select field --</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <ui version="4.0">
  <class>CreateFarmDialog</class>
  <widget class="QDialog" name="CreateFarmDialog">
@@ -13,7 +13,150 @@
   <property name="windowTitle">
    <string>Create farm</string>
   </property>
-  <widget class="QWidget" name="formLayoutWidget">
+  <property name="styleSheet"><string notr="true">
+/* === Global === */
+* {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 9pt;
+}
+
+/* === Tab bars === */
+QTabWidget::pane {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  background: #ffffff;
+}
+QTabBar::tab {
+  background: #f0f0f0;
+  border: 1px solid #c0c0c0;
+  border-bottom: none;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 10px;
+  margin-right: 1px;
+  font-size: 8pt;
+}
+QTabBar::tab:selected {
+  background: #ffffff;
+  border-bottom: 2px solid #3574b0;
+  font-weight: bold;
+}
+QTabBar::tab:hover:!selected {
+  background: #e4e4e4;
+}
+
+/* === Buttons === */
+QPushButton {
+  background-color: #3574b0;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 8pt;
+}
+QPushButton:hover {
+  background-color: #2a5f8f;
+}
+QPushButton:pressed {
+  background-color: #1e4a6e;
+}
+QPushButton:disabled {
+  background-color: #b0b0b0;
+  color: #e0e0e0;
+}
+
+/* === Inputs === */
+QLineEdit, QPlainTextEdit, QTextEdit {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
+  border: 1px solid #3574b0;
+}
+
+/* === Combo boxes === */
+QComboBox {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+QComboBox:hover {
+  border: 1px solid #3574b0;
+}
+QComboBox::drop-down {
+  border: none;
+  width: 20px;
+}
+
+/* === Lists === */
+QListWidget {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+/* === Group boxes === */
+QGroupBox {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  margin-top: 8px;
+  padding-top: 8px;
+  font-weight: bold;
+  font-size: 8pt;
+}
+QGroupBox::title {
+  subcontrol-origin: margin;
+  left: 8px;
+  padding: 0 3px;
+}
+
+/* === Radio &amp; Check === */
+QRadioButton, QCheckBox {
+  spacing: 4px;
+  font-size: 8pt;
+}
+
+/* === Labels === */
+QLabel {
+  font-size: 8pt;
+}
+
+/* === Calendar === */
+QCalendarWidget {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+}
+
+/* === Table === */
+QTableWidget, QTableView {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  gridline-color: #e0e0e0;
+}
+QHeaderView::section {
+  background-color: #f0f0f0;
+  border: none;
+  border-bottom: 1px solid #c0c0c0;
+  border-right: 1px solid #e0e0e0;
+  padding: 3px 6px;
+  font-weight: bold;
+  font-size: 8pt;
+}
+
+/* === Spin boxes === */
+QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  background: #ffffff;
+}
+QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
+  border: 1px solid #3574b0;
+}
+</string></property><widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
      <x>9</x>
@@ -132,7 +275,7 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources />
  <connections>
   <connection>
    <sender>button_box</sender>

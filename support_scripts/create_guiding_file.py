@@ -1,6 +1,7 @@
 from typing import Self
 from operator import xor
 import os
+import re
 
 from osgeo import osr, ogr
 from psycopg2 import ProgrammingError
@@ -44,6 +45,48 @@ class CreateGuideFile:
         self.attributes = {}
         self.selected = {}
 
+    def _show_message(self: Self, title: str, message: str,
+                      detail: str = '', level: str = 'error') -> None:
+        """Show a styled message dialog.
+
+        Parameters
+        ----------
+        title: str
+        message: str
+        detail: str, optional
+        level: str, 'error', 'warning', or 'info'
+        """
+        msg = QMessageBox()
+        if level == 'error':
+            msg.setIcon(QMessageBox.Critical)
+            color = '#c62828'
+            icon_text = 'Error'
+        elif level == 'warning':
+            msg.setIcon(QMessageBox.Warning)
+            color = '#e65100'
+            icon_text = 'Warning'
+        else:
+            msg.setIcon(QMessageBox.Information)
+            color = '#1565c0'
+            icon_text = 'Info'
+
+        msg.setWindowTitle(f'GeoDataFarm - {icon_text}')
+        msg.setText(f'<b style="color: {color}; font-size: 10pt;">{title}</b>')
+        msg.setInformativeText(message)
+        if detail:
+            msg.setDetailedText(detail)
+        msg.setStyleSheet("""
+            QMessageBox { background: #ffffff; }
+            QMessageBox QLabel { font-size: 9pt; color: #333333; }
+            QPushButton {
+                background-color: #3574b0; color: white; border: none;
+                border-radius: 3px; padding: 5px 16px; font-size: 9pt;
+                min-width: 70px;
+            }
+            QPushButton:hover { background-color: #2a5f8f; }
+        """)
+        msg.exec()
+
     def run(self: Self) -> None:
         """Presents the sub widget HandleInput and connects the different
         buttons to their function"""
@@ -82,34 +125,89 @@ class CreateGuideFile:
         self.CGF.CBDataSource.activated.connect(
             lambda idx: self.possible_attr(self.CGF.CBDataSource.currentText())
         )
+        self.CGF.CBFields.activated.connect(self._refresh_tables_for_field)
 
-    def possible_attr(self: Self, schema: str) -> None:
-        """Adds the name of the table which the user than can use as base for
-        calculation of the guiding file.
+    def _refresh_tables_for_field(self: Self) -> None:
+        """When the field selection changes, refresh the table list if a data
+        source is already selected."""
+        source = self.CGF.CBDataSource.currentText()
+        if source and source != '-- Select base file --':
+            self.possible_attr(source)
+
+    def _get_tables_for_field(self: Self, schema: str,
+                              field_name: str) -> set:
+        """Get table names associated with a field from the manual table.
 
         Parameters
         ----------
-        text: str
-            The schema.table
+        schema: str
+        field_name: str
+
+        Returns
+        -------
+        set
+            Set of table names linked to the field
+        """
+        tables = set()
+        if schema == 'other':
+            manual_tables = ['plowing_manual', 'harrowing_manual']
+        else:
+            manual_tables = ['manual']
+        for manual_tbl in manual_tables:
+            try:
+                sql = f"""SELECT table_ FROM {schema}.{manual_tbl}
+                          WHERE field = '{field_name}'"""
+                rows = self.db.execute_and_return(sql)
+                for row in rows:
+                    if row[0]:
+                        tables.add(row[0])
+            except Exception:
+                continue
+        return tables
+
+    def possible_attr(self: Self, schema: str) -> None:
+        """Adds the name of the table which the user than can use as base for
+        calculation of the guiding file. If a field is selected, only tables
+        linked to that field (via the manual table) are shown. Only numeric
+        columns are listed as selectable attributes.
+
+        Parameters
+        ----------
+        schema: str
+            The schema name
         """
         self.CGF.TWColumnNames.clear()
+        field_name = self.CGF.CBFields.currentText()
+        filter_by_field = (field_name
+                           and field_name != '-- Select field --'
+                           and field_name != self.tr('--- Select field ---'))
+
+        if filter_by_field:
+            field_tables = self._get_tables_for_field(schema, field_name)
+        else:
+            field_tables = None
+
         names = []
         table_names = self.db.get_tables_in_db(schema)
         for name in table_names:
             if name in ["temp_polygon", 'manual', 'harrowing_manual',
                             'plowing_manual']:
                 continue
+            if field_tables is not None and name not in field_tables:
+                continue
             names.append(f'{schema}.{name}')
+
         self.CGF.TWColumnNames.setRowCount(len(names))
         self.CGF.TWColumnNames.setColumnCount(2)
         self.attributes = {}
-        
+
+        exclude = "'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'"
         for i, row in enumerate(names):
-            schema, tbl = row.split('.')
-            attributes = self.db.get_all_columns(table=tbl,
-                                            schema=schema,
-                                            exclude="'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'")
-            # self.CGF.TWColumnNames.setSelectionBehavior(QAbstractItemView.SelectRows)
+            s, tbl = row.split('.')
+            attributes = self.db.get_numeric_columns(
+                table=tbl, schema=s, exclude=exclude)
+            if not attributes:
+                continue
             item1 = QTableWidgetItem('{row}'.format(row=row))
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.CGF.TWColumnNames.setItem(i, 0, item1)
@@ -141,35 +239,103 @@ class CreateGuideFile:
         self.selected[len(self.selected)] = [self.attributes[row]['tbl'], self.attributes[row]['attributes'][index]]
 
     def remove_from_param_list(self: Self) -> None:
-        """Removes the selected columns from the list"""
-        row_count = self.nbr_selected_attr
+        """Removes the selected columns from the list and rebuilds
+        self.selected to stay in sync with the table widget."""
         if self.CGF.TWSelected.selectedItems() is None:
-            QMessageBox.information(None, "Error:", self.tr('No row selected!'))
+            self._show_message('No selection',
+                               self.tr('Please select a row to remove.'),
+                               level='warning')
             return
-        rows_to_delete = []
+        rows_to_delete = set()
         for item in self.CGF.TWSelected.selectedItems():
-            if not item.row() in rows_to_delete:
-                rows_to_delete.append(item.row())
-        deleted_rows = 0
-        for i in rows_to_delete:
-            self.CGF.TWSelected.removeRow(i - deleted_rows)
-            row_count -= 1
-            deleted_rows += 1
-        self.nbr_selected_attr = row_count
+            rows_to_delete.add(item.row())
+        if not rows_to_delete:
+            self._show_message('No selection',
+                               self.tr('Please select a row to remove.'),
+                               level='warning')
+            return
+        for i in sorted(rows_to_delete, reverse=True):
+            self.CGF.TWSelected.removeRow(i)
+        # Rebuild self.selected from the remaining table rows
+        new_selected = {}
+        for i in range(self.CGF.TWSelected.rowCount()):
+            tbl = self.CGF.TWSelected.item(i, 0).text()
+            attr = self.CGF.TWSelected.item(i, 1).text()
+            new_selected[i] = [tbl, attr]
+            # Update the reference label in column 3
+            ref_item = QTableWidgetItem(f'[{i}]')
+            ref_item.setFlags(xor(ref_item.flags(), _item_flag('ItemIsEditable')))
+            self.CGF.TWSelected.setItem(i, 2, ref_item)
+        self.selected = new_selected
+        self.nbr_selected_attr = self.CGF.TWSelected.rowCount()
+
+    def _validate_equation(self: Self, eq_text: str) -> "str|None":
+        """Validate the equation text and return an error message or None.
+
+        Checks for:
+        - References to non-existent attributes ([N] where N >= len(selected))
+        - Empty equation
+        - Invalid characters / syntax
+
+        Parameters
+        ----------
+        eq_text: str
+
+        Returns
+        -------
+        str or None
+            Error message if invalid, None if OK
+        """
+        if not eq_text.strip():
+            return self.tr('The equation is empty.')
+
+        # Find all [N] references in the equation
+        refs = re.findall(r'\[(\d+)\]', eq_text)
+        if not refs:
+            return self.tr('The equation must contain at least one attribute '
+                           'reference like [0], [1], etc.')
+
+        max_ref = max(int(r) for r in refs)
+        num_attrs = len(self.selected)
+        if max_ref >= num_attrs:
+            bad_refs = sorted(set(
+                f'[{r}]' for r in refs if int(r) >= num_attrs))
+            return self.tr(
+                'The equation references {refs} but only {n} '
+                'attribute(s) are selected ([0] to [{max}]).\n\n'
+                'Please remove the invalid references or add more '
+                'attributes.').format(
+                    refs=', '.join(bad_refs),
+                    n=num_attrs,
+                    max=num_attrs - 1 if num_attrs > 0 else 0)
+
+        return None
 
     def update_max_min(self: Self) -> None:
         """Update the text min, max text and set the equation for the guide
         file."""
         field = self.CGF.CBFields.currentText()
-        if field == self.tr("--- Select field ---"):
-            QMessageBox.information(None, "Error:", self.tr('A field must be selected'))
+        if field == self.tr("--- Select field ---") or field == '-- Select field --':
+            self._show_message(
+                'No field selected',
+                self.tr('Please select a field in Step 1 before calculating.'))
             return
-        eq_text_min = self.CGF.TEEquation.toPlainText()
-        eq_text_max = self.CGF.TEEquation.toPlainText()
         row_count = self.nbr_selected_attr
         if row_count == 0:
-            QMessageBox.information(None, "Error:", self.tr('You need to select at least one row'))
+            self._show_message(
+                'No attributes selected',
+                self.tr('Please select at least one attribute in Step 2 '
+                        'before calculating.'))
             return
+
+        eq_text = self.CGF.TEEquation.toPlainText()
+        eq_error = self._validate_equation(eq_text)
+        if eq_error:
+            self._show_message('Invalid equation', eq_error)
+            return
+
+        eq_text_min = eq_text
+        eq_text_max = eq_text
         for i, (tbl, attribute) in self.selected.items():
             columns = self.db.get_all_columns(tbl.split('.')[1], tbl.split('.')[0])
             if 'polygon' in columns:
@@ -179,33 +345,64 @@ class CreateGuideFile:
             sql = f"""SELECT max({attribute}), min({attribute})
             FROM {tbl} tbl
             join fields fi on st_intersects(tbl.{join_geom}, fi.polygon)
-            where field_name = '{self.CGF.CBFields.currentText()}'"""
+            where field_name = '{field}'"""
             try:
                 data = self.db.execute_and_return(sql)
             except ProgrammingError:
-                QMessageBox.information(None, "Error:",
-                                        self.tr('The selected data must be '
-                                                        'integers or floats!'))
+                self._show_message(
+                    'Database error',
+                    self.tr('Could not query attribute "{attr}" from '
+                            '"{tbl}".\n\nMake sure the selected attribute '
+                            'contains numeric data.').format(
+                                attr=attribute, tbl=tbl),
+                    level='error')
+                return
+            if not data or data[0][0] is None or data[0][1] is None:
+                self._show_message(
+                    'No data found',
+                    self.tr('No data found for attribute "{attr}" in '
+                            '"{tbl}" for field "{field}".\n\nThe table may '
+                            'be empty or have no data in this field.').format(
+                                attr=attribute, tbl=tbl, field=field),
+                    level='warning')
                 return
             eq_text_min = eq_text_min.replace(f'[{i}]', f'{data[0][1]}')
             eq_text_max = eq_text_max.replace(f'[{i}]', f'{data[0][0]}')
-        print(eq_text_min)
-        
-        self.CGF.LMaxVal.setText(f'Max value: {eval(eq_text_max)}')
-        self.CGF.LMinVal.setText(f'Min value: {eval(eq_text_min)}')
+
+        try:
+            max_val = eval(eq_text_max)
+            min_val = eval(eq_text_min)
+        except (TypeError, SyntaxError, NameError, ZeroDivisionError) as e:
+            self._show_message(
+                'Equation error',
+                self.tr('The equation could not be evaluated.\n\n'
+                        'Please check that the equation syntax is valid '
+                        'and only uses numbers, operators (+, -, *, /), '
+                        'and attribute references like [0], [1].'),
+                detail=f'Equation (max): {eq_text_max}\n'
+                       f'Equation (min): {eq_text_min}\n'
+                       f'Error: {e}')
+            return
+
+        self.CGF.LMaxVal.setText(f'Max value: {max_val}')
+        self.CGF.LMinVal.setText(f'Min value: {min_val}')
         self.CGF.PBSelectOutput.setEnabled(True)
 
     def create_file(self: Self) -> None:
         """Creates the guide file with the information from the user."""
         print(self.selected)
         cell_size = self.CGF.LECellSize.text()
-        try: 
-            int(cell_size) 
+        try:
+            int(cell_size)
         except ValueError:
-            QMessageBox.information(None, "Error:", self.tr('Cell size must be integer'))
+            self._show_message(
+                'Invalid cell size',
+                self.tr('Cell size must be a whole number (e.g. 25).'))
             return
         if f"{int(cell_size)}" != f"{cell_size}":
-            QMessageBox.information(None, "Error:", self.tr('Cell size must be integer'))
+            self._show_message(
+                'Invalid cell size',
+                self.tr('Cell size must be a whole number (e.g. 25).'))
             return
         attr_name = self.CGF.LEAttrName.text()
         EPSG = self.CGF.LEEPSG.text()
@@ -305,17 +502,29 @@ class CreateGuideFile:
             prj_file.write(esri_output)
 
     def help(self):
-        """Shows a help message in a QMessageBox"""
-        QMessageBox.information(None, self.tr("Help:"), self.tr(
-            'Here you create a guide file.\n'
-            '1. Start with select which data you want to base the guide file on in the top left corner.\n'
-            '2. Select your field.\n'
-            '3. Select which of the data sets and attributes you want to use as base of calculation.\n'
-            '4. Now, change the equation to the right (default 100 + [0] * 2) to fit your idea and press update. (use the equivalent [number] to include each data set)\n'
-            '5. When you press update the max and min value should be updated.\n'
-            '6. Depending on your machine (that you want to feed with the guide file) you might want to use integers or float values.\n'
-            '7. The attribute name and File name is for you, the output path is where the guide file will be stored.\n'
-            '8. Cell size, how big grid you want for the guide file, EPSG let it be 4326 unless your machine require it!\n'
-            '9. There is also an option for you if you want to rotate your grid.\n'
-            '10. Finally press Create guide file and you are all set to go!'))
-        return
+        """Shows a help message in a styled QMessageBox"""
+        self._show_message(
+            'How to create a guide file',
+            self.tr(
+                '<ol>'
+                '<li><b>Step 1</b> — Select a <b>data source</b> (e.g. harvest, plant) '
+                'and a <b>field</b>. The table list will filter to show only '
+                'data for that field.</li>'
+                '<li><b>Step 2</b> — Click an attribute in the left table to '
+                'add it to the selected list. Each gets a reference number '
+                'like [0], [1].</li>'
+                '<li>Write your <b>equation</b> using these references, e.g. '
+                '<code>100 + [0] * 2</code>.</li>'
+                '<li>Press <b>Calculate min/max</b> to preview the output '
+                'range.</li>'
+                '<li><b>Step 3</b> — Set the output options:<br/>'
+                '&bull; <b>Data type</b>: Integer or Float depending on your '
+                'machine<br/>'
+                '&bull; <b>Cell size</b>: Grid resolution in meters<br/>'
+                '&bull; <b>EPSG</b>: Leave as 4326 unless your machine '
+                'requires another CRS<br/>'
+                '&bull; <b>Rotation</b>: Rotate the grid if needed</li>'
+                '<li>Select an <b>output folder</b> and press '
+                '<b>Create Guide File</b>.</li>'
+                '</ol>'),
+            level='info')

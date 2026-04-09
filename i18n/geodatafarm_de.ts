@@ -433,219 +433,211 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>CreateGuideFile</name>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="145"/>
-        <source>No row selected!</source>
-        <translation>Keine Zeile ausgewählt!</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="169"/>
-        <source>You need to select at least one row</source>
-        <translation>Sie müssen mindestens eine Zeile auswählen</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="184"/>
-        <source>The selected data must be integers or floats!</source>
-        <translation>Die ausgewählten Daten müssen Ganzzahlen oder Gleitkommazahlen sein!</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="213"/>
-        <source>Float (1.234)</source>
-        <translation>Gleitkommazahl (1.234)</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="307"/>
-        <source>Help:</source>
-        <translation>Hilfe:</translation>
-    </message>
-    <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="162"/>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="163"/>
-        <source>A field must be selected</source>
-        <translation>Ein Feld muss ausgewählt werden</translation>
+        <source>Float (1.234)</source>
+        <translation>Gleitkommazahl (1,234)</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="206"/>
-        <source>Cell size must be integer</source>
-        <translation>Die Zellengröße muss eine Ganzzahl sein</translation>
+        <source>Please select a row to remove.</source>
+        <translation>Bitte wählen Sie eine Zeile zum Entfernen aus.</translation>
     </message>
     <message>
-        <location filename="../support_scripts/create_guiding_file.py" line="307"/>
-        <source>Here you create a guide file.
-1. Start with select which data you want to base the guide file on in the top left corner.
-2. Select your field.
-3. Select which of the data sets and attributes you want to use as base of calculation.
-4. Now, change the equation to the right (default 100 + [0] * 2) to fit your idea and press update. (use the equivalent [number] to include each data set)
-5. When you press update the max and min value should be updated.
-6. Depending on your machine (that you want to feed with the guide file) you might want to use integers or float values.
-7. The attribute name and File name is for you, the output path is where the guide file will be stored.
-8. Cell size, how big grid you want for the guide file, EPSG let it be 4326 unless your machine require it!
-9. There is also an option for you if you want to rotate your grid.
-10. Finally press Create guide file and you are all set to go!</source>
-        <translation>Hier erstellen Sie eine Anleitung:
-Beginnen Sie damit, die Daten auszuwählen, auf denen Ihre Anleitung basieren soll. Dies finden Sie in der oberen linken Ecke.
-Wählen Sie Ihr Feld aus.
-Identifizieren Sie, welche Datensätze und Attribute Sie als Grundlage für Ihre Berechnungen verwenden möchten.
-Passen Sie die Gleichung auf der rechten Seite an (Standard: 100 + [0] * 2), um sie an Ihre Idee anzupassen, und drücken Sie “Aktualisieren”. (Verwenden Sie die entsprechenden [Nummern], um jeden Datensatz einzubeziehen.)
-Wenn Sie auf “Aktualisieren” klicken, sollten sich die Maximal- und Minimalwerte aktualisieren.
-Je nach Maschine (die Sie mit der Anleitung versorgen möchten) können Sie Ganzzahlen oder Fließkommawerte verwenden.
-Der Attributname und der Dateiname sind für Sie, der Ausgabepfad ist der Speicherort der Anleitung.
-Die Zellengröße bestimmt die Größe des Rasters für die Anleitung. Die EPSG-Referenznummer sollte 4326 sein, es sei denn, Ihre Maschine erfordert eine andere.
-Es gibt auch eine Option, um das Raster zu drehen.
-Drücken Sie abschließend “Anleitung erstellen”, und Sie sind startklar!</translation>
+        <source>The equation is empty.</source>
+        <translation>Die Gleichung ist leer.</translation>
+    </message>
+    <message>
+        <source>The equation must contain at least one attribute reference like [0], [1], etc.</source>
+        <translation>Die Gleichung muss mindestens eine Attributreferenz wie [0], [1] usw. enthalten.</translation>
+    </message>
+    <message>
+        <source>The equation references {refs} but only {n} attribute(s) are selected ([0] to [{max}]).
+
+Please remove the invalid references or add more attributes.</source>
+        <translation>Die Gleichung verweist auf {refs}, aber nur {n} Attribut(e) sind ausgewählt ([0] bis [{max}]).
+
+Bitte entfernen Sie die ungültigen Verweise oder fügen Sie weitere Attribute hinzu.</translation>
+    </message>
+    <message>
+        <source>Please select a field in Step 1 before calculating.</source>
+        <translation>Bitte wählen Sie in Schritt 1 ein Feld aus, bevor Sie berechnen.</translation>
+    </message>
+    <message>
+        <source>Please select at least one attribute in Step 2 before calculating.</source>
+        <translation>Bitte wählen Sie in Schritt 2 mindestens ein Attribut aus, bevor Sie berechnen.</translation>
+    </message>
+    <message>
+        <source>Could not query attribute “{attr}” from “{tbl}”.
+
+Make sure the selected attribute contains numeric data.</source>
+        <translation>Attribut “{attr}” konnte nicht aus “{tbl}” abgefragt werden.
+
+Stellen Sie sicher, dass das ausgewählte Attribut numerische Daten enthält.</translation>
+    </message>
+    <message>
+        <source>No data found for attribute “{attr}” in “{tbl}” for field “{field}”.
+
+The table may be empty or have no data in this field.</source>
+        <translation>Keine Daten für Attribut “{attr}” in “{tbl}” für Feld “{field}” gefunden.
+
+Die Tabelle ist möglicherweise leer oder enthält keine Daten für dieses Feld.</translation>
+    </message>
+    <message>
+        <source>The equation could not be evaluated.
+
+Please check that the equation syntax is valid and only uses numbers, operators (+, -, *, /), and attribute references like [0], [1].</source>
+        <translation>Die Gleichung konnte nicht ausgewertet werden.
+
+Bitte überprüfen Sie, ob die Syntax korrekt ist und nur Zahlen, Operatoren (+, -, *, /) und Attributreferenzen wie [0], [1] verwendet werden.</translation>
+    </message>
+    <message>
+        <source>Cell size must be a whole number (e.g. 25).</source>
+        <translation>Die Zellengröße muss eine Ganzzahl sein (z.B. 25).</translation>
+    </message>
+    <message>
+        <source>&lt;ol&gt;&lt;li&gt;&lt;b&gt;Step 1&lt;/b&gt; — Select a &lt;b&gt;data source&lt;/b&gt; (e.g. harvest, plant) and a &lt;b&gt;field&lt;/b&gt;. The table list will filter to show only data for that field.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Step 2&lt;/b&gt; — Click an attribute in the left table to add it to the selected list. Each gets a reference number like [0], [1].&lt;/li&gt;&lt;li&gt;Write your &lt;b&gt;equation&lt;/b&gt; using these references, e.g. &lt;code&gt;100 + [0] * 2&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Press &lt;b&gt;Calculate min/max&lt;/b&gt; to preview the output range.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Step 3&lt;/b&gt; — Set the output options:&lt;br/&gt;&amp;bull; &lt;b&gt;Data type&lt;/b&gt;: Integer or Float depending on your machine&lt;br/&gt;&amp;bull; &lt;b&gt;Cell size&lt;/b&gt;: Grid resolution in meters&lt;br/&gt;&amp;bull; &lt;b&gt;EPSG&lt;/b&gt;: Leave as 4326 unless your machine requires another CRS&lt;br/&gt;&amp;bull; &lt;b&gt;Rotation&lt;/b&gt;: Rotate the grid if needed&lt;/li&gt;&lt;li&gt;Select an &lt;b&gt;output folder&lt;/b&gt; and press &lt;b&gt;Create Guide File&lt;/b&gt;.&lt;/li&gt;&lt;/ol&gt;</source>
+        <translation>&lt;ol&gt;&lt;li&gt;&lt;b&gt;Schritt 1&lt;/b&gt; — Wählen Sie eine &lt;b&gt;Datenquelle&lt;/b&gt; (z.B. Ernte, Pflanzung) und ein &lt;b&gt;Feld&lt;/b&gt;. Die Tabellenliste wird gefiltert, um nur Daten für dieses Feld anzuzeigen.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Schritt 2&lt;/b&gt; — Klicken Sie auf ein Attribut in der linken Tabelle, um es zur Auswahl hinzuzufügen. Jedes erhält eine Referenznummer wie [0], [1].&lt;/li&gt;&lt;li&gt;Schreiben Sie Ihre &lt;b&gt;Gleichung&lt;/b&gt; mit diesen Referenzen, z.B. &lt;code&gt;100 + [0] * 2&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Drücken Sie &lt;b&gt;Min/Max berechnen&lt;/b&gt;, um den Ausgabebereich anzuzeigen.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Schritt 3&lt;/b&gt; — Stellen Sie die Ausgabeoptionen ein:&lt;br/&gt;&amp;bull; &lt;b&gt;Datentyp&lt;/b&gt;: Ganzzahl oder Gleitkommazahl je nach Maschine&lt;br/&gt;&amp;bull; &lt;b&gt;Zellengröße&lt;/b&gt;: Rasterauflösung in Metern&lt;br/&gt;&amp;bull; &lt;b&gt;EPSG&lt;/b&gt;: Belassen Sie 4326, es sei denn, Ihre Maschine erfordert ein anderes KBS&lt;br/&gt;&amp;bull; &lt;b&gt;Rotation&lt;/b&gt;: Drehen Sie das Raster bei Bedarf&lt;/li&gt;&lt;li&gt;Wählen Sie einen &lt;b&gt;Ausgabeordner&lt;/b&gt; und drücken Sie &lt;b&gt;Führungsdatei erstellen&lt;/b&gt;.&lt;/li&gt;&lt;/ol&gt;</translation>
     </message>
 </context>
 <context>
     <name>CreateGuideFileBase</name>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="14"/>
-        <source>Create guide file</source>
-        <translation>Führungsdatei erstellen</translation>
+        <source>Step 1: Select data source and field</source>
+        <translation>Schritt 1: Datenquelle und Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="191"/>
-        <source>Cell size (m):</source>
-        <translation>Zellengröße (m):</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="32"/>
         <source>Data source:</source>
         <translation>Datenquelle:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="128"/>
-        <source>100 +  [0] *2 </source>
-        <translation>100 +  [0] *2 </translation>
+        <source>Field:</source>
+        <translation>Feld:</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="163"/>
-        <source>EPSG:</source>
-        <translation>EPSG:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="71"/>
-        <source>Update</source>
-        <translation>Aktualisieren</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="57"/>
-        <source>Max value: Not selected</source>
-        <translation>Maximaler Wert: Nicht ausgewählt</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="233"/>
-        <source>4326</source>
-        <translation>4326</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="178"/>
-        <source>Integer (1)</source>
-        <translation>Integer (1)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="183"/>
-        <source>Float (1.234)</source>
-        <translation>Gleitkommazahl (1.234)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="64"/>
-        <source>Attribute:</source>
-        <translation>Attribut:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="78"/>
-        <source>Write your equation here, 
-denote the Attribute as &quot;[0]&quot;, &quot;[1]&quot; etc.:</source>
-        <translation>Schreiben Sie hier Ihre Gleichung,
-bezeichnen das Attribut als &quot;[0]&quot;, &quot;[1]&quot; usw .:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="219"/>
-        <source>25</source>
-        <translation>25</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="47"/>
         <source>-- Select base file --</source>
-        <translation>- Basisdatei auswählen -</translation>
+        <translation>-- Datenquelle auswählen --</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="138"/>
-        <source>&lt;--</source>
-        <translation>&lt;--</translation>
+        <source>-- Select field --</source>
+        <translation>-- Feld auswählen --</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="149"/>
-        <source>Store to a file:</source>
-        <translation>In einer Datei speichern:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="212"/>
-        <source>Data type:</source>
-        <translation>Datentyp:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="115"/>
-        <source>Min value: Not selected</source>
-        <translation>Mindestwert: Nicht ausgewählt</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="198"/>
-        <source>Setting_distance</source>
-        <translation>Einstellen der Entfernung</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="240"/>
-        <source>New attr name:</source>
-        <translation>Neuer Attributname:</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="250"/>
-        <source>Select Outputpath</source>
-        <translation>Wählen Sie den Ausgabepfad</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="267"/>
-        <source>Create Guide File</source>
-        <translation>Führungsdatei erstellen</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="257"/>
-        <source>Path not selected</source>
-        <translation>Pfad nicht ausgewählt</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="170"/>
-        <source>File name</source>
-        <translation>Dateiname</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="226"/>
-        <source>guide_file</source>
-        <translation>Leitfaden</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="156"/>
-        <source>Rotation: (deg):</source>
-        <translation>Drehung: (Grad):</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="205"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="39"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../widgets/create_guide_file_base.ui" line="284"/>
-        <source>-- Select field --</source>
-        <translation>--- Feld auswählen ---</translation>
+        <source>Step 2: Select attributes and build equation</source>
+        <translation>Schritt 2: Attribute auswählen und Gleichung erstellen</translation>
+    </message>
+    <message>
+        <source>Available attributes (click to add):</source>
+        <translation>Verfügbare Attribute (klicken zum Hinzufügen):</translation>
+    </message>
+    <message>
+        <source>Selected attributes:</source>
+        <translation>Ausgewählte Attribute:</translation>
+    </message>
+    <message>
+        <source>Remove selected</source>
+        <translation>Ausgewählte entfernen</translation>
+    </message>
+    <message>
+        <source>Equation (use [0], [1] etc. for attributes):</source>
+        <translation>Gleichung (verwenden Sie [0], [1] usw. für Attribute):</translation>
+    </message>
+    <message>
+        <source>100 +  [0] *2 </source>
+        <translation>100 +  [0] *2 </translation>
+    </message>
+    <message>
+        <source>Calculate min/max</source>
+        <translation>Min/Max berechnen</translation>
+    </message>
+    <message>
+        <source>Max value: Not selected</source>
+        <translation>Maximalwert: Nicht ausgewählt</translation>
+    </message>
+    <message>
+        <source>Min value: Not selected</source>
+        <translation>Mindestwert: Nicht ausgewählt</translation>
+    </message>
+    <message>
+        <source>Step 3: Configure output and create file</source>
+        <translation>Schritt 3: Ausgabe konfigurieren und Datei erstellen</translation>
+    </message>
+    <message>
+        <source>Data type:</source>
+        <translation>Datentyp:</translation>
+    </message>
+    <message>
+        <source>Integer (1)</source>
+        <translation>Ganzzahl (1)</translation>
+    </message>
+    <message>
+        <source>Float (1.234)</source>
+        <translation>Gleitkommazahl (1,234)</translation>
+    </message>
+    <message>
+        <source>Cell size (m):</source>
+        <translation>Zellengröße (m):</translation>
+    </message>
+    <message>
+        <source>25</source>
+        <translation>25</translation>
+    </message>
+    <message>
+        <source>EPSG:</source>
+        <translation>EPSG:</translation>
+    </message>
+    <message>
+        <source>4326</source>
+        <translation>4326</translation>
+    </message>
+    <message>
+        <source>Rotation (deg):</source>
+        <translation>Drehung (Grad):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>Attribute name:</source>
+        <translation>Attributname:</translation>
+    </message>
+    <message>
+        <source>Setting_distance</source>
+        <translation>Einstellen_der_Entfernung</translation>
+    </message>
+    <message>
+        <source>File name:</source>
+        <translation>Dateiname:</translation>
+    </message>
+    <message>
+        <source>guide_file</source>
+        <translation>Leitfaden</translation>
+    </message>
+    <message>
+        <source>Output:</source>
+        <translation>Ausgabe:</translation>
+    </message>
+    <message>
+        <source>Select folder...</source>
+        <translation>Ordner auswählen...</translation>
+    </message>
+    <message>
+        <source>No path selected</source>
+        <translation>Kein Pfad ausgewählt</translation>
+    </message>
+    <message>
+        <source>Create Guide File</source>
+        <translation>Führungsdatei erstellen</translation>
+    </message>
+    <message>
+        <source>Create guide file</source>
+        <translation>Führungsdatei erstellen</translation>
     </message>
 </context>
 <context>
