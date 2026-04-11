@@ -433,6 +433,10 @@ Rückverfolgung: {t}</translation>
 <context>
     <name>CreateGuideFile</name>
     <message>
+        <source>-- Select base file --</source>
+        <translation>-- Datenquelle auswählen --</translation>
+    </message>
+    <message>
         <source>--- Select field ---</source>
         <translation>--- Feld auswählen ---</translation>
     </message>

@@ -429,6 +429,10 @@ inträffade, här: {t}</translation>
 <context>
     <name>CreateGuideFile</name>
     <message>
+        <source>-- Select base file --</source>
+        <translation>-- Välj datakälla --</translation>
+    </message>
+    <message>
         <source>--- Select field ---</source>
         <translation>--- Välj fält ---</translation>
     </message>

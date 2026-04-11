@@ -57,16 +57,21 @@ class CreateGuideFile:
         level: str, 'error', 'warning', or 'info'
         """
         msg = QMessageBox()
+        # Qt5 uses QMessageBox.Critical, Qt6 uses QMessageBox.Icon.Critical
+        try:
+            icon_enum = QMessageBox.Icon
+        except AttributeError:
+            icon_enum = QMessageBox
         if level == 'error':
-            msg.setIcon(QMessageBox.Critical)
+            msg.setIcon(icon_enum.Critical)
             color = '#c62828'
             icon_text = 'Error'
         elif level == 'warning':
-            msg.setIcon(QMessageBox.Warning)
+            msg.setIcon(icon_enum.Warning)
             color = '#e65100'
             icon_text = 'Warning'
         else:
-            msg.setIcon(QMessageBox.Information)
+            msg.setIcon(icon_enum.Information)
             color = '#1565c0'
             icon_text = 'Info'
 
@@ -119,7 +124,7 @@ class CreateGuideFile:
     def fill_cb(self: Self) -> None:
         """Updates the ComboBox with names from the differnt schemas in the
         database"""
-        lw_list = ['plant', 'ferti', 'spray', 'harvest', 'soil', 'other']
+        lw_list = [self.tr('-- Select base file --'),'plant', 'ferti', 'spray', 'harvest', 'soil', 'other']
         self.CGF.CBDataSource.clear()
         self.CGF.CBDataSource.addItems(lw_list)
         self.CGF.CBDataSource.activated.connect(
@@ -131,7 +136,7 @@ class CreateGuideFile:
         """When the field selection changes, refresh the table list if a data
         source is already selected."""
         source = self.CGF.CBDataSource.currentText()
-        if source and source != '-- Select base file --':
+        if source and source != self.tr('-- Select base file --'):
             self.possible_attr(source)
 
     def _get_tables_for_field(self: Self, schema: str,
