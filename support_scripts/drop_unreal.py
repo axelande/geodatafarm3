@@ -1,3 +1,4 @@
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from ..support_scripts.__init__ import TR
@@ -73,12 +74,20 @@ class DropUnReal:
         attribute = self.DUR.CBAttributes.currentText()
         operator = self.DUR.CBOperator.currentText()
         value = self.DUR.QLValue.text()
-        sql = f"""select count(*) FROM {self.schema}.{self.table} where {attribute} {operator} {value}"""
-        rows_affected = self.db.execute_and_return(sql)[0][0]
+        query = pgsql.SQL("SELECT count(*) FROM {schema}.{tbl} WHERE {col} {op} %s").format(
+            schema=pgsql.Identifier(self.schema),
+            tbl=pgsql.Identifier(self.table),
+            col=pgsql.Identifier(attribute),
+            op=pgsql.SQL(operator))
+        rows_affected = self.db.execute_and_return(query, params=(value,))[0][0]
         question = QMessageBox.question(None, 'Proceed?', f'The action will remove all rows where {attribute} {operator} {value}\nThis will remove: {rows_affected}, are you sure that you want to proceed?')
         if question == QMessageBox.StandardButton.Yes:
-            sql = f'DELETE FROM {self.schema}.{self.table} where {attribute} {operator} {value}'
-            self.db.execute_sql(sql)
+            query = pgsql.SQL("DELETE FROM {schema}.{tbl} WHERE {col} {op} %s").format(
+                schema=pgsql.Identifier(self.schema),
+                tbl=pgsql.Identifier(self.table),
+                col=pgsql.Identifier(attribute),
+                op=pgsql.SQL(operator))
+            self.db.execute_sql(query, params=(value,))
             self.cancel()
 
     def cancel(self):

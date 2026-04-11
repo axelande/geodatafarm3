@@ -4,7 +4,7 @@ import os
 import re
 
 from osgeo import osr, ogr
-from psycopg2 import ProgrammingError
+from psycopg2 import ProgrammingError, sql as pgsql
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog, QComboBox
@@ -160,9 +160,10 @@ class CreateGuideFile:
             manual_tables = ['manual']
         for manual_tbl in manual_tables:
             try:
-                sql = f"""SELECT table_ FROM {schema}.{manual_tbl}
-                          WHERE field = '{field_name}'"""
-                rows = self.db.execute_and_return(sql)
+                query = pgsql.SQL("SELECT table_ FROM {schema}.{tbl} WHERE field = %s").format(
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(manual_tbl))
+                rows = self.db.execute_and_return(query, params=(field_name,))
                 for row in rows:
                     if row[0]:
                         tables.add(row[0])
@@ -347,12 +348,19 @@ class CreateGuideFile:
                 join_geom = 'polygon'
             else:
                 join_geom = 'pos'
-            sql = f"""SELECT max({attribute}), min({attribute})
-            FROM {tbl} tbl
-            join fields fi on st_intersects(tbl.{join_geom}, fi.polygon)
-            where field_name = '{field}'"""
+            s, t = tbl.split('.')
+            query = pgsql.SQL(
+                "SELECT max({attr}), min({attr})"
+                " FROM {schema}.{table} tbl"
+                " JOIN fields fi ON st_intersects(tbl.{geom}, fi.polygon)"
+                " WHERE field_name = %s"
+            ).format(
+                attr=pgsql.Identifier(attribute),
+                schema=pgsql.Identifier(s),
+                table=pgsql.Identifier(t),
+                geom=pgsql.Identifier(join_geom))
             try:
-                data = self.db.execute_and_return(sql)
+                data = self.db.execute_and_return(query, params=(field,))
             except ProgrammingError:
                 self._show_message(
                     'Database error',

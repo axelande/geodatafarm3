@@ -8,6 +8,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QTableWidgetItem, QComboBox, QHeaderView
 from qgis.core import QgsTask
 
+from psycopg2 import sql as pgsql
 from ..database_scripts.db import DB
 from ..import_data.handle_text_data import create_table, create_polygons
 from ..support_scripts.__init__ import (TR, check_text)
@@ -652,12 +653,16 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
         if qtask is not None:
             qtask.setProgress(80)
 
-        sql = f"""SELECT * INTO {schema}.{tbl_name} 
-        from {schema}.temp_table{tsk_nr}
-        where st_intersects(pos, (select polygon 
-        from fields where field_name = '{field}'))
-        """
-        suc = db.execute_sql(sql, return_failure=True, return_row_count=True)
+        query = pgsql.SQL(
+            "SELECT * INTO {schema}.{tbl}"
+            " FROM {schema}.{temp_tbl}"
+            " WHERE st_intersects(pos,"
+            " (SELECT polygon FROM fields WHERE field_name = %s))"
+        ).format(
+            schema=pgsql.Identifier(schema),
+            tbl=pgsql.Identifier(tbl_name),
+            temp_tbl=pgsql.Identifier(f"temp_table{tsk_nr}"))
+        suc = db.execute_sql(query, params=(field,), return_failure=True, return_row_count=True)
         if qtask is not None:
             qtask.setProgress(85)
         if not suc[0]:
@@ -668,7 +673,10 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
             r = create_polygons(db, schema, tbl_name, field)
         if not suc[0]:
             return False, True, r[1]
-        db.execute_sql(f"DROP TABLE {schema}.temp_table{tsk_nr}")
+        db.execute_sql(
+            pgsql.SQL("DROP TABLE {schema}.{tbl}").format(
+                schema=pgsql.Identifier(schema),
+                tbl=pgsql.Identifier(f"temp_table{tsk_nr}")))
         if qtask is not None:
             qtask.setProgress(90)
         for j, col in enumerate(focus_col):

@@ -2,8 +2,9 @@ import hashlib
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QInputDialog
 from qgis.PyQt.QtCore import Qt
 from psycopg2.errors import UndefinedTable
+from psycopg2 import sql as pgsql
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 
 from database_scripts.db import DB
 from database_scripts.table_managment import TableManagement
@@ -158,8 +159,16 @@ def test_table_management_save_table(table_management):
 
     table_management.save_table()
 
-    table_management.db.execute_sql.assert_any_call("create index col1_schema_table on schema.table using btree(col1)")
-    table_management.db.execute_sql.assert_any_call("DROP INDEX IF EXISTS schema.col2_schema_table")
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("CREATE INDEX {idx} ON {schema}.{tbl} USING btree({col})").format(
+            idx=pgsql.Identifier("col1_schema_table"),
+            schema=pgsql.Identifier("schema"),
+            tbl=pgsql.Identifier("table"),
+            col=pgsql.Identifier("col1")))
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("DROP INDEX IF EXISTS {schema}.{idx}").format(
+            schema=pgsql.Identifier("schema"),
+            idx=pgsql.Identifier("col2_schema_table")))
 
 @patch('database_scripts.db.QInputDialog')
 def test_table_management_edit_tbl_name(mock_QInputDialog, table_management):
@@ -170,8 +179,15 @@ def test_table_management_edit_tbl_name(mock_QInputDialog, table_management):
 
     table_management.edit_tbl_name()
 
-    table_management.db.execute_sql.assert_any_call("ALTER TABLE schema.table RENAME TO new_table")
-    table_management.db.execute_sql.assert_any_call("Update schema.manual SET table_ = 'new_table' where table_ = 'table'")
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("ALTER TABLE {schema}.{old} RENAME TO {new}").format(
+            schema=pgsql.Identifier("schema"),
+            old=pgsql.Identifier("table"),
+            new=pgsql.Identifier("new_table")))
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("UPDATE {schema}.manual SET table_ = %s WHERE table_ = %s").format(
+            schema=pgsql.Identifier("schema")),
+        params=("new_table", "table"))
     table_management.update_table_list.assert_called_once()
 
 def test_table_management_edit_param_name(table_management):
@@ -186,8 +202,17 @@ def test_table_management_edit_param_name(table_management):
 
     table_management.edit_param_name()
 
-    table_management.db.execute_sql.assert_any_call("ALTER TABLE schema.table RENAME col1 TO new_col")
-    table_management.db.execute_sql.assert_any_call("ALTER INDEX schema.col1_schema_table RENAME TO new_col_schema_table")
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("ALTER TABLE {schema}.{tbl} RENAME {old_col} TO {new_col}").format(
+            schema=pgsql.Identifier("schema"),
+            tbl=pgsql.Identifier("table"),
+            old_col=pgsql.Identifier("col1"),
+            new_col=pgsql.Identifier("new_col")))
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("ALTER INDEX {schema}.{old_idx} RENAME TO {new_idx}").format(
+            schema=pgsql.Identifier("schema"),
+            old_idx=pgsql.Identifier("col1_schema_table"),
+            new_idx=pgsql.Identifier("new_col_schema_table")))
 
 def test_table_management_update_table_list(table_management):
     table_management.parent.populate.get_lw_list = MagicMock(return_value=[(MagicMock(), 'schema')])
@@ -234,7 +259,12 @@ def test_table_management_split_rows(table_management):
     table_management.split_rows()
 
     table_management.db.execute_sql.assert_called()
-    table_management.db.execute_sql.assert_any_call("""UPDATE harvest.table SET yield_col = yield_col / 2""")
+    table_management.db.execute_sql.assert_any_call(
+        pgsql.SQL("UPDATE {schema}.{tbl} SET {col} = {col} / %s").format(
+            schema=pgsql.Identifier("harvest"),
+            tbl=pgsql.Identifier("table"),
+            col=pgsql.Identifier("yield_col")),
+        params=(2,))
 
 def test_table_management_update_column_list(table_management):
     table_management.check_multiple = MagicMock(return_value=(True, 'schema.table'))

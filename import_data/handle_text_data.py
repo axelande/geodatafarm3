@@ -11,6 +11,7 @@ import time
 from operator import xor, itemgetter
 from datetime import datetime
 # Import the code for the dialog
+from psycopg2 import sql as pgsql
 from ..database_scripts.db import DB
 from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
@@ -589,8 +590,9 @@ def create_table(db: DB, schema: str, heading_row: list[str],
                  table: str='', ask_replace: bool=True, 
                  test_mode: bool=False, 
                  task_nr: int|str|str='') -> list[str]:
-    inserting_text = f'INSERT INTO {schema}.temp_table{task_nr} ('
-    sql = f"CREATE TABLE {schema}.temp_table{task_nr} (field_row_id serial PRIMARY KEY, "
+    temp_tbl = f"temp_table{task_nr}"
+    inserting_text = f'INSERT INTO {schema}.{temp_tbl} ('
+    col_defs = "field_row_id serial PRIMARY KEY, "
     lat_lon_inserted = False
     date_inserted = False
     lat_lon_inserted_c = 0
@@ -602,35 +604,38 @@ def create_table(db: DB, schema: str, heading_row: list[str],
                 col_name = col_name + column_units[col_name]
         if not lat_lon_inserted and (
                 col_name == longitude_col or col_name == latitude_col):
-            sql += "pos geometry(POINT, 4326),"
+            col_defs += "pos geometry(POINT, 4326),"
             if schema != 'harvest':
-                sql += " polygon geometry(MULTIPOLYGON, 4326), "
+                col_defs += " polygon geometry(MULTIPOLYGON, 4326), "
             inserting_text += 'pos, '
             lat_lon_inserted = True
         if lat_lon_inserted and (
                 col_name == longitude_col or col_name == latitude_col):
             continue
         if col_name == date_row:
-            sql += "Date_ TIMESTAMP, "
+            col_defs += "Date_ TIMESTAMP, "
             inserting_text += 'Date_, '
             continue
         elif all_same_date and not date_inserted:
-            sql += "Date_ TIMESTAMP, "
+            col_defs += "Date_ TIMESTAMP, "
             inserting_text += 'Date_, '
             date_inserted = True
         if column_types[i] == 0:
-            sql += str(col_name) + " INT, "
+            col_defs += f"{str(col_name)} INT, "
         elif column_types[i] == 1:
-            sql += str(col_name) + " REAL, "
+            col_defs += f"{str(col_name)} REAL, "
         elif column_types[i] == 2:
-            sql += str(col_name) + " text, "
-        inserting_text += str(col_name) + ', '
-    sql = sql[:-2]
-    sql += ")"
+            col_defs += f"{str(col_name)} text, "
+        inserting_text += f"{str(col_name)}, "
+    col_defs = col_defs[:-2]
+    sql = pgsql.SQL("CREATE TABLE {schema}.{tbl} ({cols})").format(
+        schema=pgsql.Identifier(schema),
+        tbl=pgsql.Identifier(temp_tbl),
+        cols=pgsql.SQL(col_defs))
     inserting_text = inserting_text[:-2] + ') VALUES '
     insert_org_sql = inserting_text
     if not db.check_table_exists(schema=schema, table_name=table):
-        db.create_table(sql, f'{schema}.temp_table{task_nr}')
+        db.create_table(sql, f'{schema}.{temp_tbl}')
     else:
         return [False, '', '']
     return [True, inserting_text, insert_org_sql]
@@ -638,20 +643,25 @@ def create_table(db: DB, schema: str, heading_row: list[str],
 
 def create_polygons(db: DB, schema: str, tbl_name: str, 
                     field: str) -> list:
-    sql = """drop table if exists {schema}.temp_tbl2;
-        WITH voronoi_temp2 AS (
-        SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
-        FROM {schema}.{tbl})
-        SELECT (vor).path, (vor).geom into {schema}.temp_tbl2
-        FROM voronoi_temp2;
-        create index temp_index on {schema}.temp_tbl2 Using gist(geom);
-        update {schema}.{tbl}
-        SET polygon = st_multi(ST_Intersection(geom, (select polygon 
-            from fields where field_name = '{field}')))
-        FROM {schema}.temp_tbl2
-        WHERE st_intersects(pos, geom) AND ST_IsValid(geom)""".format(schema=schema, tbl=tbl_name, field=field)
-    res = db.execute_sql(sql, return_failure=True)
-    db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(schema=schema))
+    query = pgsql.SQL(
+        "DROP TABLE IF EXISTS {schema}.temp_tbl2;"
+        " WITH voronoi_temp2 AS ("
+        " SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) AS vor"
+        " FROM {schema}.{tbl})"
+        " SELECT (vor).path, (vor).geom INTO {schema}.temp_tbl2 FROM voronoi_temp2;"
+        " CREATE INDEX temp_index ON {schema}.temp_tbl2 USING gist(geom);"
+        " UPDATE {schema}.{tbl}"
+        " SET polygon = st_multi(ST_Intersection(geom,"
+        " (SELECT polygon FROM fields WHERE field_name = %s)))"
+        " FROM {schema}.temp_tbl2"
+        " WHERE st_intersects(pos, geom) AND ST_IsValid(geom)"
+    ).format(
+        schema=pgsql.Identifier(schema),
+        tbl=pgsql.Identifier(tbl_name))
+    res = db.execute_sql(query, params=(field,), return_failure=True)
+    db.execute_sql(
+        pgsql.SQL("DROP TABLE IF EXISTS {schema}.temp_tbl2").format(
+            schema=pgsql.Identifier(schema)))
     return res
 
 
@@ -782,17 +792,22 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
             no_miss_heading = False
         if 'course' not in heading_row and 'Course' not in heading_row:
             create_course_column(db, schema)
-        sql = """SELECT * INTO {schema}.{tbl} 
-        from {schema}.temp_table
-        where st_intersects(pos, (select polygon 
-        from fields where field_name = '{field}'))
-        """.format(schema=schema, tbl=tbl_name, field=field)
+        query = pgsql.SQL(
+            "SELECT * INTO {schema}.{tbl}"
+            " FROM {schema}.temp_table"
+            " WHERE st_intersects(pos,"
+            " (SELECT polygon FROM fields WHERE field_name = %s))"
+        ).format(
+            schema=pgsql.Identifier(schema),
+            tbl=pgsql.Identifier(tbl_name))
         time.sleep(0.1)
         if task != 'debug':
             task.setProgress(50)
-        db.execute_sql(sql)
+        db.execute_sql(query, params=(field,))
 
-        db.execute_sql("DROP TABLE {schema}.temp_table".format(schema=schema))
+        db.execute_sql(
+            pgsql.SQL("DROP TABLE {schema}.temp_table").format(
+                schema=pgsql.Identifier(schema)))
         suc = db.reset_row_id(schema, tbl_name)
         if not suc[0]:
             return suc
@@ -806,11 +821,11 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
         if params['move']:
             suc = move_points(db, params['move_x'], params['move_y'], tbl_name, task)
             if not suc[0]:
-                return [False, no_miss_heading, some_wrong_len, sql]
+                return [False, no_miss_heading, some_wrong_len, query]
             else:
                 task = suc[1]
         if task != 'debug':
             task.setProgress(90)
-        return [True, no_miss_heading, some_wrong_len, sql]
+        return [True, no_miss_heading, some_wrong_len, query]
     except Exception as e:
         return [False, e, traceback.format_exc()]

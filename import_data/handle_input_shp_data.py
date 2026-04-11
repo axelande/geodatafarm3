@@ -12,6 +12,7 @@ from ..widgets.import_shp_dialog import ImportShpDialog
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import check_text, check_date_format, TR
 from ..support_scripts.qt_data import _enum_select_rows, _item_flag
+from psycopg2 import sql as pgsql
 from ..import_data.insert_manual_from_file import ManualFromFile
 q_info = QMessageBox.information
 
@@ -256,31 +257,32 @@ class InputShpHandler:
             return [False, e, traceback.format_exc()]
         """
         try:
-            sql = "CREATE TABLE {schema}.temp_table (field_row_id integer PRIMARY KEY, ".format(
-                schema=self.schema)
+            col_defs = "field_row_id integer PRIMARY KEY, "
             lat_lon_inserted = False
             date_inserted = False
             for i, col_name in enumerate(self.col_names):
                 if not lat_lon_inserted:
-                    sql += """pos geometry(POINT, 4326), 
-                    polygon geometry(POLYGON, 4326), 
+                    col_defs += """pos geometry(POINT, 4326),
+                    polygon geometry(POLYGON, 4326),
                     """
                     lat_lon_inserted = True
                 if 'date_row' in date_dict.keys() and col_name == date_dict['date_row']:
-                    sql += "Date_ TIMESTAMP, "
+                    col_defs += "Date_ TIMESTAMP, "
                     continue
                 elif 'simple_date' in date_dict.keys() and not date_inserted:
-                    sql += "Date_ TIMESTAMP, "
+                    col_defs += "Date_ TIMESTAMP, "
                     date_inserted = True
                 if self.col_types[i] == 0:
-                    sql += str(col_name)[:10] + " INT, "
+                    col_defs += f"{str(col_name)[:10]} INT, "
                 if self.col_types[i] == 1:
-                    sql += str(col_name)[:10] + " REAL, "
+                    col_defs += f"{str(col_name)[:10]} REAL, "
                 if self.col_types[i] == 2:
-                    sql += str(col_name)[:10] + " TEXT, "
-            sql = sql[:-2]
-            sql += ")"
-            self.db.create_table(sql, '{schema}.temp_table'.format(schema=self.schema))
+                    col_defs += f"{str(col_name)[:10]} TEXT, "
+            col_defs = col_defs[:-2]
+            sql = pgsql.SQL("CREATE TABLE {schema}.temp_table ({cols})").format(
+                schema=pgsql.Identifier(self.schema),
+                cols=pgsql.SQL(col_defs))
+            self.db.create_table(sql, f'{self.schema}.temp_table')
             return [True]
         except Exception as e:
             return [False, e, traceback.format_exc()]
@@ -368,65 +370,68 @@ class InputShpHandler:
                 for i in range(len(data_dict['field_row_id'])):
                     data_dict['Date_'].append("'" + str(date_dict['simple_date']) + "'")
             key_list = list(data_dict.keys())
-            sql_raw = "INSERT INTO {schema}.temp_table ({cols}) VALUES".format(
-                schema=self.schema,
-                cols=", ".join(str(e).replace("'", "") for e in key_list))
+            col_ids = pgsql.SQL(", ").join(
+                pgsql.Identifier(str(e).replace("'", "")) for e in key_list)
+            sql_prefix = pgsql.SQL("INSERT INTO {schema}.temp_table ({cols}) VALUES").format(
+                schema=pgsql.Identifier(self.schema),
+                cols=col_ids)
+            values_parts = []
             for i in range(len(data_dict['field_row_id'])):
                 value = [data_dict[key][i] for key in key_list]
-                sql_raw += "({vals_str}), ".format(
-                    vals_str=", ".join(str(e) for e in value))
-            sql = sql_raw[:-2]
+                values_parts.append(f"({', '.join(str(e) for e in value)})")
+            sql = sql_prefix + pgsql.SQL(", ".join(values_parts))
             #print(sql)
             self.db.execute_sql(sql)
             if self.ISD.EPSG.text() != '4326':
-                sql = """Update {schema}.temp_table set pos=st_transform(pos,
-                4326)""".format(schema=self.schema)
-                self.db.execute_sql(sql)
+                query = pgsql.SQL("UPDATE {schema}.temp_table SET pos = st_transform(pos, 4326)").format(
+                    schema=pgsql.Identifier(self.schema))
+                self.db.execute_sql(query)
             if task != 'debug':
                 task.setProgress(50)
             if data_as_points:
                 geom_col = 'pos'
             else:
                 geom_col = 'polygon'
-            sql = """SELECT * INTO {schema}.{tbl} 
-    from {schema}.temp_table
-    where st_intersects({geom_col}, (select polygon 
-                              from fields 
-                              where field_name='{field}')
-                        )""".format(schema=self.schema, tbl=self.tbl_name,
-                                    field=self.field, geom_col=geom_col)
-            #print(sql)
-            self.db.execute_sql(sql)
+            query = pgsql.SQL(
+                "SELECT * INTO {schema}.{tbl}"
+                " FROM {schema}.temp_table"
+                " WHERE st_intersects({geom_col},"
+                " (SELECT polygon FROM fields WHERE field_name = %s))"
+            ).format(
+                schema=pgsql.Identifier(self.schema),
+                tbl=pgsql.Identifier(self.tbl_name),
+                geom_col=pgsql.Identifier(geom_col))
+            self.db.execute_sql(query, params=(self.field,))
             if task != 'debug':
                 task.setProgress(70)
             if self.schema != 'harvest' and data_as_points:
                 # self.db.execute_sql(
                 #    "DROP TABLE {schema}.temp_table".format(schema=self.schema))
 
-                sql = """drop table if exists {schema}.temp_tbl2;
-            WITH voronoi_temp2 AS (
-              SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) as vor
-              FROM {schema}.{tbl})
-            SELECT (vor).path, (vor).geom 
-              into {schema}.temp_tbl2
-              FROM voronoi_temp2  ;
-            create index temp_index on {schema}.temp_tbl2 Using gist(geom);
-            update {schema}.{tbl}
-              SET polygon = ST_Intersection(geom,(select polygon 
-                            from fields where field_name='{field}'))
-              FROM {schema}.temp_tbl2
-              WHERE st_intersects(pos, geom)""".format(schema=self.schema,
-                                                       tbl=self.tbl_name,
-                                                       field=self.field)
-                self.db.execute_sql(sql)
+                query = pgsql.SQL(
+                    "DROP TABLE IF EXISTS {schema}.temp_tbl2;"
+                    " WITH voronoi_temp2 AS ("
+                    " SELECT ST_dump(ST_VoronoiPolygons(ST_Collect(pos))) AS vor"
+                    " FROM {schema}.{tbl})"
+                    " SELECT (vor).path, (vor).geom INTO {schema}.temp_tbl2 FROM voronoi_temp2;"
+                    " CREATE INDEX temp_index ON {schema}.temp_tbl2 USING gist(geom);"
+                    " UPDATE {schema}.{tbl}"
+                    " SET polygon = ST_Intersection(geom, (SELECT polygon FROM fields WHERE field_name = %s))"
+                    " FROM {schema}.temp_tbl2"
+                    " WHERE st_intersects(pos, geom)"
+                ).format(
+                    schema=pgsql.Identifier(self.schema),
+                    tbl=pgsql.Identifier(self.tbl_name))
+                self.db.execute_sql(query, params=(self.field,))
             if task != 'debug':
                 task.setProgress(90)
             redone_param_list = []
             for param in self.params_to_evaluate:
                 only_char = check_text(param)
                 redone_param_list.append(only_char)
-            self.db.execute_sql("drop table if exists {schema}.temp_tbl2;".format(
-                    schema=self.schema))
+            self.db.execute_sql(
+                pgsql.SQL("DROP TABLE IF EXISTS {schema}.temp_tbl2").format(
+                    schema=pgsql.Identifier(self.schema)))
             self.db.create_indexes(self.tbl_name, redone_param_list, self.schema)
             return [True]
         if failure:

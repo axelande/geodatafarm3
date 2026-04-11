@@ -364,9 +364,11 @@ class GeoDataFarm:
                 if ret == qm.No:
                     return False
                 else:
-                    self.db.execute_sql(
-                        "DROP TABLE {schema}.{tbl}".format(schema=schema,
-                                                        tbl=tbl_name))
+                    from psycopg2 import sql as pgsql
+                    query = pgsql.SQL("DROP TABLE {schema}.{tbl}").format(
+                        schema=pgsql.Identifier(schema),
+                        tbl=pgsql.Identifier(tbl_name))
+                    self.db.execute_sql(query)
                     return True
         else:
             return True
@@ -420,9 +422,8 @@ class GeoDataFarm:
                 QMessageBox.information(None, self.tr('Error:'),
                                         self.tr('Crop name must be filled in.'))
                 return
-        sql = """Insert into crops (crop_name) 
-                VALUES ('{name}')""".format(name=crop_name)
-        r_value = self.db.execute_sql(sql, return_failure=True)
+        sql = "Insert into crops (crop_name) VALUES (%s)"
+        r_value = self.db.execute_sql(sql, params=(crop_name,), return_failure=True)
         if r_value is IntegrityError:
             if self.test_mode:
                 return False
@@ -440,8 +441,8 @@ class GeoDataFarm:
         for i in range(self.dock_widget.LWCrops.count()):
             item = self.dock_widget.LWCrops.item(i)
             if item.checkState() == 2:
-                sql = "delete from crops where crop_name = '{n}'".format(n=item.text())
-                self.db.execute_sql(sql)
+                sql = "delete from crops where crop_name = %s"
+                self.db.execute_sql(sql, params=(item.text(),))
         self.populate.reload_crops()
 
     def clicked_create_farm(self: Self) -> CreateFarm:

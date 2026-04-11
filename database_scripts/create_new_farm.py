@@ -85,7 +85,8 @@ class CreateFarm:
             'http://geodatafarm.com/create/?username={u}&password={p}&farmname={f}&email={e}'.format(u=username,
                                                                                                      p=password,
                                                                                                      f=farmname,
-                                                                                                     e=email_inp))
+                                                                                                     e=email_inp),
+            timeout=30)
         if r is None:
             QMessageBox.information(None, self.tr("Error:"), self.tr(
                 '- Is your computer online? \n- If you are sure that please send an email to geodatafarm@gmail.com'))

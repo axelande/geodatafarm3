@@ -24,7 +24,7 @@ class MyRainDancer:
         dict
         or str = Failed
         """
-        self.operations = requests.get("http://portal.myraindancer.com/api/v1/operations?" + self.auth)
+        self.operations = requests.get("http://portal.myraindancer.com/api/v1/operations?" + self.auth, timeout=30)
         test = json.loads(self.operations.text)
         try:
             data = test['data']

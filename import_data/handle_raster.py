@@ -4,6 +4,7 @@ from osgeo import osr
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from functools import partial
 import subprocess
+from psycopg2 import sql as pgsql
 from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,
                        QgsProcessingContext,
                        QgsMessageLog, Qgis)
@@ -153,11 +154,13 @@ class ImportRaster:
         -------
         bool
         """
-        cmd = """ogr2ogr -f PostgreSQL PG:"host='{host}' port='{port}' dbname='{dbname}' user='{username}' password='{password}'" "{shp_path}" -nln {s_tbl}""".format(host=self.db.dbhost, port=self.db.dbport,
-                               dbname=self.db.dbname, username=self.db.dbuser,
-                               password=self.db.dbpass, s_tbl=self.s_tbl,
-                               shp_path=self.plugin_dir + '/temp.shp')
-        res = subprocess.call(cmd, shell=True)
+        pg_conn = (f"host={self.db.dbhost} port={self.db.dbport} "
+                   f"dbname={self.db.dbname} user={self.db.dbuser} "
+                   f"password={self.db.dbpass}")
+        shp_path = f"{self.plugin_dir}/temp.shp"
+        cmd = ["ogr2ogr", "-f", "PostgreSQL", f"PG:{pg_conn}",
+               shp_path, "-nln", self.s_tbl]
+        res = subprocess.call(cmd)
         if res == 0:
             return True
         else:
@@ -166,26 +169,25 @@ class ImportRaster:
     def run_sql_commands(self, result, values):
         """Changes the names of some columns and change the srid to 4326, adds
         the column pos as the centroid of the polygon"""
-        sql = """ALTER TABLE {s_tbl} 
-              RENAME COLUMN ogc_fid TO field_row_id""".format(s_tbl=self.s_tbl)
-        self.db.execute_sql(sql)
-        sql = """ALTER TABLE {s_tbl} 
-              RENAME COLUMN wkb_geometry TO polygon""".format(s_tbl=self.s_tbl)
-        self.db.execute_sql(sql)
-        srid = self.db.execute_and_return("""select st_srid(polygon) 
-                                          from {s_tbl} limit 1
-                                          """.format(s_tbl=self.s_tbl))[0][0]
-        sql = """ALTER TABLE {s_tbl}
-        ALTER COLUMN polygon TYPE geometry(POLYGON, 4326) 
-          USING ST_Transform(ST_SetSRID(polygon,{srid}),4326);
-        """.format(s_tbl=self.s_tbl, srid=srid)
-        self.db.execute_sql(sql)
-        sql = """ALTER TABLE {s_tbl}
-        ADD pos geometry(POINT, 4326);""".format(s_tbl=self.s_tbl)
-        self.db.execute_sql(sql)
-        sql = """UPDATE {s_tbl} 
-        SET pos=st_centroid(polygon)""".format(s_tbl=self.s_tbl)
-        self.db.execute_sql(sql)
+        schema, tbl = self.s_tbl.split('.')
+        tbl_id = pgsql.SQL("{schema}.{tbl}").format(
+            schema=pgsql.Identifier(schema), tbl=pgsql.Identifier(tbl))
+
+        self.db.execute_sql(
+            pgsql.SQL("ALTER TABLE {tbl} RENAME COLUMN ogc_fid TO field_row_id").format(tbl=tbl_id))
+        self.db.execute_sql(
+            pgsql.SQL("ALTER TABLE {tbl} RENAME COLUMN wkb_geometry TO polygon").format(tbl=tbl_id))
+        srid = self.db.execute_and_return(
+            pgsql.SQL("SELECT st_srid(polygon) FROM {tbl} LIMIT 1").format(tbl=tbl_id))[0][0]
+        self.db.execute_sql(
+            pgsql.SQL("ALTER TABLE {tbl}"
+                      " ALTER COLUMN polygon TYPE geometry(POLYGON, 4326)"
+                      " USING ST_Transform(ST_SetSRID(polygon, %s), 4326)").format(tbl=tbl_id),
+            params=(srid,))
+        self.db.execute_sql(
+            pgsql.SQL("ALTER TABLE {tbl} ADD pos geometry(POINT, 4326)").format(tbl=tbl_id))
+        self.db.execute_sql(
+            pgsql.SQL("UPDATE {tbl} SET pos = st_centroid(polygon)").format(tbl=tbl_id))
         columns = self.db.get_all_columns(self.file_name, self.schema,
                                        "'field_row_id', 'pos', 'polygon', 'cmin', 'cmax', 'xmin', 'xmax', 'ctid', 'tableoid'")
         self.db.create_indexes(self.file_name, columns, self.schema,

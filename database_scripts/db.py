@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 import psycopg2
 import psycopg2.pool
 import psycopg2.extras
+from psycopg2 import sql as pgsql
 import traceback
 import sys
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
@@ -119,8 +120,8 @@ class DB:
             conn.set_isolation_level(0)
             return conn
         except psycopg2.OperationalError as e:
-            QMessageBox.information(None, self.tr('Error'), self.tr("Error connecting to database on {host}. {e}".format(
-                    host=self.dbhost, e=str(e))))
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr(f"Error connecting to database on {self.dbhost}. {e}"))
             return False
 
     def add_postgis_layer(self: Self, table: str, geom_col: str, schema: str, extra_name: str='',
@@ -186,10 +187,10 @@ class DB:
         sql = """
             SELECT COUNT(*)
             FROM information_schema.tables
-            WHERE table_name = '{tbl}'
-            And table_schema='{s}'
-            """.format(tbl=table_name.replace('\'', '\'\''), s=schema)
-        res = self.execute_and_return(sql)
+            WHERE table_name = %s
+            And table_schema= %s
+            """
+        res = self.execute_and_return(sql, params=(table_name, schema))
         if res[0][0] > 0:
             if ask_replace:
                 qm = QMessageBox
@@ -200,12 +201,15 @@ class DB:
                 if res_qm == qm.No:
                     return True
                 else:
-                    self.execute_sql("""DROP TABLE {schema}.{tbl};
-                                                    DELETE FROM {schema}.manual
-                                                    WHERE table_ = '{tbl}';
-                                                    """.format(
-                        schema=schema,
-                        tbl=table_name))
+                    query = pgsql.SQL(
+                        "DROP TABLE {schema}.{tbl};"
+                        " DELETE FROM {schema}.manual"
+                        " WHERE table_ = %s"
+                    ).format(
+                        schema=pgsql.Identifier(schema),
+                        tbl=pgsql.Identifier(table_name)
+                    )
+                    self.execute_sql(query, params=(table_name,))
                     return False
             else:
                 return True
@@ -225,10 +229,17 @@ class DB:
             If drop exist leave it as True
         """
         if drop_if_exist:
-            self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_name))
+            parts = tbl_name.split('.')
+            if len(parts) == 2:
+                tbl_id = pgsql.SQL("{}.{}").format(
+                    pgsql.Identifier(parts[0]), pgsql.Identifier(parts[1]))
+            else:
+                tbl_id = pgsql.Identifier(tbl_name)
+            query = pgsql.SQL("DROP TABLE IF EXISTS {}").format(tbl_id)
+            self.execute_sql(query)
         self.execute_sql(sql)
 
-    def create_indexes(self: Self, tbl_name: str, params_to_eval: list[str], 
+    def create_indexes(self: Self, tbl_name: str, params_to_eval: list[str],
                        schema: str, primary_key: bool=True) -> None:
         """Drops is exists and create a gist index and
         btree indexes for params_to_eval a table
@@ -244,25 +255,46 @@ class DB:
         primary_key: bool
             default True -> create a primary key over field_row_id
         """
+        tbl_safe = tbl_name.replace('.', '_')
         try:
-            self.execute_sql("""DROP INDEX IF EXISTS gist_{schema}_{tbl2}""".format(schema=schema, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
-            self.execute_sql("""create index gist_{schema}_{tbl2}
-        on {schema}.{tbl} using gist(pos) """.format(schema=schema, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
+            self.execute_sql(
+                pgsql.SQL("DROP INDEX IF EXISTS {}").format(
+                    pgsql.Identifier(f"gist_{schema}_{tbl_safe}")),
+                disregard_failure=True)
+            self.execute_sql(
+                pgsql.SQL("CREATE INDEX {} ON {}.{} USING gist(pos)").format(
+                    pgsql.Identifier(f"gist_{schema}_{tbl_safe}"),
+                    pgsql.Identifier(schema),
+                    pgsql.Identifier(tbl_name)),
+                disregard_failure=True)
             if schema != 'harvest':
-                self.execute_sql("""DROP INDEX IF EXISTS gist2_{schema}_{tbl2}""".format(
-                    schema=schema, tbl2=tbl_name.replace('.', '_')))
-                self.execute_sql("""create index gist2_{schema}_{tbl2}
-                    on {schema}.{tbl} using gist(polygon) """.format(schema=schema,
-                                                                 tbl=tbl_name,
-                                                                 tbl2=tbl_name.replace(
-                                                                     '.', '_')), disregard_failure=True)
+                self.execute_sql(
+                    pgsql.SQL("DROP INDEX IF EXISTS {}").format(
+                        pgsql.Identifier(f"gist2_{schema}_{tbl_safe}")))
+                self.execute_sql(
+                    pgsql.SQL("CREATE INDEX {} ON {}.{} USING gist(polygon)").format(
+                        pgsql.Identifier(f"gist2_{schema}_{tbl_safe}"),
+                        pgsql.Identifier(schema),
+                        pgsql.Identifier(tbl_name)),
+                    disregard_failure=True)
             for parm in params_to_eval:
-                self.execute_sql("DROP INDEX IF EXISTS {param}_{schema}_{tbl2}".format(schema=schema, param=parm, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
-                self.execute_sql("""create index {param}_{schema}_{tbl2} on {schema}.{tbl} 
-        using btree({param})""".format(schema=schema, param=parm, tbl=tbl_name, tbl2=tbl_name.replace('.', '_')), disregard_failure=True)
+                self.execute_sql(
+                    pgsql.SQL("DROP INDEX IF EXISTS {}").format(
+                        pgsql.Identifier(f"{parm}_{schema}_{tbl_safe}")),
+                    disregard_failure=True)
+                self.execute_sql(
+                    pgsql.SQL("CREATE INDEX {} ON {}.{} USING btree({})").format(
+                        pgsql.Identifier(f"{parm}_{schema}_{tbl_safe}"),
+                        pgsql.Identifier(schema),
+                        pgsql.Identifier(tbl_name),
+                        pgsql.Identifier(parm)),
+                    disregard_failure=True)
             if primary_key:
-                self.execute_sql("""ALTER TABLE {schema}.{tbl}
-        ADD CONSTRAINT pkey_{schema}_{tbl} PRIMARY KEY (field_row_id);""".format(tbl=tbl_name, schema=schema))
+                self.execute_sql(
+                    pgsql.SQL("ALTER TABLE {}.{} ADD CONSTRAINT {} PRIMARY KEY (field_row_id)").format(
+                        pgsql.Identifier(schema),
+                        pgsql.Identifier(tbl_name),
+                        pgsql.Identifier(f"pkey_{schema}_{tbl_name}")))
         except Exception as e:
             print('Failed when trying to create indexes')
             print(e)
@@ -279,11 +311,11 @@ class DB:
         list
             A list of tables in the database
         """
-        sql = """select table_name 
-        from information_schema.tables 
-        where table_schema = '{schema}' and table_type = 'BASE TABLE'
-        ORDER BY table_name""".format(schema=schema)
-        table_names = self.execute_and_return(sql)
+        sql = """select table_name
+        from information_schema.tables
+        where table_schema = %s and table_type = 'BASE TABLE'
+        ORDER BY table_name"""
+        table_names = self.execute_and_return(sql, params=(schema,))
         names = []
         for name in table_names:
             names.append(name[0])
@@ -304,17 +336,23 @@ class DB:
         list
             [distinct value, count]
         """
-        sql = """SELECT {item}, count(*)
-        FROM {schema}.{tbl}
-        GROUP BY {item}
-        ORDER BY {item}""".format(item=column, tbl=table, schema=schema)
-        all_distinct = self.execute_and_return(sql)
+        query = pgsql.SQL(
+            "SELECT {item}, count(*)"
+            " FROM {schema}.{tbl}"
+            " GROUP BY {item}"
+            " ORDER BY {item}"
+        ).format(
+            item=pgsql.Identifier(column),
+            tbl=pgsql.Identifier(table),
+            schema=pgsql.Identifier(schema)
+        )
+        all_distinct = self.execute_and_return(query)
         checked_values = []
         for col, count in all_distinct:
             checked_values.append([col, count])
         return checked_values
 
-    def get_all_columns(self: Self, table: str, schema: str, 
+    def get_all_columns(self: Self, table: str, schema: str,
                         exclude: str="''") -> list:
         """Get all columns of a table
 
@@ -328,26 +366,22 @@ class DB:
         -------
         list of lists
         """
-
-        sql = """select
-        a.attname as column_name
-        from
-        pg_class t
-        JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,
-        pg_class i,
-        pg_attribute a
-        where
-        a.attrelid = t.oid
-        and t.relkind = 'r'
-        and t.relname = '{table}'
-        and n.nspname in ('{schema}')
-        and attisdropped is False 
-        and attstattarget < 0
-        and a.attname not in ({exclude})
-        group by t.relname,
-        a.attname order by a.attname""".format(table=table, schema=schema,
-                                               exclude=exclude)
-        cols = self.execute_and_return(sql)
+        query = pgsql.SQL(
+            "SELECT a.attname AS column_name"
+            " FROM pg_class t"
+            " JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,"
+            " pg_class i, pg_attribute a"
+            " WHERE a.attrelid = t.oid"
+            " AND t.relkind = 'r'"
+            " AND t.relname = %s"
+            " AND n.nspname = %s"
+            " AND attisdropped IS False"
+            " AND attstattarget < 0"
+            " AND a.attname NOT IN ({exclude})"
+            " GROUP BY t.relname, a.attname"
+            " ORDER BY a.attname"
+        ).format(exclude=pgsql.SQL(exclude))
+        cols = self.execute_and_return(query, params=(table, schema))
         columns = []
         for col in cols:
             columns.append(col[0])
@@ -368,27 +402,24 @@ class DB:
         list
             A list of numeric column names
         """
-        sql = """select
-        a.attname as column_name
-        from
-        pg_class t
-        JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,
-        pg_attribute a,
-        pg_type ty
-        where
-        a.attrelid = t.oid
-        and a.atttypid = ty.oid
-        and t.relkind = 'r'
-        and t.relname = '{table}'
-        and n.nspname = '{schema}'
-        and attisdropped is False
-        and attstattarget < 0
-        and a.attname not in ({exclude})
-        and ty.typname in ('int2', 'int4', 'int8', 'float4', 'float8', 'numeric')
-        group by t.relname,
-        a.attname order by a.attname""".format(table=table, schema=schema,
-                                               exclude=exclude)
-        cols = self.execute_and_return(sql)
+        query = pgsql.SQL(
+            "SELECT a.attname AS column_name"
+            " FROM pg_class t"
+            " JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,"
+            " pg_attribute a, pg_type ty"
+            " WHERE a.attrelid = t.oid"
+            " AND a.atttypid = ty.oid"
+            " AND t.relkind = 'r'"
+            " AND t.relname = %s"
+            " AND n.nspname = %s"
+            " AND attisdropped IS False"
+            " AND attstattarget < 0"
+            " AND a.attname NOT IN ({exclude})"
+            " AND ty.typname IN ('int2', 'int4', 'int8', 'float4', 'float8', 'numeric')"
+            " GROUP BY t.relname, a.attname"
+            " ORDER BY a.attname"
+        ).format(exclude=pgsql.SQL(exclude))
+        cols = self.execute_and_return(query, params=(table, schema))
         return [col[0] for col in cols]
 
     def update_row_id(self, schema, table):
@@ -398,10 +429,14 @@ class DB:
         schema: str
         table: str
         """
-        sql = """ALTER TABLE {schema}.{table} drop COLUMN field_row_id;
-        ALTER TABLE {schema}.{table} add COLUMN field_row_id serial UNIQUE NOT NULL
-        """.format(schema=schema, table=table)
-        res = self.execute_sql(sql, return_failure=True)
+        query = pgsql.SQL(
+            "ALTER TABLE {schema}.{table} DROP COLUMN field_row_id;"
+            " ALTER TABLE {schema}.{table} ADD COLUMN field_row_id serial UNIQUE NOT NULL"
+        ).format(
+            schema=pgsql.Identifier(schema),
+            table=pgsql.Identifier(table)
+        )
+        res = self.execute_sql(query, return_failure=True)
 
 
     def get_indexes(self: Self, tables: str, schema: str) -> dict[int, dict[str, str]]:
@@ -421,30 +456,32 @@ class DB:
             'index_col' and 'schema'
 
         """
-        schema_txt = "" if schema == '' else "and n.nspname='{s}'".format(s=schema)
-        sql = """select
-             t.relname as table_name,
-             i.relname as index_name,
-             a.attname as column_name,
-             n.nspname as schema_name
-            from
-             pg_class t
-             JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,
-             pg_class i,
-             pg_index ix,
-             pg_attribute a
-            where
-             t.oid = ix.indrelid
-             and i.oid = ix.indexrelid
-             and a.attrelid = t.oid
-             and a.attnum = ANY(ix.indkey)
-             and t.relkind = 'r'
-             and t.relname in ('{tables}')
-             {schema_txt}
-            order by
-             t.relname,
-             i.relname;""".format(tables=tables, schema_txt=schema_txt)
-        big_table = self.execute_and_return(sql)
+        if schema == '':
+            schema_clause = pgsql.SQL("")
+        else:
+            schema_clause = pgsql.SQL("AND n.nspname = %s")
+        query = pgsql.SQL(
+            "SELECT t.relname AS table_name,"
+            " i.relname AS index_name,"
+            " a.attname AS column_name,"
+            " n.nspname AS schema_name"
+            " FROM pg_class t"
+            " JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace,"
+            " pg_class i, pg_index ix, pg_attribute a"
+            " WHERE t.oid = ix.indrelid"
+            " AND i.oid = ix.indexrelid"
+            " AND a.attrelid = t.oid"
+            " AND a.attnum = ANY(ix.indkey)"
+            " AND t.relkind = 'r'"
+            " AND t.relname = %s"
+            " {schema_clause}"
+            " ORDER BY t.relname, i.relname"
+        ).format(schema_clause=schema_clause)
+        if schema == '':
+            params = (tables,)
+        else:
+            params = (tables, schema)
+        big_table = self.execute_and_return(query, params=params)
         parameter_to_eval = {}
         ind = -1
         for table, index_name, index_col, schema in big_table:
@@ -458,14 +495,17 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
-    def execute_sql(self: Self, sql: str, return_failure: bool=False, 
-                    return_row_count: bool=False, disregard_failure: bool=False, 
+    def execute_sql(self: Self, sql, params: tuple|None=None,
+                    return_failure: bool=False,
+                    return_row_count: bool=False, disregard_failure: bool=False,
                     suppress_message: bool=False) -> "list[bool|int|str]|None":
         """
         Parameters
         ----------
-        sql: str
-            text string with the sql statement
+        sql: str or psycopg2.sql.Composable
+            the sql statement
+        params: tuple, optional
+            parameters for parameterized query (use %s placeholders in sql)
         return_failure: bool, optional default False
             If True returns if failure
         disregard_failure: bool, optional default False
@@ -478,7 +518,7 @@ class DB:
             return 'There was no connection established'
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
-            cur.execute(sql)
+            cur.execute(sql, params)
             conn.commit()
             row_count = cur.rowcount
         except Exception as e:
@@ -493,7 +533,7 @@ class DB:
                 if self.test_mode:
                     self.pool.putconn(conn)
                     return False
-                else:  
+                else:
                     sf.display_failure(e)
         self.pool.putconn(conn)
         if return_failure:
@@ -502,15 +542,18 @@ class DB:
             else:
                 return [True, 'suc']
 
-    def execute_and_return(self: Self, sql: str, return_failure: bool=False,
+    def execute_and_return(self: Self, sql, params: tuple|None=None,
+                           return_failure: bool=False,
                            suppress_message: bool=False
                            ) -> "list[list[float|int|str|None]]|list[bool|list[float|int|str|None]|str]":
         """Execute and returns an SQL statement
 
         Parameters
         ----------
-        sql: str
-            text string with the sql statement
+        sql: str or psycopg2.sql.Composable
+            the sql statement
+        params: tuple, optional
+            parameters for parameterized query (use %s placeholders in sql)
         return_failure: bool
             if the error should be returned instead of showed to the user
 
@@ -526,7 +569,7 @@ class DB:
             return 'There was no connection established'
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         try:
-            cur.execute(sql)
+            cur.execute(sql, params)
             data = cur.fetchall()
         except Exception as e:
             self.pool.putconn(conn)
@@ -536,7 +579,7 @@ class DB:
             else:
                 if self.test_mode:
                     return 'There were an error..'
-                else:  
+                else:
                     sf = SomeFailure()
                     sf.display_failure(e)
                     return 'There were an error..'
@@ -555,23 +598,27 @@ class DB:
             string with schema.table
 
         """
-        self.execute_sql("DROP TABLE IF EXISTS {tbl}".format(tbl=tbl_schema_name))
+        schema, tbl = tbl_schema_name.split('.')[0], tbl_schema_name.split('.')[1]
+        query = pgsql.SQL("DROP TABLE IF EXISTS {}.{}").format(
+            pgsql.Identifier(schema), pgsql.Identifier(tbl))
+        self.execute_sql(query)
         try:
-            schema = tbl_schema_name.split('.')[0]
-            tbl = tbl_schema_name.split('.')[1]
-            sql = "DELETE FROM {s}.manual WHERE table_='{tbl}'".format(s=schema, tbl=tbl)
-            self.execute_sql(sql)
+            query = pgsql.SQL("DELETE FROM {}.manual WHERE table_ = %s").format(
+                pgsql.Identifier(schema))
+            self.execute_sql(query, params=(tbl,))
         except:
             pass
 
     def reset_row_id(self: Self, schema: str, tbl: str) -> list:
-        sql = """ALTER TABLE {schema}.{tbl} drop constraint if exists pkey_{schema}_{tbl};
-        with a as(select field_row_id as a_old, ROW_NUMBER() OVER() as a_row from {schema}.{tbl})
-        UPDATE {schema}.{tbl} b
-        SET field_row_id= a_row
-        from a
-        where field_row_id=a_old;
-        ALTER TABLE {schema}.{tbl} add constraint pkey_{schema}_{tbl} primary key (field_row_id);
-        """.format(schema=schema, tbl=tbl)
-        fail = self.execute_sql(sql, return_failure=True)
+        query = pgsql.SQL(
+            "ALTER TABLE {schema}.{tbl} DROP CONSTRAINT IF EXISTS {pkey};"
+            " WITH a AS (SELECT field_row_id AS a_old, ROW_NUMBER() OVER() AS a_row FROM {schema}.{tbl})"
+            " UPDATE {schema}.{tbl} b SET field_row_id = a_row FROM a WHERE field_row_id = a_old;"
+            " ALTER TABLE {schema}.{tbl} ADD CONSTRAINT {pkey} PRIMARY KEY (field_row_id)"
+        ).format(
+            schema=pgsql.Identifier(schema),
+            tbl=pgsql.Identifier(tbl),
+            pkey=pgsql.Identifier(f"pkey_{schema}_{tbl}")
+        )
+        fail = self.execute_sql(query, return_failure=True)
         return [fail]

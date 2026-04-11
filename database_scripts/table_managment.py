@@ -1,4 +1,5 @@
 from typing import Self
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.core import QgsTask
 from qgis.PyQt.QtWidgets import QInputDialog, QMessageBox, QListWidgetItem, QPushButton
@@ -168,16 +169,32 @@ class TableManagement:
                 if item.checkState() == 2:
                     create_index_for.append(item.text())
         for index in create_index_for:
-            self.db.execute_sql("""create index {index}_{schema}_{tbl} on {schema}.{tbl} using btree({index})""".format(index=index, tbl=table, schema=schema))
+            self.db.execute_sql(
+                pgsql.SQL("CREATE INDEX {idx} ON {schema}.{tbl} USING btree({col})").format(
+                    idx=pgsql.Identifier(f"{index}_{schema}_{table}"),
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(table),
+                    col=pgsql.Identifier(index)))
         for index in remove_index_for:
-            self.db.execute_sql("DROP INDEX IF EXISTS {schema}.{index}_{schema}_{tbl}".format(index=index, tbl=table, schema=schema))
+            self.db.execute_sql(
+                pgsql.SQL("DROP INDEX IF EXISTS {schema}.{idx}").format(
+                    schema=pgsql.Identifier(schema),
+                    idx=pgsql.Identifier(f"{index}_{schema}_{table}")))
         if schema != 'harvest':
-            self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
-create index gist_{tbl} on {schema}.{tbl} using gist(polygon) """.format(tbl=table, schema=schema))
+            self.db.execute_sql(
+                pgsql.SQL("DROP INDEX IF EXISTS {schema}.{idx};"
+                          " CREATE INDEX {idx} ON {schema}.{tbl} USING gist(polygon)").format(
+                    schema=pgsql.Identifier(schema),
+                    idx=pgsql.Identifier(f"gist_{table}"),
+                    tbl=pgsql.Identifier(table)))
         try:
             if schema != 'weather':
-                self.db.execute_sql("""DROP INDEX IF EXISTS {schema}.gist_{tbl};
-create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, schema=schema))
+                self.db.execute_sql(
+                    pgsql.SQL("DROP INDEX IF EXISTS {schema}.{idx};"
+                              " CREATE INDEX {idx} ON {schema}.{tbl} USING gist(pos)").format(
+                        schema=pgsql.Identifier(schema),
+                        idx=pgsql.Identifier(f"gist_{table}"),
+                        tbl=pgsql.Identifier(table)))
         except:
             pass
         model = self.TMD.SAParams.model()
@@ -195,10 +212,14 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 text, y_n = QInputDialog.getText(None, self.tr('Data set name'),
                                                  self.tr('What do you want to rename ') + tbl + self.tr(' to?'))
                 if y_n:
-                    sql = "ALTER TABLE {schema}.{old} RENAME TO {new}".format(schema=schema, old=tbl, new=text)
-                    self.db.execute_sql(sql)
-                    sql = "Update {schema}.manual SET table_ = '{new}' where table_ = '{old}'".format(schema=schema, old=tbl, new=text)
-                    self.db.execute_sql(sql)
+                    query = pgsql.SQL("ALTER TABLE {schema}.{old} RENAME TO {new}").format(
+                        schema=pgsql.Identifier(schema),
+                        old=pgsql.Identifier(tbl),
+                        new=pgsql.Identifier(text))
+                    self.db.execute_sql(query)
+                    query = pgsql.SQL("UPDATE {schema}.manual SET table_ = %s WHERE table_ = %s").format(
+                        schema=pgsql.Identifier(schema))
+                    self.db.execute_sql(query, params=(text, tbl))
         self.update_table_list()
 
     def edit_param_name(self):
@@ -209,12 +230,18 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                                                  self.tr('What do you want to rename ') + item.text() +
                                                  self.tr(' to?'))
                 if y_n:
-                    sql = """ALTER TABLE {schema}.{tbl} RENAME {new_name} TO {text}""".format(schema=self.current_schema, tbl=self.current_table, new_name=item.text(), text=text)
-                    self.db.execute_sql(sql)
+                    query = pgsql.SQL("ALTER TABLE {schema}.{tbl} RENAME {old_col} TO {new_col}").format(
+                        schema=pgsql.Identifier(self.current_schema),
+                        tbl=pgsql.Identifier(self.current_table),
+                        old_col=pgsql.Identifier(item.text()),
+                        new_col=pgsql.Identifier(text))
+                    self.db.execute_sql(query)
                     try:
-                        sql = """ALTER INDEX {schema}.{old}_{schema}_{tbl} RENAME TO {new}_{schema}_{tbl}""".format(schema=self.current_schema, tbl=self.current_table,
-                                         old=item.text(), new=text)
-                        self.db.execute_sql(sql)
+                        query = pgsql.SQL("ALTER INDEX {schema}.{old_idx} RENAME TO {new_idx}").format(
+                            schema=pgsql.Identifier(self.current_schema),
+                            old_idx=pgsql.Identifier(f"{item.text()}_{self.current_schema}_{self.current_table}"),
+                            new_idx=pgsql.Identifier(f"{text}_{self.current_schema}_{self.current_table}"))
+                        self.db.execute_sql(query)
                     except:
                         pass
         self.retrieve_params()
@@ -373,8 +400,11 @@ create index gist_{tbl} on {schema}.{tbl} using gist(pos) """.format(tbl=table, 
                 # print(sql)
                 self.db.execute_sql(sql)
             if split_yield:
-                sql = f"""UPDATE {schema}.{tbl} SET {yield_row} = {yield_row} / {nbr_rows}"""
-                self.db.execute_sql(sql)
+                query = pgsql.SQL("UPDATE {schema}.{tbl} SET {col} = {col} / %s").format(
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(tbl),
+                    col=pgsql.Identifier(yield_row))
+                self.db.execute_sql(query, params=(nbr_rows,))
 
     def update_column_list(self):
         suc, s_table = self.check_multiple()
