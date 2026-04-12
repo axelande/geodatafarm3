@@ -1,4 +1,5 @@
 from typing import Self
+from psycopg2 import sql as pgsql
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
@@ -405,8 +406,8 @@ class RapportGen:
                      'soil': {'simple': False, 'advanced': False}
                      }
 
-        def get_temp_ans(sql: str, return_list: bool):
-            temp_ans = data['db'].execute_and_return(sql, return_failure=True)
+        def get_temp_ans(sql, return_list: bool, params=None):
+            temp_ans = data['db'].execute_and_return(sql, params=params, return_failure=True)
             if isinstance(temp_ans, str) or temp_ans[0] is False:
                 return [False, '']
             if return_list:
@@ -418,12 +419,18 @@ class RapportGen:
             if meta_data['date'][:2] == 'c_':
                 _date_ = meta_data['date'][2:]
             else:
-                sql = f""" select array_agg(distinct({meta_data['date']}::date)) 
-    from {schema}.{meta_data['tbl']}"""
+                query = pgsql.SQL(
+                    "SELECT array_agg(DISTINCT({col}::date)) FROM {schema}.{tbl}"
+                ).format(
+                    col=pgsql.Identifier(meta_data['date']),
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(meta_data['tbl']))
+                params = None
                 if year is not None:
-                    sql += f""" where extract(year from date_) = {year}"""
+                    query = query + pgsql.SQL(" WHERE extract(year FROM date_) = %s")
+                    params = (year,)
                 _date_ = ''
-                suc, temp_date = get_temp_ans(sql, True)
+                suc, temp_date = get_temp_ans(query, True, params)
                 if suc:
                     for temp in temp_date:
                         _date_ += temp.isoformat() + ', '
@@ -436,11 +443,17 @@ class RapportGen:
             elif parameter == 'None':
                 variable = ''
             else:
-                sql = f""" select array_agg(distinct({parameter})) 
-from {schema}.{table}"""
+                query = pgsql.SQL(
+                    "SELECT array_agg(DISTINCT({col})) FROM {schema}.{tbl}"
+                ).format(
+                    col=pgsql.Identifier(parameter),
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(table))
+                params = None
                 if year is not None:
-                    sql += f""" where extract(year from date_) = {year}"""
-                suc, temp_var = get_temp_ans(sql, True)
+                    query = query + pgsql.SQL(" WHERE extract(year FROM date_) = %s")
+                    params = (year,)
+                suc, temp_var = get_temp_ans(query, True, params)
                 if suc:
                     variable = Paragraph(str(temp_var)[1:-1], styleN)
                 else:
@@ -453,11 +466,17 @@ from {schema}.{table}"""
             elif parameter == 'None':
                 variable = ''
             else:
-                sql = f""" select round(avg({parameter})*100)/100::double precision 
-                from {schema}.{tbl}"""
+                query = pgsql.SQL(
+                    "SELECT round(avg({col})*100)/100::double precision FROM {schema}.{tbl}"
+                ).format(
+                    col=pgsql.Identifier(parameter),
+                    schema=pgsql.Identifier(schema),
+                    tbl=pgsql.Identifier(tbl))
+                params = None
                 if year is not None:
-                    sql += f""" where extract(year from date_) = {year}"""
-                suc, temp_var = get_temp_ans(sql, False)
+                    query = query + pgsql.SQL(" WHERE extract(year FROM date_) = %s")
+                    params = (year,)
+                suc, temp_var = get_temp_ans(query, False, params)
                 if suc:
                     variable = Paragraph(str(temp_var), styleN)
                 else:
@@ -505,12 +524,14 @@ from {schema}.{table}"""
             # Planting
             if task != 'debug':
                 task.setProgress(5)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety from plant.manual 
-            where table_ = 'None'"""
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety"
+                   " FROM plant.manual WHERE table_ = 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """and extract(year from date_) = {y}""".format(y=data['year'])
-            sql +=" ORDER BY field, date_"
-            simple_plant_data = data['db'].execute_and_return(sql)
+                sql += " AND extract(year FROM date_) = %s"
+                params = (data['year'],)
+            sql += " ORDER BY field, date_"
+            simple_plant_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_plant_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety')]
                 for row in simple_plant_data:
@@ -524,13 +545,14 @@ from {schema}.{table}"""
                 data_dict['planting']['simple'] = True
                 data_dict['planting']['simple_data'] = simple_plant_data
                 data_dict['planting']['simple_heading'] = simple_heading
-            sql = """select date_text, field, crop, variety, table_ from plant.manual 
-            where table_ <> 'None'"""
+            sql = ("SELECT date_text, field, crop, variety, table_ FROM plant.manual"
+                   " WHERE table_ <> 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
-                    y=data['year'])
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
             sql += " ORDER BY field, date_text"
-            planting_data_advanced = data['db'].execute_and_return(sql)
+            planting_data_advanced = data['db'].execute_and_return(sql, params=params)
             if len(planting_data_advanced) > 0:
                 adv_data = []
                 for date_, field, crop, variety, table_ in planting_data_advanced:
@@ -544,15 +566,16 @@ from {schema}.{table}"""
                     data_dict['planting']['advance_dat'] = adv_data
                     data_dict['planting']['adv_heading'] = adv_heading
             # Fertilizing
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate from ferti.manual 
-            where table_ = 'None' """
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate"
+                   " FROM ferti.manual WHERE table_ = 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
-                    y=data['year'])
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
             sql += " ORDER BY field, date_"
             if task != 'debug':
                 task.setProgress(15)
-            simple_ferti_data = data['db'].execute_and_return(sql)
+            simple_ferti_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_ferti_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Rate')]
                 for row in simple_ferti_data:
@@ -566,12 +589,14 @@ from {schema}.{table}"""
                 data_dict['fertilizing']['simple'] = True
                 data_dict['fertilizing']['simple_data'] = simple_ferti_data
                 data_dict['fertilizing']['simple_heading'] = simple_heading
-            sql = """select date_text, field, crop, variety, rate, table_ from ferti.manual 
-            where table_ <> 'None'"""
+            sql = ("SELECT date_text, field, crop, variety, rate, table_ FROM ferti.manual"
+                   " WHERE table_ <> 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(y=data['year'])
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
             sql += " ORDER BY field, date_text"
-            fertilizing_data_advanced = data['db'].execute_and_return(sql)
+            fertilizing_data_advanced = data['db'].execute_and_return(sql, params=params)
             if len(fertilizing_data_advanced) > 0:
                 adv_data = []
                 for date_, field, crop, variety, rate, table_ in fertilizing_data_advanced:
@@ -587,13 +612,14 @@ from {schema}.{table}"""
             # Spraying
             if task != 'debug':
                 task.setProgress(25)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate from spray.manual 
-            where table_ = 'None'"""
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate"
+                   " FROM spray.manual WHERE table_ = 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
-                    y=data['year'])
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
             sql += " ORDER BY field, date_"
-            simple_data = data['db'].execute_and_return(sql)
+            simple_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Rate')]
                 for row in simple_data:
@@ -607,11 +633,13 @@ from {schema}.{table}"""
                 data_dict['spraying']['simple'] = True
                 data_dict['spraying']['simple_data'] = simple_data
                 data_dict['spraying']['simple_heading'] = simple_heading
-            sql = """select date_text, field, crop, variety, rate, table_ from spray.manual 
-            where table_ <> 'None'"""
-            spraying_data_advanced = data['db'].execute_and_return(sql)
+            sql = ("SELECT date_text, field, crop, variety, rate, table_ FROM spray.manual"
+                   " WHERE table_ <> 'None'")
+            params = None
+            spraying_data_advanced = data['db'].execute_and_return(sql, params=params)
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y}""".format(y=data['year'])
+                sql += " AND extract(year FROM date_) = %s"
+                params = (data['year'],)
             sql += " ORDER BY field, date_text"
             if len(spraying_data_advanced) > 0:
                 adv_data = []
@@ -628,12 +656,14 @@ from {schema}.{table}"""
             #Harvest
             if task != 'debug':
                 task.setProgress(35)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, total_yield, yield from harvest.manual 
-            where table_ = 'None' """
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, total_yield, yield"
+                   " FROM harvest.manual WHERE table_ = 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """and extract(year from date_) = {y}""".format(y=data['year'])
+                sql += " AND extract(year FROM date_) = %s"
+                params = (data['year'],)
             sql += " ORDER BY field, date_"
-            simple_data = data['db'].execute_and_return(sql)
+            simple_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Total yield'), data['tr']('Yield (kg/ha)')]
                 for row in simple_data:
@@ -646,13 +676,14 @@ from {schema}.{table}"""
                 data_dict['harvesting']['simple'] = True
                 data_dict['harvesting']['simple_data'] = simple_data
                 data_dict['harvesting']['simple_heading'] = simple_heading
-            sql = """select date_text, field, crop, yield, total_yield, table_ from harvest.manual 
-            where table_ <> 'None'"""
+            sql = ("SELECT date_text, field, crop, yield, total_yield, table_ FROM harvest.manual"
+                   " WHERE table_ <> 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
-                    y=data['year'])
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
             sql += " ORDER BY field, date_text"
-            data_advanced = data['db'].execute_and_return(sql)
+            data_advanced = data['db'].execute_and_return(sql, params=params)
             if len(data_advanced) > 0:
                 adv_data = []
                 adv_heading = []
@@ -673,11 +704,13 @@ from {schema}.{table}"""
             # Plowing
             if task != 'debug':
                 task.setProgress(50)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth from other.plowing_manual"""
+            sql = "SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth FROM other.plowing_manual"
+            params = None
             if data['year'] is not None:
-                sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
+                sql += " WHERE extract(year FROM date_) = %s"
+                params = (data['year'],)
             sql += " ORDER BY field, date_"
-            simple_data = data['db'].execute_and_return(sql)
+            simple_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Depth')]
                 for row in simple_data:
@@ -692,10 +725,12 @@ from {schema}.{table}"""
             # Harrowing
             if task != 'debug':
                 task.setProgress(55)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth from other.harrowing_manual"""
+            sql = "SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, depth FROM other.harrowing_manual"
+            params = None
             if data['year'] is not None:
-                sql += """ where extract(year from date_) = {y}""".format(y=data['year'])
-            simple_data = data['db'].execute_and_return(sql)
+                sql += " WHERE extract(year FROM date_) = %s"
+                params = (data['year'],)
+            simple_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Depth')]
                 for row in simple_data:
@@ -710,11 +745,13 @@ from {schema}.{table}"""
             #Soil
             if task != 'debug':
                 task.setProgress(60)
-            sql = """select COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, clay, humus, ph, rx from soil.manual 
-            where table_ = 'None' """
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, clay, humus, ph, rx"
+                   " FROM soil.manual WHERE table_ = 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """and extract(year from date_) = {y}""".format(y=data['year'])
-            simple_data = data['db'].execute_and_return(sql)
+                sql += " AND extract(year FROM date_) = %s"
+                params = (data['year'],)
+            simple_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_data) > 0:
                 simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Clay'), data['tr']('Humus'), data['tr']('pH'), data['tr']('rx')]
                 for row in simple_data:
@@ -726,12 +763,13 @@ from {schema}.{table}"""
                 data_dict['soil']['simple'] = True
                 data_dict['soil']['simple_data'] = simple_data
                 data_dict['soil']['simple_heading'] = simple_heading
-            sql = """select date_text, field, clay, humus, ph, rx, table_ from soil.manual 
-            where table_ <> 'None'"""
+            sql = ("SELECT date_text, field, clay, humus, ph, rx, table_ FROM soil.manual"
+                   " WHERE table_ <> 'None'")
+            params = None
             if data['year'] is not None:
-                sql += """ and extract(year from date_) = {y} or date_text like '%{y}%'""".format(
-                    y=data['year'])
-            data_advanced = data['db'].execute_and_return(sql)
+                sql += " AND extract(year FROM date_) = %s OR date_text LIKE %s"
+                params = (data['year'], f"%{data['year']}%")
+            data_advanced = data['db'].execute_and_return(sql, params=params)
             if len(data_advanced) > 0:
                 adv_data = []
                 for date_, field, clay, humus, ph, rx, table_ in data_advanced:

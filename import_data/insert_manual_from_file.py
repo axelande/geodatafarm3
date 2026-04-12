@@ -89,104 +89,58 @@ class ManualFromFile:
         bool
             If success or not
         """
-        date_ = "'{d}'".format(d=date_)
+        def _resolve(idx):
+            if self.manual_values[idx]['checkbox'].isChecked():
+                return 'None'
+            combo_text = self.manual_values[idx]['Combo'].currentText()
+            if combo_text != '':
+                return check_text(combo_text)
+            return f"c_{self.manual_values[idx]['line_edit'].text()}"
+
         if data_type == 'soil':
-            if self.manual_values[0]['checkbox'].isChecked():
-                clay = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                clay = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                clay = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                humus = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                humus = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                humus = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            if self.manual_values[2]['checkbox'].isChecked():
-                ph = 'None'
-            elif self.manual_values[2]['Combo'].currentText() != '':
-                ph = '{t}'.format(t=check_text(self.manual_values[2]['Combo'].currentText()))
-            else:
-                ph = 'c_{t}'.format(t=self.manual_values[2]['line_edit'].text())
-            if self.manual_values[3]['checkbox'].isChecked():
-                rx = 'None'
-            elif self.manual_values[3]['Combo'].currentText() != '':
-                rx = '{t}'.format(t=check_text(self.manual_values[3]['Combo'].currentText()))
-            else:
-                rx = 'c_{t}'.format(t=self.manual_values[3]['line_edit'].text())
-            sql = """insert into soil.manual(date_text, field, clay, humus, ph, rx, table_) 
-                VALUES ({d}, '{f}', '{clay}', '{humus}', '{ph}', '{rx}', '{tbl}')""".format(f=field, d=date_,
-                                                                                               clay=clay, humus=humus,
-                                                                                               ph=ph, rx=rx, tbl=table)
-            self.db.execute_sql(sql)
+            clay = _resolve(0)
+            humus = _resolve(1)
+            ph = _resolve(2)
+            rx = _resolve(3)
+            sql = ("INSERT INTO soil.manual"
+                   " (date_text, field, clay, humus, ph, rx, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s)")
+            self.db.execute_sql(sql, params=(date_, field, clay, humus, ph, rx, table))
             return True
         crop = self.widget.CBCrop.currentText()
         if data_type == 'plant':
-            sql = """insert into plant.manual(field, crop, date_text, table_, variety) VALUES ('{f}', '{c}', {d}, '{t}', 
-                """.format(f=field, c=crop, d=date_, t=table)
-            if self.manual_values[0]['checkbox'].isChecked():
-                sql += "'None')"
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                sql += "'{t}')".format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                sql += "'c_{t}')".format(t=self.manual_values[0]['line_edit'].text())
+            variety = _resolve(0)
+            sql = ("INSERT INTO plant.manual"
+                   " (field, crop, date_text, table_, variety)"
+                   " VALUES (%s, %s, %s, %s, %s)")
+            self.db.execute_sql(sql, params=(field, crop, date_, table, variety))
         elif data_type == 'ferti':
-            if self.manual_values[0]['checkbox'].isChecked():
-                variety = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                rate = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into ferti.manual(field, crop, table_, date_text,variety, rate) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
-                                                                      v=variety, r=rate, d=date_)
+            variety = _resolve(0)
+            rate = _resolve(1)
+            sql = ("INSERT INTO ferti.manual"
+                   " (field, crop, table_, date_text, variety, rate)"
+                   " VALUES (%s, %s, %s, %s, %s, %s)")
+            self.db.execute_sql(sql, params=(field, crop, table, date_, variety, rate))
         elif data_type == 'spray':
-            if self.manual_values[0]['checkbox'].isChecked():
-                variety = 'None'
-            elif self.manual_values[0]['Combo'].currentText() != '':
-                variety = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-            else:
-                variety = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-            if self.manual_values[1]['checkbox'].isChecked():
-                rate = 'None'
-            elif self.manual_values[1]['Combo'].currentText() != '':
-                rate = '{t}'.format(t=check_text(self.manual_values[1]['Combo'].currentText()))
-            else:
-                rate = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
-            sql = """insert into spray.manual(field, crop, table_, date_text, variety, rate) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{v}', '{r}')""".format(f=field, c=crop, t=table,
-                                                                      v=variety, r=rate, d=date_)
+            variety = _resolve(0)
+            rate = _resolve(1)
+            sql = ("INSERT INTO spray.manual"
+                   " (field, crop, table_, date_text, variety, rate)"
+                   " VALUES (%s, %s, %s, %s, %s, %s)")
+            self.db.execute_sql(sql, params=(field, crop, table, date_, variety, rate))
         elif data_type == 'harvest':
             if 0 in self.manual_values.keys():
-                if self.manual_values[0]['checkbox'].isChecked():
-                    yield_ = 'None'
-                elif self.manual_values[0]['Combo'].currentText() != '':
-                    yield_ = '{t}'.format(t=check_text(self.manual_values[0]['Combo'].currentText()))
-                else:
-                    yield_ = 'c_{t}'.format(t=self.manual_values[0]['line_edit'].text())
-                if self.manual_values[1]['checkbox'].isChecked():
-                    total_yield = 'None'
-                elif self.manual_values[1]['Combo'].currentText() != '':
-                    total_yield = '{t}'.format(
-                        t=check_text(self.manual_values[1]['Combo'].currentText()))
-                else:
-                    total_yield = 'c_{t}'.format(t=self.manual_values[1]['line_edit'].text())
+                yield_ = _resolve(0)
+                total_yield = _resolve(1)
             else:
                 yield_ = 'yield'
                 total_yield = ''
-            sql = """insert into harvest.manual(field, crop, table_, date_text, yield, total_yield) 
-            VALUES ('{f}', '{c}', '{t}', {d}, '{y}', '{t_y}')""".format(f=field, c=crop, t=table, d=date_,
-                                                                        y=yield_, t_y=total_yield)
+            sql = ("INSERT INTO harvest.manual"
+                   " (field, crop, table_, date_text, yield, total_yield)"
+                   " VALUES (%s, %s, %s, %s, %s, %s)")
+            self.db.execute_sql(sql, params=(field, crop, table, date_, yield_, total_yield))
         else:
             ## Should never happen!
             print('Unkown data source...')
             return False
-        self.db.execute_sql(sql)
         return True

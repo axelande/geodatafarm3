@@ -1,4 +1,5 @@
 import webbrowser
+from psycopg2 import sql as pgsql
 from qgis.core import QgsTask
 import traceback
 from qgis.PyQt.QtCore import Qt
@@ -433,24 +434,30 @@ class ConvertToAreas:
                 task.setProgress(40)
             grid_size = int(int(param['harvester_width'])/2)
             tbl = check_text(param['field'] + '_harvest_' + param['date_text'])
-            sql = """with pts as (SELECT st_centroid((st_dump(makegrid_2d(polygon, {g_s}, {g_s}))).geom) as the_geom from fields where field_name = '{field}'
-                ), 
-                v_pts as(select the_geom, st_buffer(the_geom, 0.0005) as buffered
-                         from pts
-                         where st_intersects((select polygon from fields where field_name = '{field}'), the_geom)
-                        -- limit 10
-                 ),
-                 yield_data as(select pos, yield{y_sign}{y_eq} as yield, moisture{m_sign}{m_eq} as moisture
-                               from harvest.temp_table2)
-            select ROW_NUMBER() OVER() as field_row_id, the_geom as pos, avg(yield) as yield, avg(moisture) as moisture, '{d}'::TIMESTAMP AS Date_ into harvest.{tbl}
-            from v_pts, yield_data
-            where  pos && buffered --LEFT JOIN LATERAL (select * from yield_data where st_intersects(buffered, pos)) a On True
-            group by the_geom
-        """.format(field=param['field'], g_s=grid_size, y_sign=param['yield_sign'],
-                   y_eq=param['yield_value'], m_sign=param['moisture_sign'],
-                   m_eq=param['moisture_value'], d=param['date_text'], tbl=tbl)
-            param['db'].execute_sql(sql)
-            param['db'].execute_sql('DROP table harvest.temp_table2')
+            query = pgsql.SQL(
+                "WITH pts AS (SELECT st_centroid((st_dump(makegrid_2d(polygon, {g_s}, {g_s}))).geom) AS the_geom"
+                " FROM fields WHERE field_name = %s),"
+                " v_pts AS (SELECT the_geom, st_buffer(the_geom, 0.0005) AS buffered"
+                " FROM pts"
+                " WHERE st_intersects((SELECT polygon FROM fields WHERE field_name = %s), the_geom)),"
+                " yield_data AS (SELECT pos, yield {y_sign} {y_eq} AS yield,"
+                " moisture {m_sign} {m_eq} AS moisture"
+                " FROM harvest.temp_table2)"
+                " SELECT ROW_NUMBER() OVER() AS field_row_id, the_geom AS pos,"
+                " avg(yield) AS yield, avg(moisture) AS moisture, %s::TIMESTAMP AS Date_"
+                " INTO harvest.{tbl}"
+                " FROM v_pts, yield_data"
+                " WHERE pos && buffered"
+                " GROUP BY the_geom"
+            ).format(
+                g_s=pgsql.Literal(grid_size),
+                y_sign=pgsql.SQL(param['yield_sign']),
+                y_eq=pgsql.Literal(param['yield_value']),
+                m_sign=pgsql.SQL(param['moisture_sign']),
+                m_eq=pgsql.Literal(param['moisture_value']),
+                tbl=pgsql.Identifier(tbl))
+            param['db'].execute_sql(query, params=(param['field'], param['field'], param['date_text']))
+            param['db'].execute_sql('DROP TABLE harvest.temp_table2')
             if task != 'debug':
                 task.setProgress(60)
             param['db'].create_indexes(tbl, ['yield', 'moisture'], 'harvest')
@@ -478,8 +485,11 @@ class ConvertToAreas:
         move_x = param['move_x']
         move_y = param['move_y']
         tbl = param['tbl']
-        min_row_id = param['db'].execute_and_return("select min(field_row_id) from harvest.{tbl}".format(tbl=tbl))[0][0]
-        max_row_id = param['db'].execute_and_return("select max(field_row_id) from harvest.{tbl}".format(tbl=tbl))[0][0]
+        tbl_id = pgsql.Identifier(tbl)
+        min_row_id = param['db'].execute_and_return(
+            pgsql.SQL("SELECT min(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
+        max_row_id = param['db'].execute_and_return(
+            pgsql.SQL("SELECT max(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
         distance = math.sqrt(move_x * move_x + move_y * move_y)
         if move_x > 0:
             p_bearing = 90 - math.degrees(math.atan(move_y/move_x))
@@ -493,34 +503,28 @@ class ConvertToAreas:
         for i in range(min_row_id, max_row_id, 2000):
             if task != 'debug':
                 task.setProgress(70 + (i - min_row_id) / (max_row_id - min_row_id) * 20)
-            sql = """
-        WITH first_selected as
-            (SELECT field_row_id, pos, st_azimuth(pos,
-                (SELECT pos
-                FROM {tbl} new
-                WHERE org.field_row_id+1=new.field_row_id)
-                ) as bearing
-            FROM {tbl} org
-        where org.field_row_id >= {i1} - 3
-        and org.field_row_id < {i3} + 3
-        ),
-        sub_section as(SELECT field_row_id, st_project(pos::geography, 
-                                                       {dist}, 
-                                                       (select atan2(avg(sin(bearing)), avg(cos(bearing))) 
-                                                        from first_selected fs 
-                                                        where fs.field_row_id > (ss.field_row_id -3) 
-                                                        and fs.field_row_id < (ss.field_row_id +3)
-                                                        ) + radians({p_bearing})
-                                                      )::geometry as new_pos
-        FROM first_selected ss
-        )
-        update {tbl}
-        set pos=new_pos
-        from sub_section
-        where {tbl}.field_row_id = sub_section.field_row_id
-        and {tbl}.field_row_id >= {i1}
-        and {tbl}.field_row_id < {i3}""".format(tbl='harvest.'+tbl, i1=i, i2=i + 1, i3=i + 2000, dist=distance, p_bearing=p_bearing)
-            param['db'].execute_sql(sql)
+            harvest_tbl = pgsql.SQL("harvest.{}").format(tbl_id)
+            query = pgsql.SQL(
+                "WITH first_selected AS ("
+                " SELECT field_row_id, pos, st_azimuth(pos,"
+                " (SELECT pos FROM {tbl} new WHERE org.field_row_id+1 = new.field_row_id)) AS bearing"
+                " FROM {tbl} org"
+                " WHERE org.field_row_id >= %s - 3 AND org.field_row_id < %s + 3),"
+                " sub_section AS ("
+                " SELECT field_row_id,"
+                " st_project(pos::geography, %s,"
+                " (SELECT atan2(avg(sin(bearing)), avg(cos(bearing)))"
+                " FROM first_selected fs"
+                " WHERE fs.field_row_id > (ss.field_row_id - 3)"
+                " AND fs.field_row_id < (ss.field_row_id + 3)) + radians(%s))::geometry AS new_pos"
+                " FROM first_selected ss)"
+                " UPDATE {tbl} SET pos = new_pos"
+                " FROM sub_section"
+                " WHERE {tbl}.field_row_id = sub_section.field_row_id"
+                " AND {tbl}.field_row_id >= %s"
+                " AND {tbl}.field_row_id < %s"
+            ).format(tbl=harvest_tbl)
+            param['db'].execute_sql(query, params=(i, i + 2000, distance, p_bearing, i, i + 2000))
 
     def check_failure(self, result, values):
         if values[0] is False:

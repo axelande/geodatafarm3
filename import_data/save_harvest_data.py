@@ -52,21 +52,19 @@ class SaveHarvesting:
             total_yield = self.dw.LEHvTotalYield.text()
             yield_ = self.dw.LEHvTotalYield.text()
             other = self.dw.LEHvOther.toPlainText()
-            if total_yield == '':
-                total_yield = 'Null'
-            if yield_ == '':
-                yield_ = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into harvest.manual(field, crop, date_, total_yield, yield, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{total_yield}','{yield_}','{other}', 'None')
-            """.format(field=field, crop=crop, date_=date_, total_yield=total_yield, yield_=yield_, other=other)
+            total_yield = total_yield or None
+            yield_ = yield_ or None
+            other = other or None
+            sql = ("INSERT INTO harvest.manual"
+                   " (field, crop, date_, total_yield, yield, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, 'None')")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(
+                    field, crop, date_, total_yield, yield_, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

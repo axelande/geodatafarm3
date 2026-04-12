@@ -1,5 +1,6 @@
 from typing import Self
 
+from psycopg2 import sql as pgsql
 from qgis.core import QgsProject, QgsTask
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
@@ -79,23 +80,27 @@ class Analyze:
         self.overlapping_tables = {}
         overlapping = -1
         for ha in self.harvest_tables.keys():
-            ha_year = self.db.execute_and_return("""select extract(year from date_) from harvest.{tbl} 
-                        limit 1""".format(
-                tbl=self.harvest_tables[ha][0]['tbl_name']))[0][0]
+            ha_tbl = self.harvest_tables[ha][0]['tbl_name']
+            ha_year = self.db.execute_and_return(
+                pgsql.SQL("SELECT extract(year FROM date_) FROM harvest.{tbl} LIMIT 1").format(
+                    tbl=pgsql.Identifier(ha_tbl)))[0][0]
             overlapping_nbr = overlapping
             if len(self.plant_tables) > 0:
                 for ac in self.plant_tables.keys():
-                    ac_year = self.db.execute_and_return("""select extract(year from date_) from plant.{tbl} 
-                                limit 1""".format(
-                        tbl=self.plant_tables[ac][0]['tbl_name']))[0][0]
+                    ac_tbl = self.plant_tables[ac][0]['tbl_name']
+                    ac_year = self.db.execute_and_return(
+                        pgsql.SQL("SELECT extract(year FROM date_) FROM plant.{tbl} LIMIT 1").format(
+                            tbl=pgsql.Identifier(ac_tbl)))[0][0]
                     if ac_year == ha_year:
-                        sql = """select sum(case when st_intersects(a.geom, b.geom) then 1 else 0 end)/count(a.geom)::double precision from 
-                        (select (ac.polygon) geom from plant.{a_tbl} ac) a,
-                        (select st_setsrid(st_extent(ha.pos), 4326) geom from harvest.{h_tbl} ha) b
-                        """.format(
-                            a_tbl=self.plant_tables[ac][0]['tbl_name'],
-                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
-                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        query = pgsql.SQL(
+                            "SELECT sum(CASE WHEN st_intersects(a.geom, b.geom) THEN 1 ELSE 0 END)"
+                            "/count(a.geom)::double precision"
+                            " FROM (SELECT (ac.polygon) geom FROM plant.{a_tbl} ac) a,"
+                            " (SELECT st_setsrid(st_extent(ha.pos), 4326) geom FROM harvest.{h_tbl} ha) b"
+                        ).format(
+                            a_tbl=pgsql.Identifier(ac_tbl),
+                            h_tbl=pgsql.Identifier(ha_tbl))
+                        overlaps = self.db.execute_and_return(query)[0][0]
                         if overlaps > 0.5:
                             overlapping += 1
                             self.overlapping_tables[overlapping] = {}
@@ -115,17 +120,19 @@ class Analyze:
                                     self.plant_tables[ac][ac_key])
             if len(self.spray_tables) > 0:
                 for ac in self.spray_tables.keys():
-                    ac_year = self.db.execute_and_return("""select extract(year from date_) from spray.{tbl} 
-                                limit 1""".format(
-                        tbl=self.spray_tables[ac][0]['tbl_name']))[0][0]
+                    ac_tbl = self.spray_tables[ac][0]['tbl_name']
+                    ac_year = self.db.execute_and_return(
+                        pgsql.SQL("SELECT extract(year FROM date_) FROM spray.{tbl} LIMIT 1").format(
+                            tbl=pgsql.Identifier(ac_tbl)))[0][0]
                     if ac_year == ha_year:
-                        sql = """select st_intersects(a.geom, b.geom) from 
-                        (select st_extent(ac.polygon) geom from spray.{a_tbl} ac) a,
-                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
-                        """.format(
-                            a_tbl=self.spray_tables[ac][0]['tbl_name'],
-                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
-                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        query = pgsql.SQL(
+                            "SELECT st_intersects(a.geom, b.geom)"
+                            " FROM (SELECT st_extent(ac.polygon) geom FROM spray.{a_tbl} ac) a,"
+                            " (SELECT st_extent(ha.pos) geom FROM harvest.{h_tbl} ha) b"
+                        ).format(
+                            a_tbl=pgsql.Identifier(ac_tbl),
+                            h_tbl=pgsql.Identifier(ha_tbl))
+                        overlaps = self.db.execute_and_return(query)[0][0]
                         if overlaps:
                             overlapping += 1
                             self.overlapping_tables[overlapping] = {}
@@ -145,17 +152,19 @@ class Analyze:
                                     self.spray_tables[ac][ac_key])
             if len(self.ferti_tables) > 0:
                 for ac in self.ferti_tables.keys():
-                    ac_year = self.db.execute_and_return("""select extract(year from date_) from ferti.{tbl} 
-                                limit 1""".format(
-                        tbl=self.ferti_tables[ac][0]['tbl_name']))[0][0]
+                    ac_tbl = self.ferti_tables[ac][0]['tbl_name']
+                    ac_year = self.db.execute_and_return(
+                        pgsql.SQL("SELECT extract(year FROM date_) FROM ferti.{tbl} LIMIT 1").format(
+                            tbl=pgsql.Identifier(ac_tbl)))[0][0]
                     if ac_year == ha_year:
-                        sql = """select st_intersects(a.geom, b.geom) from 
-                        (select st_extent(ac.polygon) geom from ferti.{a_tbl} ac) a,
-                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
-                        """.format(
-                            a_tbl=self.ferti_tables[ac][0]['tbl_name'],
-                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
-                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        query = pgsql.SQL(
+                            "SELECT st_intersects(a.geom, b.geom)"
+                            " FROM (SELECT st_extent(ac.polygon) geom FROM ferti.{a_tbl} ac) a,"
+                            " (SELECT st_extent(ha.pos) geom FROM harvest.{h_tbl} ha) b"
+                        ).format(
+                            a_tbl=pgsql.Identifier(ac_tbl),
+                            h_tbl=pgsql.Identifier(ha_tbl))
+                        overlaps = self.db.execute_and_return(query)[0][0]
                         if overlaps:
                             overlapping += 1
                             self.overlapping_tables[overlapping] = {}
@@ -176,12 +185,14 @@ class Analyze:
 
             if len(self.soil_tables) > 0:
                 for so in self.soil_tables.keys():
-                    sql = """select st_intersects(a.geom, b.geom) from 
-                    (select st_extent(ac.polygon) geom from soil.{s_tbl} ac) a,
-                    (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
-                    """.format(s_tbl=self.soil_tables[so][0]['tbl_name'],
-                               h_tbl=self.harvest_tables[ha][0]['tbl_name'])
-                    overlaps = self.db.execute_and_return(sql)[0][0]
+                    query = pgsql.SQL(
+                        "SELECT st_intersects(a.geom, b.geom)"
+                        " FROM (SELECT st_extent(ac.polygon) geom FROM soil.{s_tbl} ac) a,"
+                        " (SELECT st_extent(ha.pos) geom FROM harvest.{h_tbl} ha) b"
+                    ).format(
+                        s_tbl=pgsql.Identifier(self.soil_tables[so][0]['tbl_name']),
+                        h_tbl=pgsql.Identifier(ha_tbl))
+                    overlaps = self.db.execute_and_return(query)[0][0]
                     if overlaps:
                         overlapping += 1
                         self.overlapping_tables[overlapping] = {}
@@ -198,13 +209,14 @@ class Analyze:
                 for ac in self.weather_tables.keys():
                     ac_year = int(self.weather_tables[ac][0]['tbl_name'][-4:])
                     if ac_year == ha_year:
-                        sql = """select st_intersects(a.geom, b.geom) from 
-                        (select st_extent(ac.polygon) geom from weather.{a_tbl} ac) a,
-                        (select st_extent(ha.pos) geom from harvest.{h_tbl} ha) b
-                        """.format(
-                            a_tbl=self.weather_tables[ac][0]['tbl_name'],
-                            h_tbl=self.harvest_tables[ha][0]['tbl_name'])
-                        overlaps = self.db.execute_and_return(sql)[0][0]
+                        query = pgsql.SQL(
+                            "SELECT st_intersects(a.geom, b.geom)"
+                            " FROM (SELECT st_extent(ac.polygon) geom FROM weather.{a_tbl} ac) a,"
+                            " (SELECT st_extent(ha.pos) geom FROM harvest.{h_tbl} ha) b"
+                        ).format(
+                            a_tbl=pgsql.Identifier(self.weather_tables[ac][0]['tbl_name']),
+                            h_tbl=pgsql.Identifier(ha_tbl))
+                        overlaps = self.db.execute_and_return(query)[0][0]
                         if overlaps:
                             overlapping += 1
                             self.overlapping_tables[overlapping] = {}
@@ -349,13 +361,13 @@ class Analyze:
         min_value = QLineEdit(str(np.nanmin(analyse_params['distinct_values'])), qbox)
         min_value.move(118, 32)
         min_value.setFixedWidth(80)
-        org_min = QLabel('({v})'.format(v=str(np.nanmin(analyse_params['distinct_values']))), qbox)
+        org_min = QLabel(f"({str(np.nanmin(analyse_params['distinct_values']))})", qbox)
         org_min.move(120, 15)
         QLabel('Max:', qbox).move(263, 34)
         max_value = QLineEdit(str(np.nanmax(analyse_params['distinct_values'])), qbox)
         max_value.move(295, 32)
         max_value.setFixedWidth(80)
-        org_max = QLabel('({v})'.format(v=str(np.nanmax(analyse_params['distinct_values']))), qbox)
+        org_max = QLabel(f"({str(np.nanmax(analyse_params['distinct_values']))})", qbox)
         org_max.move(292, 15)
         self.layout_dict[col]['type'] = 'max_min'
         self.layout_dict[col]['min'] = np.nanmin(analyse_params['distinct_values'])
@@ -531,7 +543,7 @@ class Analyze:
                     table = self.layout_dict[col]['tbl'][tbl_nr]
                     schema = self.layout_dict[col]['schema'][tbl_nr]
                     ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
-                    s_t = '{s}.{t}'.format(s=schema, t=table)
+                    s_t = f'{schema}.{table}'
                     for item in self.layout_dict[col]['checked_items']:
                         if ha in other_parameters.keys():
                             if s_t in other_parameters[ha].keys():
@@ -540,7 +552,7 @@ class Analyze:
                         if ha in main_investigate_col.keys():
                             if s_t in main_investigate_col[ha].keys():
                                 if item.checkState() == 2 and col == main_investigate_col[ha][s_t]['col'] and item.text() not in text_v:
-                                    text_v += "'{it}',".format(it=item.text())
+                                    text_v += f"'{item.text()}',"
                     if ha in other_parameters.keys():
                         if s_t in other_parameters[ha].keys():
                             if col in other_parameters[ha][s_t].keys():
@@ -651,10 +663,10 @@ class Analyze:
                 else:
                     find_none = False
                 ha = self.layout_dict[col]['harvest'][tbl_nr]['tbl_name']
-                s_t = '{schema}.{table}'.format(schema=schema, table=table)
+                s_t = f'{schema}.{table}'
                 if s_t not in prefixes.keys():
                     prefix_count += 1
-                    prefixes[s_t] = 'a{prefix_count}'.format(prefix_count=prefix_count)
+                    prefixes[s_t] = f'a{prefix_count}'
                 if self.cb[nbr].isChecked():
                     column_investigated = col
                     if ha not in investigating_param.keys():
@@ -739,8 +751,7 @@ class Analyze:
         """
         if values[0] is False:
             QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
-                                                                                                      t=values[2])))
+                                    self.tr(f'Following error occurred: {values[1]}\n\n Traceback: {values[2]}'))
             return
         else:
             filtered_data = values[1]
@@ -833,52 +844,82 @@ def sql_query(task, investigating_param, other_parameters, db,
                 continue
             if value == '':
                 value = ' '
-            sql = 'with '
-            for ha in investigating_param.keys():
+            ha_keys = [k for k in investigating_param.keys()
+                       if isinstance(investigating_param[k], dict)]
+            cte_parts = []
+            for ha in ha_keys:
+                parts = [pgsql.SQL(
+                    "{ha} AS (SELECT COALESCE(avg({avg_val}), 0) AS yield, count(*)"
+                    " FROM harvest.{ha} ha"
+                ).format(
+                    ha=pgsql.Identifier(ha),
+                    avg_val=pgsql.Identifier(investigating_param[ha]['ha_col']))]
+
                 all_ready_joined = []
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                if sql[-4:] == "AND ":
-                    sql = sql[:-4] + '), '
-                sql += """{ha} as(select COALESCE(avg({avg_val}),0) as yield, count(*)
-                FROM harvest.{ha} ha
-                """.format(ha=ha, avg_val=investigating_param[ha]['ha_col'])
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue
                     pre = investigating_param[ha][in_key]['prefix']
-                    sql += """JOIN {in_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
-                    """.format(in_key=in_key, pre=pre)
+                    in_schema, in_tbl = in_key.split('.')
+                    parts.append(pgsql.SQL(
+                        " JOIN {schema}.{tbl} {pre} ON st_intersects(ha.pos, {pre}.polygon)"
+                    ).format(
+                        schema=pgsql.Identifier(in_schema),
+                        tbl=pgsql.Identifier(in_tbl),
+                        pre=pgsql.Identifier(pre)))
                     all_ready_joined.append(in_key)
                 if ha in other_parameters.keys():
                     for oth_key in other_parameters[ha].keys():
-                        if not oth_key in sql:
-                            pre = other_parameters[ha][oth_key]['prefix']
-                            sql += """JOIN {oth_key} {pre} ON st_intersects(ha.pos, {pre}.polygon)
-                            """.format(oth_key=oth_key, pre=pre)
-                            all_ready_joined.append(oth_key)
-                sql += 'WHERE '
+                        if oth_key in all_ready_joined:
+                            continue
+                        pre = other_parameters[ha][oth_key]['prefix']
+                        oth_schema, oth_tbl = oth_key.split('.')
+                        parts.append(pgsql.SQL(
+                            " JOIN {schema}.{tbl} {pre} ON st_intersects(ha.pos, {pre}.polygon)"
+                        ).format(
+                            schema=pgsql.Identifier(oth_schema),
+                            tbl=pgsql.Identifier(oth_tbl),
+                            pre=pgsql.Identifier(pre)))
+                        all_ready_joined.append(oth_key)
+
+                where_conds = []
                 if limiting_polygon is not None:
-                    sql += "st_intersects(st_geomfromtext('{lp}', 4326), ha.pos) AND ".format(lp=limiting_polygon)
+                    where_conds.append(pgsql.SQL(
+                        "st_intersects(st_geomfromtext({lp}, 4326), ha.pos)"
+                    ).format(lp=pgsql.Literal(limiting_polygon)))
                 if ha in other_parameters.keys():
                     for oth_key in other_parameters[ha].keys():
                         pre = other_parameters[ha][oth_key]['prefix']
-                        for attr in other_parameters[ha][oth_key].items():
-                            if attr[0] == 'prefix':
+                        for attr_name, attr_val in other_parameters[ha][oth_key].items():
+                            if attr_name == 'prefix':
                                 continue
-                            if attr[1]['None']:
-                                sql += '(('
-                            if attr[1]['type'] == 'max_min':
-                                sql += """{pre}.{attr} >= {txt} AND
-                                """.format(pre=pre, attr=attr[0], txt=attr[1]['min'])
-                                sql += """{pre}.{attr} <= {txt} AND
-                                """.format(pre=pre, attr=attr[0], txt=attr[1]['max'])
-                            if attr[1]['type'] == 'checked':
-                                sql += """{pre}.{attr} in ({txt}) AND
-                                """.format(pre=pre, attr=attr[0], txt=attr[1]['check_text'])
-                            if attr[1]['None']:
-                                sql = sql[:sql.rfind('AND')] + """) OR {pre}.{attr} is Null) AND 
-                                """.format(pre=pre, attr=attr[0])
+                            inner = None
+                            if attr_val['type'] == 'max_min':
+                                inner = pgsql.SQL(
+                                    "{pre}.{attr} >= {min_v} AND {pre}.{attr} <= {max_v}"
+                                ).format(
+                                    pre=pgsql.Identifier(pre),
+                                    attr=pgsql.Identifier(attr_name),
+                                    min_v=pgsql.Literal(attr_val['min']),
+                                    max_v=pgsql.Literal(attr_val['max']))
+                            elif attr_val['type'] == 'checked':
+                                inner = pgsql.SQL(
+                                    "{pre}.{attr} IN ({txt})"
+                                ).format(
+                                    pre=pgsql.Identifier(pre),
+                                    attr=pgsql.Identifier(attr_name),
+                                    txt=pgsql.SQL(attr_val['check_text']))
+                            if inner is None:
+                                continue
+                            if attr_val['None']:
+                                where_conds.append(pgsql.SQL(
+                                    "(({inner}) OR {pre}.{attr} IS NULL)"
+                                ).format(
+                                    inner=inner,
+                                    pre=pgsql.Identifier(pre),
+                                    attr=pgsql.Identifier(attr_name)))
+                            else:
+                                where_conds.append(inner)
                 for in_key in investigating_param[ha].keys():
                     if in_key == 'ha_col':
                         continue
@@ -888,50 +929,53 @@ def sql_query(task, investigating_param, other_parameters, db,
                         pre = investigating_param[ha][in_key]['prefix']
                         col = investigating_param[ha][in_key]['col']
                         if investigating_param['checked']:
-                            sql += "{pre}.{col} like {value} AND ".format(pre=pre, col=col, value=value)
+                            where_conds.append(pgsql.SQL(
+                                "{pre}.{col} LIKE {val}"
+                            ).format(
+                                pre=pgsql.Identifier(pre),
+                                col=pgsql.Identifier(col),
+                                val=pgsql.Literal(value)))
                         elif investigating_param['hist']:
-                            if len(values) != value_nbr:
-                                sql += """{pre}.{col} >= {value2} AND
-                                {pre}.{col} < {value}),""".format(pre=pre, col=col, value=value, value2=values[value_nbr - 1])
-                            else:
-                                sql += """{pre}.{col} >= {value2} AND
-                                {pre}.{col} <= {value}),""".format(pre=pre, col=col, value=value, value2=values[value_nbr - 1])
+                            op = pgsql.SQL("<") if len(values) != value_nbr else pgsql.SQL("<=")
+                            where_conds.append(pgsql.SQL(
+                                "{pre}.{col} >= {v2} AND {pre}.{col} {op} {v}"
+                            ).format(
+                                pre=pgsql.Identifier(pre),
+                                col=pgsql.Identifier(col),
+                                v2=pgsql.Literal(values[value_nbr - 1]),
+                                op=op,
+                                v=pgsql.Literal(value)))
                         else:
-                            sql += '{pre}.{col} = {value}),'.format(pre=pre, col=col, value=value)
-            if sql[-4:] == "AND ":
-                    sql = sql[:-4] + '),'
-            sql = sql[:-1]
-            sql += """
-            SELECT case when("""
-            for ha in investigating_param.keys():
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                sql += '{ha}.count + '.format(ha=ha)
-            sql = sql[:-3] + ') > 0 then ('
-            for ha in investigating_param.keys():
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                sql += ' {ha}.yield * {ha}.count + '.format(ha=ha)
-            sql = sql[:-3] + ')/('
-            for ha in investigating_param.keys():
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                sql += '{ha}.count + '.format(ha=ha)
-            sql = sql[:-3] + ') else 0 end as yield, ('
-            for ha in investigating_param.keys():
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                sql += '{ha}.count + '.format(ha=ha)
-            sql = sql[:-3] + """)
-            FROM """
-            for ha in investigating_param.keys():
-                if not type(investigating_param[ha]) == dict:
-                    continue
-                sql += '{ha}, '.format(ha=ha)
-            sql = sql[:-2]
+                            where_conds.append(pgsql.SQL(
+                                "{pre}.{col} = {v}"
+                            ).format(
+                                pre=pgsql.Identifier(pre),
+                                col=pgsql.Identifier(col),
+                                v=pgsql.Literal(value)))
+
+                if where_conds:
+                    parts.append(pgsql.SQL(" WHERE "))
+                    parts.append(pgsql.SQL(" AND ").join(where_conds))
+                parts.append(pgsql.SQL(")"))
+                cte_parts.append(pgsql.Composed(parts))
+
+            ha_idents = [pgsql.Identifier(k) for k in ha_keys]
+            count_sum = pgsql.SQL(" + ").join([
+                pgsql.SQL("{h}.count").format(h=h) for h in ha_idents])
+            yield_sum = pgsql.SQL(" + ").join([
+                pgsql.SQL("{h}.yield * {h}.count").format(h=h) for h in ha_idents])
+            from_list = pgsql.SQL(", ").join(ha_idents)
+
+            query = pgsql.SQL("WITH ") + pgsql.SQL(", ").join(cte_parts) + pgsql.SQL(
+                " SELECT CASE WHEN ("
+            ) + count_sum + pgsql.SQL(") > 0 THEN ("
+            ) + yield_sum + pgsql.SQL(")/("
+            ) + count_sum + pgsql.SQL(") ELSE 0 END AS yield, ("
+            ) + count_sum + pgsql.SQL(") FROM "
+            ) + from_list
             if task == 'debug':
-               print(sql)
-            result = db.execute_and_return(sql)[0]
+                print(query)
+            result = db.execute_and_return(query)[0]
             mean_value = result[0]
             count_samples = result[1]
             if count_samples <= int(min_counts):

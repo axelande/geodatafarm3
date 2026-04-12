@@ -28,19 +28,16 @@ class SavePlowing:
             date_ = self.dw.DEPlowing.selectedDate().toString("yyyy-MM-dd")
             depth = self.dw.LEPloDepth.text()
             other = self.dw.LEPloOther.toPlainText()
-            if depth == '':
-                depth = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into other.plowing_manual(field, date_, depth, other) 
-            VALUES ('{field}', '{date_}','{depth}','{other}')""".format(field=field, date_=date_, depth=depth,
-                                                                        other=other)
+            depth = depth or None
+            other = other or None
+            sql = ("INSERT INTO other.plowing_manual (field, date_, depth, other)"
+                   " VALUES (%s, %s, %s, %s)")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(field, date_, depth, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

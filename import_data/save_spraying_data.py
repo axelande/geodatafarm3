@@ -58,24 +58,20 @@ class SaveSpraying:
             wind_speed = self.dw.LESpWindSpeed.text()
             wind_dir = self.dw.LESpWindDir.text()
             other = self.dw.LESpOther.toPlainText()
-            if rate == '':
-                rate = 'Null'
-            if wind_speed == '':
-                wind_speed = 'Null'
-            if wind_dir == '':
-                wind_dir = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into spray.manual(field, crop, date_, variety, rate, wind_speed, wind_dir, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{wind_speed}','{wind_dir}','{other}', 'None')
-            """.format(field=field, crop=crop, date_=date_, varerity=varerity, rate=rate, wind_speed=wind_speed,
-                       wind_dir=wind_dir, other=other)
+            rate = rate or None
+            wind_speed = wind_speed or None
+            wind_dir = wind_dir or None
+            other = other or None
+            sql = ("INSERT INTO spray.manual"
+                   " (field, crop, date_, variety, rate, wind_speed, wind_dir, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(
+                    field, crop, date_, varerity, rate, wind_speed, wind_dir, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

@@ -1,3 +1,4 @@
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QMessageBox
 from datetime import datetime
 # Import the code for the dialog
@@ -43,22 +44,28 @@ class IrrigationHandler:
 
     def create_grid_year(self):
         """Creates a 2x2 grid over all fields"""
-        sql = """create table weather.irrigation_{year} (field_row_id serial, 
-                                                         polygon geometry, 
-                                                         irrigation_mm double precision)
-              """.format(year=self.IIR.DECreateYear.text())
-        self.db.execute_sql(sql)
-        sql = "select field_name, st_astext(polygon) from fields"
-        fields = self.db.execute_and_return(sql)
+        year = self.IIR.DECreateYear.text()
+        tbl_id = pgsql.Identifier(f"irrigation_{year}")
+        pkey_id = pgsql.Identifier(f"p_key_irrigation{year}")
+        self.db.execute_sql(
+            pgsql.SQL(
+                "CREATE TABLE weather.{tbl} (field_row_id serial,"
+                " polygon geometry, irrigation_mm double precision)"
+            ).format(tbl=tbl_id))
+        fields = self.db.execute_and_return(
+            "SELECT field_name, st_astext(polygon) FROM fields")
         for field_name, polygon in fields:
-            sql = """with first as(select (st_dump(makegrid_2d(st_geomfromtext('{polygon}', 4326), 2, 2))).geom as grid)
-            insert into weather.irrigation_{year} (polygon, irrigation_mm)
-            select grid, 0 
-            from first where st_intersects(grid, st_geomfromtext('{polygon}', 4326))
-            """.format(polygon=polygon, field=check_text(field_name), year=self.IIR.DECreateYear.text())
-            self.db.execute_sql(sql)
-        self.db.execute_sql("""ALTER TABLE weather.irrigation_{year}
-    ADD CONSTRAINT p_key_irrigation{year} PRIMARY KEY (field_row_id);""".format(year=self.IIR.DECreateYear.text()))
+            query = pgsql.SQL(
+                "WITH first AS ("
+                " SELECT (st_dump(makegrid_2d(st_geomfromtext(%s, 4326), 2, 2))).geom AS grid)"
+                " INSERT INTO weather.{tbl} (polygon, irrigation_mm)"
+                " SELECT grid, 0 FROM first"
+                " WHERE st_intersects(grid, st_geomfromtext(%s, 4326))"
+            ).format(tbl=tbl_id)
+            self.db.execute_sql(query, params=(polygon, polygon))
+        self.db.execute_sql(
+            pgsql.SQL("ALTER TABLE weather.{tbl} ADD CONSTRAINT {pkey} PRIMARY KEY (field_row_id)").format(
+                tbl=tbl_id, pkey=pkey_id))
 
     def get_grid_data(self):
         """
@@ -84,7 +91,7 @@ class IrrigationHandler:
         for data in operations:
             if data['finished'] is None:
                 continue
-            finished = """{y}-{mo}-{d}""".format(y=data['finished']['year'], mo=data['finished']['month'], d=data['finished']['day'])
+            finished = f"{data['finished']['year']}-{data['finished']['month']}-{data['finished']['day']}"
             fin = datetime.strptime(finished, '%Y-%m-%d')
             before_start = fin - from_date
             after_last = to_date - fin
@@ -92,10 +99,12 @@ class IrrigationHandler:
                 continue
             if after_last.days < 0:
                 continue
-            line = 'LINESTRING({long1} {lat1}, {long2} {lat2})'.format(long1=data["destination"]["lng"], lat1=data["destination"]["lat"], long2=data["origin"]["lng"], lat2=data["origin"]["lat"])
-            sql = """Update weather.irrigation_{year}
-            set irrigation_mm = irrigation_mm + {p}
-            where st_intersects(polygon, ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext('{line}'),4326) AS geography),
-                                                  30, 'endcap=flat join=round')::geometry)
-            """.format(line=line, p=data["precipitation"], year=finished[:4])
-            self.db.execute_sql(sql)
+            line = (f"LINESTRING({data['destination']['lng']} {data['destination']['lat']},"
+                    f" {data['origin']['lng']} {data['origin']['lat']})")
+            query = pgsql.SQL(
+                "UPDATE weather.{tbl} SET irrigation_mm = irrigation_mm + %s"
+                " WHERE st_intersects(polygon,"
+                " ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext(%s), 4326) AS geography),"
+                " 30, 'endcap=flat join=round')::geometry)"
+            ).format(tbl=pgsql.Identifier(f"irrigation_{finished[:4]}"))
+            self.db.execute_sql(query, params=(data["precipitation"], line))

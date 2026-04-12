@@ -1,3 +1,4 @@
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsTask
 import traceback
@@ -128,101 +129,96 @@ class RowFixer:
             max_rows = self.FRD.CBMaxRows.currentText()
             row = self.FRD.CBRow.currentText()  # The column with row_number from planting machine
             course = self.FRD.CBCourse.currentText()  # The course in degrees
-            sql = """alter table {s_t}
-                add column new_row_id int;
-            with dat as(SELECT field_row_id, pos, {course} as course, {row} as row_nbr
-                FROM {s_t}
-                       limit 1000
-            ), 
-            all_data as (select field_row_id, pos, course, {row} as row_nbr, lead(field_row_id) OVER(ORDER BY {row}, field_row_id ASC) as row_id2, lag(field_row_id) OVER(ORDER BY {row}, field_row_id ASC) as row_id3
-                         FROM {s_t}
-                         --limit 10000
-            ),
-            dat2 as (SELECT field_row_id, pos, course, row_nbr, lead(field_row_id) OVER(ORDER BY row_nbr, field_row_id ASC) as row_id2
-                     from dat
-            ), 
-            course_limits as (select (degrees(atan2(sind((select mode() within group (order by course) -10 from all_data)), cosd((select mode() within group (order by course) -10 from all_data)))) + 360)::int % 360 as min_dir_1,
-                       (degrees(atan2(sind((select mode() within group (order by course) from all_data)+10), cosd((select mode() within group (order by course) from all_data)+10))) + 360)::int % 360  as max_dir_1,
-                       (degrees(atan2(sind((select mode() within group (order by course) +170 from all_data)), cosd((select mode() within group (order by course) +170 from all_data)))) + 360)::int % 360 as min_dir_2,
-                       (degrees(atan2(sind((select mode() within group (order by course) from all_data)+190), cosd((select mode() within group (order by course) from all_data)+190)))  + 360)::int % 360 as max_dir_2
-            ), 
-            row_width as(
-                       select st_distance(ss.pos, 
-                                          (select i2.pos from dat i2 where i2.row_nbr=3 order by st_distance(i2.pos, ss.pos) limit 1)) as side_dist
-                       from dat ss
-                       where ss.row_nbr = 2
-            ),
-            point_length as(
-                       select field_row_id, st_distance(pos, 
-                                          (select i2.pos from all_data i2 where ss.field_row_id=i2.row_id2)) as front_dist
-                       from all_data ss
-                       --where ss.row_nbr=2
-            ), 
-    
-            dire as (select field_row_id, pos, row_id2, row_id3, row_nbr, 
-                case when abs(min_dir_1-max_dir_1) < 25 and course > min_dir_1 and course < max_dir_1 then 1 
-                  when abs(min_dir_1-max_dir_1) > 25 and (course > min_dir_1 or course < max_dir_1) then 1 
-                  when abs(min_dir_2-max_dir_2) < 25 and course > min_dir_2 and course < max_dir_2 then 2
-                  when abs(min_dir_2-max_dir_2) > 25 and (course > min_dir_2 or course < max_dir_2) then 2 	
-                  else 0
-                end as direction
-                from all_data, 
-                     course_limits
-            ),
-            tractor_turn as(select field_row_id, pos,row_id2, row_id3, row_nbr, direction, count(*) filter (where dir_change) over (order by field_row_id) as tractor_row
-                from (select *, lag(direction) over (order by field_row_id) <> direction as dir_change from dire where direction>0) s
-            ),
-            sep_rows as(select field_row_id, pos, row_nbr, row_id2, row_id3, tractor_row, row_nbr+((tractor_row+1)*{max_rows})-{max_rows} as uni_row
-                        from tractor_turn 
-                        order by row_nbr+((tractor_row+1)*{max_rows})-{max_rows}, row_nbr, tractor_row, field_row_id
-            )
-            update {s_t} old_t
-            set new_row_id = org.uni_row,
-            polygon =  st_multi(st_buffer(st_makeline(st_centroid(st_makeline(org.pos, i2.pos)), st_centroid(st_makeline(org.pos, i3.pos))),
-                                                             (select PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY side_dist) from row_width)/2,
-                                                             'endcap=flat'
-                                                             ))
-            from sep_rows org
-            join sep_rows i2 on org.field_row_id=i2.row_id2 and org.uni_row=i2.uni_row
-            join sep_rows i3 on org.field_row_id=i3.row_id3 and org.uni_row=i3.uni_row
-            where st_length(st_makeline(st_centroid(st_makeline(org.pos, i2.pos)), st_centroid(st_makeline(org.pos, i3.pos)))) < (select PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY front_dist) from point_length)*4
-            and old_t.field_row_id=org.field_row_id
-            """.format(s_t=schema_table, max_rows=max_rows, row=row, course=course)
+            parts = schema_table.split('.')
+            s_t = pgsql.SQL("{schema}.{tbl}").format(
+                schema=pgsql.Identifier(parts[0]),
+                tbl=pgsql.Identifier(parts[1]))
+            row_id = pgsql.Identifier(row)
+            course_id = pgsql.Identifier(course)
+            max_rows_lit = pgsql.Literal(int(max_rows))
+            sql = pgsql.SQL("""ALTER TABLE {s_t}
+                ADD COLUMN new_row_id int;
+            WITH dat AS (SELECT field_row_id, pos, {course} AS course, {row} AS row_nbr
+                FROM {s_t} LIMIT 1000),
+            all_data AS (SELECT field_row_id, pos, course, {row} AS row_nbr,
+                         lead(field_row_id) OVER(ORDER BY {row}, field_row_id ASC) AS row_id2,
+                         lag(field_row_id) OVER(ORDER BY {row}, field_row_id ASC) AS row_id3
+                         FROM {s_t}),
+            dat2 AS (SELECT field_row_id, pos, course, row_nbr,
+                     lead(field_row_id) OVER(ORDER BY row_nbr, field_row_id ASC) AS row_id2
+                     FROM dat),
+            course_limits AS (SELECT (degrees(atan2(sind((SELECT mode() WITHIN GROUP (ORDER BY course) -10 FROM all_data)), cosd((SELECT mode() WITHIN GROUP (ORDER BY course) -10 FROM all_data)))) + 360)::int % 360 AS min_dir_1,
+                       (degrees(atan2(sind((SELECT mode() WITHIN GROUP (ORDER BY course) FROM all_data)+10), cosd((SELECT mode() WITHIN GROUP (ORDER BY course) FROM all_data)+10))) + 360)::int % 360 AS max_dir_1,
+                       (degrees(atan2(sind((SELECT mode() WITHIN GROUP (ORDER BY course) +170 FROM all_data)), cosd((SELECT mode() WITHIN GROUP (ORDER BY course) +170 FROM all_data)))) + 360)::int % 360 AS min_dir_2,
+                       (degrees(atan2(sind((SELECT mode() WITHIN GROUP (ORDER BY course) FROM all_data)+190), cosd((SELECT mode() WITHIN GROUP (ORDER BY course) FROM all_data)+190)))  + 360)::int % 360 AS max_dir_2),
+            row_width AS (SELECT st_distance(ss.pos,
+                                  (SELECT i2.pos FROM dat i2 WHERE i2.row_nbr=3 ORDER BY st_distance(i2.pos, ss.pos) LIMIT 1)) AS side_dist
+                          FROM dat ss WHERE ss.row_nbr = 2),
+            point_length AS (SELECT field_row_id, st_distance(pos,
+                                  (SELECT i2.pos FROM all_data i2 WHERE ss.field_row_id=i2.row_id2)) AS front_dist
+                             FROM all_data ss),
+            dire AS (SELECT field_row_id, pos, row_id2, row_id3, row_nbr,
+                CASE WHEN abs(min_dir_1-max_dir_1) < 25 AND course > min_dir_1 AND course < max_dir_1 THEN 1
+                     WHEN abs(min_dir_1-max_dir_1) > 25 AND (course > min_dir_1 OR course < max_dir_1) THEN 1
+                     WHEN abs(min_dir_2-max_dir_2) < 25 AND course > min_dir_2 AND course < max_dir_2 THEN 2
+                     WHEN abs(min_dir_2-max_dir_2) > 25 AND (course > min_dir_2 OR course < max_dir_2) THEN 2
+                     ELSE 0 END AS direction
+                FROM all_data, course_limits),
+            tractor_turn AS (SELECT field_row_id, pos, row_id2, row_id3, row_nbr, direction,
+                             count(*) FILTER (WHERE dir_change) OVER (ORDER BY field_row_id) AS tractor_row
+                             FROM (SELECT *, lag(direction) OVER (ORDER BY field_row_id) <> direction AS dir_change FROM dire WHERE direction>0) s),
+            sep_rows AS (SELECT field_row_id, pos, row_nbr, row_id2, row_id3, tractor_row,
+                         row_nbr+((tractor_row+1)*{max_rows})-{max_rows} AS uni_row
+                         FROM tractor_turn
+                         ORDER BY row_nbr+((tractor_row+1)*{max_rows})-{max_rows}, row_nbr, tractor_row, field_row_id)
+            UPDATE {s_t} old_t
+            SET new_row_id = org.uni_row,
+                polygon = st_multi(st_buffer(st_makeline(st_centroid(st_makeline(org.pos, i2.pos)), st_centroid(st_makeline(org.pos, i3.pos))),
+                                             (SELECT PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY side_dist) FROM row_width)/2,
+                                             'endcap=flat'))
+            FROM sep_rows org
+            JOIN sep_rows i2 ON org.field_row_id=i2.row_id2 AND org.uni_row=i2.uni_row
+            JOIN sep_rows i3 ON org.field_row_id=i3.row_id3 AND org.uni_row=i3.uni_row
+            WHERE st_length(st_makeline(st_centroid(st_makeline(org.pos, i2.pos)), st_centroid(st_makeline(org.pos, i3.pos)))) < (SELECT PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY front_dist) FROM point_length)*4
+            AND old_t.field_row_id=org.field_row_id
+            """).format(s_t=s_t, max_rows=max_rows_lit, row=row_id, course=course_id)
             self.db.execute_sql(sql)
-            sql = """with data as(select field_row_id, pos, new_row_id, lag(pos) OVER(partition BY new_row_id ORDER BY field_row_id ASC) as pos2, lag(field_row_id) OVER(partition BY new_row_id ORDER BY field_row_id ASC) as id2
-            from {s_t})
-            Select new_row_id, field_row_id, st_distance(pos::geography,pos2::geography), id2 
-            from data 
-            where st_distance(pos::geography,pos2::geography) > 35 and new_row_id is not Null""".format(
-                s_t=schema_table)
+            sql = pgsql.SQL(
+                "WITH data AS (SELECT field_row_id, pos, new_row_id,"
+                " lag(pos) OVER(PARTITION BY new_row_id ORDER BY field_row_id ASC) AS pos2,"
+                " lag(field_row_id) OVER(PARTITION BY new_row_id ORDER BY field_row_id ASC) AS id2"
+                " FROM {s_t})"
+                " SELECT new_row_id, field_row_id, st_distance(pos::geography, pos2::geography), id2"
+                " FROM data"
+                " WHERE st_distance(pos::geography, pos2::geography) > 35 AND new_row_id IS NOT NULL"
+            ).format(s_t=s_t)
             data = self.db.execute_and_return(sql)
             max_id = self.db.execute_and_return(
-                "select max(new_row_id) from {s_t}".format(s_t=schema_table))[0][0]
-            for row_id, tbl_id, dist, tbl_id2 in data:
+                pgsql.SQL("SELECT max(new_row_id) FROM {s_t}").format(s_t=s_t))[0][0]
+            for r_id, tbl_id, dist, tbl_id2 in data:
                 max_id += 1
-                sql = """Update {s_t}
-                set new_row_id = {nbr}
-                where new_row_id = {r_id} and field_row_id >= {t_id}""".format(
-                    s_t=schema_table, nbr=max_id, r_id=row_id, t_id=tbl_id)
-                self.db.execute_sql(sql)
-            sql = """with f_sel as (select new_row_id, st_x(pos), st_y(pos), {course}
-            from {s_t}
-            where new_row_id is not Null),
-            s_sel as (select new_row_id, avg(course) as av_course, min(st_x) as min_x, max(st_x) as max_x, min(st_y) as min_y, max(st_y) as max_y
-            from f_sel 
-            group by new_row_id),
-            northsouth as (select case when ((select av_course from s_sel limit 1) between 45 and 135) or ((select av_course from s_sel limit 1) between 225 and 315) then false
-            else true end as ns),
-            t_sel as (select new_row_id
-            from s_sel, northsouth
-            order by case when ns is true then min_x end asc, case when ns is false then max_y end desc),
-            fo_sel as (select ROW_NUMBER() OVER() as up_nbr, new_row_id
-            from t_sel)
-            update {s_t} u1
-            set new_row_id = up_nbr
-            from fo_sel
-            where u1.new_row_id = fo_sel.new_row_id
-            """.format(s_t=schema_table, course=course)
+                self.db.execute_sql(
+                    pgsql.SQL(
+                        "UPDATE {s_t} SET new_row_id = %s"
+                        " WHERE new_row_id = %s AND field_row_id >= %s"
+                    ).format(s_t=s_t),
+                    params=(max_id, r_id, tbl_id))
+            sql = pgsql.SQL(
+                "WITH f_sel AS (SELECT new_row_id, st_x(pos), st_y(pos), {course}"
+                " FROM {s_t} WHERE new_row_id IS NOT NULL),"
+                " s_sel AS (SELECT new_row_id, avg(course) AS av_course,"
+                " min(st_x) AS min_x, max(st_x) AS max_x, min(st_y) AS min_y, max(st_y) AS max_y"
+                " FROM f_sel GROUP BY new_row_id),"
+                " northsouth AS (SELECT CASE WHEN ((SELECT av_course FROM s_sel LIMIT 1) BETWEEN 45 AND 135)"
+                " OR ((SELECT av_course FROM s_sel LIMIT 1) BETWEEN 225 AND 315) THEN FALSE"
+                " ELSE TRUE END AS ns),"
+                " t_sel AS (SELECT new_row_id FROM s_sel, northsouth"
+                " ORDER BY CASE WHEN ns IS TRUE THEN min_x END ASC,"
+                " CASE WHEN ns IS FALSE THEN max_y END DESC),"
+                " fo_sel AS (SELECT ROW_NUMBER() OVER() AS up_nbr, new_row_id FROM t_sel)"
+                " UPDATE {s_t} u1 SET new_row_id = up_nbr"
+                " FROM fo_sel WHERE u1.new_row_id = fo_sel.new_row_id"
+            ).format(s_t=s_t, course=course_id)
             self.db.execute_sql(sql)
             return [True]
         except Exception as e:

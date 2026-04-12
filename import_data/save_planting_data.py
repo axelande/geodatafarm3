@@ -61,20 +61,16 @@ class SavePlanting:
             seed_rate = self.dw.LEPSeedRate.text()
             saw_depth = self.dw.LEPSawDepth.text()
             other = self.dw.LEPOther.toPlainText()
-            if spacing == '':
-                spacing = 'Null'
-            if seed_rate == '':
-                seed_rate = 'Null'
-            if saw_depth == '':
-                saw_depth = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into plant.manual(field, crop, date_, variety, spacing, seed_rate, saw_depth, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{spacing}','{seed_rate}','{saw_depth}','{other}', 'None')
-            """.format(field=field, crop=crop, date_=date_, varerity=varerity, spacing=spacing, seed_rate=seed_rate,
-                       saw_depth=saw_depth, other=other)
+            spacing = spacing or None
+            seed_rate = seed_rate or None
+            saw_depth = saw_depth or None
+            other = other or None
+            sql = ("INSERT INTO plant.manual"
+                   " (field, crop, date_, variety, spacing, seed_rate, saw_depth, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(
+                    field, crop, date_, varerity, spacing, seed_rate, saw_depth, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
                 self.dw.CBPField.setCurrentIndex(0)
                 self.dw.CBPCrop.setCurrentIndex(0)
@@ -85,7 +81,7 @@ class SavePlanting:
                 self.dw.LEPOther.setPlainText('')
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
 
     def check_input(self):
         """Some simple checks that ensure that the basic data is filled in.

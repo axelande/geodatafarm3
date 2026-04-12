@@ -2,6 +2,7 @@ import tempfile
 import time
 import codecs
 import os
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from qgis.core import QgsMapLayer
@@ -124,20 +125,32 @@ class MultiEdit:
                     field_name = layer.fields()[nPosField].name()
                     type_ = layer.fields()[nPosField].typeName()
                     if type_ == 'int4' or type_ == 'float4':
-                        f_value = value
+                        cast_value = int(value) if type_ == 'int4' else float(value)
                     else:
-                        f_value = "'" + value + "'"
-                    sql = """UPDATE {tbl}
-                    SET {field}={field_value}
-                    where field_row_id in ({ids})""".format(tbl=tbl, field=field_name,
-                                                            field_value=f_value, ids=str(ids_to_change)[1:-1])
-                    self.db.execute_sql(sql)
+                        cast_value = value
+                    tbl_clean = tbl.strip('"')
+                    parts = tbl_clean.split('.')
+                    if len(parts) == 2:
+                        tbl_id = pgsql.SQL("{schema}.{tbl}").format(
+                            schema=pgsql.Identifier(parts[0]),
+                            tbl=pgsql.Identifier(parts[1]))
+                    else:
+                        tbl_id = pgsql.Identifier(tbl_clean)
+                    id_placeholders = pgsql.SQL(", ").join(
+                        [pgsql.Literal(i) for i in ids_to_change])
+                    query = pgsql.SQL(
+                        "UPDATE {tbl} SET {field} = %s WHERE field_row_id IN ({ids})"
+                    ).format(
+                        tbl=tbl_id,
+                        field=pgsql.Identifier(field_name),
+                        ids=id_placeholders)
+                    self.db.execute_sql(query, params=(cast_value,))
                     self.iface.actionSaveActiveLayerEdits().trigger()
                     self.iface.actionToggleEditing().trigger()
                     layer.triggerRepaint()
                 else:
                     QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
-                                         self.tr("Please select at least one feature from <b>{lyr}</b> current layer".format(lyr=layer.name())))
+                                         self.tr(f"Please select at least one feature from <b>{layer.name()}</b> current layer"))
             else:
                 nF = layer.selectedFeatureCount()
                 if nF > 0:
@@ -174,7 +187,7 @@ class MultiEdit:
                     # layer.commitChanges()
                 else:
                     QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
-                                         self.tr("Please select at least one feature from <b>{lyr}</b> current layer".format(lyr=layer.name())))
+                                         self.tr(f"Please select at least one feature from <b>{layer.name()}</b> current layer"))
         else:
             QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
                                  self.tr("Please select a layer"))

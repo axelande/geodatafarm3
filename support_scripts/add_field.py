@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
-from psycopg2 import IntegrityError, InternalError
+from psycopg2 import IntegrityError, InternalError, sql as pgsql
 
 # Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
 if not hasattr(QMessageBox, 'Yes'):
@@ -150,13 +150,17 @@ class AddField:
                         continue
                 field_names = []
                 for tble_type in ['plant', 'ferti', 'spray', 'harvest', 'soil']:
-                    field_names.extend(self.db.execute_and_return("select field from {type}.manual".format(type=tble_type)))
+                    field_names.extend(self.db.execute_and_return(
+                        pgsql.SQL("SELECT field FROM {schema}.manual").format(
+                            schema=pgsql.Identifier(tble_type))))
                 sql = """SELECT table_name
                FROM   information_schema.tables 
                WHERE  table_schema = 'other'"""
                 for tble_type in self.db.execute_and_return(sql):
                     tbl = tble_type[0]
-                    field_names.extend(self.db.execute_and_return("select field from other.{tbl}".format(tbl=tbl)))
+                    field_names.extend(self.db.execute_and_return(
+                        pgsql.SQL("SELECT field FROM other.{tbl}").format(
+                            tbl=pgsql.Identifier(tbl))))
                 stop_removing = False
                 for row in field_names:
                     if row[0] == field_name:
@@ -169,8 +173,9 @@ class AddField:
                             stop_removing = True
                 if stop_removing:
                     continue
-                sql = "delete from fields where field_name='{f}'".format(f=field_name)
-                self.db.execute_sql(sql)
+                self.db.execute_sql(
+                    "DELETE FROM fields WHERE field_name = %s",
+                    params=(field_name,))
                 self.parent.dock_widget.LWFields.takeItem(j)
                 j -= 1
 

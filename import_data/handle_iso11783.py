@@ -150,12 +150,15 @@ class Iso11783:
                 divider = len(data_set)
             else:
                 divider = 10
-            sql = "with start_sel as ("
+            union_parts = []
+            union_params = []
             for index, row in data_set.iloc[::int(len(data_set)/divider)].iterrows():
-                sql +=f"""select field_name from fields where st_intersects(polygon, st_geomfromtext('Point({row["longitude"]} {row["latitude"]})', 4326))
-UNION """
-            sql = sql[:-6] + ") select field_name from start_sel group by field_name"
-            fields_ = self.db.execute_and_return(sql)
+                union_parts.append(
+                    "SELECT field_name FROM fields WHERE st_intersects(polygon, st_geomfromtext(%s, 4326))")
+                union_params.append(f"POINT({row['longitude']} {row['latitude']})")
+            sql = ("WITH start_sel AS (" + " UNION ".join(union_parts)
+                   + ") SELECT field_name FROM start_sel GROUP BY field_name")
+            fields_ = self.db.execute_and_return(sql, params=tuple(union_params))
             if len(fields_) == 0 and not self.parent.test_mode:
                 QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('At least one of the tasked was placed outside the field at approximate: ') + 
@@ -613,35 +616,42 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
                 field: str, focus_col: list, col_types: list, tsk_nr:int) -> tuple[bool, str, str, list[list[str]]]:
     """Makes the actual insertion to the database (first to a temp table and then to the correct table)."""
     try:
-        sql = insert_sql + '('
+        row_placeholders = []
+        batch_params = []
         count_db_insert = 0
         for row_nr, row in data.iterrows():
+            placeholders = []
             lat_lon_insert = False
             lat_lon_c = 0
             for col_nr, col in enumerate(data.columns):
                 if col in ['latitude', 'longitude']:
                     lat_lon_c += 1
                     if not lat_lon_insert:
-                        sql += f"ST_PointFromText('POINT({row['longitude']} {row['latitude']})', 4326), "
+                        placeholders.append("ST_PointFromText(%s, 4326)")
+                        batch_params.append(f"POINT({row['longitude']} {row['latitude']})")
                         lat_lon_insert = True
                     continue
                 if col == 'time_stamp':
-                    sql += f"'{row['time_stamp']}', "
+                    placeholders.append("%s")
+                    batch_params.append(str(row['time_stamp']))
                     continue
-                if str(row[col]) == 'nan':
-                    sql += f"Null, "
-                elif str(row[col]).lower() == 'none':
-                    sql += f"Null, "
+                val_str = str(row[col])
+                if val_str == 'nan' or val_str.lower() == 'none':
+                    placeholders.append("NULL")
                 elif col_types[col_nr-lat_lon_c] == 2:
-                    sql += f"'{row[col]}', "
+                    placeholders.append("%s")
+                    batch_params.append(val_str)
                 else:
-                    sql += f"{row[col]}, "
-            sql = sql[:-2] + '), ('
+                    placeholders.append("%s")
+                    batch_params.append(row[col])
+            row_placeholders.append("(" + ", ".join(placeholders) + ")")
             if count_db_insert > 1_000:
-                db.execute_sql(sql[:-3], return_failure=True)
+                sql = insert_sql + ", ".join(row_placeholders)
+                db.execute_sql(sql, params=tuple(batch_params), return_failure=True)
                 if qtask is not None:
                     qtask.setProgress(row_nr / len(data) * 80)
-                sql = insert_sql + '('
+                row_placeholders = []
+                batch_params = []
                 count_db_insert = 0
             else:
                 count_db_insert += 1
@@ -649,7 +659,8 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
                 if qtask.isCanceled():
                     return False, False, "was cancelled"
         if count_db_insert > 0:
-            db.execute_sql(sql[:-3])
+            sql = insert_sql + ", ".join(row_placeholders)
+            db.execute_sql(sql, params=tuple(batch_params))
         if qtask is not None:
             qtask.setProgress(80)
 

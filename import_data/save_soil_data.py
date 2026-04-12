@@ -52,25 +52,21 @@ class SaveSoil:
             ph = self.dw.LESoPh.text()
             rx = self.dw.LESoRx.text()
             other = self.dw.LESoOther.toPlainText()
-            if clay == '':
-                clay = 'Null'
-            if humus == '':
-                humus = 'Null'
-            if ph == '':
-                ph = 'Null'
-            if rx == '':
-                rx = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into soil.manual(field, date_, clay, humus, ph, rx, other, table_) 
-            VALUES ('{field}', '{date_}','{clay}','{humus}','{ph}','{rx}','{other}', 'None')
-            """.format(field=field, date_=date_, clay=clay, humus=humus, ph=ph, rx=rx, other=other)
+            clay = clay or None
+            humus = humus or None
+            ph = ph or None
+            rx = rx or None
+            other = other or None
+            sql = ("INSERT INTO soil.manual"
+                   " (field, date_, clay, humus, ph, rx, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(
+                    field, date_, clay, humus, ph, rx, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

@@ -56,21 +56,19 @@ class SaveFertilizing:
             rate = self.dw.LEFSeedRate.text()
             saw_depth = self.dw.LEFSawDepth.text()
             other = self.dw.LEFOther.toPlainText()
-            if rate == '':
-                rate = 'Null'
-            if saw_depth == '':
-                saw_depth = 'Null'
-            if other == '':
-                other = 'Null'
-            sql = """Insert into ferti.manual(field, crop, date_, variety, rate, saw_depth, other, table_) 
-            VALUES ('{field}', '{crop}', '{date_}','{varerity}','{rate}','{saw_depth}','{other}', 'None')
-            """.format(field=field, crop=crop, date_=date_, varerity=varerity, rate=rate, saw_depth=saw_depth, other=other)
+            rate = rate or None
+            saw_depth = saw_depth or None
+            other = other or None
+            sql = ("INSERT INTO ferti.manual"
+                   " (field, crop, date_, variety, rate, saw_depth, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(sql, params=(
+                    field, crop, date_, varerity, rate, saw_depth, other))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

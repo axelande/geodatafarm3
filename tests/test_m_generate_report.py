@@ -30,7 +30,7 @@ def test_collect_data_basic(dummy_data, gdf):
 
 def test_collect_data_no_data(gdf):
     class EmptyDB:
-        def execute_and_return(self, sql, return_failure=False):
+        def execute_and_return(self, sql, params=None, return_failure=False):
             return []
     dummy_data = {
         "db": EmptyDB(),
