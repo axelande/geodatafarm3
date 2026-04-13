@@ -1,4 +1,5 @@
 from typing import Self
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QDate
 from ..support_scripts.__init__ import check_text
@@ -26,72 +27,64 @@ class SaveOther:
         """Saves manual data."""
         if self.check_input():
             field = self.dw.CBOField.currentText()
-            sql = "Select '{f}' as field, ".format(f=field)
             crop = self.dw.CBOCrop.currentText()
             if crop == self.tr('--- Select crop ---'):
-                crop = 'Null'
-            sql += "'{c}' as crop, ".format(c=crop)
+                crop = None
             date_ = self.dw.DEOther.selectedDate().toString("yyyy-MM-dd")
-            sql += "'{d}' as date_, ".format(d=date_)
-            option1 = check_text(self.dw.LEOOption_1.text())
-            if option1 != '':
-                unit1 = check_text(self.dw.LEOUnit_1.text())
-                if unit1 == '':
-                    unit1 = 'Null'
-                value1 = check_text(self.dw.LEOValue_1.text())
-                if value1 != '':
-                    # If the value is not set it is not worth saving the value.
-                    sql += "'{v}' as {o}_{u}, ".format(v=value1, o=option1, u=unit1)
-            option2 = check_text(self.dw.LEOOption_2.text())
-            if option2 != '':
-                unit2 = check_text(self.dw.LEOUnit_2.text())
-                if unit2 == '':
-                    unit2 = 'Null'
-                value2 = check_text(self.dw.LEOValue_2.text())
-                if value2 != '':
-                    # If the value is not set it is not worth saving the value.
-                    sql += "'{v}' as {o}_{u}, ".format(v=value2, o=option2, u=unit2)
-            option3 = check_text(self.dw.LEOOption_3.text())
-            if option3 != '':
-                unit3 = check_text(self.dw.LEOUnit_3.text())
-                if unit3 == '':
-                    unit3 = 'Null'
-                value3 = check_text(self.dw.LEOValue_3.text())
-                if value3 != '':
-                    # If the value is not set it is not worth saving the value.
-                    sql += "'{v}' as {o}_{u}, ".format(v=value3, o=option3, u=unit3)
-            option4 = check_text(self.dw.LEOOption_4.text())
-            if option4 != '':
-                unit4 = check_text(self.dw.LEOUnit_4.text())
-                if unit4 == '':
-                    unit4 = 'Null'
-                value4 = check_text(self.dw.LEOValue_4.text())
-                if value4 != '':
-                    # If the value is not set it is not worth saving the value.
-                    sql += "'{v}' as {o}_{u}, ".format(v=value4, o=option4, u=unit4)
+
+            select_parts = [
+                pgsql.SQL("%s AS field"),
+                pgsql.SQL("%s AS crop"),
+                pgsql.SQL("%s AS date_"),
+            ]
+            params = [field, crop, date_]
+
+            for opt_w, unit_w, val_w in [
+                (self.dw.LEOOption_1, self.dw.LEOUnit_1, self.dw.LEOValue_1),
+                (self.dw.LEOOption_2, self.dw.LEOUnit_2, self.dw.LEOValue_2),
+                (self.dw.LEOOption_3, self.dw.LEOUnit_3, self.dw.LEOValue_3),
+                (self.dw.LEOOption_4, self.dw.LEOUnit_4, self.dw.LEOValue_4),
+            ]:
+                option = check_text(opt_w.text())
+                if option == '':
+                    continue
+                unit = check_text(unit_w.text())
+                if unit == '':
+                    unit = 'Null'
+                value = check_text(val_w.text())
+                if value == '':
+                    continue
+                select_parts.append(
+                    pgsql.SQL("%s AS {alias}").format(
+                        alias=pgsql.Identifier(f"{option}_{unit}")))
+                params.append(value)
+
             other = self.dw.LEOOther.toPlainText()
             if other == '':
-                other = 'Null'
-            sql += "'{o}' as other ".format(o=other)
+                other = None
+            select_parts.append(pgsql.SQL("%s AS other"))
+            params.append(other)
+
             name = self.dw.LEOtherName.text()
-            tbl = "{n}_{f}_{d}".format(n=check_text(name), d=check_text(date_), f=field)
-            sql_t = """SELECT EXISTS (
-               SELECT 1
-               FROM   information_schema.tables 
-               WHERE  table_schema = 'other'
-               AND    table_name = '{tbl}'
-               );""".format(tbl=tbl)
-            if self.parent.db.execute_and_return(sql_t)[0][0]:
+            tbl = f"{check_text(name)}_{check_text(date_)}_{field}"
+            exists = self.parent.db.execute_and_return(
+                "SELECT EXISTS ("
+                " SELECT 1 FROM information_schema.tables"
+                " WHERE table_schema = 'other' AND table_name = %s)",
+                params=(tbl,))[0][0]
+            if exists:
                 QMessageBox.information(None, self.tr('Success'),
                                         self.tr('That operation, at that field on that day is already stored'))
                 return
-            sql += "into other.{tbl}".format(tbl=tbl)
+            query = pgsql.SQL("SELECT {cols} INTO other.{tbl}").format(
+                cols=pgsql.SQL(", ").join(select_parts),
+                tbl=pgsql.Identifier(tbl))
             try:
-                self.parent.db.execute_sql(sql)
+                self.parent.db.execute_sql(query, params=tuple(params))
                 QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
             except Exception as e:
                 QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Following error occurred: {m}'.format(m=e)))
+                                        self.tr(f'Following error occurred: {e}'))
         self.reset_widget()
 
     def reset_widget(self):

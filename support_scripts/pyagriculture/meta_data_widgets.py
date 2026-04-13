@@ -70,7 +70,7 @@ class MetaData(QDialog):
         if meta_data_type in file_map:
             xml_file = file_map[meta_data_type]
             self.file_name = os.path.join(base_dir, 'meta_data', xml_file)
-            self.tree_root = ET.parse(self.file_name).getroot()
+            self.tree_root = ET.parse(self.file_name).getroot()  # nosec B314 - plugin-bundled meta_data XML
         else:
             raise MsgError(f'Unknown metadata type: {meta_data_type}')
         self.fill_existing_table()
@@ -220,7 +220,7 @@ class MetaData(QDialog):
             self.type_widgets_layout.addWidget(frame)
 
     def get_ctr_widgets(self, schema: str = 'CTR') -> QComboBox:
-        root = ET.parse(os.path.join(THIS_DIR, 'meta_data', f'{schema}s.xml')).getroot()
+        root = ET.parse(os.path.join(THIS_DIR, 'meta_data', f'{schema}s.xml')).getroot()  # nosec B314 - plugin-bundled meta_data XML
         widget = QComboBox(self)
         items = []
         for child in root:

@@ -400,14 +400,14 @@ class ConvertToAreas:
             insert_ok = param['db'].execute_sql(inserting_text[:-1], return_failure=True)
             if not insert_ok[0]:
                 return [False, insert_ok[2]]
-            param['db'].execute_sql('DROP table if exists harvest.temp_table2')
-            sql = """SELECT * INTO harvest.temp_table2 
-                        from harvest.temp_table
-                        where st_intersects(pos, (select polygon 
-                        from fields where field_name = '{field}'));
-                        DROP table harvest.temp_table
-                        """.format(field=param['field'])
-            insert_ok = param['db'].execute_sql(sql, return_failure=True)
+            param['db'].execute_sql('DROP TABLE IF EXISTS harvest.temp_table2')
+            sql = ("SELECT * INTO harvest.temp_table2"
+                   " FROM harvest.temp_table"
+                   " WHERE st_intersects(pos,"
+                   " (SELECT polygon FROM fields WHERE field_name = %s));"
+                   " DROP TABLE harvest.temp_table")
+            insert_ok = param['db'].execute_sql(
+                sql, params=(param['field'],), return_failure=True)
             if not insert_ok[0]:
                 return [False, insert_ok[2]]
             if task != 'debug':

@@ -56,7 +56,7 @@ class Grid:
         return task_data_dict
 
     def read_indata(self) -> list:
-        tree = ET.parse(self.path + 'TASKDATA.xml')
+        tree = ET.parse(self.path + 'TASKDATA.xml')  # nosec B314 - user-chosen local ISO 11783 XML
         task_data_dict = {}
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         tasks = []

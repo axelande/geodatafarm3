@@ -133,10 +133,11 @@ class FindShapeField:
         name = self.fsfw.LEFieldName.text()
         if name == '' or self.current_polygon == '':
             return False
-        sql = f"""Insert into fields (field_name, polygon) 
-        VALUES ('{name}', st_geomfromtext('{self.current_polygon}', 4326))"""
+        sql = ("INSERT INTO fields (field_name, polygon)"
+               " VALUES (%s, st_geomfromtext(%s, 4326))")
         try:
-            res = self.parent.db.execute_sql(sql, return_failure=True)
+            res = self.parent.db.execute_sql(
+                sql, params=(name, self.current_polygon), return_failure=True)
         except Exception as e:
             if self.parent.test_mode:
                 return False

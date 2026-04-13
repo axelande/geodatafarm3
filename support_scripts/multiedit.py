@@ -149,8 +149,9 @@ class MultiEdit:
                     self.iface.actionToggleEditing().trigger()
                     layer.triggerRepaint()
                 else:
-                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
-                                         self.tr(f"Please select at least one feature from <b>{layer.name()}</b> current layer"))
+                    lyr_name = layer.name()
+                    msg = self.tr("Please select at least one feature from <b>") + lyr_name + self.tr("</b> current layer")
+                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"), msg)
             else:
                 nF = layer.selectedFeatureCount()
                 if nF > 0:
@@ -186,8 +187,9 @@ class MultiEdit:
                     self.iface.actionToggleEditing().trigger()
                     # layer.commitChanges()
                 else:
-                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
-                                         self.tr(f"Please select at least one feature from <b>{layer.name()}</b> current layer"))
+                    lyr_name = layer.name()
+                    msg = self.tr("Please select at least one feature from <b>") + lyr_name + self.tr("</b> current layer")
+                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"), msg)
         else:
             QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
                                  self.tr("Please select a layer"))

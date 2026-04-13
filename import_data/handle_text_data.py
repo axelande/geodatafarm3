@@ -455,7 +455,9 @@ class InputTextHandler(object):
         tbl = self.tbl_name
         if isint(tbl[0]):
             tbl = '_' + self.tbl_name
-        length = self.db.execute_and_return("select field_row_id from {s}.{t} limit 2".format(s=schema, t=tbl))
+        length = self.db.execute_and_return(
+            pgsql.SQL("SELECT field_row_id FROM {s}.{t} LIMIT 2").format(
+                s=pgsql.Identifier(schema), t=pgsql.Identifier(tbl)))
         if len(length) == 0:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('No data were found in the field, '
@@ -513,23 +515,27 @@ def check_row_failed(row: list[str], heading_row: list[str],
 
 
 def create_course_column(db: DB, schema: str) -> None:
-    sql = f"""Alter table {schema}.temp_table
-    ADD COLUMN course float;
-    update {schema}.temp_table a
-    set course = azm
-    FROM   (
-      SELECT degrees(ST_Azimuth(pos, LEAD(pos) OVER(ORDER BY field_row_id))) AS azm, field_row_id
-      FROM   {schema}.temp_table
-    ) q
-    where a.field_row_id = q.field_row_id"""
-    db.execute_sql(sql)
+    query = pgsql.SQL(
+        "ALTER TABLE {schema}.temp_table ADD COLUMN course float;"
+        " UPDATE {schema}.temp_table a SET course = azm"
+        " FROM ("
+        " SELECT degrees(ST_Azimuth(pos, LEAD(pos) OVER(ORDER BY field_row_id))) AS azm,"
+        " field_row_id"
+        " FROM {schema}.temp_table"
+        " ) q"
+        " WHERE a.field_row_id = q.field_row_id"
+    ).format(schema=pgsql.Identifier(schema))
+    db.execute_sql(query)
 
 
 def move_points(db, move_x, move_y, tbl_name, task):
     try:
         # TODO: Check what happens when calling a non existing table
-        min_row_id = db.execute_and_return("select min(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
-        max_row_id = db.execute_and_return("select max(field_row_id) from harvest.{tbl}".format(tbl=tbl_name))[0][0]
+        tbl_id = pgsql.Identifier(tbl_name)
+        min_row_id = db.execute_and_return(
+            pgsql.SQL("SELECT min(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
+        max_row_id = db.execute_and_return(
+            pgsql.SQL("SELECT max(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
         if min_row_id is None:
             # If the user choose the wrong field and this part cant be used.
             return [False, 'Wrong field']
@@ -546,36 +552,28 @@ def move_points(db, move_x, move_y, tbl_name, task):
         for i in range(min_row_id, max_row_id, 2000):
             if task != 'debug':
                 task.setProgress(50 + (i - min_row_id) / (max_row_id - min_row_id) * 40)
-            sql = """
-                    WITH first_selected as
-                        (SELECT field_row_id, pos, st_azimuth(pos,
-                            (SELECT pos
-                            FROM {tbl} new
-                            WHERE org.field_row_id+1=new.field_row_id)
-                            ) as bearing
-                        FROM {tbl} org
-                    where org.field_row_id >= {i1} - 3
-                    and org.field_row_id < {i3} + 3
-                    ),
-                    sub_section as(SELECT field_row_id, st_project(pos::geography, 
-                                                                   {dist}, 
-                                                                   (select atan2(avg(sin(bearing)), avg(cos(bearing))) 
-                                                                    from first_selected fs 
-                                                                    where fs.field_row_id > (ss.field_row_id -3) 
-                                                                    and fs.field_row_id < (ss.field_row_id +3)
-                                                                    ) + radians({p_bearing})
-                                                                  )::geometry as new_pos
-                    FROM first_selected ss
-                    )
-                    update {tbl}
-                    set pos=new_pos
-                    from sub_section
-                    where {tbl}.field_row_id = sub_section.field_row_id
-                    and {tbl}.field_row_id >= {i1}
-                    and {tbl}.field_row_id < {i3}""".format(tbl='harvest.' + tbl_name, i1=i, i2=i + 1,
-                                                            i3=i + 2000, dist=distance,
-                                                            p_bearing=p_bearing)
-            db.execute_sql(sql)
+            harvest_tbl = pgsql.SQL("harvest.{}").format(tbl_id)
+            query = pgsql.SQL(
+                "WITH first_selected AS ("
+                " SELECT field_row_id, pos, st_azimuth(pos,"
+                " (SELECT pos FROM {tbl} new WHERE org.field_row_id+1 = new.field_row_id)) AS bearing"
+                " FROM {tbl} org"
+                " WHERE org.field_row_id >= %s - 3 AND org.field_row_id < %s + 3),"
+                " sub_section AS ("
+                " SELECT field_row_id,"
+                " st_project(pos::geography, %s,"
+                " (SELECT atan2(avg(sin(bearing)), avg(cos(bearing)))"
+                " FROM first_selected fs"
+                " WHERE fs.field_row_id > (ss.field_row_id - 3)"
+                " AND fs.field_row_id < (ss.field_row_id + 3)) + radians(%s))::geometry AS new_pos"
+                " FROM first_selected ss)"
+                " UPDATE {tbl} SET pos = new_pos"
+                " FROM sub_section"
+                " WHERE {tbl}.field_row_id = sub_section.field_row_id"
+                " AND {tbl}.field_row_id >= %s"
+                " AND {tbl}.field_row_id < %s"
+            ).format(tbl=harvest_tbl)
+            db.execute_sql(query, params=(i, i + 2000, distance, p_bearing, i, i + 2000))
             # print(sql)
         return [True, task]
     except Exception as e:
@@ -591,7 +589,9 @@ def create_table(db: DB, schema: str, heading_row: list[str],
                  test_mode: bool=False, 
                  task_nr: int|str|str='') -> list[str]:
     temp_tbl = f"temp_table{task_nr}"
-    inserting_text = f'INSERT INTO {schema}.{temp_tbl} ('
+    safe_schema = '"' + schema.replace('"', '""') + '"'
+    safe_tbl = '"' + temp_tbl.replace('"', '""') + '"'
+    inserting_text = f'INSERT INTO {safe_schema}.{safe_tbl} ('
     col_defs = "field_row_id serial PRIMARY KEY, "
     lat_lon_inserted = False
     date_inserted = False

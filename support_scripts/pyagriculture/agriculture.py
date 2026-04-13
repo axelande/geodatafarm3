@@ -133,7 +133,7 @@ class PyAgriculture:
     def add_xfr_parts(self: Self, tree:ET.ElementTree) -> ET.ElementTree:
         for child in tree.getroot():
             if child.tag == 'XFR':
-                child_data = ET.parse(getfile_insensitive(self.path + child.attrib["A"] + '.xml'))
+                child_data = ET.parse(getfile_insensitive(self.path + child.attrib["A"] + '.xml'))  # nosec B314 - user-chosen local ISO 11783 XML
                 child_list = list(child_data.getroot())
                 for sub in child_list:
                     tree.getroot().append(sub)
@@ -146,7 +146,7 @@ class PyAgriculture:
         task_data_dict = {}
         task_names = []
         file_names = []
-        tree = ET.parse(getfile_insensitive(self.path + 'TaskData.xml'))
+        tree = ET.parse(getfile_insensitive(self.path + 'TaskData.xml'))  # nosec B314 - user-chosen local ISO 11783 XML
         tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         task_structure = self.get_structure(tree.getroot())
@@ -168,7 +168,7 @@ class PyAgriculture:
                         for tlg in tsk['child']['TLG']:
                             try:
                                 file = getfile_insensitive(f'{self.path}{tlg["A"]}.xml')
-                                branch = ET.parse(file)
+                                branch = ET.parse(file)  # nosec B314 - user-chosen local ISO 11783 XML
                             except (FileNotFoundError, ET.ParseError):
                                 if not continue_on_fail:
                                     raise FileNotFoundError(self.tr(f"The TLG file {tlg['A']}.xml was not found."))
@@ -194,7 +194,7 @@ class PyAgriculture:
         """Builds a tree of all information in the taskdata file and all TLG/GRD files."""
         reset_columns = False  # Resets all columns when the "most_important" have been used.
         task_data_dict = {}
-        tree = ET.parse(getfile_insensitive(self.path + 'TASKDATA.xml'))
+        tree = ET.parse(getfile_insensitive(self.path + 'TASKDATA.xml'))  # nosec B314 - user-chosen local ISO 11783 XML
         tree = self.add_xfr_parts(tree)
         self.task_dicts = self.add_children(task_data_dict, tree.getroot())
         structure = self.get_structure(tree.getroot())
@@ -230,7 +230,7 @@ class PyAgriculture:
                     for tlg in tsk['child']['TLG']:
                         try:
                             file = getfile_insensitive(self.path + tlg['A'] + '.xml')
-                            branch = ET.parse(file)
+                            branch = ET.parse(file)  # nosec B314 - user-chosen local ISO 11783 XML
                         except (FileNotFoundError, ET.ParseError):
                             continue
                         if len(only_tasks) > 0 and not tlg['A'] + '.xml' in only_tasks:

@@ -133,7 +133,7 @@ class TaskDataMixin:
         xml_path = os.path.join(os.path.dirname(__file__), 'meta_data', xml_file)
         items = []
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             for child in tree.getroot():
                 display_name = child.attrib.get('B', '')
                 items.append((child.tag, display_name))
@@ -159,9 +159,8 @@ class TaskDataMixin:
             return None
 
         try:
-            safe_name = field_name.replace("'", "''")
-            sql = f"select ST_AsText(polygon) from fields where field_name = '{safe_name}' limit 1"
-            res = db.execute_and_return(sql, return_failure=True)
+            sql = "SELECT ST_AsText(polygon) FROM fields WHERE field_name = %s LIMIT 1"
+            res = db.execute_and_return(sql, params=(field_name,), return_failure=True)
 
             wkt = None
             if isinstance(res, list) and res:
@@ -547,7 +546,7 @@ class TaskDataMixin:
         if key in file_map:
             xml_path = os.path.join(os.path.dirname(__file__), 'meta_data', file_map[key])
             try:
-                tree = ET.parse(xml_path)
+                tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
                 for child in tree.getroot():
                     display_name = child.attrib.get('B', '')
                     selector.addItem(f'{child.tag} - {display_name}')
@@ -613,7 +612,7 @@ class TaskDataMixin:
 
         xml_path = os.path.join(os.path.dirname(__file__), 'meta_data', file_map[schema_key])
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             xml_item = None
             for child in tree.getroot():
                 if child.tag == item_id:
@@ -1577,7 +1576,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
 
         table.setRowCount(0)
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             for child in tree.getroot():
                 row = table.rowCount()
                 table.insertRow(row)
@@ -1632,7 +1631,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
         xml_file, _ = self.META_CONFIG[meta_type]
         xml_path = os.path.join(os.path.dirname(__file__), 'meta_data', xml_file)
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             root = tree.getroot()
             for child in list(root):
                 if child.tag == item_id:
@@ -1680,7 +1679,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
     def _load_recipe_from_path(self, file_path: str):
         """Load a recipe from the given file path."""
         try:
-            tree = ET.parse(file_path)
+            tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         except Exception as e:
             QMessageBox.information(self, 'Error', f'Failed to open recipe:\n{e}')
             return
@@ -1936,7 +1935,7 @@ class GenerateIsoxmlController(TaskDataMixin):
 
         table.setRowCount(0)
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             for child in tree.getroot():
                 row = table.rowCount()
                 table.insertRow(row)
@@ -1994,7 +1993,7 @@ class GenerateIsoxmlController(TaskDataMixin):
         xml_file, _ = self.META_CONFIG[meta_type]
         xml_path = os.path.join(os.path.dirname(__file__), 'meta_data', xml_file)
         try:
-            tree = ET.parse(xml_path)
+            tree = ET.parse(xml_path)  # nosec B314 - user-chosen local ISO 11783 XML
             root = tree.getroot()
             for child in list(root):
                 if child.tag == item_id:
@@ -2047,7 +2046,7 @@ class GenerateIsoxmlController(TaskDataMixin):
     def _load_recipe_from_path(self, file_path: str):
         """Load a recipe from the given file path."""
         try:
-            tree = ET.parse(file_path)
+            tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         except Exception as e:
             QMessageBox.information(self.dock_widget, 'Error', f'Failed to open recipe:\n{e}')
             return

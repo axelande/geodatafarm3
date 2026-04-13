@@ -84,12 +84,20 @@ class TableManagement:
         if c < 2:
             QMessageBox.information(None, self.tr("Error:"), self.tr('You need at least 2 dataset when merging'))
             return
-        sql = "Create table {schema}.{new} AS (".format(new=new_name, schema=new_schema)
-        for table in tables_to_merge:
-            sql += "select * from {tbl} UNION ".format(tbl=table)
-        sql = sql[:-7]
-        sql += ")"
-        self.db.execute_sql(sql)
+        union_parts = []
+        for tbl_full in tables_to_merge:
+            parts = tbl_full.split('.')
+            if len(parts) == 2:
+                tbl_id = pgsql.SQL("{}.{}").format(
+                    pgsql.Identifier(parts[0]), pgsql.Identifier(parts[1]))
+            else:
+                tbl_id = pgsql.Identifier(tbl_full)
+            union_parts.append(pgsql.SQL("SELECT * FROM {tbl}").format(tbl=tbl_id))
+        query = pgsql.SQL("CREATE TABLE {schema}.{new} AS ({body})").format(
+            schema=pgsql.Identifier(new_schema),
+            new=pgsql.Identifier(new_name),
+            body=pgsql.SQL(" UNION ").join(union_parts))
+        self.db.execute_sql(query)
         self.db.update_row_id(new_schema, new_name)
         self.db.create_indexes(new_name, [], new_schema)
         self.TMD.LEName.setText('')
@@ -298,8 +306,10 @@ class TableManagement:
             QMessageBox(None, self.tr('Error'),
                         self.tr('This option is not possible for harvest tables'))
             return
-        sql = f"select field_row_id, row, course from {schema}.{tbl} order by row, field_row_id"
-        row_courses = self.db.execute_and_return(sql, return_failure=False)
+        query = pgsql.SQL(
+            "SELECT field_row_id, row, course FROM {schema}.{tbl} ORDER BY row, field_row_id"
+        ).format(schema=pgsql.Identifier(schema), tbl=pgsql.Identifier(tbl))
+        row_courses = self.db.execute_and_return(query, return_failure=False)
         nr_rows = int(self.TMD.SBNumberOfRows.value())
         max_dev = int(self.TMD.SBMaxAngleOffset.value())
         avg_dist = float(self.TMD.SBAvgDistance.value())
@@ -350,10 +360,11 @@ class TableManagement:
         else:  # nbr_rows == 6
             move_d = [2 * spacing + spacing / 2, spacing, spacing * 2,
                       spacing * 3, spacing * 4, spacing * 5]
-        sql = "select min(field_row_id) from harvest.{tbl}".format(tbl=tbl)
-        min_row_id = self.db.execute_and_return(sql)[0][0]
-        sql = "select max(field_row_id) from harvest.{tbl}".format(tbl=tbl)
-        max_row_id = self.db.execute_and_return(sql)[0][0]
+        tbl_id = pgsql.Identifier(tbl)
+        min_row_id = self.db.execute_and_return(
+            pgsql.SQL("SELECT min(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
+        max_row_id = self.db.execute_and_return(
+            pgsql.SQL("SELECT max(field_row_id) FROM harvest.{tbl}").format(tbl=tbl_id))[0][0]
         org_min = min_row_id
         org_max = max_row_id
         if min_row_id is None:
@@ -366,39 +377,29 @@ class TableManagement:
                 min_row_id, max_row_id = self.duplicate_first_row(org_min, org_max, tbl)
                 bearing = 90
             distance = move_d[row_nbr]
+            harvest_tbl = pgsql.SQL("harvest.{}").format(tbl_id)
             for i in range(min_row_id, max_row_id, 2000):
-                sql = """
-                        WITH first_selected as
-                            (SELECT field_row_id, pos, st_azimuth(pos,
-                                (SELECT pos
-                                FROM {tbl} new
-                                WHERE org.field_row_id+1=new.field_row_id)
-                                ) as bearing
-                            FROM {tbl} org
-                        where org.field_row_id >= {i1} - 3
-                        and org.field_row_id < {i3} + 3
-                        ),
-                        sub_section as(SELECT field_row_id, st_project(pos::geography, 
-                                                                       {dist}, 
-                                                                       (select atan2(avg(sin(bearing)), avg(cos(bearing))) 
-                                                                        from first_selected fs 
-                                                                        where fs.field_row_id > (ss.field_row_id -3) 
-                                                                        and fs.field_row_id < (ss.field_row_id +3)
-                                                                        ) + radians({p_bearing})
-                                                                      )::geometry as new_pos
-                        FROM first_selected ss
-                        )
-                        update {tbl}
-                        set pos=new_pos
-                        from sub_section
-                        where {tbl}.field_row_id = sub_section.field_row_id
-                        and {tbl}.field_row_id >= {i1}
-                        and {tbl}.field_row_id < {i3}""".format(tbl='harvest.' + tbl, i1=i,
-                                                                i2=i + 1,
-                                                                i3=i + 2000, dist=distance,
-                                                                p_bearing=bearing)
-                # print(sql)
-                self.db.execute_sql(sql)
+                query = pgsql.SQL(
+                    "WITH first_selected AS ("
+                    " SELECT field_row_id, pos, st_azimuth(pos,"
+                    " (SELECT pos FROM {tbl} new WHERE org.field_row_id+1 = new.field_row_id)) AS bearing"
+                    " FROM {tbl} org"
+                    " WHERE org.field_row_id >= %s - 3 AND org.field_row_id < %s + 3),"
+                    " sub_section AS ("
+                    " SELECT field_row_id,"
+                    " st_project(pos::geography, %s,"
+                    " (SELECT atan2(avg(sin(bearing)), avg(cos(bearing)))"
+                    " FROM first_selected fs"
+                    " WHERE fs.field_row_id > (ss.field_row_id - 3)"
+                    " AND fs.field_row_id < (ss.field_row_id + 3)) + radians(%s))::geometry AS new_pos"
+                    " FROM first_selected ss)"
+                    " UPDATE {tbl} SET pos = new_pos"
+                    " FROM sub_section"
+                    " WHERE {tbl}.field_row_id = sub_section.field_row_id"
+                    " AND {tbl}.field_row_id >= %s"
+                    " AND {tbl}.field_row_id < %s"
+                ).format(tbl=harvest_tbl)
+                self.db.execute_sql(query, params=(i, i + 2000, distance, bearing, i, i + 2000))
             if split_yield:
                 query = pgsql.SQL("UPDATE {schema}.{tbl} SET {col} = {col} / %s").format(
                     schema=pgsql.Identifier(schema),
@@ -420,32 +421,43 @@ class TableManagement:
 
     def duplicate_first_row(self, org_min, org_max, table, schema='harvest'):
         """Duplicates the original data table and returns the first and last row_id"""
-        sql_max_row = "select max(field_row_id) from {s}.{t}".format(s=schema, t=table)
+        tbl_id = pgsql.SQL("{}.{}").format(
+            pgsql.Identifier(schema), pgsql.Identifier(table))
+        sql_max_row = pgsql.SQL("SELECT max(field_row_id) FROM {tbl}").format(tbl=tbl_id)
         current_max = self.db.execute_and_return(sql_max_row)[0][0]
         columns = self.db.get_all_columns(table, schema)
-        c1 = ','.join(columns)
-        c2 = ','.join(columns)
-        c2 = c2.replace('field_row_id', 'ROW_NUMBER() OVER () + {n}'.format(n=current_max+1))
-        sql = """INSERT into {s}.{t}({c1})
-        SELECT {c2}
-        FROM {s}.{t}
-        where field_row_id >= {min_r} AND field_row_id <= {max_r}
-        """.format(s=schema, t=table, min_r=org_min, max_r=org_max, c1=c1, c2=c2)
-        self.db.execute_sql(sql)
+        c1_parts = pgsql.SQL(", ").join(pgsql.Identifier(c) for c in columns)
+        c2_parts = pgsql.SQL(", ").join(
+            pgsql.SQL("ROW_NUMBER() OVER () + %s") if c == 'field_row_id'
+            else pgsql.Identifier(c)
+            for c in columns)
+        offset = current_max + 1
+        c2_params = [offset] if 'field_row_id' in columns else []
+        query = pgsql.SQL(
+            "INSERT INTO {tbl} ({c1}) SELECT {c2} FROM {tbl}"
+            " WHERE field_row_id >= %s AND field_row_id <= %s"
+        ).format(tbl=tbl_id, c1=c1_parts, c2=c2_parts)
+        self.db.execute_sql(query, params=tuple(c2_params + [org_min, org_max]))
         now_max = self.db.execute_and_return(sql_max_row)[0][0]
         return current_max + 1, now_max
 
 
 def make_rows(db, schema, tbl, avg_dist, distance_bet_rows, stops):
+        tbl_id = pgsql.SQL("{}.{}").format(
+            pgsql.Identifier(schema), pgsql.Identifier(tbl))
         for j, (row, stops_) in enumerate(stops.items()):
             for i, stop in enumerate(stops_[:-1]):
-                sql = f"""with sel as(select st_buffer(st_makeline(pos order by field_row_id)::geography, {distance_bet_rows}) as outer_row
-        from {schema}.{tbl} 
-        where row={row} and field_row_id < {stops[row][i+1]} and field_row_id >={stop}
-        )
-        Update {schema}.{tbl}
-        set polygon=st_multi(st_intersection(st_buffer(pos::geography, {avg_dist}), outer_row)::geometry)
-        from sel
-        where row={row} and field_row_id < {stops[row][i+1]} and field_row_id >={stop}
-        """
-                db.execute_sql(sql)
+                query = pgsql.SQL(
+                    "WITH sel AS ("
+                    " SELECT st_buffer(st_makeline(pos ORDER BY field_row_id)::geography, %s) AS outer_row"
+                    " FROM {tbl}"
+                    " WHERE row = %s AND field_row_id < %s AND field_row_id >= %s)"
+                    " UPDATE {tbl}"
+                    " SET polygon = st_multi(st_intersection("
+                    " st_buffer(pos::geography, %s), outer_row)::geometry)"
+                    " FROM sel"
+                    " WHERE row = %s AND field_row_id < %s AND field_row_id >= %s"
+                ).format(tbl=tbl_id)
+                db.execute_sql(query, params=(
+                    distance_bet_rows, row, stops[row][i+1], stop,
+                    avg_dist, row, stops[row][i+1], stop))

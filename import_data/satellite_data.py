@@ -127,7 +127,9 @@ class SatelliteData:
         QgsRasterLayer
         """
         field_name = self.dlg.CBFieldList.currentText()
-        field_wkt = self.parent.db.execute_and_return("select st_astext(polygon) from fields where field_name ='{name}'".format(name=field_name))[0][0]
+        field_wkt = self.parent.db.execute_and_return(
+            "SELECT st_astext(polygon) FROM fields WHERE field_name = %s",
+            params=(field_name,))[0][0]
         field_vector = QgsGeometry.fromWkt(field_wkt)
         mask_layer = QgsVectorLayer("Polygon?crs=EPSG:4326", "temp_field", "memory")
         pr = mask_layer.dataProvider()
@@ -203,10 +205,9 @@ class SatelliteData:
         min_value = round(float(rarray.min()))
         max_value = round(float(rarray.max()))
         interval = (max_value - min_value) / 5
-        field_areal = self.parent.db.execute_and_return("""
-        select st_area(polygon::geography)/10000 
-        FROM fields
-        Where field_name='{f_n}'""".format(f_n=self.dlg.CBFieldList.currentText()))[0][0]
+        field_areal = self.parent.db.execute_and_return(
+            "SELECT st_area(polygon::geography)/10000 FROM fields WHERE field_name = %s",
+            params=(self.dlg.CBFieldList.currentText(),))[0][0]
         c1 = rarray[(min_value <= rarray) & (rarray < min_value + interval)].size
         areal = round(field_areal* c1/rarray.size, 2)
         text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=min_value, mi=min_value,

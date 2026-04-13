@@ -153,12 +153,14 @@ class Iso11783:
             union_parts = []
             union_params = []
             for index, row in data_set.iloc[::int(len(data_set)/divider)].iterrows():
-                union_parts.append(
-                    "SELECT field_name FROM fields WHERE st_intersects(polygon, st_geomfromtext(%s, 4326))")
+                union_parts.append(pgsql.SQL(
+                    "SELECT field_name FROM fields"
+                    " WHERE st_intersects(polygon, st_geomfromtext(%s, 4326))"))
                 union_params.append(f"POINT({row['longitude']} {row['latitude']})")
-            sql = ("WITH start_sel AS (" + " UNION ".join(union_parts)
-                   + ") SELECT field_name FROM start_sel GROUP BY field_name")
-            fields_ = self.db.execute_and_return(sql, params=tuple(union_params))
+            query = (pgsql.SQL("WITH start_sel AS (")
+                     + pgsql.SQL(" UNION ").join(union_parts)
+                     + pgsql.SQL(") SELECT field_name FROM start_sel GROUP BY field_name"))
+            fields_ = self.db.execute_and_return(query, params=tuple(union_params))
             if len(fields_) == 0 and not self.parent.test_mode:
                 QMessageBox.information(None, self.tr("Error:"),
                                               self.tr('At least one of the tasked was placed outside the field at approximate: ') + 

@@ -63,9 +63,10 @@ def add_fields_2_canvas(task: "qgis.core.additions.qgstaskwrapper.QgsTaskWrapper
             for source in sources:
                 if str(field).lower() in source.lower():
                     continue
+            safe_field = field.replace("'", "''")
             layer = db.add_postgis_layer('fields', 'polygon', 'public',
                                        extra_name=field + '_',
-                                       filter_text="field_name='{f}'".format(f=field))
+                                       filter_text=f"field_name='{safe_field}'")
             set_label(layer, 'field_name')
             layers.append(layer)
         return [True, layers]
@@ -243,10 +244,10 @@ class AddField:
             QMessageBox.information(None, self.tr('Error:'),
                                     self.tr('Field name must be filled in.'))
             return
-        sql = """Insert into fields (field_name, polygon) 
-        VALUES ('{name}', st_geomfromtext('{poly}', 4326))""".format(name=name, poly=polygon)
+        sql = ("INSERT INTO fields (field_name, polygon)"
+               " VALUES (%s, st_geomfromtext(%s, 4326))")
         try:
-            res = self.db.execute_sql(sql, return_failure=True)
+            res = self.db.execute_sql(sql, params=(name, polygon), return_failure=True)
         except IntegrityError:
             if self.parent.test_mode:
                 return False

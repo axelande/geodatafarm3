@@ -55,14 +55,13 @@ class DBFileHandler:
         tbls = OrderedDict()
         for table in res1:
             tbl_name = str(table[0])
-            data = self.cursor.execute(
-                "select * from {tbl} limit 10".format(tbl=tbl_name))
+            safe_tbl = '"' + tbl_name.replace('"', '""') + '"'
+            data = self.cursor.execute(f"SELECT * FROM {safe_tbl} LIMIT 10")  # nosec B608
             data1 = data.fetchall()
             if len(data1) == 0:
                 continue
             else:
-                cols = self.cursor.execute(
-                    "PRAGMA table_info({tbl})".format(tbl=tbl_name))
+                cols = self.cursor.execute(f"PRAGMA table_info({safe_tbl})")  # nosec B608
                 cols1 = cols.fetchall()
                 tbls[tbl_name] = {'col': [], 'data': []}
                 for col_temp in cols1:
@@ -157,7 +156,9 @@ class DBFileHandler:
                 pass
         if len(current_data) == 0:
             print('no list')
-        data = self.cursor.execute("select * from {tbl}".format(tbl=self.other_tbls[int(col)]))
+        other_tbl = self.other_tbls[int(col)]
+        safe_other = '"' + other_tbl.replace('"', '""') + '"'
+        data = self.cursor.execute(f"SELECT * FROM {safe_other}")  # nosec B608
         data1 = data.fetchall()
         matching_ids = []
         matching_values = []

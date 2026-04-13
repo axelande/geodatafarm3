@@ -455,7 +455,8 @@ class InputShpHandler:
             return
         tbl = self.tbl_name
         length = self.db.execute_and_return(
-            "select field_row_id from {s}.{t} limit 2".format(s=self.schema, t=tbl))
+            pgsql.SQL("SELECT field_row_id FROM {s}.{t} LIMIT 2").format(
+                s=pgsql.Identifier(self.schema), t=pgsql.Identifier(tbl)))
         if len(length) == 0:
             QMessageBox.information(None, self.tr('Error'),
                                     self.tr('No data were found in the field, '

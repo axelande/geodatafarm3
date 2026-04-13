@@ -1,9 +1,38 @@
 from typing import Self
 from operator import xor
+import ast
+import operator as op
 import os
 import re
 
 from osgeo import osr, ogr
+
+
+_SAFE_OPS = {
+    ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+    ast.Div: op.truediv, ast.FloorDiv: op.floordiv, ast.Mod: op.mod,
+    ast.Pow: op.pow, ast.USub: op.neg, ast.UAdd: op.pos,
+}
+
+
+def _safe_eval(expr: str) -> float:
+    """Evaluate a pure arithmetic expression safely using AST.
+
+    Only numeric literals and +, -, *, /, //, %, **, unary +/- are allowed.
+    Raises ValueError on any other construct.
+    """
+    node = ast.parse(expr, mode='eval').body
+
+    def _ev(n):
+        if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
+            return n.value
+        if isinstance(n, ast.BinOp) and type(n.op) in _SAFE_OPS:
+            return _SAFE_OPS[type(n.op)](_ev(n.left), _ev(n.right))
+        if isinstance(n, ast.UnaryOp) and type(n.op) in _SAFE_OPS:
+            return _SAFE_OPS[type(n.op)](_ev(n.operand))
+        raise ValueError(f"Unsupported expression: {ast.dump(n)}")
+
+    return _ev(node)
 from psycopg2 import ProgrammingError, sql as pgsql
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
@@ -295,6 +324,12 @@ class CreateGuideFile:
         if not eq_text.strip():
             return self.tr('The equation is empty.')
 
+        # Only digits, operators, parentheses, whitespace, and [N] refs are allowed.
+        if not re.fullmatch(r'[\d+\-*/.() \t\r\n\[\]]+', eq_text):
+            return self.tr('The equation contains invalid characters. Only '
+                           'numbers, operators (+, -, *, /), parentheses, and '
+                           'attribute references like [0], [1] are allowed.')
+
         # Find all [N] references in the equation
         refs = re.findall(r'\[(\d+)\]', eq_text)
         if not refs:
@@ -383,9 +418,9 @@ class CreateGuideFile:
             eq_text_max = eq_text_max.replace(f'[{i}]', f'{data[0][0]}')
 
         try:
-            max_val = eval(eq_text_max)
-            min_val = eval(eq_text_min)
-        except (TypeError, SyntaxError, NameError, ZeroDivisionError) as e:
+            max_val = _safe_eval(eq_text_max)
+            min_val = _safe_eval(eq_text_min)
+        except (TypeError, SyntaxError, NameError, ZeroDivisionError, ValueError) as e:
             self._show_message(
                 'Equation error',
                 self.tr('The equation could not be evaluated.\n\n'
@@ -425,49 +460,59 @@ class CreateGuideFile:
         if self.CGF.CBDataType.currentText() == self.tr('Float (1.234)'):
             float_type = True
 
-        sql = f"""WITH grid AS (
-      SELECT 
-        ROW_NUMBER() OVER () AS grid_id,
-        m.geom 
-      FROM (
-        SELECT (
-          ST_Dump(
-            MAKEGRID_2D(polygon,{cell_size},{cell_size}))
-             ).geom  
-             from fields
-            where field_name = '{self.CGF.CBFields.currentText()}'
-      ) m
-    ),
-    --Defines the centroid of the whole grid
-    centroid AS (
-      SELECT ST_Centroid(ST_Collect(grid.geom)) AS geometry FROM grid
-    ), 
-    --Rotates around the defined centroid
-    rotated as(SELECT ST_Rotate(grid.geom,radians({rotation}),(SELECT geometry FROM centroid)) as polys 
-               FROM grid
-              ),
-    
-    --Do the final selections and joining in some average data
-    final as(select st_astext(ST_Transform(polys, {EPSG})), """
+        field_name = self.CGF.CBFields.currentText()
+        cell_size_i = int(cell_size)
+        rotation_f = float(rotation)
+        epsg_i = int(EPSG)
+
         eq = self.CGF.TEEquation.toPlainText()
         for i, (tbl, attribute) in self.selected.items():
-            eq =  eq.replace(f"[{i}]", f"case when avg(tbl_{i}.{attribute}) is null then 0 else avg(tbl_{i}.{attribute}) end")
-        sql += eq +""" as val
-        from rotated
-        """
+            safe_attr = '"' + attribute.replace('"', '""') + '"'
+            eq = eq.replace(
+                f"[{i}]",
+                f"CASE WHEN avg(tbl_{i}.{safe_attr}) IS NULL THEN 0"
+                f" ELSE avg(tbl_{i}.{safe_attr}) END")
+
+        join_parts = []
         for i, (tbl, attribute) in self.selected.items():
             if 'polygon' in self.db.get_all_columns(tbl.split('.')[1], tbl.split('.')[0]):
                 join_geom = 'polygon'
             else:
                 join_geom = 'pos'
-            sql += f"""JOIN {tbl} tbl_{i} on st_intersects(polys, tbl_{i}.{join_geom})
-            """
-        sql += """group by polys)
-                select * 
-    from final 
-    where val is not null"""
-        print(sql)
-        data = self.db.execute_and_return(sql)
+            schema_t, table_t = tbl.split('.')
+            alias = pgsql.SQL(f"tbl_{i}")
+            join_parts.append(pgsql.SQL(
+                " JOIN {schema}.{tbl} {alias}"
+                " ON st_intersects(polys, {alias}.{geom})"
+            ).format(
+                schema=pgsql.Identifier(schema_t),
+                tbl=pgsql.Identifier(table_t),
+                alias=alias,
+                geom=pgsql.Identifier(join_geom)))
+
+        # eq is restricted by _validate_equation to digits, operators, parens,
+        # and safely-quoted CASE/avg(tbl_N."col") fragments from selected attrs.
+        query = pgsql.SQL(
+            "WITH grid AS ("
+            " SELECT ROW_NUMBER() OVER () AS grid_id, m.geom"
+            " FROM ("
+            " SELECT (ST_Dump(MAKEGRID_2D(polygon, {cell}, {cell}))).geom"
+            " FROM fields WHERE field_name = %s"
+            " ) m),"
+            " centroid AS (SELECT ST_Centroid(ST_Collect(grid.geom)) AS geometry FROM grid),"
+            " rotated AS (SELECT ST_Rotate(grid.geom, radians({rot}),"
+            " (SELECT geometry FROM centroid)) AS polys FROM grid),"
+            " final AS (SELECT st_astext(ST_Transform(polys, {epsg})), "
+            + eq + " AS val FROM rotated"  # nosec B608
+        ).format(
+            cell=pgsql.Literal(cell_size_i),
+            rot=pgsql.Literal(rotation_f),
+            epsg=pgsql.Literal(epsg_i))
+        for jp in join_parts:
+            query = query + jp
+        query = query + pgsql.SQL(
+            " GROUP BY polys) SELECT * FROM final WHERE val IS NOT NULL")
+        data = self.db.execute_and_return(query, params=(field_name,))
         attribute_values = []
         driver = ogr.GetDriverByName('Esri Shapefile')
         path = os.path.join(self.save_folder, f'{file_name}.shp')

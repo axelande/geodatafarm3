@@ -117,7 +117,7 @@ class FindIsoField:
 
     def _get_xml_root(self: Self, file_path: str) -> ET.Element:
         """Parses the XML file and returns the root element."""
-        tree = ET.parse(file_path)
+        tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         root = tree.getroot()
         return root
 
@@ -374,10 +374,11 @@ class FindIsoField:
             return False
         if self.current_polygon == '':
             return False
-        sql = f"""Insert into fields (field_name, polygon) 
-        VALUES ('{name}', st_geomfromtext('{self.current_polygon}', 4326))"""
+        sql = ("INSERT INTO fields (field_name, polygon)"
+               " VALUES (%s, st_geomfromtext(%s, 4326))")
         try:
-            res = self.parent.db.execute_sql(sql, return_failure=True)
+            res = self.parent.db.execute_sql(
+                sql, params=(name, self.current_polygon), return_failure=True)
         except IntegrityError:
             if self.parent.test_mode:
                 return False
