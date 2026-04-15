@@ -5213,6 +5213,12 @@ QComboBox::drop-down {
   border: none;
   width: 20px;
 }
+QComboBox QAbstractItemView {
+  color: #000000;
+  background: #ffffff;
+  selection-color: #000000;
+  selection-background-color: #e0e0e0;
+}
 
 /* === Lists === */
 QListWidget {

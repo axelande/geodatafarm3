@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     import matplotlib.figure
     import shapely.geometry.polygon
 import os
+import math
 
 import contextily as ctx
 import geopandas as gpd
@@ -31,6 +32,7 @@ class FindShapeField:
         self.path = test_path
         self.zoom_level = 17
         self.gdf = None
+        self.gdf_crs = None
 
     def connect(self: Self) -> None:
         self.fsfw.PBAddShapeFile.clicked.connect(self.open_shapefile)
@@ -54,9 +56,19 @@ class FindShapeField:
         if path:
             self.path = path
             self.gdf = gpd.read_file(path)
+            # remember the source CRS for geometries so WKT transformations use it
+            try:
+                self.gdf_crs = self.gdf.crs
+            except Exception:
+                self.gdf_crs = None
             self.fsfw.CBFieldNames.clear()
+            geom_col = None
+            try:
+                geom_col = self.gdf.geometry.name
+            except Exception:
+                geom_col = 'geometry'
             for col in self.gdf.columns:
-                if self.gdf[col].dtype == object:
+                if col != geom_col:
                     self.fsfw.CBFieldNames.addItem(col)
             for i in range(self.fsfw.CBFieldNames.count()):
                 if self.parent.tr("name") in self.fsfw.CBFieldNames.itemText(i).lower():
@@ -87,31 +99,78 @@ class FindShapeField:
             self.load_wkt(self.fields[item_name])
             self.current_polygon = self.fields[item_name]
 
-    def _set_new_crs(self: Self, polygon: "shapely.geometry.polygon.Polygon", 
-                     source_proj: str = 'EPSG:4326', 
+    def _set_new_crs(self: Self, polygon: "shapely.geometry.polygon.Polygon",
+                     source_proj: str = None,
                      target_proj: str = 'EPSG:3857') -> "shapely.geometry.polygon.Polygon":
+        # If source projection not provided, try to use the shapefile CRS
+        if source_proj is None:
+            try:
+                if self.gdf_crs is not None:
+                    source_proj = pyproj.CRS(self.gdf_crs).to_string()
+                else:
+                    source_proj = 'EPSG:4326'
+            except Exception:
+                source_proj = 'EPSG:4326'
         project = pyproj.Transformer.from_crs(source_proj, target_proj, always_xy=True).transform
         return transform(project, polygon)
 
     def _plot_polygon_on_map(self: Self, polygon: "shapely.geometry.polygon.Polygon") -> "matplotlib.figure.Figure":
-        if polygon.is_empty:
+        try:
+            if polygon.is_empty:
+                fig, ax = plt.subplots(figsize=(12, 9))
+                ax.text(0.5, 0.5, 'No data points were found', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=15)
+                ax.set_axis_off()
+                return fig
+
+            polygon = self._set_new_crs(polygon)
+
+            # If it's a MultiPolygon, pick the largest part for preview
+            if getattr(polygon, 'geom_type', '') == 'MultiPolygon':
+                if len(polygon.geoms) > 0:
+                    polygon = max(polygon.geoms, key=lambda g: g.area)
+
+            # Ensure we have a polygon-like geometry (fallback to convex hull)
+            if not hasattr(polygon, 'exterior'):
+                polygon = polygon.convex_hull
+
+            minx, miny, maxx, maxy = polygon.bounds
+
+            # Validate bounds
+            if not all(math.isfinite(v) for v in (minx, miny, maxx, maxy)):
+                fig, ax = plt.subplots(figsize=(12, 9))
+                ax.text(0.5, 0.5, 'Invalid polygon bounds', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=15)
+                ax.set_axis_off()
+                return fig
+
+            # Guard degenerate bounds (zero width/height)
+            dx = maxx - minx
+            dy = maxy - miny
+            if dx == 0:
+                minx -= 0.5
+                maxx += 0.5
+                dx = maxx - minx
+            if dy == 0:
+                miny -= 0.5
+                maxy += 0.5
+                dy = maxy - miny
+
             fig, ax = plt.subplots(figsize=(12, 9))
-            ax.text(0.5, 0.5, 'No data points were found', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=15)
+            x, y = polygon.exterior.xy
+            patch_collection = ax.fill(x, y, edgecolor='m', facecolor='none')
+            if patch_collection:
+                self.polygon_patch = patch_collection[0]
+            if not self.parent.test_mode:
+                ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
+            padding = 0.15
+            ax.set_xlim(minx - dx * padding, maxx + dx * padding)
+            ax.set_ylim(miny - dy * padding, maxy + dy * padding)
             ax.set_axis_off()
             return fig
-        polygon = self._set_new_crs(polygon)
-        minx, miny, maxx, maxy = polygon.bounds
-        fig, ax = plt.subplots(figsize=(12, 9))
-        patch_collection = ax.fill(*polygon.exterior.xy, edgecolor='m', facecolor='none')
-        if patch_collection:
-            self.polygon_patch = patch_collection[0]
-        if not self.parent.test_mode:
-            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, zoom=self.zoom_level)
-        padding = 0.15
-        ax.set_xlim(minx - (maxx - minx) * padding, maxx + (maxx - minx) * padding)
-        ax.set_ylim(miny - (maxy - miny) * padding, maxy + (maxy - miny) * padding)
-        ax.set_axis_off()
-        return fig
+        except Exception as e:
+            fig, ax = plt.subplots(figsize=(12, 9))
+            ax.text(0.5, 0.5, f'Error plotting polygon: {e}', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=12)
+            ax.set_axis_off()
+            return fig
 
     def load_wkt(self: Self, polygon_wkt: str) -> None:
         polygon = wkt.loads(polygon_wkt)
@@ -133,11 +192,39 @@ class FindShapeField:
         name = self.fsfw.LEFieldName.text()
         if name == '' or self.current_polygon == '':
             return False
-        sql = ("INSERT INTO fields (field_name, polygon)"
-               " VALUES (%s, st_geomfromtext(%s, 4326))")
+        # Determine source CRS of loaded shapefile so we insert geometry correctly
+        source_srid = 4326
         try:
-            res = self.parent.db.execute_sql(
-                sql, params=(name, self.current_polygon), return_failure=True)
+            if hasattr(self, 'gdf_crs') and self.gdf_crs is not None:
+                try:
+                    crs_obj = pyproj.CRS(self.gdf_crs)
+                    epsg = crs_obj.to_epsg()
+                    if epsg is not None:
+                        source_srid = int(epsg)
+                    else:
+                        # try to parse common 'EPSG:xxxx' string
+                        s = str(self.gdf_crs)
+                        if 'EPSG' in s:
+                            import re
+                            m = re.search(r"(\d{4,6})", s)
+                            if m:
+                                source_srid = int(m.group(1))
+                except Exception:
+                    source_srid = 4326
+        except Exception:
+            source_srid = 4326
+
+        # Build SQL to ensure polygon stored in 4326 in DB
+        if source_srid != 4326:
+            sql = ("INSERT INTO fields (field_name, polygon)"
+                   " VALUES (%s, st_transform(st_geomfromtext(%s, %s), 4326))")
+            params = (name, self.current_polygon, source_srid)
+        else:
+            sql = ("INSERT INTO fields (field_name, polygon)"
+                   " VALUES (%s, st_geomfromtext(%s, 4326))")
+            params = (name, self.current_polygon)
+        try:
+            res = self.parent.db.execute_sql(sql, params=params, return_failure=True)
         except Exception as e:
             if self.parent.test_mode:
                 return False

@@ -1,5 +1,5 @@
 __author__ = 'Axel Horteborn'
-from qgis.core import QgsTask
+from qgis.core import QgsTask, QgsMessageLog, Qgis
 from qgis.PyQt.QtCore import Qt, QDate
 import traceback
 from qgis.PyQt.QtWidgets import (QTableWidgetItem, QFileDialog, QAbstractItemView,
@@ -75,6 +75,41 @@ class InputShpHandler:
         temp_var = self.file_name_with_path.split("/")
         self.tbl_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = path[0:path.index(self.tbl_name)]
+        # If a .prj file with the same base name exists, read it and populate EPSG
+        prj_path = str(self.file_name_with_path)[:-4] + '.prj'
+        try:
+            if os.path.exists(prj_path):
+                with open(prj_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    prj_wkt = f.read()
+                srs = osr.SpatialReference()
+                try:
+                    srs.ImportFromWkt(prj_wkt)
+                    # Prefer PROJCS authority code (projected CRS) then fallback
+                    epsg = None
+                    try:
+                        epsg = srs.GetAuthorityCode('PROJCS')
+                    except Exception:
+                        epsg = None
+                    if not epsg:
+                        try:
+                            epsg = srs.GetAuthorityCode(None)
+                        except Exception:
+                            epsg = None
+                    if not epsg:
+                        try:
+                            epsg = srs.GetAttrValue("AUTHORITY", 1)
+                        except Exception:
+                            epsg = None
+                    if epsg:
+                        try:
+                            self.ISD.EPSG.setText(str(int(epsg)))
+                        except Exception:
+                            self.ISD.EPSG.setText(str(epsg))
+                except Exception:
+                    pass
+        except Exception:
+            # ignore PRJ parsing errors and continue
+            pass
         self.get_columns_names()
 
     def get_columns_names(self):
@@ -121,10 +156,21 @@ class InputShpHandler:
         for i, row in enumerate(self.col_names):
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
-            item2 = QTableWidgetItem(str(second_row[i]))
+            # Safely obtain a sample value for this column; fall back to other rows or empty
+            try:
+                if 'second_row' in locals() and i < len(second_row):
+                    sample_val = second_row[i]
+                elif len(self.sample_data) > 0 and i < len(self.sample_data[0]):
+                    sample_val = self.sample_data[0][i]
+                else:
+                    sample_val = ''
+            except Exception:
+                sample_val = ''
+            item2 = QTableWidgetItem(str(sample_val))
             item2.setFlags(xor(item2.flags(), _item_flag('ItemIsEditable')))
             self.ISD.TWColumnNames.setItem(i, 0, item1)
             self.ISD.TWColumnNames.setItem(i, 1, item2)
+        # store last index (used elsewhere as inclusive last index)
         self.column_count = i
         del gk_lyr, ogr_file
 
@@ -186,10 +232,29 @@ class InputShpHandler:
             columns_to_add.append(self.ISD.TWColumnNames.item(i, 0).text())
         ogr_file = ogr.Open(self.file_name_with_path, 1)
         lyr = ogr_file.GetLayer()
-        epsg = lyr.GetSpatialRef().GetAttrValue("AUTHORITY", 1)
-        if self.ISD.EPSG.text() != epsg:
+        # Robustly determine the EPSG code from the layer's spatial ref
+        epsg = ''
+        try:
+            srs = lyr.GetSpatialRef()
+            try:
+                epsg = srs.GetAuthorityCode('PROJCS') or ''
+            except Exception:
+                epsg = ''
+            if not epsg:
+                try:
+                    epsg = srs.GetAuthorityCode(None) or ''
+                except Exception:
+                    epsg = ''
+            if not epsg:
+                try:
+                    epsg = srs.GetAttrValue('AUTHORITY', 1) or ''
+                except Exception:
+                    epsg = ''
+        except Exception:
+            epsg = ''
+        if self.ISD.EPSG.text() and self.ISD.EPSG.text() != str(epsg):
             q_info(None, self.tr("Error:"),
-                   self.tr('The projection is probably wrong, please change from 4326'))
+                   self.tr(f'Projection mismatch: detected EPSG {epsg}, please set the EPSG field accordingly'))
             return
         self.ISD.pButInsertDataIntoDB.setEnabled(True)
         self.ISD.ComBDate.setEnabled(True)
@@ -266,22 +331,29 @@ class InputShpHandler:
                     polygon geometry(POLYGON, 4326),
                     """
                     lat_lon_inserted = True
-                if 'date_row' in date_dict.keys() and col_name == date_dict['date_row']:
-                    col_defs += "Date_ TIMESTAMP, "
+                # Normalize column name to safe lowercase identifier
+                only_char = check_text(col_name)[:10]
+                if 'date_row' in date_dict.keys() and check_text(col_name) == date_dict['date_row']:
+                    col_defs += "date_ TIMESTAMP, "
                     continue
                 elif 'simple_date' in date_dict.keys() and not date_inserted:
-                    col_defs += "Date_ TIMESTAMP, "
+                    col_defs += "date_ TIMESTAMP, "
                     date_inserted = True
                 if self.col_types[i] == 0:
-                    col_defs += f"{str(col_name)[:10]} INT, "
+                    col_defs += f"{only_char} INT, "
                 if self.col_types[i] == 1:
-                    col_defs += f"{str(col_name)[:10]} REAL, "
+                    col_defs += f"{only_char} REAL, "
                 if self.col_types[i] == 2:
-                    col_defs += f"{str(col_name)[:10]} TEXT, "
+                    col_defs += f"{only_char} TEXT, "
+            # If simple_date was requested but not inserted (e.g., no columns looped), ensure Date_ exists
+            if 'simple_date' in date_dict.keys() and not date_inserted:
+                col_defs += "date_ TIMESTAMP, "
+                date_inserted = True
             col_defs = col_defs[:-2]
             sql = pgsql.SQL("CREATE TABLE {schema}.temp_table ({cols})").format(
                 schema=pgsql.Identifier(self.schema),
                 cols=pgsql.SQL(col_defs))
+            # CREATE TABLE will be executed
             self.db.create_table(sql, f'{self.schema}.temp_table')
             return [True]
         except Exception as e:
@@ -319,7 +391,8 @@ class InputShpHandler:
                     data_dict[geom_type] = []
                     items = feature.items()
                     for key in items.keys():
-                        data_dict[key[:10]] = []
+                        key_name = check_text(key)[:10]
+                        data_dict[key_name] = []
                     data_dict['field_row_id'] = []
                     first = False
                 if geom.GetGeometryType() == 6:
@@ -334,11 +407,12 @@ class InputShpHandler:
                 items = feature.items()
 
                 for key in items.keys():
+                    key_name = check_text(key)[:10]
                     if isinstance(items[key], str):
                         col = "'" + items[key] + "'"
                     else:
                         col = items[key]
-                    data_dict[key[:10]].append(col)
+                    data_dict[key_name].append(col)
                 count += 1
                 data_dict['field_row_id'].append(count)
             del ogr_file
@@ -366,9 +440,9 @@ class InputShpHandler:
             for key in self.col_names:
                 cols.append(key.encode('ascii').decode('utf-8'))
             if 'simple_date' in date_dict.keys():
-                data_dict['Date_'] = []
+                data_dict['date_'] = []
                 for i in range(len(data_dict['field_row_id'])):
-                    data_dict['Date_'].append("'" + str(date_dict['simple_date']) + "'")
+                    data_dict['date_'].append("'" + str(date_dict['simple_date']) + "'")
             key_list = list(data_dict.keys())
             col_ids = pgsql.SQL(", ").join(
                 pgsql.Identifier(str(e).replace("'", "")) for e in key_list)
@@ -380,28 +454,67 @@ class InputShpHandler:
                 value = [data_dict[key][i] for key in key_list]
                 values_parts.append(f"({', '.join(str(e) for e in value)})")
             sql = sql_prefix + pgsql.SQL(", ".join(values_parts))
+            # INSERT will be executed
             #print(sql)
             self.db.execute_sql(sql)
             if self.ISD.EPSG.text() != '4326':
                 query = pgsql.SQL("UPDATE {schema}.temp_table SET pos = st_transform(pos, 4326)").format(
                     schema=pgsql.Identifier(self.schema))
                 self.db.execute_sql(query)
+            # temp_table and field geometry inspection skipped in normal operation
             if task != 'debug':
                 task.setProgress(50)
             if data_as_points:
                 geom_col = 'pos'
             else:
                 geom_col = 'polygon'
-            query = pgsql.SQL(
-                "SELECT * INTO {schema}.{tbl}"
-                " FROM {schema}.temp_table"
-                " WHERE st_intersects({geom_col},"
-                " (SELECT polygon FROM fields WHERE field_name = %s))"
-            ).format(
-                schema=pgsql.Identifier(self.schema),
-                tbl=pgsql.Identifier(self.tbl_name),
-                geom_col=pgsql.Identifier(geom_col))
-            self.db.execute_sql(query, params=(self.field,))
+            # Determine field polygon SRID so we can compare geometries in the same CRS
+            try:
+                fs_q = pgsql.SQL("SELECT ST_SRID(polygon) FROM fields WHERE field_name = %s")
+                fs_res = self.db.execute_and_return(fs_q, params=(self.field,), return_failure=True)
+                field_srid = None
+                if isinstance(fs_res, list) and fs_res[0] is True:
+                    data = fs_res[1]
+                else:
+                    data = fs_res
+                if data and len(data) > 0 and len(data[0]) > 0:
+                    try:
+                        field_srid = int(data[0][0])
+                    except Exception:
+                        field_srid = None
+            except Exception:
+                field_srid = None
+
+            # detected field_srid logged during development
+            if field_srid and field_srid != 4326:
+                # transform temp_table geometry into field_srid for intersection test
+                intersects_sql = pgsql.SQL(
+                    "SELECT * INTO {schema}.{tbl} FROM {schema}.temp_table WHERE st_intersects(st_transform({geom_col}, %s), (SELECT polygon FROM fields WHERE field_name = %s))"
+                ).format(schema=pgsql.Identifier(self.schema), tbl=pgsql.Identifier(self.tbl_name), geom_col=pgsql.Identifier(geom_col))
+                params = (field_srid, self.field)
+            else:
+                intersects_sql = pgsql.SQL(
+                    "SELECT * INTO {schema}.{tbl} FROM {schema}.temp_table WHERE st_intersects({geom_col}, (SELECT polygon FROM fields WHERE field_name = %s))"
+                ).format(schema=pgsql.Identifier(self.schema), tbl=pgsql.Identifier(self.tbl_name), geom_col=pgsql.Identifier(geom_col))
+                params = (self.field,)
+
+            # Ensure destination table does not already exist to avoid conflicts
+            try:
+                drop_query = pgsql.SQL("DROP TABLE IF EXISTS {schema}.{tbl}").format(
+                    schema=pgsql.Identifier(self.schema), tbl=pgsql.Identifier(self.tbl_name))
+                self.db.execute_sql(drop_query)
+            except Exception:
+                pass
+
+            try:
+                self.db.execute_sql(intersects_sql, params=params)
+            except Exception as e:
+                # Log exception to QGIS message log for visibility
+                try:
+                    from qgis.core import QgsMessageLog, Qgis
+                    QgsMessageLog.logMessage(f"execute_sql for intersects failed: {e}", 'GeoDataFarm', Qgis.Warning)
+                except Exception:
+                    pass
             if task != 'debug':
                 task.setProgress(70)
             if self.schema != 'harvest' and data_as_points:
