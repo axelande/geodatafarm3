@@ -40,16 +40,16 @@ QPushButton:pressed {
   background-color: #1e4a6e;
 }
 QPushButton:disabled {
-  background-color: #b0b0b0;
-  color: #e0e0e0;
+  background-color: palette(mid);
+  color: palette(midlight);
 }
 
 /* === Inputs === */
 QLineEdit, QPlainTextEdit, QTextEdit {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
 QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
   border: 1px solid #3574b0;
@@ -57,10 +57,10 @@ QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
 
 /* === Combo boxes === */
 QComboBox {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
 QComboBox:hover {
   border: 1px solid #3574b0;
@@ -70,15 +70,15 @@ QComboBox::drop-down {
   width: 20px;
 }
 QComboBox QAbstractItemView {
-  color: #000000;
-  background: #ffffff;
-  selection-color: #000000;
-  selection-background-color: #e0e0e0;
+  color: palette(text);
+  background: palette(base);
+  selection-color: palette(highlighted-text);
+  selection-background-color: palette(highlight);
 }
 
 /* === Group boxes === */
 QGroupBox {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   margin-top: 8px;
   padding-top: 8px;
@@ -98,15 +98,15 @@ QLabel {
 
 /* === Table === */
 QTableWidget, QTableView {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
-  gridline-color: #e0e0e0;
+  gridline-color: palette(midlight);
 }
 QHeaderView::section {
-  background-color: #f0f0f0;
+  background-color: palette(window);
   border: none;
-  border-bottom: 1px solid #c0c0c0;
-  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid palette(mid);
+  border-right: 1px solid palette(midlight);
   padding: 3px 6px;
   font-weight: bold;
   font-size: 8pt;
@@ -114,10 +114,10 @@ QHeaderView::section {
 
 /* === Spin boxes === */
 QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
    </string>
   </property>
@@ -477,7 +477,7 @@ QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
         <property name="styleSheet">
          <string notr="true">QPushButton { background-color: #2e7d32; font-weight: bold; padding: 6px 16px; }
 QPushButton:hover { background-color: #1b5e20; }
-QPushButton:disabled { background-color: #b0b0b0; color: #e0e0e0; font-weight: bold; }</string>
+QPushButton:disabled { background-color: palette(mid); color: palette(midlight); font-weight: bold; }</string>
         </property>
        </widget>
       </item>

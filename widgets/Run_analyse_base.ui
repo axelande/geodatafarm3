@@ -31,13 +31,13 @@
 
 /* === Tab bars === */
 QTabWidget::pane {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
-  background: #ffffff;
+  background: palette(base);
 }
 QTabBar::tab {
-  background: #f0f0f0;
-  border: 1px solid #c0c0c0;
+  background: palette(window);
+  border: 1px solid palette(mid);
   border-bottom: none;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -46,12 +46,12 @@ QTabBar::tab {
   font-size: 8pt;
 }
 QTabBar::tab:selected {
-  background: #ffffff;
+  background: palette(base);
   border-bottom: 2px solid #3574b0;
   color: #3574b0;
 }
 QTabBar::tab:hover:!selected {
-  background: #e4e4e4;
+  background: palette(midlight);
 }
 
 /* === Buttons === */
@@ -70,16 +70,16 @@ QPushButton:pressed {
   background-color: #1e4a6e;
 }
 QPushButton:disabled {
-  background-color: #b0b0b0;
-  color: #e0e0e0;
+  background-color: palette(mid);
+  color: palette(midlight);
 }
 
 /* === Inputs === */
 QLineEdit, QPlainTextEdit, QTextEdit {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
 QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
   border: 1px solid #3574b0;
@@ -87,10 +87,10 @@ QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
 
 /* === Combo boxes === */
 QComboBox {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
 QComboBox:hover {
   border: 1px solid #3574b0;
@@ -100,22 +100,22 @@ QComboBox::drop-down {
   width: 20px;
 }
 QComboBox QAbstractItemView {
-  color: #000000;
-  background: #ffffff;
-  selection-color: #000000;
-  selection-background-color: #e0e0e0;
+  color: palette(text);
+  background: palette(base);
+  selection-color: palette(highlighted-text);
+  selection-background-color: palette(highlight);
 }
 
 /* === Lists === */
 QListWidget {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
-  background: #ffffff;
+  background: palette(base);
 }
 
 /* === Group boxes === */
 QGroupBox {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   margin-top: 8px;
   padding-top: 8px;
@@ -141,21 +141,21 @@ QLabel {
 
 /* === Calendar === */
 QCalendarWidget {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
 }
 
 /* === Table === */
 QTableWidget, QTableView {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
-  gridline-color: #e0e0e0;
+  gridline-color: palette(midlight);
 }
 QHeaderView::section {
-  background-color: #f0f0f0;
+  background-color: palette(window);
   border: none;
-  border-bottom: 1px solid #c0c0c0;
-  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid palette(mid);
+  border-right: 1px solid palette(midlight);
   padding: 3px 6px;
   font-weight: bold;
   font-size: 8pt;
@@ -163,10 +163,10 @@ QHeaderView::section {
 
 /* === Spin boxes === */
 QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
-  border: 1px solid #c0c0c0;
+  border: 1px solid palette(mid);
   border-radius: 3px;
   padding: 2px 4px;
-  background: #ffffff;
+  background: palette(base);
 }
 QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
   border: 1px solid #3574b0;
