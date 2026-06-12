@@ -41,7 +41,7 @@ else:
 from qgis.core import QgsApplication, QgsMessageLog, Qgis
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem, QScrollArea, QFrame
 from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 
 # Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
@@ -72,6 +72,11 @@ from .import_data.save_harrowing_data import SaveHarrowing
 from .import_data.save_soil_data import SaveSoil
 from .import_data.convert_harvest_to_area import ConvertToAreas
 from .import_data.satellite_data import SatelliteData
+from .import_data.handle_text_data import InputTextHandler
+from .import_data.handle_iso11783 import Iso11783
+from .import_data.handle_input_shp_data import InputShpHandler
+from .import_data.handle_raster import ImportRaster
+from .widgets.add_data_form import AddDataForm
 from .support_scripts.__init__ import isint, TR
 from .support_scripts.qt_data import _check_state, _item_flag
 from .support_scripts.add_field import AddField
@@ -396,10 +401,6 @@ class GeoDataFarm:
         irr = IrrigationHandler(self)
         irr.run()
 
-    def create_guide(self: Self) -> None:
-        """Opens the create guide file widget"""
-        self.guide = CreateGuideFile(self)
-        self.guide.run()
 
     def get_database_connection(self: Self) -> bool:
         """Connects to the database and create the db object"""
@@ -504,6 +505,18 @@ class GeoDataFarm:
         are added here do not forget to add them in create_new_farms function
         that resets the database connection"""
         if self.populate is None:
+            # Config-driven shared Add-data form. The 'Add data' tab is declared
+            # in GeoDataFarm_dockwidget_base.ui (as the empty 'layoutAddData'
+            # placeholder); here we just drop the form widget into it. Created
+            # before Populate so its field/crop combos get filled too.
+            if getattr(self, 'add_data_form', None) is None:
+                self.add_data_form = AddDataForm()
+                self.add_data_form.save_callback = self.save_add_data
+                self.add_data_form.import_callback = self.import_add_data
+                self.add_data_form.picker_action_callback = self.handle_add_data_action
+            self.dock_widget.add_data_form = self.add_data_form
+            if self.dock_widget.layoutAddData.count() == 0:
+                self.dock_widget.layoutAddData.addWidget(self.add_data_form)
             self.populate = Populate(self)
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
             self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
@@ -540,12 +553,162 @@ class GeoDataFarm:
             self.dock_widget.PBRescaleValues.clicked.connect(self.rescale_values)
             self.dock_widget.PBReloadLayer.clicked.connect(self.reload_layer)
             self.dock_widget.PBEditTables.clicked.connect(self.tbl_mgmt)
-            self.dock_widget.PBCreateGuide.clicked.connect(self.create_guide)
+            # Embed the guide-file wizard as the 'Guide file' sidebar tab.
+            if getattr(self, 'guide', None) is None:
+                self.guide = CreateGuideFile(self)
+                self.guide.setup()
+            if self.dock_widget.layoutGuideFile.count() == 0:
+                _gf_scroll = QScrollArea()
+                _gf_scroll.setWidgetResizable(True)
+                _gf_scroll.setFrameShape(
+                    QFrame.Shape.NoFrame if hasattr(QFrame, 'Shape') else QFrame.NoFrame)
+                _gf_scroll.setWidget(self.guide.CGF)
+                self.dock_widget.layoutGuideFile.addWidget(_gf_scroll)
             self.dock_widget.PBFixRows.clicked.connect(self.fix_rows)
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
             self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
+
+    def save_add_data(self):
+        """Generic, config-driven manual save for the shared Add-data form.
+
+        Reads the open operation's config + the form values (keyed by DB
+        column) and builds the same INSERT the old per-operation handlers did.
+        """
+        form = self.add_data_form
+        cfg = form.config
+        if cfg is None:
+            return
+        if cfg.get('custom_save') == 'other':
+            self._save_other_from_form()
+            return
+        if cfg.get('special'):
+            QMessageBox.information(None, self.tr('Not available yet'), self.tr(
+                'This operation is not yet available in the new Add data form.'))
+            return
+        v = form.values()
+        if not v['field'] or v['field'] == self.tr('--- Select field ---'):
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('In order to save the data you must select a field'))
+            return
+        if cfg['needs_crop'] and (not v.get('crop') or v['crop'] == self.tr('--- Select crop ---')):
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('In order to save the data you must select a crop'))
+            return
+        cols = (['field'] + (['crop'] if cfg['needs_crop'] else []) + ['date_']
+                + [c for _, c, _ in cfg['fields']] + ['other'])
+        params = ([v['field']] + ([v['crop']] if cfg['needs_crop'] else []) + [v['date']]
+                  + [v[c] for _, c, _ in cfg['fields']] + [v['other']])
+        placeholders = ['%s'] * len(params)
+        if cfg.get('table_none'):
+            cols.append('table_')
+            placeholders.append("'None'")
+        sql = "INSERT INTO {} ({}) VALUES ({})".format(
+            cfg['table'], ', '.join(cols), ', '.join(placeholders))
+        try:
+            self.db.execute_sql(sql, params=tuple(params))
+            QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+            form.clear()
+        except Exception as e:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('Following error occurred: {}').format(e))
+
+    def import_add_data(self, key):
+        """Generic, config-driven file import for the shared Add-data form.
+
+        Opens the same importer dialog the old per-operation handlers used,
+        dispatched on the file type's stable ``key`` (from the clicked button).
+        """
+        form = self.add_data_form
+        cfg = form.config
+        if cfg is None or cfg.get('special'):
+            return
+        if key == 'db':
+            QMessageBox.information(None, "Error:", self.tr(
+                'Support for databasefiles are not implemented 100% yet'))
+            return
+        columns = [self.tr(c) for c in cfg.get('import_columns', [])]
+        schema = cfg.get('schema')
+        if key == 'text':
+            InputTextHandler(self, schema, columns=columns).run()
+        elif key == 'iso':
+            Iso11783(self, schema).run()
+        elif key == 'shp':
+            InputShpHandler(self, cfg.get('shp_schema', schema), columns).run()
+        elif key == 'raster':
+            ImportRaster(self, form.dateWhen, form.cbField, schema).run()
+
+    def handle_add_data_action(self, op):
+        """Card-click actions for operations without a manual form."""
+        if op == 'irrigation':
+            self.import_irrigation()
+
+    def _save_other_from_form(self):
+        """Custom save for the 'Other' operation (dynamic per-operation table),
+        reading the shared Add-data form. Ports the old SaveOther logic."""
+        from psycopg2 import sql as pgsql
+        from .support_scripts.__init__ import check_text
+        form = self.add_data_form
+        v = form.values()
+        field = v['field']
+        if not field or field == self.tr('--- Select field ---'):
+            QMessageBox.information(None, self.tr('Error:'),
+                                    self.tr('In order to save the data you must select a field'))
+            return
+        crop = v.get('crop')
+        if crop == self.tr('--- Select crop ---'):
+            crop = None
+        date_ = v['date']
+        select_parts = [pgsql.SQL("%s AS field"), pgsql.SQL("%s AS crop"),
+                        pgsql.SQL("%s AS date_")]
+        params = [field, crop, date_]
+        for opt_key, unit_key, val_key in [('opt1', 'unit1', 'val1'),
+                                           ('opt2', 'unit2', 'val2'),
+                                           ('opt3', 'unit3', 'val3'),
+                                           ('opt4', 'unit4', 'val4')]:
+            option = check_text(v.get(opt_key) or '')
+            if option == '':
+                continue
+            unit = check_text(v.get(unit_key) or '')
+            if unit == '':
+                unit = 'Null'
+            value = check_text(v.get(val_key) or '')
+            if value == '':
+                continue
+            select_parts.append(pgsql.SQL("%s AS {alias}").format(
+                alias=pgsql.Identifier(f"{option}_{unit}")))
+            params.append(value)
+        select_parts.append(pgsql.SQL("%s AS other"))
+        params.append(v.get('other'))
+        name = v.get('other_name') or ''
+        tbl = f"{check_text(name)}_{check_text(date_)}_{field}"
+        exists = self.db.execute_and_return(
+            "SELECT EXISTS ("
+            " SELECT 1 FROM information_schema.tables"
+            " WHERE table_schema = 'other' AND table_name = %s)",
+            params=(tbl,))[0][0]
+        if exists:
+            QMessageBox.information(None, self.tr('Success'), self.tr(
+                'That operation, at that field on that day is already stored'))
+            return
+        query = pgsql.SQL("SELECT {cols} INTO other.{tbl}").format(
+            cols=pgsql.SQL(", ").join(select_parts), tbl=pgsql.Identifier(tbl))
+        try:
+            self.db.execute_sql(query, params=tuple(params))
+            QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+            form.clear()
+        except Exception as e:
+            QMessageBox.information(None, self.tr('Error'),
+                                    self.tr('Following error occurred: {}').format(e))
+
+    def create_guide(self: Self) -> None:
+        """(Re)create and wire the guide-file controller. The wizard is embedded
+        as the 'Guide file' sidebar tab (set up in set_buttons); this is kept
+        for API/test compatibility and refreshes self.guide with the current
+        field list."""
+        self.guide = CreateGuideFile(self)
+        self.guide.setup()
 
     def run(self: Self, test_mode: bool=False) -> None:
         """Run method that loads and starts the plugin"""

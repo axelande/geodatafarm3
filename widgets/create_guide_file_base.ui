@@ -119,9 +119,46 @@ QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit {
   padding: 2px 4px;
   background: palette(base);
 }
+
+/* === Format sub-tabs (Shapefile / ISO-XML) — light green, a touch ===
+   === lighter than the green navigation sidebar (the main selector). === */
+QTabWidget#tabFormat::pane {
+  border: 1px solid #b6d4b8;
+  border-radius: 3px;
+  background: palette(base);
+}
+QTabWidget#tabFormat QTabBar::tab {
+  background: #e3f0e4;
+  color: #2f5233;
+  border: 1px solid #b6d4b8;
+  border-bottom: none;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 5px 14px;
+  margin-right: 2px;
+  font-weight: bold;
+}
+QTabWidget#tabFormat QTabBar::tab:selected {
+  background: #bcdcbe;
+  color: #1e3a21;
+  border-bottom: 2px solid #4a7c4e;
+}
+QTabWidget#tabFormat QTabBar::tab:hover:!selected {
+  background: #d2e7d4;
+}
    </string>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
+   <item>
+    <widget class="QTabWidget" name="tabFormat">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabShp">
+      <attribute name="title">
+       <string>Shapefile</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="shpLayout">
    <!-- ============================================ -->
    <!-- Step 1: Select Data Source                    -->
    <!-- ============================================ -->
@@ -482,6 +519,345 @@ QPushButton:disabled { background-color: palette(mid); color: palette(midlight);
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+      </layout>
+     </widget>
+     <!-- ============================================ -->
+     <!-- ISO-XML tab                                  -->
+     <!-- ============================================ -->
+     <widget class="QWidget" name="tabIso">
+      <attribute name="title">
+       <string>ISO-XML</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="isoLayout">
+       <!-- ISO Step 1: Select data source and field -->
+       <item>
+        <widget class="QGroupBox" name="groupIsoStep1">
+         <property name="title">
+          <string>Step 1: Select data source and field</string>
+         </property>
+         <layout class="QHBoxLayout" name="isoStep1Layout">
+          <item>
+           <widget class="QLabel" name="labelIso_8">
+            <property name="text">
+             <string>Data source:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="IsoCBDataSource">
+            <property name="minimumSize">
+             <size>
+              <width>180</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>-- Select base file --</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelIso_field">
+            <property name="text">
+             <string>Field:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="IsoCBFields">
+            <property name="minimumSize">
+             <size>
+              <width>180</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>-- Select field --</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <spacer name="isoStep1Spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="IsoPBHelp">
+            <property name="text">
+             <string>Help</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <!-- ISO Step 2: Select attributes and build equation -->
+       <item>
+        <widget class="QGroupBox" name="groupIsoStep2">
+         <property name="title">
+          <string>Step 2: Select attributes and build equation</string>
+         </property>
+         <layout class="QHBoxLayout" name="isoStep2OuterLayout">
+          <item>
+           <layout class="QVBoxLayout" name="isoStep2LeftLayout">
+            <item>
+             <widget class="QLabel" name="labelIso_9">
+              <property name="text">
+               <string>Available attributes (click to add):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="IsoTWColumnNames">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>200</height>
+               </size>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::AnyKeyPressed</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="isoStep2MidLayout">
+            <item>
+             <widget class="QLabel" name="labelIso_selected">
+              <property name="text">
+               <string>Selected attributes:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="IsoTWSelected">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>200</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="IsoPBRemParam">
+              <property name="text">
+               <string>Remove selected</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="isoStep2RightLayout">
+            <item>
+             <widget class="QLabel" name="labelIso_7">
+              <property name="text">
+               <string>Equation (use [0], [1] etc. for attributes):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPlainTextEdit" name="IsoTEEquation">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="plainText">
+               <string>100 +  [0] *2 </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="IsoPBUpdate">
+              <property name="text">
+               <string>Calculate min/max</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="IsoLMaxVal">
+              <property name="text">
+               <string>Max value: Not selected</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="IsoLMinVal">
+              <property name="text">
+               <string>Min value: Not selected</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="isoStep2Spacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <!-- ISO Step 3: Output settings -->
+       <item>
+        <widget class="QGroupBox" name="groupIsoStep3">
+         <property name="title">
+          <string>Step 3: Configure ISO-XML output and create file</string>
+         </property>
+         <layout class="QGridLayout" name="isoGridLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelIso_cell">
+            <property name="text">
+             <string>Cell size (m):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="IsoLECellSize">
+            <property name="text">
+             <string>25</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="labelIso_ddi">
+            <property name="text">
+             <string>Product:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="IsoCBProduct">
+            <property name="toolTip">
+             <string>Products are managed in the Product tab. The list refreshes whenever you open it.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="labelIso_scale">
+            <property name="text">
+             <string>Value scale:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QLineEdit" name="IsoLEValueScale">
+            <property name="toolTip">
+             <string>The computed rate is multiplied by this factor and stored as an integer (match your terminal's expected resolution).</string>
+            </property>
+            <property name="text">
+             <string>1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelIso_task">
+            <property name="text">
+             <string>Task name:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="IsoLETaskName">
+            <property name="text">
+             <string>Guide task</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="labelIso_out">
+            <property name="text">
+             <string>Output:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="IsoPBSelectOutput">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Select folder...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4" colspan="2">
+           <widget class="QLabel" name="IsoLOutputPath">
+            <property name="text">
+             <string>No path selected</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="6">
+           <widget class="QLabel" name="IsoLDDI">
+            <property name="text">
+             <string>DDI: (select a product or data source)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="6">
+           <widget class="QLabel" name="labelIso_note">
+            <property name="text">
+             <string>Note: ISO-XML grids are always axis-aligned and written in WGS84 (EPSG:4326); rotation and custom CRS are not available for this format. The DDI is taken from the selected product (Product tab); if the product has none, it is suggested from the data source.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="4" colspan="2">
+           <widget class="QPushButton" name="IsoPBCreateFile">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Create ISO-XML</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton { background-color: #2e7d32; font-weight: bold; padding: 6px 16px; }
+QPushButton:hover { background-color: #1b5e20; }
+QPushButton:disabled { background-color: palette(mid); color: palette(midlight); font-weight: bold; }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

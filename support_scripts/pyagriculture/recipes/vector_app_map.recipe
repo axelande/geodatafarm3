@@ -1,0 +1,34 @@
+<ISO11783_TaskData>
+    <CTR A="" B="" />
+    <FRM A="" B="" I="" />
+    <PFD A="" C="" D="" F="" />
+    <TSK A="" B="" E="" G="" H="" I="" J="">
+        <TZN A="" B="">
+            <PDV A="" B="" />
+        </TZN>
+        <TZN A="" B="">
+            <PDV A="" B="" />
+            <PLN A="" B="">
+                <LSG A="">
+                    <PNT A="" C="" D="" />
+                </LSG>
+            </PLN>
+        </TZN>
+        <TZN A="" B="">
+            <PDV A="" B="" />
+            <PLN A="" B="">
+                <LSG A="">
+                    <PNT A="" C="" D="" />
+                </LSG>
+            </PLN>
+        </TZN>
+        <TZN A="" B="">
+            <PDV A="" B="" />
+            <PLN A="" B="">
+                <LSG A="">
+                    <PNT A="" C="" D="" />
+                </LSG>
+            </PLN>
+        </TZN>
+    </TSK>
+</ISO11783_TaskData>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddDataForm</class>
+ <widget class="QWidget" name="AddDataForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>820</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Add data</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel[role="h1"] { font-size: 20px; font-weight: 700; }
+QLabel[role="h2"] { font-size: 15px; font-weight: 600; }
+QLabel[role="muted"] { color: palette(mid); }
+QPushButton[card="true"] { text-align: left; padding: 14px; font-size: 14px; font-weight: 600; }
+QPushButton[primary="true"] { font-weight: 600; padding: 8px 18px; }
+QPushButton[link="true"] { border: none; background: transparent; text-align: left; padding: 4px 0; }
+QPushButton[seg="true"] { padding: 7px 18px; min-width: 120px; }
+QPushButton[seg="true"]:checked { font-weight: 600; }
+QFrame[role="card"] { border: 1px solid palette(mid); border-radius: 10px; }
+QFrame[role="hline"] { color: palette(mid); }</string>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QStackedWidget" name="addStack">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="addPicker">
+      <layout class="QVBoxLayout" name="pickerLayout">
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="topMargin">
+        <number>18</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>18</number>
+       </property>
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="pickerTitle">
+         <property name="role" stdset="0">
+          <string>h1</string>
+         </property>
+         <property name="text">
+          <string>Add data</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="pickerIntro">
+         <property name="role" stdset="0">
+          <string>muted</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Pick what you did in the field. One simple form, whether you import a file or type it in.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="grpCrop">
+         <property name="role" stdset="0">
+          <string>h2</string>
+         </property>
+         <property name="text">
+          <string>Crop operations</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridCrop">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="opPlanting">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🌱   Planting</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="opFertilizing">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🧪   Fertilizing</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="opSpraying">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>💧   Spraying</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="opHarvest">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🌾   Harvest</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="grpField">
+         <property name="role" stdset="0">
+          <string>h2</string>
+         </property>
+         <property name="text">
+          <string>Field work</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridField">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="opPlowing">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🚜   Plowing</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="opHarrowing">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🌿   Harrowing</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="grpEnv">
+         <property name="role" stdset="0">
+          <string>h2</string>
+         </property>
+         <property name="text">
+          <string>Environment</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridEnv">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="opSoil">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🪨   Soil sample</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="opIrrigation">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>💦   Irrigation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="opOther">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>➕   Other</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="pickerSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="formPage">
+      <layout class="QVBoxLayout" name="formLayout">
+       <property name="leftMargin"><number>20</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>20</number></property><property name="bottomMargin"><number>18</number></property><property name="spacing"><number>10</number></property>
+       <item><widget class="QPushButton" name="backBtn"><property name="link" stdset="0"><bool>true</bool></property><property name="sizePolicy"><sizepolicy hsizetype="Maximum" vsizetype="Fixed"><horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text"><string>&#8592;  Choose another operation</string></property></widget></item>
+       <item><widget class="QLabel" name="formTitle"><property name="role" stdset="0"><string>h1</string></property><property name="text"><string>Planting</string></property></widget></item>
+       <item>
+        <widget class="QScrollArea" name="formScroll"><property name="widgetResizable"><bool>true</bool></property><property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+         <widget class="QWidget" name="formScrollContents"><layout class="QVBoxLayout" name="formScrollLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>6</number></property><property name="bottomMargin"><number>0</number></property>
+          <item>
+           <widget class="QFrame" name="formCard"><property name="role" stdset="0"><string>card</string></property>
+            <layout class="QVBoxLayout" name="cardLayout"><property name="leftMargin"><number>18</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>18</number></property><property name="bottomMargin"><number>18</number></property><property name="spacing"><number>12</number></property>
+             <item><widget class="QLabel" name="howLabel"><property name="role" stdset="0"><string>h2</string></property><property name="text"><string>How do you want to add this data?</string></property></widget></item>
+             <item><layout class="QHBoxLayout" name="segRow"><property name="spacing"><number>0</number></property>
+              <item><widget class="QPushButton" name="segFile"><property name="seg" stdset="0"><bool>true</bool></property><property name="checkable"><bool>true</bool></property><property name="checked"><bool>true</bool></property><property name="text"><string>Import a file</string></property></widget></item>
+              <item><widget class="QPushButton" name="segManual"><property name="seg" stdset="0"><bool>true</bool></property><property name="checkable"><bool>true</bool></property><property name="text"><string>Enter manually</string></property></widget></item>
+              <item><spacer name="segSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+             </layout></item>
+             <item>
+              <widget class="QStackedWidget" name="inputStack"><property name="currentIndex"><number>0</number></property>
+               <widget class="QWidget" name="filePanel">
+                <layout class="QVBoxLayout" name="filePanelLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>4</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property>
+                 <item><widget class="QWidget" name="fileButtonsHost" native="true"><layout class="QVBoxLayout" name="fileButtonsLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property><property name="spacing"><number>6</number></property></layout></widget></item>
+                 <item><widget class="QLabel" name="fileHint"><property name="role" stdset="0"><string>muted</string></property><property name="wordWrap"><bool>true</bool></property><property name="text"><string>Pick the format your machine or app exported. The columns are read automatically.</string></property></widget></item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="manualPanel">
+                <layout class="QVBoxLayout" name="manualPanelLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>4</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property><property name="spacing"><number>12</number></property>
+                 <item>
+                  <layout class="QFormLayout" name="ctxForm"><property name="labelAlignment"><set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set></property>
+                   <item row="0" column="0"><widget class="QLabel" name="lblField"><property name="text"><string>Field:</string></property></widget></item>
+                   <item row="0" column="1"><widget class="QComboBox" name="cbField"/></item>
+                   <item row="1" column="0"><widget class="QLabel" name="lblCrop"><property name="text"><string>Crop:</string></property></widget></item>
+                   <item row="1" column="1"><widget class="QComboBox" name="cbCrop"/></item>
+                   <item row="2" column="0"><widget class="QLabel" name="lblWhen"><property name="text"><string>When:</string></property></widget></item>
+                   <item row="2" column="1"><widget class="QDateEdit" name="dateWhen"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>yyyy-MM-dd</string></property></widget></item>
+                  </layout>
+                 </item>
+                 <item><widget class="QFrame" name="hline"><property name="role" stdset="0"><string>hline</string></property><property name="frameShape"><enum>QFrame::HLine</enum></property></widget></item>
+                 <item><widget class="QWidget" name="manualHost" native="true"><layout class="QFormLayout" name="manualForm"><property name="labelAlignment"><set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set></property></layout></widget></item>
+                 <item><layout class="QHBoxLayout" name="btnSaveRow"><item><spacer name="saveSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item><item><widget class="QPushButton" name="btnSave"><property name="primary" stdset="0"><bool>true</bool></property><property name="text"><string>Save</string></property></widget></item></layout></item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item><spacer name="formInnerSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>10</height></size></property></spacer></item>
+         </layout></widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -46,6 +46,16 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     # ==================== Main Tab Widget ====================
     tabWidget: QTabWidget
+    navSidebar: QListWidget
+
+    # ==================== Tab: Add data (tabAddData) ====================
+    # Placeholder layout that the shared AddDataForm widget is dropped into
+    # at runtime (see GeoDataFarm.set_buttons).
+    layoutAddData: QVBoxLayout
+
+    # ==================== Tab: Guide file (tabGuideFile) ====================
+    # Placeholder layout that the embedded guide-file wizard is dropped into.
+    layoutGuideFile: QVBoxLayout
 
     # ==================== Tab: Your Farm (tab_4) ====================
     PBConnect2Farm: QPushButton
@@ -468,8 +478,70 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
 
+        # Replace the top tab bar with the left sidebar navigation
+        self._setup_sidebar_nav()
+
         # Initialize the Generate ISOXML tab controller
         self._setup_generate_isoxml_controller()
+
+    def _setup_sidebar_nav(self):
+        """Drive the tab widget from the left 'navSidebar' list and hide the
+        tab bar, so the dock reads as a sidebar app. The old nested 'Import
+        data' tab is removed (replaced by the new 'Add data' page).
+
+        Navigation is by widget reference, so it's robust to tab reordering.
+        """
+        try:
+            tw = self.tabWidget
+            tw.tabBar().hide()
+            # Remove the old 'Import data' tab (replaced by 'Add data').
+            idx = tw.indexOf(self.tab_5)
+            if idx != -1:
+                tw.removeTab(idx)
+            # Inner tab bars whose sub-tabs are promoted to the sidebar.
+            for inner in (self.tabWidgetYourData, self.tabWidgetReportsPlanning):
+                inner.tabBar().hide()
+            # Sidebar row -> (top page, inner tab widget or None, inner index or None).
+            # Same order as the navSidebar items in the .ui.
+            self._nav = [
+                (self.tab_4, None, None),                              # Farm & Fields
+                (self.tabAddData, None, None),                        # Add data
+                (self.tabYourData, self.tabWidgetYourData, 0),        # Data sets
+                (self.tabYourData, self.tabWidgetYourData, 1),        # Visualization
+                (self.tabYourData, self.tabWidgetYourData, 2),        # Data tools
+                (self.tabGuideFile, None, None),                      # Guide file
+                (self.tab_16, None, None),                            # Satellite
+                (self.tabReportsPlanning, self.tabWidgetReportsPlanning, 0),  # Reports
+                (self.tabReportsPlanning, self.tabWidgetReportsPlanning, 1),  # Plan ahead
+                (self.tab_generate_isoxml, None, None),               # ISO-XML
+            ]
+            self.navSidebar.currentRowChanged.connect(self._on_nav_changed)
+            # Keep the sidebar highlight in sync if a page is shown from elsewhere.
+            tw.currentChanged.connect(self._sync_sidebar)
+            self.navSidebar.setCurrentRow(0)
+        except Exception as e:
+            print(f"ERROR setting up sidebar nav: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _on_nav_changed(self, row):
+        """Show the top page (and inner sub-tab) mapped to the sidebar row."""
+        if 0 <= row < len(self._nav):
+            page, inner, inner_idx = self._nav[row]
+            self.tabWidget.setCurrentWidget(page)
+            if inner is not None and inner_idx is not None:
+                inner.setCurrentIndex(inner_idx)
+
+    def _sync_sidebar(self, index):
+        """Reflect an externally-driven top-page change in the sidebar."""
+        widget = self.tabWidget.widget(index)
+        for row, (page, _inner, _idx) in enumerate(self._nav):
+            if page is widget:
+                if self.navSidebar.currentRow() != row:
+                    self.navSidebar.blockSignals(True)
+                    self.navSidebar.setCurrentRow(row)
+                    self.navSidebar.blockSignals(False)
+                break
 
     def _setup_generate_isoxml_controller(self):
         """Initialize the controller for the static Generate ISOXML tabs."""

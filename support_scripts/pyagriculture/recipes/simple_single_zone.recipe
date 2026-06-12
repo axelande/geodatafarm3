@@ -1,0 +1,10 @@
+<ISO11783_TaskData>
+    <CTR A="" B="" />
+    <FRM A="" B="" I="" />
+    <PFD A="" C="" D="" F="" />
+    <TSK A="" B="" E="" G="">
+        <TZN A="" B="">
+            <PDV A="" B="" />
+        </TZN>
+    </TSK>
+</ISO11783_TaskData>

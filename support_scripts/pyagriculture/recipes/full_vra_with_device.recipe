@@ -1,0 +1,15 @@
+<ISO11783_TaskData>
+    <CTR A="" B="" />
+    <FRM A="" B="" I="" />
+    <PFD A="" C="" D="" F="" />
+    <DVC A="" B="" D="" F="" G="">
+        <DET A="" B="" C="" D="" E="" F="" />
+    </DVC>
+    <TSK A="" B="" E="" G="" H="" I="" J="">
+        <GRD A="" B="" C="" D="" E="" F="" G="" I="" J="" />
+        <TZN A="" B="">
+            <PDV A="" B="" C="" E="" />
+        </TZN>
+    </TSK>
+    <VPN A="" B="" C="" D="" E="" />
+</ISO11783_TaskData>

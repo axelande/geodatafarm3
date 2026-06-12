@@ -30,7 +30,9 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'create_guide_file_base.ui'))
 
 
-class CreateGuideFileDialog(QtWidgets.QDialog, FORM_CLASS):
+class CreateGuideFileDialog(QtWidgets.QWidget, FORM_CLASS):
+    """Embeddable guide-file wizard (was a QDialog; now a plain widget so it
+    can live as a dock tab). Loaded from create_guide_file_base.ui."""
     def __init__(self: Self, parent: None=None) -> None:
         """Constructor."""
         super(CreateGuideFileDialog, self).__init__(parent)

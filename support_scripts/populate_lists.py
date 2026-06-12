@@ -71,6 +71,8 @@ class Populate:
                        self.dw.CBHwField,
                        self.dw.CBIField,
                        self.dw.CBSoField]
+            if getattr(self.dw, 'add_data_form', None) is not None:
+                cmd_box.append(self.dw.add_data_form.cbField)
             fields = self.db.get_distinct('fields', 'field_name', 'public')
             lw = self.dw.LWFields
             lw.clear()
@@ -108,6 +110,8 @@ class Populate:
                        self.dw.CBSpCrop,
                        self.dw.CBOCrop,
                        self.dw.CBHvCrop]
+            if getattr(self.dw, 'add_data_form', None) is not None:
+                cmd_box.append(self.dw.add_data_form.cbCrop)
             crops = self.db.get_distinct('crops', 'crop_name', 'public')
             lw = self.dw.LWCrops
             lw.clear()
