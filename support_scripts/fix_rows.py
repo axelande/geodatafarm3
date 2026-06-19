@@ -3,6 +3,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsTask
 import traceback
 from ..widgets.fix_rows import FixRowsDialog
+from .notifier import report_success, report_error
 from ..support_scripts.__init__ import TR
 
 
@@ -102,15 +103,13 @@ class RowFixer:
             list with [bool, str, str]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr(
+            report_error(self.tr(
                                         'Following error occurred: {m}\n\n Traceback: {t}'.format(
                                             m=values[1],
-                                            t=values[2])))
+                                            t=values[2])), detail=str(values[1]))
             return
         else:
-            QMessageBox.information(None, self.tr("Information:"),
-                                    self.tr('The geometries have updated'))
+            report_success(self.tr('The geometries have updated'))
 
     def update_geom(self, task):
         """Runs the sql query that updates the 'polygon' and adds 'new_row_id

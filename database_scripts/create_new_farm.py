@@ -5,6 +5,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 import requests
 import hashlib
 from ..support_scripts.__init__ import check_text, TR, isint
+from ..support_scripts.notifier import report_success, report_warning, report_error
 from .db import DB
 #from ..GeoDataFarm import GeoDataFarm
 __author__ = 'Axel Horteborn'
@@ -53,27 +54,27 @@ class CreateFarm:
         email_inp = self.CF.email_field.text()
         first_year = int(self.CF.DEFirstYear.text())
         if first_year > 2029:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The first year must be less than 2030'))
             return
         if username_inp == self.tr('name'):
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The user name must be different from "name"'))
             return
         if isint(username_inp[0]):
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The user name can not start with a number'))
             return
         if email_inp == self.tr('your@email.com'):
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The e-mail must be a real e-mail address'))
             return
         if farmname_inp == self.tr('farmname'):
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The farm name must be different from "farmname"'))
             return
         if isint(farmname_inp[0]):
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'The farm name can not start with a number'))
             return
         username = check_text(username_inp)
@@ -88,17 +89,15 @@ class CreateFarm:
                                                                                                      e=email_inp),
             timeout=30)
         if r is None:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_error(self.tr(
                 '- Is your computer online? \n- If you are sure that please send an email to geodatafarm@gmail.com'))
             return
         r = r.text.split(',')
         if r[0] == 'false':
-            QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('Farm name already taken, please choose another name for your farm!'))
+            report_warning(self.tr('Farm name already taken, please choose another name for your farm!'))
             return
         elif r[1] == ' false':
-            QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('User name already taken, please choose another name as user name!'))
+            report_warning(self.tr('User name already taken, please choose another name as user name!'))
             return
         else:
             insertion_ok = True
@@ -119,8 +118,7 @@ class CreateFarm:
         if self.parent_widget.test_mode:
             return True
         if insertion_ok:
-            QMessageBox.information(None, self.tr("Done"),
-                                    self.tr('Database created'))
+            report_success(self.tr('Database created'))
         self.CF.done(0)
 
     def connect_to_source(self: Self) -> None:

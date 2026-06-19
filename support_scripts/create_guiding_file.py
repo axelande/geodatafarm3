@@ -7,7 +7,8 @@ import os
 import re
 import struct
 
-from osgeo import osr, ogr
+import numpy as np
+from osgeo import osr, ogr, gdal
 
 
 _SAFE_OPS = {
@@ -36,15 +37,16 @@ def _safe_eval(expr: str) -> float:
 
     return _ev(node)
 from psycopg2 import ProgrammingError, sql as pgsql
-from qgis.PyQt.QtCore import Qt, QObject, QEvent
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QDate
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox, \
     QFileDialog, QComboBox
 from qgis.core import QgsProject, QgsVectorLayer
 
-from ..support_scripts.__init__ import TR
+from ..support_scripts.__init__ import TR, check_text
 from ..support_scripts.create_layer import CreateLayer
 from ..widgets.create_guide_file import CreateGuideFileDialog
 from ..support_scripts.qt_data import _item_flag
+from ..import_data.handle_input_shp_data import InputShpHandler
 
 # Qt6 nests event enums under QEvent.Type; Qt5 exposes them directly.
 try:
@@ -109,6 +111,10 @@ class CreateGuideFile:
         self.iso_selected = {}
         self.iso_nbr_selected_attr = 0
         self.iso_save_folder = ''
+        # Satellite handoff payloads, keyed by format ('shp' / 'iso'). Each is
+        # None until the Satellite tab arms that format via :meth:`arm_satellite`,
+        # then holds {'raster', 'x_values', 'y_values', 'field', 'index'}.
+        self.sat = {'shp': None, 'iso': None}
 
     def _show_message(self: Self, title: str, message: str,
                       detail: str = '', level: str = 'error') -> None:
@@ -166,6 +172,13 @@ class CreateGuideFile:
         self.CGF.PBSelectOutput.clicked.connect(self.set_output_path)
         self.CGF.PBCreateFile.clicked.connect(self.create_file)
         self.CGF.PBHelp.clicked.connect(self.help)
+        self.CGF.RBFieldData.toggled.connect(
+            lambda _checked: self._toggle_data_mode('shp'))
+        self.CGF.RBSatData.toggled.connect(
+            lambda _checked: self._toggle_data_mode('shp'))
+        self.CGF.CBPlannedShp.toggled.connect(
+            self.CGF.DEPlannedShp.setEnabled)
+        self.CGF.DEPlannedShp.setDate(QDate.currentDate())
         self.fill_cb()
         self.populate.reload_fields(self.CGF.CBFields)
         self.CGF.TWSelected.setColumnCount(3)
@@ -182,6 +195,10 @@ class CreateGuideFile:
         self.CGF.IsoPBSelectOutput.clicked.connect(self.iso_set_output_path)
         self.CGF.IsoPBCreateFile.clicked.connect(self.iso_create_file)
         self.CGF.IsoPBHelp.clicked.connect(self.iso_help)
+        self.CGF.IsoRBFieldData.toggled.connect(
+            lambda _checked: self._toggle_data_mode('iso'))
+        self.CGF.IsoRBSatData.toggled.connect(
+            lambda _checked: self._toggle_data_mode('iso'))
         self.iso_fill_cb()
         self._setup_product_combo()
         self.populate.reload_fields(self.CGF.IsoCBFields)
@@ -189,6 +206,337 @@ class CreateGuideFile:
         self.CGF.IsoTWSelected.setColumnWidth(0, 150)
         self.CGF.IsoTWSelected.setColumnWidth(1, 150)
         self.CGF.IsoTWSelected.setColumnWidth(2, 25)
+
+    # ------------------------------------------------------------------ #
+    # Satellite handoff                                                  #
+    # ------------------------------------------------------------------ #
+    def _toggle_data_mode(self: Self, fmt: str) -> None:
+        """Enable/disable Steps 1 & 2 for a format depending on whether the
+        'Use satellite data' radio is selected. In satellite mode the data
+        source and attribute/equation steps are bypassed; the values come from
+        the index raster handed over by the Satellite tab."""
+        if fmt == 'shp':
+            sat = self.CGF.RBSatData.isChecked()
+            self.CGF.groupStep1.setEnabled(not sat)
+            self.CGF.groupStep2.setEnabled(not sat)
+        else:
+            sat = self.CGF.IsoRBSatData.isChecked()
+            self.CGF.groupIsoStep1.setEnabled(not sat)
+            self.CGF.groupIsoStep2.setEnabled(not sat)
+
+    def arm_satellite(self: Self, fmt: str, raster_path: str, x_values: list,
+                      y_values: list, field_name: str,
+                      index_name: str) -> None:
+        """Receive an index raster + index→rate mapping from the Satellite tab,
+        switch to the matching guide-file tab and turn on 'Use satellite data'
+        mode (the only way that radio becomes enabled).
+
+        Parameters
+        ----------
+        fmt: str
+            'shp' or 'iso'.
+        raster_path: str
+            Path to a persistent GeoTIFF holding the index (NDVI/MSAVI2 * 100),
+            in EPSG:4326.
+        x_values, y_values: list
+            Index breakpoints and their target rates (the mapping the user set
+            on the Satellite tab).
+        field_name: str
+        index_name: str
+            'NDVI' or 'MSAVI2' (used for default output naming only).
+        """
+        self.sat[fmt] = {'raster': raster_path,
+                         'x_values': list(x_values),
+                         'y_values': list(y_values),
+                         'field': field_name,
+                         'index': index_name}
+        if fmt == 'shp':
+            self.CGF.tabFormat.setCurrentWidget(self.CGF.tabShp)
+            self.CGF.RBSatData.setEnabled(True)
+            self.CGF.RBSatData.setChecked(True)
+            self.CGF.CBFields.setCurrentText(field_name)
+            if not self.CGF.LEFileName.text():
+                self.CGF.LEFileName.setText(
+                    'guide_{i}_{f}'.format(i=index_name, f=field_name))
+            if not self.CGF.LEAttrName.text():
+                self.CGF.LEAttrName.setText('rate')
+            self.CGF.PBSelectOutput.setEnabled(True)
+        else:
+            self.CGF.tabFormat.setCurrentWidget(self.CGF.tabIso)
+            self.CGF.IsoRBSatData.setEnabled(True)
+            self.CGF.IsoRBSatData.setChecked(True)
+            self.CGF.IsoCBFields.setCurrentText(field_name)
+            if not self.CGF.IsoLETaskName.text():
+                self.CGF.IsoLETaskName.setText(
+                    '{i} {f}'.format(i=index_name, f=field_name))
+            self.CGF.IsoPBSelectOutput.setEnabled(True)
+        self._toggle_data_mode(fmt)
+        # Bring the embedded Guide-file page to the front of the dock.
+        try:
+            dock = self.dock_widget
+            dock.tabWidget.setCurrentWidget(dock.tabGuideFile)
+            dock.show()
+            dock.raise_()
+        except Exception:  # nosec B110 - routing is best-effort
+            pass
+
+    def _raster_sampler(self: Self, raster_path: str):
+        """Open an EPSG:4326 raster and return a ``sample(lon, lat)`` closure
+        that returns the nearest band-1 pixel value, or ``None`` outside the
+        raster / on NaN. Returns ``None`` if the raster cannot be opened."""
+        ds = gdal.Open(raster_path)
+        if ds is None:
+            return None
+        gt = ds.GetGeoTransform()
+        arr = ds.GetRasterBand(1).ReadAsArray()
+        nrows, ncols = arr.shape
+
+        def sample(lon, lat):
+            if gt[1] == 0 or gt[5] == 0:
+                return None
+            px = int((lon - gt[0]) / gt[1])
+            py = int((lat - gt[3]) / gt[5])
+            if 0 <= py < nrows and 0 <= px < ncols:
+                val = float(arr[py, px])
+                if math.isnan(val):
+                    return None
+                return val
+            return None
+        return sample
+
+    def _satellite_shapefile(self: Self) -> None:
+        """Create a shapefile guide file from the satellite index raster and
+        the index→rate mapping. Builds the same rotated/transformed grid as the
+        field-data path, but each cell's value comes from sampling the raster at
+        the cell centroid and interpolating the mapping."""
+        payload = self.sat['shp']
+        cell_size = self.CGF.LECellSize.text()
+        try:
+            cell_size_i = int(cell_size)
+            if f"{cell_size_i}" != f"{cell_size}" or cell_size_i <= 0:
+                raise ValueError
+        except ValueError:
+            self._show_message('Invalid cell size',
+                               self.tr('Cell size must be a positive whole '
+                                       'number (e.g. 25).'))
+            return
+        if not self.save_folder:
+            self._show_message('No output folder',
+                               self.tr('Please select an output folder.'))
+            return
+        attr_name = self.CGF.LEAttrName.text() or 'rate'
+        EPSG = self.CGF.LEEPSG.text() or '4326'
+        file_name = self.CGF.LEFileName.text() or 'guide_file'
+        rotation_f = float(self.CGF.LERotation.text() or '0')
+        epsg_i = int(EPSG)
+        float_type = (self.CGF.CBDataType.currentText()
+                      == self.tr('Float (1.234)'))
+        field_name = payload['field']
+
+        sample = self._raster_sampler(payload['raster'])
+        if sample is None:
+            self._show_message('Image missing',
+                               self.tr('The satellite image could not be '
+                                       'read. Please fetch it again.'))
+            return
+
+        query = pgsql.SQL(
+            "WITH grid AS ("
+            " SELECT m.geom FROM ("
+            " SELECT (ST_Dump(MAKEGRID_2D(polygon, {cell}, {cell}))).geom"
+            " FROM fields WHERE field_name = %s) m),"
+            " centroid AS (SELECT ST_Centroid(ST_Collect(grid.geom)) AS geometry"
+            " FROM grid),"
+            " rotated AS (SELECT ST_Rotate(grid.geom, radians({rot}),"
+            " (SELECT geometry FROM centroid)) AS polys FROM grid)"
+            " SELECT st_astext(ST_Transform(polys, {epsg})),"
+            " ST_X(ST_Centroid(polys)), ST_Y(ST_Centroid(polys))"
+            " FROM rotated WHERE ST_Intersects(polys,"
+            " (SELECT polygon FROM fields WHERE field_name = %s))"
+        ).format(cell=pgsql.Literal(cell_size_i),
+                 rot=pgsql.Literal(rotation_f),
+                 epsg=pgsql.Literal(epsg_i))
+        data = self.db.execute_and_return(
+            query, params=(field_name, field_name))
+
+        x_vals = payload['x_values']
+        y_vals = payload['y_values']
+        driver = ogr.GetDriverByName('Esri Shapefile')
+        path = os.path.join(self.save_folder, f'{file_name}.shp')
+        if self._output_name_taken(path):
+            return
+        ds = driver.CreateDataSource(path)
+        layer = ds.CreateLayer('', None, ogr.wkbPolygon)
+        fd = ogr.FieldDefn(attr_name[:10],
+                           ogr.OFTReal if float_type else ogr.OFTInteger)
+        layer.CreateField(fd)
+        defn = layer.GetLayerDefn()
+        attribute_values = []
+        for wkt, lon, lat in data:
+            idx = sample(float(lon), float(lat))
+            if idx is None:
+                continue
+            rate = float(np.interp(idx, x_vals, y_vals))
+            feat = ogr.Feature(defn)
+            feat.SetField(attr_name[:10],
+                          rate if float_type else int(round(rate)))
+            geom = ogr.CreateGeometryFromWkt(wkt)
+            feat.SetGeometry(geom)
+            layer.CreateFeature(feat)
+            attribute_values.append(rate)
+            feat = geom = None
+        self.add_prj_file(EPSG, path)
+        ds.Destroy()
+        layer = ds = driver = None
+        if not attribute_values:
+            self._show_message(
+                'No data',
+                self.tr('No grid cells overlapped the satellite image.'),
+                level='warning')
+            return
+        if not self.parent.test_mode:
+            cl = CreateLayer(self.db, self.dock_widget)
+            v_layer = QgsVectorLayer(path, file_name, "ogr")
+            layer = cl.equal_count(v_layer, data_values_list=attribute_values,
+                                   field=attr_name[:10], steps=15)
+            QgsProject.instance().addMapLayer(layer)
+            cl = v_layer = layer = None
+        if self.CGF.CBPlannedShp.isChecked():
+            self._save_planned_to_db(
+                path, EPSG, attr_name, field_name,
+                self.CGF.DEPlannedShp.date().toString('yyyy-MM-dd'),
+                float_type)
+        self._show_message(
+            self.tr('Guide file created'),
+            self.tr('The guide file was created successfully.'),
+            level='info')
+
+    def _satellite_isoxml(self: Self) -> None:
+        """Create an ISO-XML guide file from the satellite index raster and the
+        index→rate mapping (mirrors :meth:`iso_create_file` but samples the
+        raster instead of querying the database)."""
+        payload = self.sat['iso']
+        cell_size = self.CGF.IsoLECellSize.text()
+        try:
+            cell_size_i = int(cell_size)
+            if f"{cell_size_i}" != f"{cell_size}" or cell_size_i <= 0:
+                raise ValueError
+        except ValueError:
+            self._show_message('Invalid cell size',
+                               self.tr('Cell size must be a positive whole '
+                                       'number (e.g. 25).'))
+            return
+        try:
+            value_scale = float(self.CGF.IsoLEValueScale.text())
+        except ValueError:
+            self._show_message('Invalid value scale',
+                               self.tr('Value scale must be a number '
+                                       '(e.g. 1 or 100).'))
+            return
+        if not self.iso_save_folder:
+            self._show_message('No output folder',
+                               self.tr('Please select an output folder.'))
+            return
+        field_name = payload['field']
+        dims = self._iso_grid_dimensions(field_name, cell_size_i)
+        if dims is None:
+            self._show_message(
+                'No field found',
+                self.tr('Could not read the geometry of field "{field}".')
+                .format(field=field_name))
+            return
+        minx, miny, dlon, dlat, ncols, nrows = dims
+
+        sample = self._raster_sampler(payload['raster'])
+        if sample is None:
+            self._show_message('Image missing',
+                               self.tr('The satellite image could not be '
+                                       'read. Please fetch it again.'))
+            return
+
+        x_vals = payload['x_values']
+        y_vals = payload['y_values']
+        grid = [[0 for _ in range(ncols)] for _ in range(nrows)]
+        n_filled = 0
+        for gj in range(nrows):
+            lat = miny + (gj + 0.5) * dlat
+            for gi in range(ncols):
+                lon = minx + (gi + 0.5) * dlon
+                idx = sample(lon, lat)
+                if idx is None:
+                    continue
+                rate = float(np.interp(idx, x_vals, y_vals))
+                grid[gj][gi] = int(round(rate * value_scale))
+                n_filled += 1
+        if n_filled == 0:
+            self._show_message(
+                'No data',
+                self.tr('No grid cells overlapped the satellite image for '
+                        'field "{field}".').format(field=field_name),
+                level='warning')
+            return
+
+        ddi = self._effective_ddi()
+        product = self.CGF.IsoCBProduct.currentData()
+        task_name = self.CGF.IsoLETaskName.text() or 'Guide task'
+        try:
+            self._write_isoxml(self.iso_save_folder, grid, minx, miny,
+                               dlon, dlat, ncols, nrows, ddi, task_name,
+                               product=product if isinstance(product, dict)
+                               else None)
+        except OSError as e:
+            self._show_message('Could not write files',
+                               self.tr('The ISO-XML dataset could not be '
+                                       'written.'), detail=str(e))
+            return
+        self._show_message(
+            self.tr('ISO-XML file created'),
+            self.tr('The ISO-XML guide file was created successfully in the '
+                    '"TASKDATA" sub-folder.'),
+            level='info')
+
+    def _output_name_taken(self: Self, path: str) -> bool:
+        """If a file already exists at ``path``, warn the user to pick another
+        name and return True (so the caller aborts); otherwise return False."""
+        if os.path.exists(path):
+            self._show_message(
+                'File already exists',
+                self.tr('A file named "{name}" already exists in that folder. '
+                        'Please choose a different file name.').format(
+                            name=os.path.basename(path)),
+                level='warning')
+            return True
+        return False
+
+    def _save_planned_to_db(self: Self, file_path: str, epsg: str,
+                            attr_col: str, field: str, date_str: str,
+                            float_type: bool) -> None:
+        """Register a generated guide shapefile in the 'ferti' schema as a
+        planned operation dated ``date_str``, so it is stored with the plan.
+
+        Works for any single-attribute guide shapefile (field-based or
+        satellite). Mirrors the original satellite 'planned date of usage'
+        behaviour. ``attr_col`` is the attribute name the user gave; the
+        on-disk shapefile column is its first 10 characters."""
+        raw = attr_col[:10]
+        base = os.path.splitext(os.path.basename(file_path))[0]
+        tbl = check_text(base + '_' + date_str)
+        if self.db.check_table_exists(tbl, 'ferti'):
+            self._show_message(
+                'Already planned',
+                self.tr('A planned guide file with this name and date '
+                        'already exists.'),
+                level='warning')
+            return
+        ish = InputShpHandler(self.parent, schema='ferti', spec_columns=[])
+        ish.tbl_name = tbl
+        ish.col_names = [raw]
+        ish.col_types = [1] if float_type else [0]
+        ish.file_name_with_path = file_path
+        ish.ISD.EPSG.setText(str(epsg))
+        ish.field = field
+        ish.params_to_evaluate = [raw]
+        ish.import_data('debug', date_dict={'simple_date': date_str})
 
     def set_output_path(self: Self) -> None:
         """Sets the path where the guide file should be saved."""
@@ -495,7 +843,9 @@ class CreateGuideFile:
 
     def create_file(self: Self) -> None:
         """Creates the guide file with the information from the user."""
-        print(self.selected)
+        if self.CGF.RBSatData.isChecked() and self.sat['shp'] is not None:
+            self._satellite_shapefile()
+            return
         cell_size = self.CGF.LECellSize.text()
         try:
             int(cell_size)
@@ -573,7 +923,8 @@ class CreateGuideFile:
         attribute_values = []
         driver = ogr.GetDriverByName('Esri Shapefile')
         path = os.path.join(self.save_folder, f'{file_name}.shp')
-        print(path)
+        if self._output_name_taken(path):
+            return
         ds = driver.CreateDataSource(path)
         layer = ds.CreateLayer('', None, ogr.wkbPolygon)
         # Add one attribute
@@ -607,6 +958,11 @@ class CreateGuideFile:
                                 field=attr_name[:10], steps=15)
             QgsProject.instance().addMapLayer(layer)
             cl = v_layer = layer = None
+        if self.CGF.CBPlannedShp.isChecked():
+            self._save_planned_to_db(
+                path, EPSG, attr_name, field_name,
+                self.CGF.DEPlannedShp.date().toString('yyyy-MM-dd'),
+                float_type)
         # The wizard is now an embedded dock tab (no popup to close); confirm.
         self._show_message(self.tr('Guide file created'),
                            self.tr('The guide file was created successfully.'),
@@ -996,6 +1352,9 @@ class CreateGuideFile:
         """Build a dense WGS84 prescription grid and write it as an ISO-XML
         (ISO 11783-10) Grid Type 2 dataset: TASKDATA/TASKDATA.XML + a binary
         grid file."""
+        if self.CGF.IsoRBSatData.isChecked() and self.sat['iso'] is not None:
+            self._satellite_isoxml()
+            return
         cell_size = self.CGF.IsoLECellSize.text()
         try:
             cell_size_i = int(cell_size)

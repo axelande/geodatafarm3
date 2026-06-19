@@ -11,6 +11,7 @@ from qgis.core import QgsSymbol, Qgis, QgsMarkerSymbol, QgsRendererRange,\
     QgsRectangle
 from qgis.PyQt.QtGui import QColor, QFont
 from qgis.PyQt.QtWidgets import QMessageBox
+from .notifier import report_warning
 import numpy as np
 import matplotlib.pyplot as plt
 from ..support_scripts import isint
@@ -337,5 +338,4 @@ class CreateLayer:
                                                   v2_step)
             layer.triggerRepaint()
         else:
-            QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('Only ranged layers on the map can be altered here.'))
+            report_warning(self.tr('Only ranged layers on the map can be altered here.'))

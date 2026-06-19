@@ -31,6 +31,7 @@ from .generate_taskdata_commands import GenerateTaskCommands
 from .sorting_utils import etree_to_dict
 from .errors import MsgError
 from ..qt_data import _scroll_bar_policy, _check_state, _alignment, _match_flag, _size_policy
+from ..notifier import report_warning, report_error
 __version__ = 0.1
 
 
@@ -636,7 +637,7 @@ class TaskDataMixin:
                     else:
                         self._set_widget_from_xml(widget, xml_item)
         except Exception as e:
-            QMessageBox.warning(self._get_parent_widget(), 'Error', f'Failed to populate from metadata: {e}')
+            report_error(f'Failed to populate from metadata: {e}', detail=str(e))
 
     def _set_widget_from_xml(self, widget, xml_item):
         """Set widget value from XML element attribute."""
@@ -674,17 +675,17 @@ class TaskDataMixin:
 
         field_name = field_selector.currentText()
         if not field_name:
-            QMessageBox.warning(self._get_parent_widget(), 'Warning', 'Please select a field')
+            report_warning('Please select a field')
             return
 
         try:
             layer = self._find_layer_for_field(field_name)
             if layer is None:
-                QMessageBox.warning(self._get_parent_widget(), 'Warning', f'Field "{field_name}" not found')
+                report_warning(f'Field "{field_name}" not found')
                 return
 
             if layer.featureCount() == 0:
-                QMessageBox.warning(self._get_parent_widget(), 'Warning', f'Field "{field_name}" has no features')
+                report_warning(f'Field "{field_name}" has no features')
                 return
 
             feature = next(layer.getFeatures())
@@ -720,7 +721,7 @@ class TaskDataMixin:
             self._populate_polygon_from_geometry(layout, geom_wgs, area_m2)
 
         except Exception as e:
-            QMessageBox.warning(self._get_parent_widget(), 'Error', f'Failed to populate from field: {e}')
+            report_error(f'Failed to populate from field: {e}', detail=str(e))
 
     def _set_pfd_widget_value(self, widget, field_name: str, area_m2: int):
         """Set PFD widget value based on attribute key."""
@@ -1074,8 +1075,7 @@ class TaskDataMixin:
                 else:
                     grd_attrs = self._compute_grid_attrs_from_layer(field_layer, cell_size_m)
             except Exception as e:
-                QMessageBox.warning(self._get_parent_widget(), 'Warning',
-                                    f'Could not generate rate grid: {e}\nUsing basic grid instead.')
+                report_warning(f'Could not generate rate grid: {e}\nUsing basic grid instead.')
                 grd_attrs = self._compute_grid_attrs_from_layer(field_layer, cell_size_m)
         else:
             grd_attrs = self._compute_grid_attrs_from_layer(field_layer, cell_size_m)
@@ -1308,7 +1308,7 @@ class TaskDataMixin:
             return attrs
 
         except Exception as e:
-            QMessageBox.warning(self._get_parent_widget(), 'Error', f'Failed to generate grid binary: {e}')
+            report_error(f'Failed to generate grid binary: {e}', detail=str(e))
             return {}
 
     @staticmethod
@@ -1681,7 +1681,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
         try:
             tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         except Exception as e:
-            QMessageBox.information(self, 'Error', f'Failed to open recipe:\n{e}')
+            report_error(f'Failed to open recipe:\n{e}', detail=str(e))
             return
         parent_dict = etree_to_dict(tree.getroot())['ISO11783_TaskData']
         scroll_area = QScrollArea()
@@ -1706,7 +1706,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
 
     def store_data(self):
         if not hasattr(self, 'q_layout') or self.q_layout is None:
-            QMessageBox.information(self, 'Error', 'No recipe loaded to save')
+            report_error('No recipe loaded to save')
             return
         path = QFileDialog.getSaveFileName(self, 'Save TaskData', filter='xml (*.xml)')[0]
         if not path:
@@ -1889,7 +1889,7 @@ class GenerateIsoxmlController(TaskDataMixin):
         if not hasattr(self, 'recipe_table') or self.recipe_table is None:
             return
         if self.recipe_table.currentRow() < 0:
-            QMessageBox.information(self.dock_widget, 'No Selection', 'Please select a recipe from the table.')
+            report_warning('Please select a recipe from the table.')
             return
         path_item = self.recipe_table.item(self.recipe_table.currentRow(), 1)
         if path_item is None:
@@ -2048,7 +2048,7 @@ class GenerateIsoxmlController(TaskDataMixin):
         try:
             tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         except Exception as e:
-            QMessageBox.information(self.dock_widget, 'Error', f'Failed to open recipe:\n{e}')
+            report_error(f'Failed to open recipe:\n{e}', detail=str(e))
             return
         parent_dict = etree_to_dict(tree.getroot())['ISO11783_TaskData']
         scroll_area = QScrollArea()
@@ -2075,7 +2075,7 @@ class GenerateIsoxmlController(TaskDataMixin):
     def store_data(self):
         """Store the recipe data to file."""
         if self.q_layout is None:
-            QMessageBox.information(self.dock_widget, 'Error', 'No recipe loaded to save')
+            report_error('No recipe loaded to save')
             return
         path = QFileDialog.getSaveFileName(self.dock_widget, 'Save TaskData', filter='xml (*.xml)')[0]
         if not path:

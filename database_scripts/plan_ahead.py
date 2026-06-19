@@ -4,6 +4,7 @@ from psycopg2 import sql as pgsql
 from qgis.PyQt.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from ..support_scripts.create_layer import CreateLayer, add_background
 from ..support_scripts.__init__ import TR
+from ..support_scripts.notifier import report_warning
 
 
 class PlanAhead:
@@ -100,8 +101,7 @@ class PlanAhead:
         table = self.parent.dock_widget.TWPlan
         nbr_rows = table.rowCount()
         if nbr_rows < 1:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('No data is available to save.'))
+            report_warning(self.tr('No data is available to save.'))
         nbr_cols = table.columnCount()
         for row in range(nbr_rows):
             set_parts = []

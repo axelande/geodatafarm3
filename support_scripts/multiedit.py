@@ -9,6 +9,7 @@ from qgis.core import QgsMapLayer
 from os import R_OK
 import sys
 from ..widgets.multiedit_dialog import MultiEditDialog
+from .notifier import report_warning
 from ..support_scripts.__init__ import TR
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/forms")
 
@@ -32,8 +33,7 @@ class MultiEdit:
         """Checks that all is ready to be updated"""
         delimchars = "#"
         if self.layer is None:
-            QMessageBox.information(None, self.tr("Error"),
-                                    self.tr("Please select a layer"))
+            report_warning(self.tr("Please select a layer"))
             return
         if self.layer.type() == QgsMapLayer.LayerType.VectorLayer:
             if self.layer.type() == QgsMapLayer.LayerType.VectorLayer:
@@ -151,7 +151,7 @@ class MultiEdit:
                 else:
                     lyr_name = layer.name()
                     msg = self.tr("Please select at least one feature from <b>") + lyr_name + self.tr("</b> current layer")
-                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"), msg)
+                    report_warning(msg)
             else:
                 nF = layer.selectedFeatureCount()
                 if nF > 0:
@@ -189,10 +189,9 @@ class MultiEdit:
                 else:
                     lyr_name = layer.name()
                     msg = self.tr("Please select at least one feature from <b>") + lyr_name + self.tr("</b> current layer")
-                    QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"), msg)
+                    report_warning(msg)
         else:
-            QMessageBox.critical(self.iface.mainWindow(), self.tr("Error"),
-                                 self.tr("Please select a layer"))
+            report_warning(self.tr("Please select a layer"))
 
 
 def bool2str(b_var):

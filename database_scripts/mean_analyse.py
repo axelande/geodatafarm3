@@ -19,6 +19,7 @@ from ..widgets.run_analyse import RunAnalyseDialog
 from ..support_scripts.__init__ import isfloat, isint, TR
 from ..support_scripts.qt_data import _check_state, _item_data_role, _item_flag
 from ..support_scripts.add_field import AddField
+from ..support_scripts.notifier import report_warning, report_error
 
 __author__ = 'Axel Horteborn'
 
@@ -236,8 +237,7 @@ class Analyze:
                                     self.weather_tables[ac][ac_key])
 
             if overlapping_nbr == overlapping:
-                QMessageBox.information(None, self.tr('Error'),
-                self.tr('All selected harvest table did not have a second '
+                report_warning(self.tr('All selected harvest table did not have a second '
                         'table to be analysed against'))
                 return False
         return True
@@ -716,7 +716,7 @@ class Analyze:
                 QgsProject.instance().removeMapLayer(self.add_field.field.id())
                 self.add_field.field = None
             except:
-                QMessageBox.information(None, self.tr("Error:"), self.tr(
+                report_warning(self.tr(
                 'No coordinates were found, did you mark the field on the canvas?'))
                 return
             limiting_polygon = feature.geometry().asWkt()
@@ -750,8 +750,7 @@ class Analyze:
                 [False, message, tracback]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr(f'Following error occurred: {values[1]}\n\n Traceback: {values[2]}'))
+            report_error(self.tr(f'Following error occurred: {values[1]}\n\n Traceback: {values[2]}'), detail=str(values[1]))
             return
         else:
             filtered_data = values[1]

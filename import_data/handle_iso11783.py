@@ -18,6 +18,7 @@ from ..support_scripts.create_layer import CreateLayer, add_background
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.import_xml_bin import ImportXmlBin
+from ..support_scripts.notifier import report_warning
 
 
 class Iso11783:
@@ -81,8 +82,7 @@ class Iso11783:
             self.add_to_canvas(values[1], values[2], values[3])
         else:
              if values[1]:
-                QMessageBox.information(None, self.tr("Warning:"),
-                                            values[2])
+                report_warning(values[2])
         self.added_nbrs += 1
         if self.added_nbrs == self.tasks_to_run:
             self.IXB.PBAddInputFolder.clicked.disconnect()
@@ -162,8 +162,7 @@ class Iso11783:
                      + pgsql.SQL(") SELECT field_name FROM start_sel GROUP BY field_name"))
             fields_ = self.db.execute_and_return(query, params=tuple(union_params))
             if len(fields_) == 0 and not self.parent.test_mode:
-                QMessageBox.information(None, self.tr("Error:"),
-                                              self.tr('At least one of the tasked was placed outside the field at approximate: ') + 
+                report_warning(self.tr('At least one of the tasked was placed outside the field at approximate: ') +
                                                       f'{round(lat, 4)}, {round(lon, 4)}')
             for field in fields_:
                 fields.append([field[0], time_stamp.values[-1]])
@@ -201,8 +200,7 @@ class Iso11783:
             if row[0].checkState() == 2:
                 self.tasks_to_include.append(row[2])
         if len(self.tasks_to_include) == 0:
-            QMessageBox.information(None, self.tr("Error:"),
-                                              self.tr('You need to select at least one of the tasks'))
+            report_warning(self.tr('You need to select at least one of the tasks'))
             return
         self.py_agri.tasks = []
         self.combo = []
@@ -307,7 +305,7 @@ class Iso11783:
         """Removes the selected columns from the list of fields that should be
         treated as "special" in the database"""
         if self.IXB.TWtoParam.selectedItems() is None:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('No row selected!'))
+            report_warning(self.tr('No row selected!'))
             return
         for item in self.IXB.TWtoParam.selectedItems():
             self.IXB.TWtoParam.removeRow(item.row())
@@ -494,21 +492,18 @@ class Iso11783:
                 dates.append(self.IXB.TWISODataSelect.item(tbl_idx, 1).text())
                 field = self.checkboxes3[check_idx].currentText()
                 if field == self.tr('--- Select field ---'):
-                    QMessageBox.information(None, self.tr("Error:"),
-                                                      self.tr('You need to select a crop'))
+                    report_warning(self.tr('You need to select a crop'))
                     return [False]
                 fields.append(field)
                 crop = self.checkboxes4[check_idx].currentText()
                 if crop == self.tr('--- Select crop ---'):
-                    QMessageBox.information(None, self.tr("Error:"),
-                                                      self.tr('You need to select a crop'))
+                    report_warning(self.tr('You need to select a crop'))
                     return [False]
                 crops.append(crop)
                 focus_cols.append(focus_col)
                 idxs.append(tbl_idx)
         if not found:
-            QMessageBox.information(None, self.tr("Error:"),
-                                              self.tr('You need to select at least one of the tasks'))
+            report_warning(self.tr('You need to select at least one of the tasks'))
             return [False]
         return [True, fields, crops, dates, focus_cols, idxs]
 

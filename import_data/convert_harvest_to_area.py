@@ -14,6 +14,7 @@ from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts import (TR, check_text, isfloat, isint, error_in_sign)
 from ..support_scripts.qt_data import _check_state, _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
+from ..support_scripts.notifier import report_warning, report_error
 __author__ = 'Axel Horteborn'
 
 
@@ -255,14 +256,12 @@ class ConvertToAreas:
 
     def gather_user_data(self):
         if self.IIHD.CBField.currentText() == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         else:
             field = self.IIHD.CBField.currentText()
         if self.IIHD.CBCrop.currentText() == self.tr('--- Select crop ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a crop'))
+            report_warning(self.tr('In order to save the data you must select a crop'))
             return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         else:
             crop = self.IIHD.CBCrop.currentText()
@@ -279,20 +278,17 @@ class ConvertToAreas:
             move_x = float(self.IIHD.LEMoveX.text())
             move_y = float(self.IIHD.LEMoveY.text())
         except Exception as e:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Yield and move values must be integer or a float number {e}'.format(e=e)))
+            report_error(self.tr('Yield and move values must be integer or a float number {e}'.format(e=e)), detail=str(e))
             return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         date_text = self.IIHD.DE.text()
         if self.IIHD.CBRecalcYield.isChecked():
             yield_sign = self.IIHD.LEYieldSign.text()
             if error_in_sign(yield_sign):
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Sign must be "+", "-", "*" or "/"'))
+                report_warning(self.tr('Sign must be "+", "-", "*" or "/"'))
                 return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
             yield_value = self.IIHD.LEYieldValue.text()
             if not isfloat(yield_value):
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Yield value must be an integer or a float number'))
+                report_warning(self.tr('Yield value must be an integer or a float number'))
                 return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         else:
             yield_sign = ''
@@ -300,21 +296,18 @@ class ConvertToAreas:
         if self.IIHD.CBRecalcMoisture.isChecked():
             moisture_sign = self.IIHD.LEMoistureSign.text()
             if error_in_sign(moisture_sign):
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Sign must be "+", "-", "*" or "/"'))
+                report_warning(self.tr('Sign must be "+", "-", "*" or "/"'))
                 return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
             moisture_value = self.IIHD.LEMoistureValue.text()
             if not isfloat(moisture_value):
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Moisture value must be an integer or a float number'))
+                report_warning(self.tr('Moisture value must be an integer or a float number'))
                 return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         else:
             moisture_sign = ''
             moisture_value = ''
         harvester_width = self.IIHD.LEHarvesterWidth.text()
         if not isfloat(harvester_width):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Harvester width must be an integer or a float number'))
+            report_warning(self.tr('Harvester width must be an integer or a float number'))
             return [False, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
         return [True, field, crop, n_coord, e_coord, yield_col, moisture_col, min_yield, max_yield,
                 move_x, move_y, date_text, yield_sign, yield_value, moisture_sign, moisture_value,
@@ -528,8 +521,7 @@ class ConvertToAreas:
 
     def check_failure(self, result, values):
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+            report_error(self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
                                                                                                       t=values[2])))
             return
 
@@ -544,8 +536,7 @@ class ConvertToAreas:
             create_layer.create_layer_style(layer, 'yield', param['tbl'], 'harvest')
             self.close()
         else:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}'.format(m=values[1])))
+            report_error(self.tr('Following error occurred: {m}'.format(m=values[1])))
             return
 
     def close(self):

@@ -5,6 +5,8 @@ import platform
 
 from qgis.PyQt.QtWidgets import QMessageBox
 
+from .notifier import report_error
+
 def check_and_install_requirements():
     try:
         import matplotlib
@@ -19,10 +21,9 @@ def check_and_install_requirements():
             import matplotlib
             print('installation completed')
         except ModuleNotFoundError:
-            QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
+            report_error("""During the first startup this program there are some third party packages that is required to be installed,
 GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install matplotlib", "pip install reportlab", "pip install pandas"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
+(If you are using Windows you need to run it from the OSGeo4W shell)
 If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
             sys.exit()
     try:
@@ -37,10 +38,9 @@ If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm
             import reportlab
             print('installation completed')
         except ModuleNotFoundError:
-            QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
+            report_error("""During the first startup this program there are some third party packages that is required to be installed,
 GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install matplotlib", "pip install reportlab", "pip install pandas"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
+(If you are using Windows you need to run it from the OSGeo4W shell)
 If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
             sys.exit()
 
@@ -56,9 +56,8 @@ If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm
             import pandas
             print('installation completed')
         except ModuleNotFoundError:
-            QMessageBox.information(None, 'ERROR',
-                                    """During the first startup this program there are some third party packages that is required to be installed, 
+            report_error("""During the first startup this program there are some third party packages that is required to be installed,
 GeoDataFarm tried to install them automatic but failed. You can try to manually install the two packages with "pip install matplotlib", "pip install reportlab", "pip install pandas"
-(If you are using Windows you need to run it from the OSGeo4W shell) 
+(If you are using Windows you need to run it from the OSGeo4W shell)
 If can't get the plugin to work, don't hesitate to send an e-mail to geodatafarm@gmail.com and tell which os you are using and QGIS version.""")
             sys.exit()

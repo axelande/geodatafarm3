@@ -12,6 +12,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import QgsTask
 from functools import partial
 import traceback
+from .notifier import report_warning, report_error
 from ..support_scripts.__init__ import TR
 width, height = A4
 styles = getSampleStyleSheet()
@@ -107,8 +108,7 @@ class RapportGen:
         """Creates a QgsTask in order to collect data then on finish it runs
         simple_operation."""
         if self.path is None:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('A directory to save the report must be selected.'))
+            report_warning(self.tr('A directory to save the report must be selected.'))
             return
         year = self.dw.DEReportYear.text()
         if self.dw.RBReportWithoutDetails.isChecked():
@@ -138,8 +138,7 @@ class RapportGen:
         """Creates a QgsTask in order to collect data then on finish it runs
         simple_field."""
         if self.path is None:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('A directory to save the report must be selected.'))
+            report_warning(self.tr('A directory to save the report must be selected.'))
             return
         year = self.dw.DEReportYear.text()
         if self.dw.RBReportWithoutDetails.isChecked():
@@ -218,9 +217,8 @@ class RapportGen:
             else:
                 [False, message, tracback]"""
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
-                                                                                                      t=values[2])))
+            report_error(self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+                                                                                                      t=values[2])), detail=str(values[1]))
             return
         operation_dict = values[1]
         cur_date = date.today().isoformat()
@@ -262,14 +260,12 @@ class RapportGen:
                 story.append(table)
                 operation_found = True
         if not operation_found:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('No data where found for that year'))
+            report_warning(self.tr('No data where found for that year'))
             return
         try:
             doc.multiBuild(story)
         except OSError:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('You must close the file in order to create it again'))
+            report_warning(self.tr('You must close the file in order to create it again'))
             return
 
     def simple_field(self, result, values):
@@ -286,8 +282,7 @@ class RapportGen:
                 [False, message, tracback]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}'.format(m=values[1])))
+            report_error(self.tr('Following error occurred: {m}'.format(m=values[1])), detail=str(values[1]))
             return
         operation_dict = values[1]
         cur_date = date.today().isoformat()
@@ -298,8 +293,7 @@ class RapportGen:
         for field in self.db.execute_and_return('select field_name from fields order by field_name'):
             field = field[0]
             if field is None:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('You must create fields before you can get make reports'))
+                report_warning(self.tr('You must create fields before you can get make reports'))
                 return
             field_dict[field] = {'tables': [],
                                  'headings': []}
@@ -358,8 +352,7 @@ class RapportGen:
                         temp_row.append(col)
                     field_dict[row[field_col].text]['tables'].append(temp_row)
         if not data_found:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('No data where found for that year'))
+            report_warning(self.tr('No data where found for that year'))
             return
         for field in field_dict.keys():
             if len(field_dict[field]['headings']) == 0:
@@ -375,8 +368,7 @@ class RapportGen:
         try:
             doc.multiBuild(story)
         except OSError:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('You must close the file in order to create it again'))
+            report_warning(self.tr('You must close the file in order to create it again'))
             return
 
     @staticmethod

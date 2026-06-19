@@ -2,6 +2,7 @@ from typing import Self
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QDate
 from ..support_scripts.__init__ import TR
+from ..support_scripts.notifier import report_success, report_warning, report_error
 
 
 class SaveHarrowing:
@@ -35,10 +36,9 @@ class SaveHarrowing:
                    " VALUES (%s, %s, %s, %s)")
             try:
                 self.parent.db.execute_sql(sql, params=(field, date_, depth, other))
-                QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+                report_success(self.tr('The data was stored correctly'))
             except Exception as e:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr(f'Following error occurred: {e}'))
+                report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))
         self.reset_widget()
 
     def reset_widget(self):
@@ -55,9 +55,9 @@ class SaveHarrowing:
         bool
         """
         if self.dw.CBHwField.currentText() == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return False
         if self.dw.DEHarrowing.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
-            QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
+            report_warning(self.tr('In order to save the data you must select a date'))
             return False
         return True

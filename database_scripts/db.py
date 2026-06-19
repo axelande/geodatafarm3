@@ -20,6 +20,7 @@ try:
     from ..support_scripts.__init__ import TR
 except ImportError:
     from support_scripts.__init__ import TR
+from ..support_scripts.notifier import report_error
 __author__ = 'Axel Horteborn'
 
 
@@ -33,8 +34,7 @@ class SomeFailure:
         self.tr = translate.tr
 
     def display_failure(self, er):
-        QMessageBox.information(None, self.tr('Error'),
-                                self.tr('Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:\n') + str(er))
+        report_error(self.tr('Some failure occur, please send an e-mail to geodatafarm@gmail.com with the following message:\n') + str(er), detail=str(er))
 
 
 class NoConnection:
@@ -44,8 +44,7 @@ class NoConnection:
 
     def run_failure(self: Self, suppress_message: bool=False) -> None:
         if not suppress_message:
-            self.message_box.information(None, self.tr('Error'),
-                                         self.tr('No connection was found'))
+            report_error(self.tr('No connection was found'))
 
 
 class DB:
@@ -113,15 +112,13 @@ class DB:
         """
         try:
             if not self.pool:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('Could not make a stable connection to the GeoDataFarm server'))
+                report_error(self.tr('Could not make a stable connection to the GeoDataFarm server'))
                 return False
             conn = self.pool.getconn()
             conn.set_isolation_level(0)
             return conn
         except psycopg2.OperationalError as e:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr(f"Error connecting to database on {self.dbhost}. {e}"))
+            report_error(self.tr(f"Error connecting to database on {self.dbhost}. {e}"), detail=str(e))
             return False
 
     def add_postgis_layer(self: Self, table: str, geom_col: str, schema: str, extra_name: str='',
@@ -163,8 +160,7 @@ class DB:
         vlayer = QgsVectorLayer(uri.uri(), str(extra_name) + str(table),
                                 'postgres')
         if not vlayer.isValid():
-            QMessageBox.information(None, 'Error',
-                                    'Layer not loaded correctly,Connection:\n' +
+            report_error('Layer not loaded correctly,Connection:\n' +
                                     str(uri.uri()))
         return vlayer
 

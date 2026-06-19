@@ -4,6 +4,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QDate
 from ..support_scripts.__init__ import check_text
 from ..support_scripts.__init__ import TR
+from ..support_scripts.notifier import report_success, report_warning, report_error
 
 
 class SaveOther:
@@ -73,18 +74,16 @@ class SaveOther:
                 " WHERE table_schema = 'other' AND table_name = %s)",
                 params=(tbl,))[0][0]
             if exists:
-                QMessageBox.information(None, self.tr('Success'),
-                                        self.tr('That operation, at that field on that day is already stored'))
+                report_warning(self.tr('That operation, at that field on that day is already stored'))
                 return
             query = pgsql.SQL("SELECT {cols} INTO other.{tbl}").format(
                 cols=pgsql.SQL(", ").join(select_parts),
                 tbl=pgsql.Identifier(tbl))
             try:
                 self.parent.db.execute_sql(query, params=tuple(params))
-                QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+                report_success(self.tr('The data was stored correctly'))
             except Exception as e:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr(f'Following error occurred: {e}'))
+                report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))
         self.reset_widget()
 
     def reset_widget(self):
@@ -114,9 +113,9 @@ class SaveOther:
         bool
         """
         if self.dw.CBOField.currentText() == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return False
         if self.dw.DEOther.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
-            QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
+            report_warning(self.tr('In order to save the data you must select a date'))
             return False
         return True

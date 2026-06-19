@@ -14,7 +14,7 @@ from ..support_scripts.__init__ import check_text, check_date_format, TR
 from ..support_scripts.qt_data import _enum_select_rows, _item_flag
 from psycopg2 import sql as pgsql
 from ..import_data.insert_manual_from_file import ManualFromFile
-q_info = QMessageBox.information
+from ..support_scripts.notifier import report_warning, report_error
 
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
@@ -119,8 +119,7 @@ class InputShpHandler:
         ogr_file = ogr.Open(self.file_name_with_path, 1)
         gk_lyr = ogr_file.GetLayer()
         if len(gk_lyr) == 0:
-            q_info(None, self.tr("Error:"),
-                   self.tr('No shapes was found in the file\n'))
+            report_warning(self.tr('No shapes was found in the file\n'))
             return
         _types = []
         for i in range(gk_lyr[0].GetFieldCount()):
@@ -202,7 +201,7 @@ class InputShpHandler:
         treated as "special" in the database"""
         row_count = self.param_row_count
         if self.ISD.TWtoParam.selectedItems() is None:
-            q_info(None, self.tr("Error:"), self.tr('No row selected!'))
+            report_warning(self.tr('No row selected!'))
             return
         for item in self.ISD.TWtoParam.selectedItems():
             self.ISD.TWtoParam.removeRow(item.row())
@@ -225,8 +224,7 @@ class InputShpHandler:
         columns_to_add = []
         self.field = self.ISD.CBField.currentText()
         if self.field == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return
         for i in range(self.column_count + 1):
             columns_to_add.append(self.ISD.TWColumnNames.item(i, 0).text())
@@ -253,8 +251,7 @@ class InputShpHandler:
         except Exception:
             epsg = ''
         if self.ISD.EPSG.text() and self.ISD.EPSG.text() != str(epsg):
-            q_info(None, self.tr("Error:"),
-                   self.tr(f'Projection mismatch: detected EPSG {epsg}, please set the EPSG field accordingly'))
+            report_warning(self.tr(f'Projection mismatch: detected EPSG {epsg}, please set the EPSG field accordingly'))
             return
         self.ISD.pButInsertDataIntoDB.setEnabled(True)
         self.ISD.ComBDate.setEnabled(True)
@@ -287,8 +284,7 @@ class InputShpHandler:
             is_ok, first_date = check_date_format(self.sample_data, check_text(self.ISD.ComBDate.currentText()),
                                                   self.ISD.ComBDate_2.currentText())
             if not is_ok:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr("The date format didn't match the selected format, please change"))
+                report_warning(self.tr("The date format didn't match the selected format, please change"))
                 return
             manual_date = 'date_'
             date_dict['date_row'] = check_text(self.ISD.ComBDate.currentText())
@@ -385,8 +381,7 @@ class InputShpHandler:
                         data_as_points = False
                         geom_type = 'polygon'
                     else:
-                        QMessageBox.information(None, self.tr('Error'),
-                                                self.tr('Unknown shapetype (not point or polygon)'))
+                        report_warning(self.tr('Unknown shapetype (not point or polygon)'))
                         return [False, 'Wrong format', traceback.format_exc()]
                     data_dict[geom_type] = []
                     items = feature.items()
@@ -396,8 +391,7 @@ class InputShpHandler:
                     data_dict['field_row_id'] = []
                     first = False
                 if geom.GetGeometryType() == 6:
-                    QMessageBox.information(None, self.tr('Error'),
-                                            self.tr('Some shapes are of multipolygon type please convert them to single polygons.'))
+                    report_warning(self.tr('Some shapes are of multipolygon type please convert them to single polygons.'))
                     return [False, 'Wrong format', traceback.format_exc()]
                 geom_wkt = geom.ExportToWkt()
                 if self.ISD.EPSG.text() == '4326':
@@ -562,8 +556,7 @@ class InputShpHandler:
             list with [bool, bool, int]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+            report_error(self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
                                                                                                       t=values[2])))
             return
         tbl = self.tbl_name
@@ -571,8 +564,7 @@ class InputShpHandler:
             pgsql.SQL("SELECT field_row_id FROM {s}.{t} LIMIT 2").format(
                 s=pgsql.Identifier(self.schema), t=pgsql.Identifier(tbl)))
         if len(length) == 0:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('No data were found in the field, '
+            report_warning(self.tr('No data were found in the field, '
                                             'are you sure that the data is in the correct field?'))
             return
         create_layer = CreateLayer(self.db)

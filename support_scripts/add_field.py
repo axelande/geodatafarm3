@@ -15,6 +15,7 @@ if not hasattr(QMessageBox, 'Yes'):
     QMessageBox.Yes = QMessageBox.StandardButton.Yes
     QMessageBox.No = QMessageBox.StandardButton.No
 from ..widgets.add_field import AddFieldFileDialog
+from .notifier import report_warning, report_error, report_info
 from ..support_scripts.create_layer import set_label, add_background, set_zoom
 from ..support_scripts.__init__ import TR
 from ..support_scripts.qt_data import _check_state, _item_flag
@@ -121,9 +122,8 @@ class AddField:
             if len(name) == 0:
                 if self.parent.test_mode:
                     return False
-                else:    
-                    QMessageBox.information(None, self.tr('Error:'),
-                                            self.tr('Field name must be filled in.'))
+                else:
+                    report_warning(self.tr('Field name must be filled in.'))
                     return
             self.field = QgsVectorLayer("Polygon?crs=epsg:4326", name, "memory")
 
@@ -167,9 +167,8 @@ class AddField:
                     if row[0] == field_name:
                         if self.parent.test_mode:
                             return False
-                        else:  
-                            QMessageBox.information(None, self.tr('Error'),
-                                                    self.tr('There are data sets that are dependent on this field, '
+                        else:
+                            report_warning(self.tr('There are data sets that are dependent on this field, '
                                                             'it cant be removed.'))
                             stop_removing = True
                 if stop_removing:
@@ -206,9 +205,8 @@ class AddField:
                 [False, exception, traceback]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
-                                                                                                      t=values[2])))
+            report_error(self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+                                                                                                      t=values[2])), detail=str(values[1]))
             return
         for layer in values[-1]:
             QgsProject.instance().addMapLayer(layer)
@@ -234,15 +232,14 @@ class AddField:
         except:
             if self.parent.test_mode:
                 return False
-            else:  
-                QMessageBox.information(None, self.tr("Error:"), self.tr(
+            else:
+                report_warning(self.tr(
                     'No coordinates were found, did you mark the field on the canvas?'))
                 return
         polygon = feature.geometry().asWkt()
         name = self.AFD.LEFieldName.text()
         if len(name) == 0:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('Field name must be filled in.'))
+            report_warning(self.tr('Field name must be filled in.'))
             return
         sql = ("INSERT INTO fields (field_name, polygon)"
                " VALUES (%s, st_geomfromtext(%s, 4326))")
@@ -251,13 +248,11 @@ class AddField:
         except IntegrityError:
             if self.parent.test_mode:
                 return False
-            else:  
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Field name already exist, please select a new name'))
+            else:
+                report_warning(self.tr('Field name already exist, please select a new name'))
                 return
         except InternalError as e:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    str(e))
+            report_error(str(e), detail=str(e))
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWFields)
@@ -273,7 +268,7 @@ class AddField:
     def help(self):
         """A function that gives some advice on how the function works for the user.
         """
-        QMessageBox.information(None, self.tr("Help:"), self.tr(
+        report_info(self.tr(
             'Here is where you add a field.\n'
             '1. Start with giving the field a name.\n'
             '2. Press "select extent" and switch to the QGIS window and zoom to your field.\n'

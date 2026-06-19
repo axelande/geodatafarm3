@@ -24,6 +24,7 @@ from shapely.geometry import Point, Polygon
 
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
+from .notifier import report_warning, report_error
 from ..support_scripts.qt_data import _check_state, _item_flag
 
 
@@ -106,8 +107,7 @@ class FindIsoField:
         data = self._extract_coordinates(root)
         if len(data) == 0:
             if not self.parent.test_mode:
-                QMessageBox.information(None, self.parent.tr('Warning'),
-                                            self.parent.tr('No partfields contour was found in the taskdata.xml'))
+                report_warning(self.parent.tr('No partfields contour was found in the taskdata.xml'))
             return False
         wkt_polygons = [(field_name, polygon.wkt) for field_name, polygon in data]
         self.fifw.LWFields.clear()
@@ -382,13 +382,11 @@ class FindIsoField:
         except IntegrityError:
             if self.parent.test_mode:
                 return False
-            else:  
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Field name already exist, please select a new name'))
+            else:
+                report_warning(self.tr('Field name already exist, please select a new name'))
                 return
         except InternalError as e:
-            QMessageBox.information(None, self.tr('Error:'),
-                                    str(e))
+            report_error(str(e), detail=str(e))
             return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)

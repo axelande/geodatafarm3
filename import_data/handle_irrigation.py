@@ -5,6 +5,7 @@ from datetime import datetime
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
 from ..support_scripts.__init__ import check_text, TR
+from ..support_scripts.notifier import report_warning
 __author__ = 'Axel Horteborn'
 
 
@@ -77,16 +78,14 @@ class IrrigationHandler:
         from_date = datetime.strptime(self.IIR.CWFrom.selectedDate().toString("yyyy-MM-dd"), '%Y-%m-%d')
         to_date = datetime.strptime(self.IIR.CWTo.selectedDate().toString("yyyy-MM-dd"), '%Y-%m-%d')
         if from_date >= to_date:
-            QMessageBox.information(None, "Error:",
-                                    self.tr(
+            report_warning(self.tr(
                                         'The "to date" must be larger than the "from date"'))
             return
         if not hasattr(self, 'dancer'):
             self._connect()
         operations = self.dancer.get_operation_data()
         if operations == 'Failed':
-            QMessageBox.information(None, "Error:",
-                                    self.tr("Wasn't able to fetch data from raindancer.\nAre you sure that id, username and password was correct?"))
+            report_warning(self.tr("Wasn't able to fetch data from raindancer.\nAre you sure that id, username and password was correct?"))
             return
         for data in operations:
             if data['finished'] is None:

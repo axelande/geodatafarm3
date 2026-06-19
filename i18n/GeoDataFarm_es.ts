@@ -431,7 +431,37 @@ base de datos existente</translation>
     </message>
 </context>
 <context>
-    <name>CreateGuideFile</name>
+    <name>CreateGuideFile</name>    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>A file named "{name}" already exists in that folder. Please choose a different file name.</source>
+        <translation>Ya existe un archivo llamado «{name}» en esa carpeta. Elija un nombre de archivo diferente.</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>A planned guide file with this name and date already exists.</source>
+        <translation>Ya existe un archivo de guía planificado con este nombre y fecha.</translation>
+    </message>
+
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>No grid cells overlapped the satellite image for field "{field}".</source>
+        <translation>Ninguna celda de la cuadrícula se superpuso a la imagen de satélite para el campo «{field}».</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>No grid cells overlapped the satellite image.</source>
+        <translation>Ninguna celda de la cuadrícula se superpuso a la imagen de satélite.</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>The satellite image could not be read. Please fetch it again.</source>
+        <translation>No se pudo leer la imagen de satélite. Obténgala de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../support_scripts/create_guiding_file.py" line="0"/>
+        <source>Please select an output folder.</source>
+        <translation>Seleccione una carpeta de salida.</translation>
+    </message>
     <message>
         <location filename="../support_scripts/create_guiding_file.py" line="779"/>
         <source>-- Select base file --</source>
@@ -605,7 +635,37 @@ Compruebe que la sintaxis de la ecuación es válida y que solo usa números, op
     </message>
 </context>
 <context>
-    <name>CreateGuideFileBase</name>
+    <name>CreateGuideFileBase</name>    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Also store this guide file in the database as a planned operation on the chosen date.</source>
+        <translation>Guardar también este archivo de guía en la base de datos como una operación planificada en la fecha elegida.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Date:</source>
+        <translation>Fecha:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Planned date of usage</source>
+        <translation>Fecha de uso prevista</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Enabled only when you arrive here from the Satellite tab.</source>
+        <translation>Disponible solo cuando llega aquí desde la pestaña Satélite.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Use satellite data</source>
+        <translation>Usar datos de satélite</translation>
+    </message>
+    <message>
+        <location filename="../widgets/create_guide_file_base.ui" line="0"/>
+        <source>Use field data</source>
+        <translation>Usar datos de campo</translation>
+    </message>
     <message>
         <location filename="../widgets/create_guide_file_base.ui" line="14"/>
         <source>Create guide file</source>
@@ -1321,6 +1381,81 @@ escribirme a geodatafarm@gmail.com</translation>
 </context>
 <context>
     <name>GeoDataFarmDockWidgetBase</name>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>No image yet</source>
+        <translation>Sin imagen aún</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>True-color preview</source>
+        <translation>Vista previa en color real</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Generate ISOXML guide file</source>
+        <translation>Generar archivo de guía ISOXML</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Generate shapefile guide file</source>
+        <translation>Generar archivo de guía shapefile</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>To get these, open the Copernicus dashboard (button above) and go to User settings → OAuth clients → Create new. Keep the "Client Credentials" flow and leave "single-page application" unticked, then press Create. Copy the client secret right away — it is shown only once.</source>
+        <translation>Para obtenerlos, abra el panel de Copernicus (botón de arriba) y vaya a Configuración de usuario → Clientes OAuth → Crear nuevo. Mantenga el flujo «Client Credentials» y deje «single-page application» sin marcar, luego pulse Crear. Copie el secreto de cliente de inmediato: solo se muestra una vez.</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Copernicus credentials</source>
+        <translation>Credenciales de Copernicus</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Client id:</source>
+        <translation>ID de cliente:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Client secret:</source>
+        <translation>Secreto de cliente:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Save credentials</source>
+        <translation>Guardar credenciales</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>From:</source>
+        <translation>Desde:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>To:</source>
+        <translation>Hasta:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Max cloud %:</source>
+        <translation>Máx. nubes %:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Search images</source>
+        <translation>Buscar imágenes</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Image date:</source>
+        <translation>Fecha de imagen:</translation>
+    </message>
+    <message>
+        <location filename="../GeoDataFarm_dockwidget_base.ui" line="0"/>
+        <source>Fetch &amp; process</source>
+        <translation>Obtener y procesar</translation>
+    </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="26"/>
         <source>GeoDataFarm</source>
@@ -2048,10 +2183,10 @@ escribirme a geodatafarm@gmail.com</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2186"/>
-        <source>Though satellile it is possible to track the growth of biomass (by comparing different light spectrum). For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage. For farms in european contries it possible to process an image here:
-You need to download the band 4 and 8 rasterbands from the EO Browser powered by Sential (free signup at their page).</source>
-        <translation>Mediante satélite es posible seguir el crecimiento de la biomasa (comparando distintos espectros de luz). Para las granjas suecas recomiendo usar cropsat.se, donde se pueden crear fácilmente archivos de guía en la web. Para granjas de países europeos es posible procesar una imagen aquí:
-Debe descargar las bandas ráster 4 y 8 del EO Browser, desarrollado por Sentinel (registro gratuito en su página).</translation>
+        <source>Through satellite imagery it is possible to track the growth of biomass (by comparing different light spectrum). For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage. For all of Europe the plugin can fetch Sentinel-2 imagery directly from Copernicus.
+To use it, create a free account at the Copernicus Data Space and add an OAuth client in the dashboard (link below); paste the client id and secret once below. Then pick a field, search for available dates, choose a (cloud free) image and let the plugin build the guide file for you.</source>
+        <translation>Mediante imágenes de satélite es posible seguir el crecimiento de la biomasa (comparando distintos espectros de luz). Para las granjas suecas recomiendo usar cropsat.se, donde se pueden crear fácilmente archivos de guía en la web. Para toda Europa, el complemento puede obtener imágenes Sentinel-2 directamente de Copernicus.
+Para usarlo, cree una cuenta gratuita en el Copernicus Data Space y añada un cliente OAuth en el panel (enlace abajo); pegue una vez el id de cliente y el secreto abajo. Después elija un campo, busque las fechas disponibles, escoja una imagen (sin nubes) y deje que el complemento cree el archivo de guía por usted.</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2195"/>
@@ -2075,8 +2210,8 @@ Debe descargar las bandas ráster 4 y 8 del EO Browser, desarrollado por Sentine
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2218"/>
-        <source>EO Browser</source>
-        <translation>EO Browser</translation>
+        <source>Copernicus dashboard</source>
+        <translation>Panel de Copernicus</translation>
     </message>
     <message>
         <location filename="../GeoDataFarm_dockwidget_base.ui" line="2224"/>
@@ -3989,6 +4124,71 @@ Are you sure that id, username and password was correct?</source>
 </context>
 <context>
     <name>SatelliteData</name>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>The guide-file tab is not ready yet.</source>
+        <translation>La pestaña de archivo de guía aún no está lista.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>The processed image is missing, please fetch it again.</source>
+        <translation>Falta la imagen procesada, obténgala de nuevo.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Please enter a number in every rate box.</source>
+        <translation>Introduzca un número en cada casilla de dosis.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Please fetch and process an image first.</source>
+        <translation>Primero obtenga y procese una imagen.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Please enter both the Copernicus client id and client secret. You can create them in the Copernicus dashboard (see the link above).</source>
+        <translation>Introduzca el id de cliente y el secreto de cliente de Copernicus. Puede crearlos en el panel de Copernicus (consulte el enlace de arriba).</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Copernicus credentials saved.</source>
+        <translation>Credenciales de Copernicus guardadas.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>No Copernicus credentials found. Please enter your client id and secret and press "Save credentials".</source>
+        <translation>No se han encontrado credenciales de Copernicus. Introduzca su id de cliente y secreto y pulse «Guardar credenciales».</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Please select a field first.</source>
+        <translation>Seleccione primero un campo.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>The "to date" must be the same or later than the "from date".</source>
+        <translation>La «fecha hasta» debe ser igual o posterior a la «fecha desde».</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>No Sentinel-2 images were found for that field, date range and cloud limit.</source>
+        <translation>No se han encontrado imágenes Sentinel-2 para ese campo, intervalo de fechas y límite de nubes.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Found {n} image(s). Pick a date and press "Fetch &amp; process".</source>
+        <translation>Se han encontrado {n} imagen(es). Elija una fecha y pulse «Obtener y procesar».</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>Please search for and select an image date first.</source>
+        <translation>Busque y seleccione primero una fecha de imagen.</translation>
+    </message>
+    <message>
+        <location filename="../import_data/satellite_data.py" line="0"/>
+        <source>The downloaded Copernicus image could not be read.</source>
+        <translation>No se ha podido leer la imagen de Copernicus descargada.</translation>
+    </message>
     <message>
         <location filename="../import_data/satellite_data.py" line="327"/>
         <source>Error:</source>

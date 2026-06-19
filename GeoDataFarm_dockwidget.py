@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import (
     QCalendarWidget, QCheckBox, QComboBox, QDateEdit, QFrame, QGroupBox,
     QLabel, QLineEdit, QListWidget, QPlainTextEdit, QPushButton, QRadioButton,
-    QTableWidget, QTabWidget, QVBoxLayout, QWidget
+    QSpinBox, QTableWidget, QTabWidget, QVBoxLayout, QWidget
 )
 from qgis.gui import QgsMapLayerComboBox
 
@@ -290,7 +290,6 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     # ==================== Tab: Guide file / NDVI (tab_16) ====================
     CBFieldList: QComboBox
-    CWPlannedDate: QCalendarWidget
     LEVal_1: QLineEdit
     LEVal_2: QLineEdit
     LEVal_3: QLineEdit
@@ -299,12 +298,21 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     QWGraphArea: QWidget
     PBListCropstat: QPushButton
     PBListGeoDataFarm: QPushButton
-    PBListEOBrowser: QPushButton
+    PBListCopernicus: QPushButton
     PBUpdateFieldList: QPushButton
-    PBSelectZipFile: QPushButton
-    PBGenerateGuideFile: QPushButton
+    LECdseClientId: QLineEdit
+    LECdseClientSecret: QLineEdit
+    PBSaveCdseCreds: QPushButton
+    DECdseFrom: QDateEdit
+    DECdseTo: QDateEdit
+    SBMaxCloud: QSpinBox
+    PBSearchImages: QPushButton
+    CBImageDate: QComboBox
+    PBFetchImage: QPushButton
+    PBGenShp: QPushButton
+    PBGenIso: QPushButton
+    LSatPreview: QLabel
     PBUpdateGraph: QPushButton
-    CheckBPlanned: QCheckBox
     groupBox_5: QGroupBox
     RBNdviIndex: QRadioButton
     RBMsavi2Index: QRadioButton

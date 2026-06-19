@@ -20,6 +20,7 @@ from ..support_scripts.__init__ import (TR, check_text, isfloat, isint,
                                         check_date_format)
 from ..support_scripts.qt_data import _check_state, _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
+from ..support_scripts.notifier import report_warning, report_error, report_info
 __author__ = 'Axel Horteborn'
 
 
@@ -103,8 +104,7 @@ class InputTextHandler(object):
 
     def show_abbreviations(self):
         """Shows a messageBox with the time abbreviations"""
-        QMessageBox.information(None, self.tr('Information'),
-                                self.tr('%Y = Year (2010)\n'
+        report_info(self.tr('%Y = Year (2010)\n'
                                         '%y = Year (98)\n'
                                         '%m = Month\n'
                                         '%d = Day\n'
@@ -127,8 +127,7 @@ class InputTextHandler(object):
                 existing_values.append(self.ITD.TWtoParam.item(i, 0).text())
         for i, item in enumerate(self.ITD.TWColumnNames.selectedItems()):
             if self.data_type == self.tr('harvest') and len(existing_values) > 0:
-                QMessageBox.information(None, self.tr("Error:"),
-                                        self.tr('You can only select one yield column!'))
+                report_warning(self.tr('You can only select one yield column!'))
                 return
             if item.column() == 0 and item.text() not in existing_values:
                 items_to_add.append(item.text())
@@ -146,7 +145,7 @@ class InputTextHandler(object):
         treated as "special" in the database"""
         row_count = self.add_to_param_row_count
         if self.ITD.TWtoParam.selectedItems() is None:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('No row selected!'))
+            report_warning(self.tr('No row selected!'))
             return
         for item in self.ITD.TWtoParam.selectedItems():
             self.ITD.TWtoParam.removeRow(item.row())
@@ -309,10 +308,10 @@ class InputTextHandler(object):
                     index = self.ITD.ComBEast.findText(word)
                     self.ITD.ComBEast.setCurrentIndex(index)
         if self.ITD.LEEPSG.text() == '4326' and not lat_check:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('There needs to be a column called latitude (wgs84) or you need to change the EPSG system'))
+            report_warning(self.tr('There needs to be a column called latitude (wgs84) or you need to change the EPSG system'))
             return
         if self.ITD.LEEPSG.text() == '4326' and not lon_check:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('There needs to be a column called longitude (wgs84) or you need to change the EPSG system'))
+            report_warning(self.tr('There needs to be a column called longitude (wgs84) or you need to change the EPSG system'))
             return
         self.ITD.ComBNorth.setEnabled(True)
         self.ITD.ComBEast.setEnabled(True)
@@ -383,8 +382,7 @@ class InputTextHandler(object):
                                                   self.ITD.ComBDate_2.currentText())
             if not is_ok:
                 assert isinstance(first_date, datetime)
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr("The date format didn't match the selected format, please change"))
+                report_warning(self.tr("The date format didn't match the selected format, please change"))
                 return
             params['date_row'] = check_text(self.ITD.ComBDate.currentText())
             params['date_format'] = self.ITD.ComBDate_2.currentText()
@@ -441,13 +439,11 @@ class InputTextHandler(object):
             list with [bool, bool, int]
         """
         if values[0] is False:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
+            report_error(self.tr('Following error occurred: {m}\n\n Traceback: {t}'.format(m=values[1],
                                                                                                       t=values[2])))
             return
         if not values[1]:
-            QMessageBox.information(None, self.tr("Information:"),
-                                    str(values[2]) + self.tr(' rows were skipped '
+            report_info(str(values[2]) + self.tr(' rows were skipped '
                                                              'since the row'
                                                              ' did not match '
                                                              'the heading.'))
@@ -459,8 +455,7 @@ class InputTextHandler(object):
             pgsql.SQL("SELECT field_row_id FROM {s}.{t} LIMIT 2").format(
                 s=pgsql.Identifier(schema), t=pgsql.Identifier(tbl)))
         if len(length) == 0:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('No data were found in the field, '
+            report_warning(self.tr('No data were found in the field, '
                                             'are you sure that the data is in the correct field?'))
             return
         create_layer = CreateLayer(self.db)

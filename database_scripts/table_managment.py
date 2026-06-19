@@ -12,6 +12,7 @@ except ModuleNotFoundError:
     from ..widgets.table_managment_dialog import TableMgmtDialog
     from ..support_scripts.__init__ import TR
     from ..support_scripts.qt_data import _check_state, _item_flag, _match_flag
+from ..support_scripts.notifier import report_warning
 __author__ = 'Axel Horteborn'
 
 
@@ -68,13 +69,13 @@ class TableManagement:
         if new_type == self.tr('soil'):
             new_schema = 'soil'
         if new_name == '':
-            QMessageBox.information(None, self.tr("Error:"), self.tr('You need to fill in a new name'))
+            report_warning(self.tr('You need to fill in a new name'))
             return
         if new_schema == self.tr('-Select data type -'):
-            QMessageBox.information(None, self.tr("Error:"), self.tr('You have to decide what type of data it is'))
+            report_warning(self.tr('You have to decide what type of data it is'))
             return
         if new_name in self.db.get_tables_in_db(new_schema):
-            QMessageBox.information(None, self.tr("Error:"), self.tr('You need a new name'))
+            report_warning(self.tr('You need a new name'))
             return
         c = 0
         for item in self.items_in_table:
@@ -82,7 +83,7 @@ class TableManagement:
                 c += 1
                 tables_to_merge.append(item.text())
         if c < 2:
-            QMessageBox.information(None, self.tr("Error:"), self.tr('You need at least 2 dataset when merging'))
+            report_warning(self.tr('You need at least 2 dataset when merging'))
             return
         union_parts = []
         for tbl_full in tables_to_merge:
@@ -117,8 +118,7 @@ class TableManagement:
                 c += 1
                 table = item.text()
         if c != 1:
-            QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('You can only have one dataset selected'))
+            report_warning(self.tr('You can only have one dataset selected'))
             return False, 'failed'
         return True, table
 

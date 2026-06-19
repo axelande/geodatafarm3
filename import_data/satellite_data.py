@@ -4,16 +4,19 @@ except ImportError:
     Self = None
 import webbrowser
 import os
+import json
+import math
 import shutil
-from zipfile import ZipFile
+import tempfile
 import numpy as np
 from osgeo import gdal, ogr
 from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
-from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QPushButton
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QPushButton
+from qgis.PyQt.QtCore import QVariant, QSettings, Qt
+from qgis.PyQt.QtGui import QPixmap
 from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsFeature,QgsProcessingFeedback, QgsRasterBandStats,
                        QgsExpression, QgsField)
@@ -23,7 +26,15 @@ sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python\\plugins\\')
 import processing
 from qgis.core import QgsProcessingException
 from ..support_scripts import check_text, TR
+from ..support_scripts.notifier import report_warning, report_error, report_success
+from ..support_scripts.cdse_client import CDSEClient, CDSEError
 from ..import_data.handle_input_shp_data import InputShpHandler
+
+# Where the per-user Copernicus OAuth credentials are stored in QSettings.
+CDSE_ID_KEY = "geodatafarm/cdse_client_id"
+CDSE_SECRET_KEY = "geodatafarm/cdse_client_secret"
+# URL where users create an OAuth client to obtain their id/secret.
+CDSE_DASHBOARD_URL = "https://shapps.dataspace.copernicus.eu/dashboard/"
 
 
 class SatelliteData:
@@ -34,12 +45,15 @@ class SatelliteData:
         self.tr = translate.tr
         self.path = ''
         self.canvas = None
-        self.show_calender = False
         self.y_values = []
         self.x_values = []
         self.rarray = []
         self.graph_area = QVBoxLayout(self.dlg.QWGraphArea)
         self.connect_buttons = False
+        self.qsettings = QSettings()
+        self.client = None
+        # Scenes returned by the last catalog search; index matches CBImageDate.
+        self.features = []
 
     def set_widget_connections(self: Self) -> None:
         """A simple function that sets the buttons on the satellite tab"""
@@ -47,110 +61,250 @@ class SatelliteData:
             return
         self.dlg.PBListCropstat.clicked.connect(
             lambda: webbrowser.open('http://www.cropsat.se'))
-        self.dlg.PBListEOBrowser.clicked.connect(
-            lambda: webbrowser.open('https://apps.sentinel-hub.com/eo-browser/'))
+        self.dlg.PBListCopernicus.clicked.connect(
+            lambda: webbrowser.open(CDSE_DASHBOARD_URL))
         self.dlg.PBListGeoDataFarm.clicked.connect(
             lambda: webbrowser.open('http://www.geodatafarm.com/satellite/'))
-        self.dlg.CheckBPlanned.clicked.connect(self.change_calender_status)
-        self.dlg.PBSelectZipFile.clicked.connect(self.select_zip_file)
+        self.dlg.PBSaveCdseCreds.clicked.connect(self.save_credentials)
+        self.dlg.PBSearchImages.clicked.connect(self.search_images)
+        self.dlg.PBFetchImage.clicked.connect(self.fetch_and_process)
         self.dlg.PBUpdateFieldList.clicked.connect(self.update_field_list)
-        self.dlg.PBGenerateGuideFile.clicked.connect(self.generate_guide_file)
+        self.dlg.PBGenShp.clicked.connect(lambda: self.generate_guide('shp'))
+        self.dlg.PBGenIso.clicked.connect(lambda: self.generate_guide('iso'))
         self.dlg.PBUpdateGraph.clicked.connect(self.update_graph)
+        # Pre-fill the saved Copernicus credentials, if any.
+        self.dlg.LECdseClientId.setText(
+            self.qsettings.value(CDSE_ID_KEY, '') or '')
+        self.dlg.LECdseClientSecret.setText(
+            self.qsettings.value(CDSE_SECRET_KEY, '') or '')
         self.connect_buttons = True
 
-    def change_calender_status(self):
-        """Changes the calender to either enable or disable"""
-        if self.show_calender:
-            self.dlg.CWPlannedDate.setEnabled(False)
-            self.show_calender = False
-        else:
-            self.dlg.CWPlannedDate.setEnabled(True)
-            self.show_calender = True
-
-    def open_input_file(self):
-        """Open the file dialog and let the user choose which file that should
-        be inserted. In the end of this function the function define_separator,
-        set_sep_radio_but and set_column_list are being called."""
-        filters = "Text files (*.zip)"
-        archive_file = QFileDialog.getOpenFileName(None, " File dialog ", '',
-                                                   filters)[0]
-        if archive_file == '':
+    def save_credentials(self):
+        """Stores the Copernicus OAuth client id/secret in QSettings so the
+        user only has to enter them once, and (re)creates the API client."""
+        client_id = self.dlg.LECdseClientId.text().strip()
+        client_secret = self.dlg.LECdseClientSecret.text().strip()
+        if not client_id or not client_secret:
+            report_warning(self.tr(
+                'Please enter both the Copernicus client id and client '
+                'secret. You can create them in the Copernicus dashboard '
+                '(see the link above).'))
             return
-        path = archive_file[:archive_file.index(archive_file.split('/')[-1])]
-        self.path = path + 'tmp_files123/'
-        new_dir = path + 'tmp_files123/'
-        band4 = band8 = None
-        zf = ZipFile(archive_file, "r")
-        zf.extractall(new_dir)
-        for name in zf.namelist():
-            if "B04.tiff" in name:
-                name = new_dir + name
-                date = name.split(",")[0].split("/")[-1]
-                band = QgsRasterLayer(name, 'band4')
-                band4 = self.crop_image(band, 'band4')
-            elif "B08.tiff" in name:
-                name = new_dir + name
-                date = name.split(",")[0].split("/")[-1]
-                band = QgsRasterLayer(name, 'band8')
-                band8 = self.crop_image(band, 'band8')
-        return band4, band8
+        self.qsettings.setValue(CDSE_ID_KEY, client_id)
+        self.qsettings.setValue(CDSE_SECRET_KEY, client_secret)
+        self.client = CDSEClient(client_id, client_secret)
+        report_success(self.tr('Copernicus credentials saved.'))
 
-    def select_zip_file(self):
-        """Calls to open the input file and runs the base calculation on band 4
-        and band 8, when the base calculation have finished, the text and the
-        graph is upadted, and the last push buttons is enabled."""
-        band4, band8 = self.open_input_file()
-        if band4 is None or band8 is None:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'Either is raster band 4 or 8 missing from the ZIP file.'))
+    def _ensure_client(self):
+        """Returns a ready CDSEClient or None (after warning) if no
+        credentials are available."""
+        if self.client is not None:
+            return self.client
+        client_id = (self.dlg.LECdseClientId.text().strip()
+                     or self.qsettings.value(CDSE_ID_KEY, '') or '')
+        client_secret = (self.dlg.LECdseClientSecret.text().strip()
+                         or self.qsettings.value(CDSE_SECRET_KEY, '') or '')
+        if not client_id or not client_secret:
+            report_warning(self.tr(
+                'No Copernicus credentials found. Please enter your client '
+                'id and secret and press "Save credentials".'))
+            return None
+        self.client = CDSEClient(client_id, client_secret)
+        return self.client
+
+    def _field_geometry(self):
+        """Reads the selected field from the database.
+
+        Returns
+        -------
+        tuple or None
+            ``(geojson_geometry, bbox, width_px, height_px)`` where bbox is
+            ``[min_lon, min_lat, max_lon, max_lat]`` and the pixel dimensions
+            target a ~10 m Sentinel-2 resolution. Returns None (after warning)
+            if no field is selected.
+        """
+        field_name = self.dlg.CBFieldList.currentText()
+        if not field_name:
+            report_warning(self.tr('Please select a field first.'))
+            return None
+        row = self.parent.db.execute_and_return(
+            "SELECT st_asgeojson(polygon), st_xmin(polygon), st_ymin(polygon),"
+            " st_xmax(polygon), st_ymax(polygon) FROM fields"
+            " WHERE field_name = %s", params=(field_name,))[0]
+        geometry = json.loads(row[0])
+        min_lon, min_lat, max_lon, max_lat = (float(row[1]), float(row[2]),
+                                              float(row[3]), float(row[4]))
+        bbox = [min_lon, min_lat, max_lon, max_lat]
+        # Convert the degree extent to metres to target a 10 m pixel size.
+        mid_lat = math.radians((min_lat + max_lat) / 2)
+        width_m = (max_lon - min_lon) * 111320 * math.cos(mid_lat)
+        height_m = (max_lat - min_lat) * 111320
+        width = min(2500, max(1, round(width_m / 10)))
+        height = min(2500, max(1, round(height_m / 10)))
+        return geometry, bbox, width, height
+
+    def search_images(self):
+        """Searches the Copernicus catalog for Sentinel-2 scenes covering the
+        selected field within the chosen date range and lists them (with cloud
+        cover) in the date combo box."""
+        client = self._ensure_client()
+        if client is None:
+            return
+        field = self._field_geometry()
+        if field is None:
+            return
+        _geometry, bbox, _w, _h = field
+        date_from = self.dlg.DECdseFrom.date().toString("yyyy-MM-dd")
+        date_to = self.dlg.DECdseTo.date().toString("yyyy-MM-dd")
+        if date_from > date_to:
+            report_warning(self.tr(
+                'The "to date" must be the same or later than the "from '
+                'date".'))
+            return
+        max_cloud = self.dlg.SBMaxCloud.value()
+        try:
+            self.features = client.search_images(bbox, date_from, date_to,
+                                                 max_cloud)
+        except CDSEError as e:
+            report_error(str(e))
+            return
+        self.dlg.CBImageDate.clear()
+        if not self.features:
+            self.dlg.PBFetchImage.setEnabled(False)
+            report_warning(self.tr(
+                'No Sentinel-2 images were found for that field, date range '
+                'and cloud limit.'))
+            return
+        for feat in self.features:
+            self.dlg.CBImageDate.addItem(
+                '{d} ({c:.0f}% cloud)'.format(d=feat['date'], c=feat['cloud']))
+        self.dlg.PBFetchImage.setEnabled(True)
+        report_success(self.tr(
+            'Found {n} image(s). Pick a date and press "Fetch & '
+            'process".').format(n=len(self.features)))
+
+    def fetch_and_process(self):
+        """Downloads band 4 and band 8 for the selected scene from Copernicus,
+        runs the base index calculation and updates the texts and graph."""
+        idx = self.dlg.CBImageDate.currentIndex()
+        if idx < 0 or idx >= len(self.features):
+            report_warning(self.tr('Please search for and select an image '
+                                   'date first.'))
+            return
+        client = self._ensure_client()
+        if client is None:
+            return
+        field = self._field_geometry()
+        if field is None:
+            return
+        geometry, _bbox, width, height = field
+        date = self.features[idx]['date']
+        base = QgsProject.instance().homePath() or os.path.expanduser('~')
+        self.path = os.path.join(base, 'tmp_files123') + os.sep
+        os.makedirs(self.path, exist_ok=True)
+        try:
+            band4 = self._download_band(client, geometry, date, 'B04',
+                                        width, height, 'band4')
+            band8 = self._download_band(client, geometry, date, 'B08',
+                                        width, height, 'band8')
+        except CDSEError as e:
+            report_error(str(e))
+            self.cleanup()
+            return
+        if not band4.isValid() or not band8.isValid():
+            report_error(self.tr(
+                'The downloaded Copernicus image could not be read.'))
+            self.cleanup()
             return
         self.do_base_calculation(band4, band8)
         if not self.update_texts():
             self.cleanup()
             return
         self.dlg.PBUpdateGraph.setEnabled(True)
-        self.dlg.PBGenerateGuideFile.setEnabled(True)
+        self.dlg.PBGenShp.setEnabled(True)
+        self.dlg.PBGenIso.setEnabled(True)
         self.update_graph()
+        # True-color preview alongside the index (best-effort).
+        self._update_preview(client, geometry, date, width, height)
 
-    def crop_image(self, raster_layer, name):
-        """Crops the raster image to the field
+    def _update_preview(self, client, geometry, date, width, height):
+        """Fetch a true-color composite for the scene and show it next to the
+        index. Failures are silently ignored — the index already succeeded."""
+        try:
+            png = client.get_truecolor(geometry, date, width, height)
+        except CDSEError:
+            return
+        pixmap = QPixmap()
+        if not pixmap.loadFromData(png):
+            return
+        try:
+            aspect = Qt.AspectRatioMode.KeepAspectRatio
+            smooth = Qt.TransformationMode.SmoothTransformation
+        except AttributeError:
+            aspect = Qt.KeepAspectRatio
+            smooth = Qt.SmoothTransformation
+        self.dlg.LSatPreview.setPixmap(pixmap.scaled(300, 300, aspect, smooth))
+
+    def generate_guide(self, fmt):
+        """Hand the current index raster and the index->rate mapping over to the
+        Guide-file tab, in 'Use satellite data' mode, for the chosen format
+        ('shp' or 'iso')."""
+        if not self.x_values:
+            report_warning(self.tr('Please fetch and process an image first.'))
+            return
+        # Refresh the rate mapping from the value boxes (they may have changed).
+        try:
+            self.update_graph()
+        except ValueError:
+            report_warning(self.tr('Please enter a number in every rate box.'))
+            return
+        raster_src = self.path + 'raster_output.tif'
+        if not os.path.isfile(raster_src):
+            report_warning(self.tr('The processed image is missing, please '
+                                   'fetch it again.'))
+            return
+        guide = getattr(self.parent, 'guide', None)
+        if guide is None:
+            report_error(self.tr('The guide-file tab is not ready yet.'))
+            return
+        # Copy the raster to a stable temp file so the guide tab owns its own
+        # copy, independent of this tab's temporary folder.
+        tmp = tempfile.NamedTemporaryFile(prefix='gdf_sat_', suffix='.tif',
+                                          delete=False)
+        tmp.close()
+        shutil.copy(raster_src, tmp.name)
+        field = self.dlg.CBFieldList.currentText()
+        index_name = 'NDVI' if self.dlg.RBNdviIndex.isChecked() else 'MSAVI2'
+        guide.arm_satellite(fmt, tmp.name, self.x_values, self.y_values,
+                            field, index_name)
+
+    def _download_band(self, client, geometry, date, band, width, height,
+                       name):
+        """Downloads a single band to a GeoTIFF and returns it as a layer.
 
         Parameters
         ----------
-        raster_layer: QgsRasterLayer
-            The raster layer
-        name: str,
-            needs the name of the raster in order to create the QgsRasterLayer
+        client: CDSEClient
+        geometry: dict
+            GeoJSON field geometry (EPSG:4326).
+        date: str
+            Acquisition date, ``YYYY-MM-DD``.
+        band: str
+            Sentinel-2 band name, e.g. ``'B04'``.
+        width, height: int
+            Output size in pixels.
+        name: str
+            Local name/filename stem for the layer.
 
         Returns
         -------
         QgsRasterLayer
         """
-        field_name = self.dlg.CBFieldList.currentText()
-        field_wkt = self.parent.db.execute_and_return(
-            "SELECT st_astext(polygon) FROM fields WHERE field_name = %s",
-            params=(field_name,))[0][0]
-        field_vector = QgsGeometry.fromWkt(field_wkt)
-        mask_layer = QgsVectorLayer("Polygon?crs=EPSG:4326", "temp_field", "memory")
-        pr = mask_layer.dataProvider()
-        fet = QgsFeature()
-        fet.setGeometry(field_vector)
-        pr.addFeatures([fet])
-        mask_layer.updateExtents()
-        alg_name = 'gdal:cliprasterbymasklayer'
-        #self.file_name_with_path = self.file_name_with_path.replace('/','\\')
-        params = {'INPUT': raster_layer,
-                  'MASK': mask_layer,
-                  'NODATA': 255.0,
-                  'ALPHA_BAND': False,
-                  'CROP_TO_CUTLINE': True,
-                  'KEEP_RESOLUTION': True,
-                  'OPTIONS': 'COMPRESS=LZW',
-                  'DATA_TYPE': 0,  # Byte
-                  'OUTPUT': self.path + name + "clipped.tif",
-                  }
-        processing.run(alg_name, params)
-        return QgsRasterLayer(self.path + name + "clipped.tif", name)
+        content = client.get_band(geometry, date, band, width, height)
+        file_path = self.path + name + '.tif'
+        with open(file_path, 'wb') as fh:
+            fh.write(content)
+        return QgsRasterLayer(file_path, name)
 
     def do_base_calculation(self, band4, band8):
         """Calculates either the NDVI or MSAVI2 index, based on band 4 and 8
@@ -199,7 +353,7 @@ class SatelliteData:
         rarray = rarray[~np.isnan(rarray)]
         rarray = rarray[0.01 < rarray]
         if len(rarray) == 0:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
+            report_warning(self.tr(
                 'There is no data in that file, is the day cloud free?'))
             return False
         min_value = round(float(rarray.min()))
@@ -272,98 +426,15 @@ class SatelliteData:
 
     def update_field_list(self):
         """Populates the field list (with parent.populate.reload_fields) and
-        enables the selection of the zip file."""
+        enables searching for satellite images."""
         self.parent.populate.reload_fields(self.dlg.CBFieldList)
-        self.dlg.PBSelectZipFile.setEnabled(True)
-
-    def generate_guide_file(self):
-        """Generates the guide file, if CheckBPlanned.isChecked then add_to_db
-        is called. Finalising with calling on the cleanup function."""
-        path = self.path[:self.path.index('tmp_files123')]
-        file_name = path + 'guide_file_{f}_{g}.shp'.format(
-                      f=check_text(self.dlg.CBFieldList.currentText()),
-                      g=datetime.date(datetime.today()).isoformat())
-        if os.path.isfile(file_name):
-            msgBox = QMessageBox()
-            msgBox.setText(self.tr('You have already created a guide file for this field today, do you want to replace it?'))
-            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.ButtonRole.YesRole)
-            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.ButtonRole.NoRole)
-            res = msgBox.exec()
-            if res == 1:
-                return
-            try:
-                for ending in ['dbf', 'prj', 'shp', 'shx']:
-                    os.remove(file_name[:-3] + ending)
-            except PermissionError:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr('The file could not automatically be removed, please try to do it manually and create the guide file again'))
-                return
-        params = {'INPUT': self.path + "raster_output.tif", 'BAND': 1,
-                  'OUTPUT': file_name,
-                  'FIELD': 'indexValue'}
-        alg_name = 'gdal:polygonize'
-        try:
-            processing.run(alg_name, params)
-            vl = QgsVectorLayer(file_name, 'ferti_layert', 'ogr')
-            vl.startEditing()
-            ferti_field = QgsField('Fertilizin', QVariant.Int)
-            vl.dataProvider().addAttributes([ferti_field])
-            vl.updateFields()
-            idx = vl.dataProvider().fieldNameIndex('Fertilizin')
-
-            for f in vl.getFeatures():
-                val = f.attributes()[0]
-                if type(val) is not int:
-                    break
-                ferti = int(np.interp(val, self.x_values, self.y_values))
-                vl.changeAttributeValue(f.id(), idx, ferti)
-            vl.commitChanges()
-            del vl
-            self.file_name = file_name
-            if self.dlg.CheckBPlanned.isChecked():
-                self.add_to_db()
-            self.cleanup()
-        except QgsProcessingException:
-            QMessageBox.information(None, self.tr("Error:"), self.tr(
-                'Currently QGIS does not allow you to have any non English '
-                'character in the directory path or filename'))
-            return
+        self.dlg.PBSearchImages.setEnabled(True)
 
     def cleanup(self):
         """Removes the temporary folder (tmp_files123) from the path and
-        disable some buttons."""
-        shutil.rmtree(self.path)
-        self.dlg.CheckBPlanned.setChecked(False)
+        disables the generate buttons. Called on error paths."""
+        if self.path and os.path.isdir(self.path):
+            shutil.rmtree(self.path, ignore_errors=True)
         self.dlg.PBUpdateGraph.setEnabled(False)
-        self.dlg.PBGenerateGuideFile.setEnabled(False)
-        self.dlg.CWPlannedDate.setEnabled(False)
-        self.show_calender = False
-
-    def add_to_db(self):
-        """Adds the guide file to the database with the expected date of usage.
-        """
-        s_date = self.dlg.CWPlannedDate.selectedDate().toString("yyyy-MM-dd")
-        if s_date == datetime.date(datetime.today()).isoformat():
-            msgBox = QMessageBox()
-            msgBox.setText(self.tr('Are you planning to use it today?'))
-            msgBox.addButton(QPushButton(self.tr('Yes')), QMessageBox.ButtonRole.YesRole)
-            msgBox.addButton(QPushButton(self.tr('No')), QMessageBox.ButtonRole.NoRole)
-            res = msgBox.exec()
-            if res == 1:
-                return
-        tbl = check_text(self.file_name[self.path.index('tmp_files123')+11:-4] + '_' + s_date)
-        if self.parent.db.check_table_exists(tbl, 'ferti'):
-            return
-        ish = InputShpHandler(self.parent, schema='ferti', spec_columns=[])
-        ish.tbl_name = tbl
-        ish.col_names = ['indexValue', 'Fertilizin']
-        ish.col_types = [1, 1]
-        ish.file_name_with_path = self.file_name
-        ogr_file = ogr.Open(self.file_name, 1)
-        lyr = ogr_file.GetLayer()
-        epsg = lyr.GetSpatialRef().GetAttrValue("AUTHORITY", 1)
-        ish.ISD.EPSG.setText(epsg)
-        ish.field = self.dlg.CBFieldList.currentText()
-        ish.params_to_evaluate = ['indexValue', 'Fertilizin']
-        res = ish.import_data('debug', date_dict={'simple_date': s_date})
-        #print(res)
+        self.dlg.PBGenShp.setEnabled(False)
+        self.dlg.PBGenIso.setEnabled(False)

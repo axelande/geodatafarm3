@@ -10,6 +10,7 @@ from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,
                        QgsMessageLog, Qgis)
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import TR
+from ..support_scripts.notifier import report_warning, report_error
 
 MESSAGE_CATEGORY = 'AlgRunnerTask'
 
@@ -73,7 +74,7 @@ class ImportRaster:
         bool
         """
         if self.date_dialog.text() == '2000-01-01':
-            QMessageBox.information(None, self.tr('Error:'), self.tr('In order to save the data you must select a date'))
+            report_warning(self.tr('In order to save the data you must select a date'))
             return False
         return True
 
@@ -86,8 +87,7 @@ class ImportRaster:
         """
         ds = gdal.Open(self.file_name_with_path)
         if ds is None:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Unable to open the raster file.'))
+            report_error(self.tr('Unable to open the raster file.'))
             return False
         else:
             return True

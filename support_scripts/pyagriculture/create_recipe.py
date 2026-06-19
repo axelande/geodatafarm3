@@ -11,6 +11,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont
 
 from ...support_scripts.qt_data import _enum_select_rows, _font_weight_bold, _size_policy, _item_flag, _check_state, _widget_attribute
+from ..notifier import report_success, report_warning, report_error
 
 
 class CheckableComboBox(QComboBox):
@@ -144,7 +145,7 @@ class CreateRecipe(QDialog):
     def continue_to_attributes(self):
         """Add schemas and their attributes to the available_attributes_list table"""
         if self.parent_widget is None or not hasattr(self.parent_widget, 'schemas'):
-            QMessageBox.information(None, "Error", "No schemas available")
+            report_error("No schemas available")
             return
         
         existing_values = self.get_existing_values_from_included_schemas()
@@ -219,7 +220,7 @@ class CreateRecipe(QDialog):
             running_test = False
             recipe_name = self.recipe_name_edit.text().strip()
             if not recipe_name:
-                QMessageBox.warning(self, 'Missing name', 'Please enter a recipe name')
+                report_warning('Please enter a recipe name')
                 return
             # Get the recipes folder path (relative to this file)
             recipes_folder = os.path.join(os.path.dirname(__file__), 'recipes')
@@ -247,7 +248,7 @@ class CreateRecipe(QDialog):
             show_popup = False
 
         if show_popup:
-            QMessageBox.information(self, 'Save complete', f'Recipe saved to {path}')
+            report_success(f'Recipe saved to {path}')
 
     def remove_schema(self):
         """Removes the selected schemas from the table: included_schemas_list"""

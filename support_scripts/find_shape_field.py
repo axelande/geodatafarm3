@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication, QSizePolicy, QVBoxLayout, QFileDialog
 
 from ..widgets.find_shape_fields import FindShapeFieldWidget
+from .notifier import report_error
 from ..support_scripts.qt_data import _check_state, _item_flag
 
 class FindShapeField:
@@ -229,7 +230,7 @@ class FindShapeField:
             if self.parent.test_mode:
                 return False
             else:
-                QMessageBox.information(None, self.parent.tr('Error:'), str(e))
+                report_error(str(e), detail=str(e))
                 return
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)

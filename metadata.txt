@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=3.0
+version=3.1
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,9 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the fol/lowing line and add your changelog:
 changelog=
+  Version 3.1 (2026-06-19) 
+  - Fixed a message bar notifier
+  - Reworked the satellite tab
   Version 3.0 (2026-06-11)
   - Updated the design of GeoDataFarm
   - Released a French, Spanish and Portuguese translation of the plugin

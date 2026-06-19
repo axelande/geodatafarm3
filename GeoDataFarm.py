@@ -38,7 +38,7 @@ if sys.platform == 'win32':
 else:
     sys.path.append('/usr/lib/qgis')
     sys.path.append('/usr/share/qgis/python/plugins')
-from qgis.core import QgsApplication, QgsMessageLog, Qgis
+from qgis.core import QgsApplication
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem, QScrollArea, QFrame
@@ -48,7 +48,7 @@ from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 if not hasattr(QMessageBox, 'Yes'):
     QMessageBox.Yes = QMessageBox.StandardButton.Yes
     QMessageBox.No = QMessageBox.StandardButton.No
-from psycopg2 import IntegrityError
+from psycopg2 import IntegrityError, sql as pgsql
 import os
 
 import webbrowser
@@ -78,6 +78,9 @@ from .import_data.handle_input_shp_data import InputShpHandler
 from .import_data.handle_raster import ImportRaster
 from .widgets.add_data_form import AddDataForm
 from .support_scripts.__init__ import isint, TR
+from .support_scripts.notifier import (
+    MessageBarNotifier, GeoDataFarmError, set_active_notifier,
+    report_info, report_success, report_warning, report_error)
 from .support_scripts.qt_data import _check_state, _item_flag
 from .support_scripts.add_field import AddField
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
@@ -108,6 +111,12 @@ class GeoDataFarm:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+
+        # Single place that turns errors/warnings into message-bar entries
+        # (with a 'Let us know' report button). Installed plugin-wide so any
+        # module can call support_scripts.notifier.report_exception().
+        self.notifier = MessageBarNotifier(iface)
+        set_active_notifier(self.notifier)
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -269,16 +278,22 @@ class GeoDataFarm:
         del self.toolbar
 
     def _log_exception(self, message: str, exception: Exception) -> None:
-        """Log an exception with context information."""
-        import traceback
-        tb = traceback.format_exc()
-        info = "Please send this information to geodatafarm@gmail.com to improve the plugin."
-        QgsMessageLog.logMessage(f"{info}\n{message}\n{exception}\n{tb}", "GeoDataFarm", Qgis.Info)
-        self.iface.messageBar().pushMessage(
-            "GeoDataFarm",
-            "A new log entry was added. Open the GeoDataFarm tab for details.",
-            level=Qgis.Info
-        )
+        """Log an exception and show it to the user with report buttons.
+
+        Routes through the notifier so the user gets a message-bar entry with
+        'Open logs' and 'Let us know' (report an issue) buttons instead of a
+        silent log line.
+
+        Parameters
+        ----------
+        message: str
+            Context describing what was being attempted.
+        exception: Exception
+            The exception that was raised.
+        """
+        error = GeoDataFarmError(log_message=message)
+        error.__cause__ = exception
+        self.notifier.display_exception(error)
 
 
     # Functions create specific for GeoDataFarm-----------------------------
@@ -344,8 +359,7 @@ class GeoDataFarm:
             if self.test_mode:
                 return False
             else:
-                QMessageBox.information(None, self.tr("Error:"),
-                                    self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
+                report_warning(self.tr('You need to have at least one input (activity or soil) and one harvest data set selected.'))
 
     def _q_replace_db_data(self, tbl=None):
         """Function that might be removed after the full support for shape files
@@ -409,7 +423,7 @@ class GeoDataFarm:
             return False
         connected = self.db.set_conn()
         if not connected:
-            QMessageBox.information(None, "Information:", self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
+            report_info(self.tr("Welcome to GeoDataFarm, this is a plugin still under development, if you have any suggestions of imporvements or don't understand some parts please do send a e-mail to me at geodatafarm@gmail.com"))
             return False
         return True
 
@@ -420,8 +434,7 @@ class GeoDataFarm:
             if self.test_mode:
                 return False
             else:
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Crop name must be filled in.'))
+                report_warning(self.tr('Crop name must be filled in.'))
                 return
         sql = "Insert into crops (crop_name) VALUES (%s)"
         r_value = self.db.execute_sql(sql, params=(crop_name,), return_failure=True)
@@ -429,8 +442,7 @@ class GeoDataFarm:
             if self.test_mode:
                 return False
             else:
-                QMessageBox.information(None, self.tr('Error:'),
-                                        self.tr('Crop name already exist, please select a new name'))
+                report_warning(self.tr('Crop name already exist, please select a new name'))
                 return
         _name = QApplication.translate("qadashboard", crop_name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWCrops)
@@ -584,35 +596,38 @@ class GeoDataFarm:
             self._save_other_from_form()
             return
         if cfg.get('special'):
-            QMessageBox.information(None, self.tr('Not available yet'), self.tr(
+            report_info(self.tr(
                 'This operation is not yet available in the new Add data form.'))
             return
         v = form.values()
         if not v['field'] or v['field'] == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return
         if cfg['needs_crop'] and (not v.get('crop') or v['crop'] == self.tr('--- Select crop ---')):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a crop'))
+            report_warning(self.tr('In order to save the data you must select a crop'))
             return
         cols = (['field'] + (['crop'] if cfg['needs_crop'] else []) + ['date_']
                 + [c for _, c, _ in cfg['fields']] + ['other'])
         params = ([v['field']] + ([v['crop']] if cfg['needs_crop'] else []) + [v['date']]
                   + [v[c] for _, c, _ in cfg['fields']] + [v['other']])
-        placeholders = ['%s'] * len(params)
         if cfg.get('table_none'):
             cols.append('table_')
-            placeholders.append("'None'")
-        sql = "INSERT INTO {} ({}) VALUES ({})".format(
-            cfg['table'], ', '.join(cols), ', '.join(placeholders))
+            params.append('None')
+        # cfg['table'] is schema-qualified (e.g. "plant.manual"); compose the
+        # table and column identifiers safely and keep values parameterized.
+        table_id = pgsql.SQL('.').join(
+            pgsql.Identifier(part) for part in cfg['table'].split('.'))
+        sql = pgsql.SQL("INSERT INTO {} ({}) VALUES ({})").format(
+            table_id,
+            pgsql.SQL(', ').join(pgsql.Identifier(c) for c in cols),
+            pgsql.SQL(', ').join(pgsql.Placeholder() for _ in params))
         try:
             self.db.execute_sql(sql, params=tuple(params))
-            QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+            report_success(self.tr('The data was stored correctly'))
             form.clear()
         except Exception as e:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {}').format(e))
+            report_error(self.tr('Following error occurred: {}').format(e),
+                         detail=str(e))
 
     def import_add_data(self, key):
         """Generic, config-driven file import for the shared Add-data form.
@@ -625,7 +640,7 @@ class GeoDataFarm:
         if cfg is None or cfg.get('special'):
             return
         if key == 'db':
-            QMessageBox.information(None, "Error:", self.tr(
+            report_info(self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
         columns = [self.tr(c) for c in cfg.get('import_columns', [])]
@@ -653,8 +668,7 @@ class GeoDataFarm:
         v = form.values()
         field = v['field']
         if not field or field == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return
         crop = v.get('crop')
         if crop == self.tr('--- Select crop ---'):
@@ -689,18 +703,18 @@ class GeoDataFarm:
             " WHERE table_schema = 'other' AND table_name = %s)",
             params=(tbl,))[0][0]
         if exists:
-            QMessageBox.information(None, self.tr('Success'), self.tr(
+            report_warning(self.tr(
                 'That operation, at that field on that day is already stored'))
             return
         query = pgsql.SQL("SELECT {cols} INTO other.{tbl}").format(
             cols=pgsql.SQL(", ").join(select_parts), tbl=pgsql.Identifier(tbl))
         try:
             self.db.execute_sql(query, params=tuple(params))
-            QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+            report_success(self.tr('The data was stored correctly'))
             form.clear()
         except Exception as e:
-            QMessageBox.information(None, self.tr('Error'),
-                                    self.tr('Following error occurred: {}').format(e))
+            report_error(self.tr('Following error occurred: {}').format(e),
+                         detail=str(e))
 
     def create_guide(self: Self) -> None:
         """(Re)create and wire the guide-file controller. The wizard is embedded

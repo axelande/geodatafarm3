@@ -2183,8 +2183,8 @@ QListWidget#navSidebar::item:hover:!selected { background: #3a6240; }</string>
               </size>
              </property>
              <property name="text">
-              <string>Though satellile it is possible to track the growth of biomass (by comparing different light spectrum). For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage. For farms in european contries it possible to process an image here:
-You need to download the band 4 and 8 rasterbands from the EO Browser powered by Sential (free signup at their page).</string>
+              <string>Through satellite imagery it is possible to track the growth of biomass (by comparing different light spectrum). For Swedish farms I can recommend the use of cropsat.se where guide files easily can be created in the webpage. For all of Europe the plugin can fetch Sentinel-2 imagery directly from Copernicus.
+To use it, create a free account at the Copernicus Data Space and add an OAuth client in the dashboard (link below); paste the client id and secret once below. Then pick a field, search for available dates, choose a (cloud free) image and let the plugin build the guide file for you.</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -2213,9 +2213,9 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
              <property name="text">
               <string>geodatafarm.com</string>
              </property>
-            </widget></item><item><widget class="QPushButton" name="PBListEOBrowser">
+            </widget></item><item><widget class="QPushButton" name="PBListCopernicus">
              <property name="text">
-              <string>EO Browser</string>
+              <string>Copernicus dashboard</string>
              </property>
             </widget></item><item><spacer name="linksSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
             <item><widget class="QFrame" name="satHl1"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="styleSheet"><string notr="true">color:palette(mid);</string></property></widget></item>
@@ -2235,6 +2235,112 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
               <string>Update field list</string>
              </property>
             </widget></item><item><spacer name="fieldSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><widget class="QLabel" name="credsHeading"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Copernicus credentials</string></property></widget></item>
+            <item><widget class="QLabel" name="credsHelp"><property name="text"><string>To get these, open the Copernicus dashboard (button above) and go to User settings → OAuth clients → Create new. Keep the "Client Credentials" flow and leave "single-page application" unticked, then press Create. Copy the client secret right away — it is shown only once.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+            <item><layout class="QHBoxLayout" name="credsRow"><item><widget class="QLabel" name="labelCdseId">
+             <property name="text">
+              <string>Client id:</string>
+             </property>
+            </widget></item><item><widget class="QLineEdit" name="LECdseClientId">
+             <property name="maximumSize">
+              <size>
+               <width>220</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget></item><item><widget class="QLabel" name="labelCdseSecret">
+             <property name="text">
+              <string>Client secret:</string>
+             </property>
+            </widget></item><item><widget class="QLineEdit" name="LECdseClientSecret">
+             <property name="maximumSize">
+              <size>
+               <width>220</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="echoMode">
+              <enum>QLineEdit::Password</enum>
+             </property>
+            </widget></item><item><widget class="QPushButton" name="PBSaveCdseCreds">
+             <property name="text">
+              <string>Save credentials</string>
+             </property>
+            </widget></item><item><spacer name="credsSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><layout class="QHBoxLayout" name="searchRow"><item><widget class="QLabel" name="labelFrom">
+             <property name="text">
+              <string>From:</string>
+             </property>
+            </widget></item><item><widget class="QDateEdit" name="DECdseFrom">
+             <property name="displayFormat">
+              <string>yyyy-MM-dd</string>
+             </property>
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
+             <property name="date">
+              <date>
+               <year>2024</year>
+               <month>4</month>
+               <day>1</day>
+              </date>
+             </property>
+            </widget></item><item><widget class="QLabel" name="labelTo">
+             <property name="text">
+              <string>To:</string>
+             </property>
+            </widget></item><item><widget class="QDateEdit" name="DECdseTo">
+             <property name="displayFormat">
+              <string>yyyy-MM-dd</string>
+             </property>
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
+             <property name="date">
+              <date>
+               <year>2024</year>
+               <month>9</month>
+               <day>30</day>
+              </date>
+             </property>
+            </widget></item><item><widget class="QLabel" name="labelMaxCloud">
+             <property name="text">
+              <string>Max cloud %:</string>
+             </property>
+            </widget></item><item><widget class="QSpinBox" name="SBMaxCloud">
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>40</number>
+             </property>
+            </widget></item><item><widget class="QPushButton" name="PBSearchImages">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Search images</string>
+             </property>
+            </widget></item><item><spacer name="searchSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><layout class="QHBoxLayout" name="dateRow"><item><widget class="QLabel" name="labelImageDate">
+             <property name="text">
+              <string>Image date:</string>
+             </property>
+            </widget></item><item><widget class="QComboBox" name="CBImageDate">
+             <property name="minimumSize">
+              <size>
+               <width>220</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget></item><item><widget class="QPushButton" name="PBFetchImage">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Fetch &amp; process</string>
+             </property>
+            </widget></item><item><spacer name="dateSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
             <item><layout class="QHBoxLayout" name="indexRow"><item><widget class="QLabel" name="label_32">
              <property name="text">
               <string>Select index</string>
@@ -2251,35 +2357,7 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
                   <string>MSAVI2</string>
                  </property>
                 </widget></item><item><spacer name="idxSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></widget></item><item><spacer name="indexSp2"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
-            <item><layout class="QHBoxLayout" name="plannedRow"><item><widget class="QCheckBox" name="CheckBPlanned">
-             <property name="text">
-              <string>Planned date of useage</string>
-             </property>
-            </widget></item><item><widget class="QCalendarWidget" name="CWPlannedDate">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>350</width>
-               <height>250</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>350</width>
-               <height>250</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="locale">
-              <locale language="English" country="UnitedKingdom" />
-             </property>
-            </widget></item><item><spacer name="plannedSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><layout class="QHBoxLayout" name="plannedRow"><item><layout class="QVBoxLayout" name="previewCol"><item><widget class="QLabel" name="LSatPreviewTitle"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>True-color preview</string></property></widget></item><item><widget class="QLabel" name="LSatPreview"><property name="minimumSize"><size><width>250</width><height>250</height></size></property><property name="maximumSize"><size><width>350</width><height>350</height></size></property><property name="alignment"><set>Qt::AlignCenter</set></property><property name="styleSheet"><string notr="true">border:1px solid palette(mid); background:palette(base); color:palette(mid);</string></property><property name="text"><string>No image yet</string></property><property name="scaledContents"><bool>false</bool></property></widget></item></layout></item><item><spacer name="plannedSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
             <item><widget class="QFrame" name="satHl2"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="styleSheet"><string notr="true">color:palette(mid);</string></property></widget></item>
             <item><widget class="QLabel" name="valHeading"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Index value mapping</string></property></widget></item>
             <item><layout class="QGridLayout" name="valGrid"><property name="horizontalSpacing"><number>10</number></property><property name="verticalSpacing"><number>4</number></property><item row="0" column="0"><widget class="QLabel" name="LVal_1">
@@ -2371,25 +2449,19 @@ You need to download the band 4 and 8 rasterbands from the EO Browser powered by
               <string>100</string>
              </property>
             </widget></item></layout></item>
-            <item><layout class="QHBoxLayout" name="genRow"><item><widget class="QPushButton" name="PBSelectZipFile">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Select zip file</string>
-             </property>
-            </widget></item><item><widget class="QPushButton" name="PBGenerateGuideFile">
+            <item><layout class="QHBoxLayout" name="genRow"><item><widget class="QPushButton" name="PBGenShp">
              <property name="enabled">
               <bool>false</bool>
              </property>
              <property name="text">
-              <string>Generate guide file</string>
+              <string>Generate shapefile guide file</string>
+             </property>
+            </widget></item><item><widget class="QPushButton" name="PBGenIso">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Generate ISOXML guide file</string>
              </property>
             </widget></item><item><spacer name="genSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
             <item><widget class="QFrame" name="satHl3"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="styleSheet"><string notr="true">color:palette(mid);</string></property></widget></item>
@@ -4070,22 +4142,29 @@ QHeaderView::section {
   <tabstop>PBAdd2Canvas</tabstop>
   <tabstop>PBRunAnalyses</tabstop>
   <tabstop>PBListCropstat</tabstop>
-  <tabstop>PBListEOBrowser</tabstop>
+  <tabstop>PBListCopernicus</tabstop>
   <tabstop>PBListGeoDataFarm</tabstop>
   <tabstop>CBFieldList</tabstop>
   <tabstop>PBUpdateFieldList</tabstop>
+  <tabstop>LECdseClientId</tabstop>
+  <tabstop>LECdseClientSecret</tabstop>
+  <tabstop>PBSaveCdseCreds</tabstop>
+  <tabstop>DECdseFrom</tabstop>
+  <tabstop>DECdseTo</tabstop>
+  <tabstop>SBMaxCloud</tabstop>
+  <tabstop>PBSearchImages</tabstop>
+  <tabstop>CBImageDate</tabstop>
+  <tabstop>PBFetchImage</tabstop>
   <tabstop>RBNdviIndex</tabstop>
   <tabstop>RBMsavi2Index</tabstop>
-  <tabstop>PBSelectZipFile</tabstop>
-  <tabstop>CheckBPlanned</tabstop>
   <tabstop>PBUpdateGraph</tabstop>
   <tabstop>LEVal_1</tabstop>
   <tabstop>LEVal_2</tabstop>
   <tabstop>LEVal_3</tabstop>
   <tabstop>LEVal_4</tabstop>
   <tabstop>LEVal_5</tabstop>
-  <tabstop>CWPlannedDate</tabstop>
-  <tabstop>PBGenerateGuideFile</tabstop>
+  <tabstop>PBGenShp</tabstop>
+  <tabstop>PBGenIso</tabstop>
   <tabstop>mMapLayerComboBox</tabstop>
   <tabstop>RBNomalized</tabstop>
   <tabstop>RBEvenly</tabstop>

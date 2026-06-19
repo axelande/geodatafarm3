@@ -6,6 +6,7 @@ from ..import_data.handle_raster import ImportRaster
 from ..import_data.handle_input_shp_data import InputShpHandler
 from ..support_scripts.__init__ import TR
 from ..import_data.handle_iso11783 import Iso11783
+from ..support_scripts.notifier import report_success, report_warning, report_error, report_info
 
 
 class SaveFertilizing:
@@ -39,7 +40,7 @@ class SaveFertilizing:
             ir = ImportRaster(self.parent, self.dw.DEFertilizing, self.dw.CBFField, 'ferti')
             ir.run()
         elif self.dw.CBFFileType.currentText() == self.tr('Databasefile (.db)'):
-            QMessageBox.information(None, "Error:", self.tr(
+            report_info(self.tr(
                 'Support for databasefiles are not implemented 100% yet'))
             return
         elif self.dw.CBFFileType.currentText() == self.tr('Shape file (.shp)'):
@@ -65,10 +66,9 @@ class SaveFertilizing:
             try:
                 self.parent.db.execute_sql(sql, params=(
                     field, crop, date_, varerity, rate, saw_depth, other))
-                QMessageBox.information(None, self.tr('Success'), self.tr('The data was stored correctly'))
+                report_success(self.tr('The data was stored correctly'))
             except Exception as e:
-                QMessageBox.information(None, self.tr('Error'),
-                                        self.tr(f'Following error occurred: {e}'))
+                report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))
         self.reset_widget()
 
     def reset_widget(self):
@@ -88,19 +88,15 @@ class SaveFertilizing:
         bool
         """
         if self.dw.CBFField.currentText() == self.tr('--- Select field ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a field'))
+            report_warning(self.tr('In order to save the data you must select a field'))
             return False
         if self.dw.CBFCrop.currentText() == self.tr('--- Select crop ---'):
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a crop'))
+            report_warning(self.tr('In order to save the data you must select a crop'))
             return False
         if self.dw.DEFertilizing.selectedDate().toString("yyyy-MM-dd") == '2000-01-01':
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('In order to save the data you must select a date'))
+            report_warning(self.tr('In order to save the data you must select a date'))
             return False
         if self.dw.LEFVarerity.text == '':
-            QMessageBox.information(None, self.tr('Error:'),
-                                    self.tr('A variety  has to be set in order to save the data'))
+            report_warning(self.tr('A variety  has to be set in order to save the data'))
             return False
         return True
