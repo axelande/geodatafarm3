@@ -32,7 +32,7 @@ from ..import_data.handle_input_shp_data import InputShpHandler
 
 # Where the per-user Copernicus OAuth credentials are stored in QSettings.
 CDSE_ID_KEY = "geodatafarm/cdse_client_id"
-CDSE_SECRET_KEY = "geodatafarm/cdse_client_secret"
+CDSE_SECRET_KEY = "geodatafarm/cdse_client_secret"  # pragma: allowlist secret
 # URL where users create an OAuth client to obtain their id/secret.
 CDSE_DASHBOARD_URL = "https://shapps.dataspace.copernicus.eu/dashboard/"
 
