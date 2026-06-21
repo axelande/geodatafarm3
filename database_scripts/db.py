@@ -20,10 +20,7 @@ try:
     from ..support_scripts.__init__ import TR
 except ImportError:
     from support_scripts.__init__ import TR
-try:
-    from ..support_scripts.notifier import report_error
-except ImportError:
-    from support_scripts.notifier import report_error
+from ..support_scripts.notifier import report_error
 __author__ = 'Axel Horteborn'
 
 

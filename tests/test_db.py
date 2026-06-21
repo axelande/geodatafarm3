@@ -6,15 +6,15 @@ from psycopg2 import sql as pgsql
 import pytest
 from unittest.mock import patch, MagicMock, call
 
-from database_scripts.db import DB
-from database_scripts.table_managment import TableManagement
-from support_scripts.qt_data import _check_state
+from geodatafarm.database_scripts.db import DB
+from geodatafarm.database_scripts.table_managment import TableManagement
+from geodatafarm.support_scripts.qt_data import _check_state
 
 @pytest.fixture
 def db():
     return DB(test_mode=True)
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_check_table_exists_table_not_exists(mock_QMessageBox, db):
     # Arrange
     db.execute_and_return = MagicMock(return_value=[[0]])
@@ -26,7 +26,7 @@ def test_check_table_exists_table_not_exists(mock_QMessageBox, db):
     db.execute_and_return.assert_called_once()
     assert result == False
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_check_table_exists_table_exists_no_replace(mock_QMessageBox, db):
     # Arrange
     db.execute_and_return = MagicMock(return_value=[[1]])
@@ -40,7 +40,7 @@ def test_check_table_exists_table_exists_no_replace(mock_QMessageBox, db):
     mock_QMessageBox().question.assert_called_once()
     assert result is True
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_check_table_exists_table_exists_replace(mock_QMessageBox, db):
     # Arrange
     db.execute_and_return = MagicMock(return_value=[[1]])
@@ -56,7 +56,7 @@ def test_check_table_exists_table_exists_replace(mock_QMessageBox, db):
     db.execute_sql.assert_called()
     assert result == False
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_check_table_exists_no_ask_replace(mock_QMessageBox, db):
     # Arrange
     db.execute_and_return = MagicMock(return_value=[[1]])
@@ -69,7 +69,7 @@ def test_check_table_exists_no_ask_replace(mock_QMessageBox, db):
     db.execute_and_return.assert_called_once()
     assert result == True
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_execute_and_return_no_connection(mock_QMessageBox, db):
     # Arrange
     db._connect = MagicMock(return_value=False)
@@ -80,7 +80,7 @@ def test_execute_and_return_no_connection(mock_QMessageBox, db):
 
     assert result == 'There was no connection established'
 
-@patch('database_scripts.db.QMessageBox')
+@patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_execute_and_return_exception(mock_QMessageBox, db):
     # Arrange
     # Remove the mock for db._connect to connect to the real server
@@ -170,7 +170,7 @@ def test_table_management_save_table(table_management):
             schema=pgsql.Identifier("schema"),
             idx=pgsql.Identifier("col2_schema_table")))
 
-@patch('database_scripts.db.QInputDialog')
+@patch('geodatafarm.database_scripts.db.QInputDialog')
 def test_table_management_edit_tbl_name(mock_QInputDialog, table_management):
     table_management.items_in_table = [MagicMock(checkState=MagicMock(return_value=2), text=MagicMock(return_value='schema.table'))]
     table_management.db.execute_sql = MagicMock()

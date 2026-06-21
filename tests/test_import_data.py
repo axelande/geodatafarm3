@@ -51,7 +51,7 @@ def test_import_iso(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.open_input_folder(path='./tests/test_data/TASKDATA2/')
-    from support_scripts.qt_data import _check_state
+    from geodatafarm.support_scripts.qt_data import _check_state
     gdf.save_harvesting.importer.IXB.TWISODataAll.item(0, 0).setCheckState(_check_state('Checked'))
     gdf.save_harvesting.importer.IXB.PBFindFields.click()
     i = 0 #for i in range(gdf.save_harvesting.importer.IXB.TWISODataSelect.rowCount()):
@@ -79,7 +79,7 @@ def test_import_iso2(gdf:GeoDataFarm):
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.open_input_folder(path='./tests/test_data/TASKDATA4/')
-    from support_scripts.qt_data import _check_state
+    from geodatafarm.support_scripts.qt_data import _check_state
     gdf.save_harvesting.importer.IXB.TWISODataAll.item(2, 0).setCheckState(_check_state('Checked'))
     gdf.save_harvesting.importer.IXB.PBFindFields.click()
     i = 0 #for i in range(gdf.save_harvesting.importer.IXB.TWISODataSelect.rowCount()):

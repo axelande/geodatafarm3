@@ -1,6 +1,6 @@
 import pytest
 from . import gdf, GeoDataFarm
-from support_scripts.qt_data import _check_state
+from geodatafarm.support_scripts.qt_data import _check_state
 
 # @pytest.mark.depends(on=['remove_sec_field'], scope='session')
 def test_remove_crop(gdf: GeoDataFarm):
