@@ -159,6 +159,7 @@ QTabWidget#tabFormat QTabBar::tab:hover:!selected {
        <string>Shapefile</string>
       </attribute>
       <layout class="QVBoxLayout" name="shpLayout">
+   <item><layout class="QHBoxLayout" name="dataModeRow"><item><widget class="QLabel" name="LDataMode"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Data source:</string></property></widget></item><item><widget class="QRadioButton" name="RBFieldData"><property name="text"><string>Use field data</string></property><property name="checked"><bool>true</bool></property></widget></item><item><widget class="QRadioButton" name="RBSatData"><property name="enabled"><bool>false</bool></property><property name="toolTip"><string>Enabled only when you arrive here from the Satellite tab.</string></property><property name="text"><string>Use satellite data</string></property></widget></item><item><spacer name="dataModeSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
    <!-- ============================================ -->
    <!-- Step 1: Select Data Source                    -->
    <!-- ============================================ -->
@@ -503,6 +504,36 @@ QTabWidget#tabFormat QTabBar::tab:hover:!selected {
         </property>
        </widget>
       </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="CBPlannedShp">
+        <property name="toolTip">
+         <string>Also store this guide file in the database as a planned operation on the chosen date.</string>
+        </property>
+        <property name="text">
+         <string>Planned date of usage</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="LPlannedShpDate">
+        <property name="text">
+         <string>Date:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDateEdit" name="DEPlannedShp">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="displayFormat">
+         <string>yyyy-MM-dd</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="6" colspan="2">
        <widget class="QPushButton" name="PBCreateFile">
         <property name="enabled">
@@ -531,6 +562,7 @@ QPushButton:disabled { background-color: palette(mid); color: palette(midlight);
        <string>ISO-XML</string>
       </attribute>
       <layout class="QVBoxLayout" name="isoLayout">
+       <item><layout class="QHBoxLayout" name="isoDataModeRow"><item><widget class="QLabel" name="IsoLDataMode"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Data source:</string></property></widget></item><item><widget class="QRadioButton" name="IsoRBFieldData"><property name="text"><string>Use field data</string></property><property name="checked"><bool>true</bool></property></widget></item><item><widget class="QRadioButton" name="IsoRBSatData"><property name="enabled"><bool>false</bool></property><property name="toolTip"><string>Enabled only when you arrive here from the Satellite tab.</string></property><property name="text"><string>Use satellite data</string></property></widget></item><item><spacer name="isoDataModeSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
        <!-- ISO Step 1: Select data source and field -->
        <item>
         <widget class="QGroupBox" name="groupIsoStep1">
