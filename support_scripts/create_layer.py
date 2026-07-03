@@ -14,7 +14,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from .notifier import report_warning
 import numpy as np
 import matplotlib.pyplot as plt
-from ..support_scripts import isint
+from ..support_scripts import isint, TR
 from ..support_scripts.RG import rg
 __author__ = 'Axel'
 
@@ -124,6 +124,8 @@ class CreateLayer:
         """Creates a layer with color coded attributes"""
         self.db = db
         self.dock_widget = dock_widget
+        translate = TR('CreateLayer')
+        self.tr = translate.tr
 
     def _apply_symbology_fixed_divisions(self, layer, field, tbl_name, schema,
                                          min_v, max_v, steps):

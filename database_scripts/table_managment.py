@@ -56,6 +56,7 @@ class TableManagement:
         tables_to_merge = []
         new_name = self.TMD.LEName.text()
         new_type = self.TMD.CBDataType.currentText()
+        new_schema = None
         if new_type == self.tr('plant'):
             new_schema = 'plant'
         if new_type == self.tr('fertilize'):
@@ -71,7 +72,7 @@ class TableManagement:
         if new_name == '':
             report_warning(self.tr('You need to fill in a new name'))
             return
-        if new_schema == self.tr('-Select data type -'):
+        if new_schema is None:
             report_warning(self.tr('You have to decide what type of data it is'))
             return
         if new_name in self.db.get_tables_in_db(new_schema):
@@ -169,7 +170,7 @@ class TableManagement:
         remove_index_for = []
         for nbr in indexes.keys():
             checked_params.append(indexes[nbr]['index_col'])
-        for item in self.params_in_table:
+        for item in (self.params_in_table or []):
             if item.text() in checked_params:
                 if item.checkState() == 0:
                     remove_index_for.append(item.text())
@@ -206,7 +207,7 @@ class TableManagement:
         except:
             pass
         model = self.TMD.SAParams.model()
-        for item in self.params_in_table:
+        for item in (self.params_in_table or []):
             qIndex = self.TMD.SAParams.indexFromItem(item)
             model.removeRow(qIndex.row())
         self.params_in_list = 0
@@ -232,7 +233,7 @@ class TableManagement:
 
     def edit_param_name(self):
         """Edit the name of all selected parameters."""
-        for item in self.params_in_table:
+        for item in (self.params_in_table or []):
             if item.checkState() == 2:
                 text, y_n = QInputDialog.getText(None, self.tr('Parameter name'),
                                                  self.tr('What do you want to rename ') + item.text() +

@@ -43,7 +43,7 @@ class AddLayerToCanvas:
         ins = -1
         for list_widget, schema, lw in self.items_in_table:
             tables = []
-            for item in list_widget:
+            for item in (list_widget or []):
                 if item.checkState() == 2:
                     tables.append(str(item.text()))
             temp_d = self.parent.db.get_indexes(', '.join("'" + str(e) + "'" for e in tables)[1:-1], schema)

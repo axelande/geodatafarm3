@@ -57,11 +57,11 @@ class SaveHarvesting:
             yield_ = yield_ or None
             other = other or None
             sql = ("INSERT INTO harvest.manual"
-                   " (field, crop, date_, total_yield, yield, other, table_)"
-                   " VALUES (%s, %s, %s, %s, %s, %s, 'None')")
+                   " (field, crop, date_, date_text, total_yield, yield, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
                 self.parent.db.execute_sql(sql, params=(
-                    field, crop, date_, total_yield, yield_, other))
+                    field, crop, date_, date_, total_yield, yield_, other))
                 report_success(self.tr('The data was stored correctly'))
             except Exception as e:
                 report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))

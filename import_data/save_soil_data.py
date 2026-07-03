@@ -59,11 +59,11 @@ class SaveSoil:
             rx = rx or None
             other = other or None
             sql = ("INSERT INTO soil.manual"
-                   " (field, date_, clay, humus, ph, rx, other, table_)"
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, 'None')")
+                   " (field, date_, date_text, clay, humus, ph, rx, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
                 self.parent.db.execute_sql(sql, params=(
-                    field, date_, clay, humus, ph, rx, other))
+                    field, date_, date_, clay, humus, ph, rx, other))
                 report_success(self.tr('The data was stored correctly'))
             except Exception as e:
                 report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))

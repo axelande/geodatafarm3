@@ -61,11 +61,11 @@ class SaveFertilizing:
             saw_depth = saw_depth or None
             other = other or None
             sql = ("INSERT INTO ferti.manual"
-                   " (field, crop, date_, variety, rate, saw_depth, other, table_)"
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, 'None')")
+                   " (field, crop, date_, date_text, variety, rate, saw_depth, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
                 self.parent.db.execute_sql(sql, params=(
-                    field, crop, date_, varerity, rate, saw_depth, other))
+                    field, crop, date_, date_, varerity, rate, saw_depth, other))
                 report_success(self.tr('The data was stored correctly'))
             except Exception as e:
                 report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))

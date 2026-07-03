@@ -67,11 +67,11 @@ class SavePlanting:
             saw_depth = saw_depth or None
             other = other or None
             sql = ("INSERT INTO plant.manual"
-                   " (field, crop, date_, variety, spacing, seed_rate, saw_depth, other, table_)"
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
+                   " (field, crop, date_, date_text, variety, spacing, seed_rate, saw_depth, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
                 self.parent.db.execute_sql(sql, params=(
-                    field, crop, date_, varerity, spacing, seed_rate, saw_depth, other))
+                    field, crop, date_, date_, varerity, spacing, seed_rate, saw_depth, other))
                 report_success(self.tr('The data was stored correctly'))
                 self.dw.CBPField.setCurrentIndex(0)
                 self.dw.CBPCrop.setCurrentIndex(0)

@@ -82,13 +82,14 @@ class CreateFarm:
         farmname = check_text(farmname_inp)
         password = hashlib.sha256(password).hexdigest()
         insertion_ok = False
-        r = requests.post(
-            'http://geodatafarm.com/create/?username={u}&password={p}&farmname={f}&email={e}'.format(u=username,
-                                                                                                     p=password,
-                                                                                                     f=farmname,
-                                                                                                     e=email_inp),
-            timeout=30)
-        if r is None:
+        try:
+            r = requests.post(
+                'http://geodatafarm.com/create/?username={u}&password={p}&farmname={f}&email={e}'.format(u=username,
+                                                                                                         p=password,
+                                                                                                         f=farmname,
+                                                                                                         e=email_inp),
+                timeout=30)
+        except requests.exceptions.RequestException:
             report_error(self.tr(
                 '- Is your computer online? \n- If you are sure that please send an email to geodatafarm@gmail.com'))
             return

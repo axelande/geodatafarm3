@@ -66,6 +66,7 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     PBAddIsoField: QPushButton
     PBRemoveField: QPushButton
     PBWebbpage: QPushButton
+    PBSponsor: QPushButton
     PBAddCrop: QPushButton
     PBRemoveCrop: QPushButton
     LWFields: QListWidget

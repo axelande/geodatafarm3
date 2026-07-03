@@ -64,11 +64,11 @@ class SaveSpraying:
             wind_dir = wind_dir or None
             other = other or None
             sql = ("INSERT INTO spray.manual"
-                   " (field, crop, date_, variety, rate, wind_speed, wind_dir, other, table_)"
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'None')")
+                   " (field, crop, date_, date_text, variety, rate, wind_speed, wind_dir, other, table_)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'None')")
             try:
                 self.parent.db.execute_sql(sql, params=(
-                    field, crop, date_, varerity, rate, wind_speed, wind_dir, other))
+                    field, crop, date_, date_, varerity, rate, wind_speed, wind_dir, other))
                 report_success(self.tr('The data was stored correctly'))
             except Exception as e:
                 report_error(self.tr(f'Following error occurred: {e}'), detail=str(e))

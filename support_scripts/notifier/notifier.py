@@ -19,7 +19,9 @@ from abc import ABCMeta, abstractmethod
 import configparser
 import functools
 import os
+import platform
 import re
+import traceback
 import uuid
 from typing import Any, Callable, List, Optional, Self
 from urllib.parse import quote
@@ -51,12 +53,20 @@ def _plugin_metadata() -> configparser.SectionProxy:
     return parser['general']
 
 
-def let_us_know() -> None:
+# GitHub rejects overly long issue-prefill URLs (the practical ceiling is a
+# little over 8 kB); keep the whole encoded URL comfortably below that.
+_MAX_ISSUE_URL_LEN = 7000
+
+
+def let_us_know(error: Optional[GeoDataFarmError] = None) -> None:
     """Open the GeoDataFarm issue tracker so the user can report a problem.
 
-    The tracker URL is taken from metadata.txt. A non GitHub tracker gets a
-    set of UTM query tags appended so reports can be traced back to the
-    plugin; the GitHub tracker is opened as is.
+    The tracker URL is taken from metadata.txt. When called with the ``error``
+    that was shown and the tracker is on GitHub, a *pre-filled* 'new issue'
+    page is opened (title, the error, its technical details and the user's
+    environment) so reporting takes a single click. Without an error the plain
+    tracker is opened; a non GitHub tracker gets a set of UTM query tags
+    appended so reports can be traced back to the plugin.
     """
     try:
         tracker_url = _plugin_metadata().get(
@@ -65,9 +75,102 @@ def let_us_know() -> None:
         tracker_url = 'https://github.com/axelande/geodatafarm3/issues'
 
     if 'github' in tracker_url:
-        QDesktopServices.openUrl(QUrl(tracker_url))
+        if error is not None:
+            QDesktopServices.openUrl(
+                QUrl(_prefilled_github_issue_url(tracker_url, error)))
+        else:
+            QDesktopServices.openUrl(QUrl(tracker_url))
     else:
         QDesktopServices.openUrl(QUrl(f'{tracker_url}/?{_utm_tags("error")}'))
+
+
+def _strip_html(text: str) -> str:
+    """Remove the small set of inline tags the notifier uses from ``text``."""
+    return re.sub(r'</?(i|b)\b[^>]*?>', '', text, flags=re.IGNORECASE)
+
+
+def _environment_lines(error: GeoDataFarmError) -> str:
+    """A short, human readable description of the runtime for a bug report."""
+    try:
+        version = _plugin_metadata().get('version', '')
+    except Exception:
+        version = ''
+    return (f'- GeoDataFarm {version}\n'
+            f'- QGIS {Qgis.QGIS_VERSION}\n'
+            f'- {platform.platform()} / Python {platform.python_version()}\n'
+            f'- Error id: {error.error_id}')
+
+
+def _report_body(error: GeoDataFarmError) -> str:
+    """The technical part of a report: the detail text or the traceback.
+
+    Prefers the ``detail`` already attached to the error; otherwise formats the
+    traceback of the wrapped original exception; failing that, the log message.
+    """
+    if error.detail:
+        return error.detail
+    cause = error.__cause__
+    if cause is not None:
+        return ''.join(traceback.format_exception(
+            type(cause), cause, cause.__traceback__)).strip()
+    return error.log_message
+
+
+def _auto_context(error: GeoDataFarmError) -> str:
+    """Return a one-line 'first → last' frame hint from the error's traceback.
+
+    Only GeoDataFarm frames are considered; if there is just one such frame the
+    arrow form is skipped.  Returns an empty string when no traceback is available.
+    """
+    cause = error.__cause__
+    if cause is None or cause.__traceback__ is None:
+        return ''
+    frames = traceback.extract_tb(cause.__traceback__)
+    if not frames:
+        return ''
+    plugin_frames = [f for f in frames if 'geodatafarm' in f.filename.lower()]
+    if not plugin_frames:
+        plugin_frames = frames
+
+    def _fmt(f: traceback.FrameSummary) -> str:
+        return f'`{f.name}` ({os.path.basename(f.filename)}:{f.lineno})'
+
+    first, last = plugin_frames[0], plugin_frames[-1]
+    if first.filename == last.filename and first.lineno == last.lineno:
+        return _fmt(first)
+    return f'{_fmt(first)} → {_fmt(last)}'
+
+
+def _prefilled_github_issue_url(tracker_url: str,
+                                error: GeoDataFarmError) -> str:
+    """Build a GitHub 'new issue' URL pre-filled from ``error``.
+
+    The technical details are truncated (keeping the tail, where the actual
+    error line usually sits) so the whole encoded URL stays under the length
+    GitHub accepts; the full trace is always available in the QGIS log.
+    """
+    title = _strip_html(error.user_message.rstrip('.'))[:80]
+    environment = _environment_lines(error)
+    base = f'{tracker_url}/new'
+    context = _auto_context(error)
+    context_line = f'\n*Auto-detected:* {context}' if context else ''
+
+    def build(details: str) -> str:
+        body = ('**What I was doing when this happened:**\n'
+                f'<!-- a sentence or two really helps -->{context_line}\n\n'
+                f'**Error:** {_strip_html(error.user_message)}\n\n'
+                '**Details**\n'
+                f'```\n{details}\n```\n\n'
+                f'**Environment**\n{environment}\n')
+        return f'{base}?title={quote(title)}&body={quote(body)}'
+
+    details = _report_body(error)
+    if len(build(details)) <= _MAX_ISSUE_URL_LEN:
+        return build(details)
+    marker = '\n…(truncated, full trace in the QGIS log)'
+    while details and len(build(details + marker)) > _MAX_ISSUE_URL_LEN:
+        details = details[200:]
+    return build(details + marker)
 
 
 def _utm_tags(medium: str) -> str:
@@ -403,5 +506,5 @@ class MessageBarNotifier(NotifierInterface):
 
         if type(error) is GeoDataFarmError:
             button = QPushButton(_tr('Let us know'))
-            button.pressed.connect(let_us_know)
+            button.pressed.connect(functools.partial(let_us_know, error))
             widget.layout().addWidget(button)

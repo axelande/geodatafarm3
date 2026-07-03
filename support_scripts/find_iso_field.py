@@ -383,7 +383,7 @@ class FindIsoField:
             if self.parent.test_mode:
                 return False
             else:
-                report_warning(self.tr('Field name already exist, please select a new name'))
+                report_warning(self.parent.tr('Field name already exist, please select a new name'))
                 return
         except InternalError as e:
             report_error(str(e), detail=str(e))

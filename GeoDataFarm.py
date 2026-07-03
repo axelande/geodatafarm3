@@ -340,7 +340,7 @@ class GeoDataFarm:
         self.items_in_table = self.populate.get_items_in_table()
         self.lw_list = self.populate.get_lw_list()
         for i, (lw, schema) in enumerate(self.lw_list):
-            for item in self.items_in_table[i][0]:
+            for item in (self.items_in_table[i][0] or []):
                 if (item.checkState() == 2 and
                         self.db.check_table_exists(item.text(), schema, False)):
                     if schema == 'harvest':
@@ -580,6 +580,7 @@ class GeoDataFarm:
             self.dock_widget.PBRunAnalyses.clicked.connect(self.run_analyse)
             self.dock_widget.PBAdd2Canvas.clicked.connect(self.add_selected_tables)
             self.dock_widget.PBWebbpage.clicked.connect(lambda: webbrowser.open('http://www.geodatafarm.com/'))
+            self.dock_widget.PBSponsor.clicked.connect(lambda: webbrowser.open('https://github.com/sponsors/axelande'))
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
     def save_add_data(self):

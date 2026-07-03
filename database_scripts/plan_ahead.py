@@ -108,7 +108,10 @@ class PlanAhead:
             params = []
             for col in range(nbr_cols):
                 item = table.cellWidget(row, col)
-                col_name = '_' + table.horizontalHeaderItem(col).text()
+                header_item = table.horizontalHeaderItem(col)
+                if header_item is None:
+                    continue
+                col_name = '_' + header_item.text()
                 if item.currentText() != self.tr('Select crop'):
                     set_parts.append(
                         pgsql.SQL("{c} = %s").format(c=pgsql.Identifier(col_name)))
