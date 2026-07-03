@@ -636,7 +636,8 @@ class CreateGuideFile:
         self.attributes = {}
 
         exclude = "'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', 'pos', 'date_', 'polygon', 'field_row_id'"
-        for i, row in enumerate(names):
+        write_row = 0
+        for row in names:
             s, tbl = row.split('.')
             attributes = self.db.get_numeric_columns(
                 table=tbl, schema=s, exclude=exclude)
@@ -644,13 +645,16 @@ class CreateGuideFile:
                 continue
             item1 = QTableWidgetItem('{row}'.format(row=row))
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
-            self.CGF.TWColumnNames.setItem(i, 0, item1)
+            self.CGF.TWColumnNames.setItem(write_row, 0, item1)
             popup_menu = QComboBox()
             popup_menu.addItems(attributes)
-            self.attributes[i] = {'tbl': row,
-                                  'attributes': attributes}
-            self.CGF.TWColumnNames.setCellWidget(i, 1, popup_menu)
-            popup_menu.activated.connect(lambda index, row=i: self.add_to_param_list(index, row))
+            self.attributes[write_row] = {'tbl': row,
+                                          'attributes': attributes}
+            self.CGF.TWColumnNames.setCellWidget(write_row, 1, popup_menu)
+            popup_menu.activated.connect(
+                lambda index, r=write_row: self.add_to_param_list(index, r))
+            write_row += 1
+        self.CGF.TWColumnNames.setRowCount(write_row)
 
     def add_to_param_list(self: Self, index: int, row: int) -> None:
         """Adds the selected columns to the list of fields that should be
@@ -1164,7 +1168,8 @@ class CreateGuideFile:
 
         exclude = ("'cmax', 'cmin', 'ctid', 'xmax', 'xmin', 'tableoid', "
                    "'pos', 'date_', 'polygon', 'field_row_id'")
-        for i, row in enumerate(names):
+        write_row = 0
+        for row in names:
             s, tbl = row.split('.')
             attributes = self.db.get_numeric_columns(
                 table=tbl, schema=s, exclude=exclude)
@@ -1172,13 +1177,15 @@ class CreateGuideFile:
                 continue
             item1 = QTableWidgetItem('{row}'.format(row=row))
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
-            self.CGF.IsoTWColumnNames.setItem(i, 0, item1)
+            self.CGF.IsoTWColumnNames.setItem(write_row, 0, item1)
             popup_menu = QComboBox()
             popup_menu.addItems(attributes)
-            self.iso_attributes[i] = {'tbl': row, 'attributes': attributes}
-            self.CGF.IsoTWColumnNames.setCellWidget(i, 1, popup_menu)
+            self.iso_attributes[write_row] = {'tbl': row, 'attributes': attributes}
+            self.CGF.IsoTWColumnNames.setCellWidget(write_row, 1, popup_menu)
             popup_menu.activated.connect(
-                lambda index, row=i: self.iso_add_to_param_list(index, row))
+                lambda index, r=write_row: self.iso_add_to_param_list(index, r))
+            write_row += 1
+        self.CGF.IsoTWColumnNames.setRowCount(write_row)
 
     def iso_add_to_param_list(self: Self, index: int, row: int) -> None:
         """Add the chosen column to the ISO selected list (mirror of
