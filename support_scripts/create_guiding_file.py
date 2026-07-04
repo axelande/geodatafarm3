@@ -579,7 +579,7 @@ class CreateGuideFile:
         Returns
         -------
         set
-            Set of table names linked to the field
+            Set of table names linked to the field, or empty set on any error
         """
         tables = set()
         if schema == 'other':
@@ -592,8 +592,10 @@ class CreateGuideFile:
                     schema=pgsql.Identifier(schema),
                     tbl=pgsql.Identifier(manual_tbl))
                 rows = self.db.execute_and_return(query, params=(field_name,))
+                if not isinstance(rows, (list, tuple)):
+                    continue
                 for row in rows:
-                    if row[0]:
+                    if row[0] and len(str(row[0])) > 1:
                         tables.add(row[0])
             except Exception:
                 continue
@@ -618,6 +620,8 @@ class CreateGuideFile:
 
         if filter_by_field:
             field_tables = self._get_tables_for_field(schema, field_name)
+            if not field_tables:
+                field_tables = None
         else:
             field_tables = None
 
@@ -1149,6 +1153,8 @@ class CreateGuideFile:
                            and field_name != self.tr('--- Select field ---'))
         if filter_by_field:
             field_tables = self._get_tables_for_field(schema, field_name)
+            if not field_tables:
+                field_tables = None
         else:
             field_tables = None
 

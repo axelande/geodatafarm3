@@ -15,13 +15,24 @@ def test_create_guide_file(gdf: GeoDataFarm):
     idx = gdf.guide.CGF.CBFields.findText('test_field')
     gdf.guide.CGF.CBFields.setCurrentIndex(idx)
     gdf.guide.possible_attr('plant')
-    # TWColumnNames row 0, column 1 is the QComboBox listing numeric attributes
-    # of the first available plant table.  setCurrentIndex(2) picks the third
-    # attribute alphabetically (index 2) before it is added to the selected list.
-    widget = gdf.guide.CGF.TWColumnNames.cellWidget(0, 1)
+    # Find the row for the plant table imported in test_import_plant_text.
+    # Using a name-based lookup rather than assuming row 0 makes the test
+    # resilient to stale tables from previous CI/CD runs appearing first.
+    expected_table = 'plant.test_field_plant_2023_04_15'
+    tw = gdf.guide.CGF.TWColumnNames
+    target_row = next(
+        (r for r in range(tw.rowCount())
+         if tw.item(r, 0) is not None and tw.item(r, 0).text() == expected_table),
+        0)
+    # column 1 of the target row is the QComboBox listing numeric attributes.
+    # setCurrentIndex(2) picks the third attribute alphabetically (index 2).
+    widget = tw.cellWidget(target_row, 1)
+    assert widget is not None, (
+        f"No attribute combo found for {expected_table} "
+        f"(rowCount={tw.rowCount()})")
     widget.setCurrentIndex(2)
-    gdf.guide.add_to_param_list(2, 0)  # add attribute at combo-index 2, table row 0
-    gdf.guide.add_to_param_list(3, 0)  # add attribute at combo-index 3, table row 0
+    gdf.guide.add_to_param_list(2, target_row)  # add attribute at combo-index 2
+    gdf.guide.add_to_param_list(3, target_row)  # add attribute at combo-index 3
     gdf.guide.CGF.TWSelected.selectRow(1)
     gdf.guide.remove_from_param_list()
     gdf.guide.update_max_min()
