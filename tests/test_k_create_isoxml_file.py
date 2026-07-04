@@ -29,6 +29,12 @@ def test_create_isoxml_file(gdf: GeoDataFarm):
     # column 1 of the target row is the QComboBox listing numeric attributes.
     # setCurrentIndex(2) picks the third attribute alphabetically (index 2).
     widget = tw.cellWidget(target_row, 1)
+    if widget is None:
+        plant_tables = gdf.db.get_tables_in_db('plant')
+        field_tables = gdf.guide._get_tables_for_field('plant', 'test_field')
+        print(f"\nDEBUG plant_tables={plant_tables}")
+        print(f"DEBUG field_tables={field_tables}")
+        print(f"DEBUG rowCount={tw.rowCount()}")
     assert widget is not None, (
         f"No attribute combo found for {expected_table} "
         f"(rowCount={tw.rowCount()})")

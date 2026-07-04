@@ -187,6 +187,8 @@ class DB:
             And table_schema= %s
             """
         res = self.execute_and_return(sql, params=(table_name, schema))
+        if not isinstance(res, (list, tuple)) or not res:
+            return False
         if res[0][0] > 0:
             if ask_replace:
                 qm = QMessageBox
@@ -312,6 +314,8 @@ class DB:
         where table_schema = %s and table_type = 'BASE TABLE'
         ORDER BY table_name"""
         table_names = self.execute_and_return(sql, params=(schema,))
+        if not isinstance(table_names, (list, tuple)):
+            return []
         names = []
         for name in table_names:
             names.append(name[0])
@@ -343,6 +347,8 @@ class DB:
             schema=pgsql.Identifier(schema)
         )
         all_distinct = self.execute_and_return(query)
+        if not isinstance(all_distinct, (list, tuple)):
+            return []
         checked_values = []
         for col, count in all_distinct:
             checked_values.append([col, count])
@@ -371,13 +377,15 @@ class DB:
             " AND t.relkind = 'r'"
             " AND t.relname = %s"
             " AND n.nspname = %s"
-            " AND attisdropped IS False"
-            " AND attstattarget < 0"
+            " AND NOT attisdropped"
+            " AND a.attnum > 0"
             " AND a.attname NOT IN ({exclude})"
             " GROUP BY t.relname, a.attname"
             " ORDER BY a.attname"
         ).format(exclude=pgsql.SQL(exclude))
         cols = self.execute_and_return(query, params=(table, schema))
+        if not isinstance(cols, (list, tuple)):
+            return []
         columns = []
         for col in cols:
             columns.append(col[0])
@@ -408,14 +416,16 @@ class DB:
             " AND t.relkind = 'r'"
             " AND t.relname = %s"
             " AND n.nspname = %s"
-            " AND attisdropped IS False"
-            " AND attstattarget < 0"
+            " AND NOT attisdropped"
+            " AND a.attnum > 0"
             " AND a.attname NOT IN ({exclude})"
             " AND ty.typname IN ('int2', 'int4', 'int8', 'float4', 'float8', 'numeric')"
             " GROUP BY t.relname, a.attname"
             " ORDER BY a.attname"
         ).format(exclude=pgsql.SQL(exclude))
         cols = self.execute_and_return(query, params=(table, schema))
+        if not isinstance(cols, (list, tuple)):
+            return []
         return [col[0] for col in cols]
 
     def update_row_id(self, schema, table):
@@ -479,6 +489,8 @@ class DB:
             params = (tables, schema)
         big_table = self.execute_and_return(query, params=params)
         parameter_to_eval = {}
+        if not isinstance(big_table, (list, tuple)):
+            return parameter_to_eval
         ind = -1
         for table, index_name, index_col, schema in big_table:
             if index_col == 'field_row_id' or 'gist' in index_name:
@@ -518,6 +530,10 @@ class DB:
             conn.commit()
             row_count = cur.rowcount
         except Exception as e:
+            try:
+                conn.rollback()
+            except Exception:
+                pass
             if return_failure:
                 self.pool.putconn(conn)
                 error_type, value_, traceback_ = sys.exc_info()
@@ -568,6 +584,10 @@ class DB:
             cur.execute(sql, params)
             data = cur.fetchall()
         except Exception as e:
+            try:
+                conn.rollback()
+            except Exception:
+                pass
             self.pool.putconn(conn)
             if return_failure:
                 error_type, value_, traceback_ = sys.exc_info()

@@ -396,7 +396,8 @@ class InputTextHandler(object):
             params['date_row'] = ''
         self.tbl_name = check_text(f'{self.ITD.CBField.currentText()}_{self.data_type}_{table_date}')
         params['tbl_name'] = self.tbl_name
-        if self.db.check_table_exists(self.tbl_name, self.data_type):
+        ask = not getattr(self.parent_widget, 'test_mode', False)
+        if self.db.check_table_exists(self.tbl_name, self.data_type, ask_replace=ask):
             return [False]
         for i in range(self.add_to_param_row_count):
             params['focus_col'].append(check_text(self.ITD.TWtoParam.item(i, 0).text()))
@@ -629,7 +630,7 @@ def create_table(db: DB, schema: str, heading_row: list[str],
         cols=pgsql.SQL(col_defs))
     inserting_text = inserting_text[:-2] + ') VALUES '
     insert_org_sql = inserting_text
-    if not db.check_table_exists(schema=schema, table_name=table):
+    if not db.check_table_exists(schema=schema, table_name=table, ask_replace=False):
         db.create_table(sql, f'{schema}.{temp_tbl}')
     else:
         return [False, '', '']

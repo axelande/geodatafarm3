@@ -9,6 +9,9 @@ from . import gdf
 
 # @pytest.mark.depends(name='import_text', on=['add_field'])
 def test_import_plant_text(gdf:GeoDataFarm):
+    # Drop stale data from previous CI/CD runs so the import can always proceed.
+    gdf.db.execute_sql("DROP TABLE IF EXISTS plant.test_field_plant_2023_04_15")
+    gdf.db.execute_sql("DELETE FROM plant.manual WHERE table_ = 'test_field_plant_2023_04_15'")
     gdf.dock_widget.CBPFileType.setCurrentIndex(1)
     gdf.dock_widget.PBPAddFile.click()
     gdf.save_planting.importer.ITD.PBAddInputFile.click()
@@ -27,6 +30,9 @@ def test_import_plant_text(gdf:GeoDataFarm):
     
 
 def test_import_harvest_text(gdf:GeoDataFarm):
+    # Drop stale data from previous CI/CD runs so the import can always proceed.
+    gdf.db.execute_sql("DROP TABLE IF EXISTS harvest.test_field_harvest_2023_09_15")
+    gdf.db.execute_sql("DELETE FROM harvest.manual WHERE table_ = 'test_field_harvest_2023_09_15'")
     gdf.dock_widget.CBHvFileType.setCurrentIndex(1)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.ITD.PBAddInputFile.click()
@@ -48,6 +54,8 @@ def test_import_harvest_text(gdf:GeoDataFarm):
 
 # @pytest.mark.depends(name='import_harvest_text', on=['add_field2'])
 def test_import_iso(gdf:GeoDataFarm):
+    gdf.db.execute_sql("DROP TABLE IF EXISTS harvest.test_iso_added_field2_potatoes__023_08_17t18_44_14")
+    gdf.db.execute_sql("DELETE FROM harvest.manual WHERE table_ = 'test_iso_added_field2_potatoes__023_08_17t18_44_14'")
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.open_input_folder(path='./tests/test_data/TASKDATA2/')
@@ -76,6 +84,8 @@ def test_import_iso(gdf:GeoDataFarm):
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Test runs only on Windows")
 def test_import_iso2(gdf:GeoDataFarm):
+    gdf.db.execute_sql("DROP TABLE IF EXISTS harvest.test_iso_added_field3_potatoes_one970_01_01")
+    gdf.db.execute_sql("DELETE FROM harvest.manual WHERE table_ = 'test_iso_added_field3_potatoes_one970_01_01'")
     gdf.dock_widget.CBHvFileType.setCurrentIndex(2)
     gdf.dock_widget.PBHvAddFile.click()
     gdf.save_harvesting.importer.open_input_folder(path='./tests/test_data/TASKDATA4/')
