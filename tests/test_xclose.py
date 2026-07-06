@@ -36,8 +36,18 @@ fields = ['test_field', 'test_iso_field', 'test_iso_added_field', 'test_iso_adde
 def test_remove_xfield(gdf: GeoDataFarm, field_name):
     gdf.add_field.clicked_define_field()
     items = [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
+    matched = [text for text in items if text == field_name]
+    print(f"\n[{field_name}] LWFields before removal: {items}")
+    print(f"[{field_name}] Matched (will be checked): {matched}")
     for i, text in enumerate(items):
-        if field_name in text:
+        if text == field_name:
             gdf.dock_widget.LWFields.item(i).setCheckState(_check_state('Checked'))
     gdf.add_field.remove_field()
-    assert field_name not in [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
+    remaining_lw = [gdf.dock_widget.LWFields.item(i).text() for i in range(gdf.dock_widget.LWFields.count())]
+    print(f"[{field_name}] LWFields after removal: {remaining_lw}")
+    remaining_db = gdf.db.execute_and_return(
+        "SELECT COUNT(*) FROM fields WHERE field_name = %s", params=(field_name,))
+    print(f"[{field_name}] DB count after removal: {remaining_db}")
+    assert field_name not in remaining_lw, f"Field {field_name!r} still in LWFields after removal: {remaining_lw}"
+    assert isinstance(remaining_db, list) and remaining_db[0][0] == 0, (
+        f"Field {field_name!r} still present in DB after removal")

@@ -6,6 +6,7 @@ from shapely import wkt
 from . import gdf
 
 def test_import_field_from_shapefile(gdf):
+    gdf.db.execute_sql("DELETE FROM fields WHERE field_name = 'test_shape_added_field'")
     gdf.add_shape_field()
     W = gdf.find_shape_field
     W.path='./tests/test_data/tabbehus.shp'
@@ -37,7 +38,6 @@ def test_polygon_coordinates_consistency_shapefile(gdf):
     item = W.fsfw.LWFields.item(0)
     W.on_item_clicked(item)
     original_wkt = W.current_polygon
-    W.save_field()
     saved_wkt = W.current_polygon
     original_polygon = wkt.loads(original_wkt)
     saved_polygon = wkt.loads(saved_wkt)

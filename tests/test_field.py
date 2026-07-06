@@ -9,6 +9,7 @@ test_data = [('test_field', [[55.39658060, 13.55289676], [55.39478077, 13.552613
 # @pytest.mark.depends(scope='session', name='add_field')
 @pytest.mark.parametrize('name, coord_input', test_data)
 def test_add_field(gdf: GeoDataFarm, name, coord_input):
+    gdf.db.execute_sql("DELETE FROM fields WHERE field_name = %s", params=(name,))
     gdf.add_field.clicked_define_field()
     gdf.add_field.AFD.LEFieldName.setText(name)
     feat = QgsFeature(gdf.add_field.field.fields()) # Create the features

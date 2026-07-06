@@ -10,6 +10,7 @@ from ..support_scripts.find_iso_field import FindIsoField
 from . import gdf
 
 def test_import_par_field_from_isoxml(gdf):
+    gdf.db.execute_sql("DELETE FROM fields WHERE field_name = 'test_iso_added_field'")
     W = FindIsoField(gdf, test_path='./tests/test_data/TASKDATA3/TASKDATA.XML')
     W.zoom_level = 10
     W.fifw.PBAddFolder.click()
@@ -24,6 +25,7 @@ def test_import_par_field_from_isoxml(gdf):
     assert field_added
 
 def test_import_task_field_from_isoxml(gdf):
+    gdf.db.execute_sql("DELETE FROM fields WHERE field_name = 'test_iso_added_field2'")
     W = FindIsoField(gdf, test_path='./tests/test_data/TASKDATA2/TASKDATA.XML')
     W.fifw.PBAddFolder.click()
     W.fifw.PBGetAdditionalData.click()
@@ -69,6 +71,7 @@ def test_polygon_coordinates_consistency(find_iso_field: FindIsoField):
     assert original_polygon.equals_exact(saved_polygon, tolerance=1e-7), "The polygon coordinates should remain consistent before and after saving."
 
 def test_import_grid_task_field_from_isoxml(gdf):
+    gdf.db.execute_sql("DELETE FROM fields WHERE field_name = 'test_iso_added_field3'")
     W = FindIsoField(gdf, test_path='./tests/test_data/TASKDATA4/TASKDATA.XML')
     W.zoom_level = 10
     W.fifw.PBAddFolder.click()

@@ -173,9 +173,11 @@ class AddField:
                             stop_removing = True
                 if stop_removing:
                     continue
-                self.db.execute_sql(
+                res = self.db.execute_sql(
                     "DELETE FROM fields WHERE field_name = %s",
-                    params=(field_name,))
+                    params=(field_name,), return_failure=True)
+                if not isinstance(res, list) or not res[0]:
+                    return False
                 self.parent.dock_widget.LWFields.takeItem(j)
                 j -= 1
 
