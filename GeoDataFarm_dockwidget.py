@@ -291,11 +291,6 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     # ==================== Tab: Guide file / NDVI (tab_16) ====================
     CBFieldList: QComboBox
-    LEVal_1: QLineEdit
-    LEVal_2: QLineEdit
-    LEVal_3: QLineEdit
-    LEVal_4: QLineEdit
-    LEVal_5: QLineEdit
     QWGraphArea: QWidget
     PBListCropstat: QPushButton
     PBListGeoDataFarm: QPushButton
@@ -313,15 +308,17 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     PBGenShp: QPushButton
     PBGenIso: QPushButton
     LSatPreview: QLabel
+    LClassPreviewTitle: QLabel
+    LClassPreview: QLabel
     PBUpdateGraph: QPushButton
     groupBox_5: QGroupBox
     RBNdviIndex: QRadioButton
     RBMsavi2Index: QRadioButton
-    LVal_1: QLabel
-    LVal_2: QLabel
-    LVal_3: QLabel
-    LVal_4: QLabel
-    LVal_5: QLabel
+    SBNumClasses: QSpinBox
+    LEClassMin: QLineEdit
+    LEClassMax: QLineEdit
+    PBUpdateClasses: QPushButton
+    QWValueMapping: QWidget
     label_22: QLabel
     label_27: QLabel
     label_31: QLabel

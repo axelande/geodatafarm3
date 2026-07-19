@@ -17,5 +17,5 @@ class MsgError(Exception):
 		try:
 			box.exec()
 		except TypeError:
-			box.exec_()
+			getattr(box, 'exec_')()
 

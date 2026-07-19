@@ -213,8 +213,8 @@ class CreateFarm:
           END IF;
 
           CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
-          NextX := ST_X(ST_Project(CPoint, $2, radians(90))::geometry);
-          NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
+          NextX := ST_X(ST_Project(CPoint::geography, $2, radians(90))::geometry);
+          NextY := ST_Y(ST_Project(CPoint::geography, $3, radians(0))::geometry);
 
           i := i + 1;
           sectors[i] := ST_MakeEnvelope(X, Y, NextX, NextY, SRID);
@@ -222,7 +222,7 @@ class CreateFarm:
           X := NextX;
         END LOOP xloop;
         CPoint := ST_SetSRID(ST_MakePoint(X, Y), SRID);
-        NextY := ST_Y(ST_Project(CPoint, $3, radians(0))::geometry);
+        NextY := ST_Y(ST_Project(CPoint::geography, $3, radians(0))::geometry);
         Y := NextY;
       END LOOP yloop;
 

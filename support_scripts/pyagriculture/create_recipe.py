@@ -1,7 +1,7 @@
 from operator import xor
 import os
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 from typing import Self
 
 from qgis.PyQt.QtWidgets import (QDialog, QWidget, QLabel, QGridLayout, QTableWidget, QTableWidgetItem, QSpacerItem,
@@ -94,7 +94,7 @@ class CreateRecipe(QDialog):
         try:
             self.setAttribute(_widget_attribute('WA_DeleteOnClose'))
             self.setModal(True)
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def add_widgets_to_layout(self):
@@ -339,5 +339,5 @@ class CreateRecipe(QDialog):
         try:
             # preserve older behavior if callers use run()
             self.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass

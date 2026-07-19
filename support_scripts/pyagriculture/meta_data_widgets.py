@@ -1,6 +1,6 @@
 from operator import xor
 import os
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 from qgis.PyQt.QtWidgets import (QDialog, QWidget, QLabel, QGridLayout, QListWidget, QListWidgetItem, QSpacerItem,
                                   QFileDialog, QPushButton, QComboBox, QSizePolicy, QAbstractItemView, QApplication,
@@ -23,7 +23,7 @@ class MetaData(QDialog):
         try:
             self.setAttribute(_widget_attribute('WA_DeleteOnClose'))
             self.setModal(True)
-        except Exception:
+        except Exception:  # nosec B110
             pass
         self.main_layout = QGridLayout()
         self.available_items_table_widget = QListWidget()

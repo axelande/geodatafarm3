@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 import numpy as np
 import geopandas as gpd
 from shapely.geometry import Polygon
@@ -146,7 +146,10 @@ class Grid:
                     polygons.append(Polygon([(x, y), (x + e_delta, y), (x + e_delta, y + n_delta), (x, y + n_delta)]))
                     east_count += 1
             except Exception as e:
-                pass
+                from qgis.core import QgsMessageLog, Qgis
+                QgsMessageLog.logMessage(
+                    f'grid: failed building grid polygons: {e}',
+                    'GeoDataFarm', Qgis.MessageLevel.Warning)
         pdvs['grid'] = polygons
         grid_ = gpd.GeoDataFrame(pdvs)
         # grid_ = grid_.set_crs(epsg=4326)

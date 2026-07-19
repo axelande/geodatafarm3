@@ -10,10 +10,10 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
 from psycopg2 import IntegrityError, InternalError, sql as pgsql
 
-# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+# Qt5/Qt6 compat: ensure the unscoped Yes/No aliases exist as attributes
 if not hasattr(QMessageBox, 'Yes'):
-    QMessageBox.Yes = QMessageBox.StandardButton.Yes
-    QMessageBox.No = QMessageBox.StandardButton.No
+    setattr(QMessageBox, 'Yes', QMessageBox.StandardButton.Yes)
+    setattr(QMessageBox, 'No', QMessageBox.StandardButton.No)
 from ..widgets.add_field import AddFieldFileDialog
 from .notifier import report_warning, report_error, report_info
 from ..support_scripts.create_layer import set_label, add_background, set_zoom

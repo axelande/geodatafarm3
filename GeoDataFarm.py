@@ -44,10 +44,10 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem, QScrollArea, QFrame
 from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 
-# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+# Qt5/Qt6 compat: ensure the unscoped Yes/No aliases exist as attributes
 if not hasattr(QMessageBox, 'Yes'):
-    QMessageBox.Yes = QMessageBox.StandardButton.Yes
-    QMessageBox.No = QMessageBox.StandardButton.No
+    setattr(QMessageBox, 'Yes', QMessageBox.StandardButton.Yes)
+    setattr(QMessageBox, 'No', QMessageBox.StandardButton.No)
 from psycopg2 import IntegrityError, sql as pgsql
 import os
 
@@ -573,7 +573,8 @@ class GeoDataFarm:
                 _gf_scroll = QScrollArea()
                 _gf_scroll.setWidgetResizable(True)
                 _gf_scroll.setFrameShape(
-                    QFrame.Shape.NoFrame if hasattr(QFrame, 'Shape') else QFrame.NoFrame)
+                    QFrame.Shape.NoFrame if hasattr(QFrame, 'Shape')
+                    else getattr(QFrame, 'NoFrame'))
                 _gf_scroll.setWidget(self.guide.CGF)
                 self.dock_widget.layoutGuideFile.addWidget(_gf_scroll)
             self.dock_widget.PBFixRows.clicked.connect(self.fix_rows)
@@ -731,7 +732,7 @@ class GeoDataFarm:
         if not getattr(self, 'gui_initialized', False):
             try:
                 self.initGui()
-            except Exception:
+            except Exception:  # nosec B110
                 # best-effort: if initGui fails (e.g., headless tests), continue
                 pass
         icon_path = ':/plugins/GeoDataFarm/img/icon.png'
@@ -761,8 +762,9 @@ class GeoDataFarm:
                     KeepAspectRatio = QtCore.Qt.AspectRatioMode.KeepAspectRatio
                     SmoothTransformation = QtCore.Qt.TransformationMode.SmoothTransformation
                 else:  # Qt5
-                    KeepAspectRatio = QtCore.Qt.KeepAspectRatio
-                    SmoothTransformation = QtCore.Qt.SmoothTransformation
+                    KeepAspectRatio = getattr(QtCore.Qt, 'KeepAspectRatio')
+                    SmoothTransformation = getattr(QtCore.Qt,
+                                                   'SmoothTransformation')
 
                 # Now your original line, compatible with both:
                 pimg = QPixmap.fromImage(img).scaled(91, 91, KeepAspectRatio, SmoothTransformation)
@@ -776,7 +778,7 @@ class GeoDataFarm:
             self.dock_widget.PBConnect2Farm.clicked.connect(self.connect_to_farm)
             try:
                 self.reload_range()
-            except:
+            except:  # nosec B110
                 pass
             self.dock_widget.mMapLayerComboBox.currentIndexChanged.connect(self.reload_range)
             # show the dock_widget

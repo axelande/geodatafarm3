@@ -381,7 +381,7 @@ class InputTextHandler(object):
             is_ok, first_date = check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()),
                                                   self.ITD.ComBDate_2.currentText())
             if not is_ok:
-                assert isinstance(first_date, datetime)
+                assert isinstance(first_date, datetime)  # nosec B101
                 report_warning(self.tr("The date format didn't match the selected format, please change"))
                 return
             params['date_row'] = check_text(self.ITD.ComBDate.currentText())

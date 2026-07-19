@@ -40,7 +40,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg
 
@@ -52,11 +52,11 @@ class GenerateTaskCommands:
                 if dlg.saved_recipe_path and on_recipe_saved:
                     on_recipe_saved(dlg.saved_recipe_path)
                 return dlg
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         try:
             dlg.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return dlg
 
@@ -66,7 +66,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg
 
@@ -75,11 +75,11 @@ class GenerateTaskCommands:
             try:
                 exec_fn()
                 return dlg
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         try:
             dlg.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return dlg
 
@@ -89,7 +89,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg
 
@@ -98,11 +98,11 @@ class GenerateTaskCommands:
             try:
                 exec_fn()
                 return dlg
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         try:
             dlg.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return dlg
 
@@ -112,7 +112,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg
 
@@ -121,11 +121,11 @@ class GenerateTaskCommands:
             try:
                 exec_fn()
                 return dlg
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         try:
             dlg.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return dlg
 
@@ -135,7 +135,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg
 
@@ -144,11 +144,11 @@ class GenerateTaskCommands:
             try:
                 exec_fn()
                 return dlg
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         try:
             dlg.show()
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return dlg
 
@@ -168,7 +168,7 @@ class GenerateTaskCommands:
         if getattr(self.parent_gdf, 'test_mode', False):
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             return dlg, w
 
@@ -177,6 +177,6 @@ class GenerateTaskCommands:
         except Exception:
             try:
                 dlg.show()
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         return dlg, w

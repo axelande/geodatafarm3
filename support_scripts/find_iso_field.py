@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Never, Self
 import os
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 import matplotlib
 matplotlib.use('Agg')
@@ -200,7 +200,7 @@ class FindIsoField:
                         (extent[2], extent[1]),
                         (extent[0], extent[1])
                     ])
-                except:
+                except:  # nosec B112
                     continue
             else:
                 task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)

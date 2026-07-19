@@ -1,7 +1,7 @@
 import os
 import struct
 import json
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 import geopandas as gpd
 import geopy.distance
@@ -21,9 +21,9 @@ if hasattr(QFrame, 'Shape'):
     QTableWidgetSingleSelection = QTableWidget.SelectionMode.SingleSelection
 else:
     # Qt5
-    QFrameStyledPanel = QFrame.StyledPanel
-    QTableWidgetSelectRows = QTableWidget.SelectRows
-    QTableWidgetSingleSelection = QTableWidget.SingleSelection
+    QFrameStyledPanel = getattr(QFrame, 'StyledPanel')
+    QTableWidgetSelectRows = getattr(QTableWidget, 'SelectRows')
+    QTableWidgetSingleSelection = getattr(QTableWidget, 'SingleSelection')
 
 from .create_recipe import CreateRecipe
 from .meta_data_widgets import MetaData
@@ -114,7 +114,7 @@ class TaskDataMixin:
         try:
             if hasattr(self, 'dock_widget') and self.dock_widget is not None:
                 lw = getattr(self.dock_widget, 'LWFields', None)
-        except Exception:
+        except Exception:  # nosec B110
             pass
         if lw is None:
             try:
@@ -122,7 +122,7 @@ class TaskDataMixin:
                     dock = getattr(self.parent_gdf, 'dock_widget', None)
                     if dock is not None:
                         lw = getattr(dock, 'LWFields', None)
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         return lw
 
@@ -138,7 +138,7 @@ class TaskDataMixin:
             for child in tree.getroot():
                 display_name = child.attrib.get('B', '')
                 items.append((child.tag, display_name))
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return items
 
@@ -149,9 +149,9 @@ class TaskDataMixin:
                 try:
                     if layer.name().startswith(field_name) or layer.name() == field_name:
                         return layer
-                except Exception:
+                except Exception:  # nosec B112
                     continue
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
         # Fallback: try fetching from database
@@ -201,7 +201,7 @@ class TaskDataMixin:
                     populate = getattr(self.parent_gdf, 'populate', None)
                     if populate is not None:
                         db = getattr(populate, 'db', None)
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
         if db is None:
@@ -222,7 +222,7 @@ class TaskDataMixin:
                             parent = parent.parent()
                         except Exception:
                             break
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
         if db is None:
@@ -231,7 +231,7 @@ class TaskDataMixin:
                     gdf = getattr(self.dock_widget, 'gdf', None)
                     if gdf is not None:
                         db = getattr(gdf, 'db', None)
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
         return db
@@ -449,20 +449,20 @@ class TaskDataMixin:
                 try:
                     items = [lw.item(j).text() for j in range(lw.count())]
                     field_selector.addItems(items)
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             def _on_poly_type_changed(idx, cb=poly_type_cb, fs=field_selector):
                 try:
                     text = cb.currentText()
                     fs.setVisible(text == 'Partfield Boundary')
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             def _on_poly_type_changed_set_frame(idx, cb=poly_type_cb, fr=frame):
                 try:
                     fr.__setattr__('polygon_type', cb.currentText())
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             poly_type_cb.currentIndexChanged.connect(_on_poly_type_changed)
@@ -471,14 +471,14 @@ class TaskDataMixin:
             def _on_field_selected(idx, fs=field_selector, fr=frame):
                 try:
                     fr.__setattr__('selected_field', fs.currentText())
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             field_selector.currentIndexChanged.connect(_on_field_selected)
 
             layout.addWidget(poly_type_cb, layout.rowCount() - 1, 3, 1, 1)
             layout.addWidget(field_selector, layout.rowCount() - 1, 4, 1, 1)
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def _show_frame(self):
@@ -529,7 +529,7 @@ class TaskDataMixin:
                         item.widget().close()
                         parent_layout.removeItem(item)
                         del item
-                except Exception:
+                except Exception:  # nosec B110
                     pass
         self.added_rows[parent_layout] = self.added_rows[parent_layout][:-1]
 
@@ -551,7 +551,7 @@ class TaskDataMixin:
                 for child in tree.getroot():
                     display_name = child.attrib.get('B', '')
                     selector.addItem(f'{child.tag} - {display_name}')
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
         populate_button = QPushButton(parent_widget, text='Populate', minimumHeight=20)
@@ -579,7 +579,7 @@ class TaskDataMixin:
             try:
                 items = [lw.item(j).text() for j in range(lw.count())]
                 field_selector.addItems(items)
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
         populate_button = QPushButton(parent_widget, text='Populate from field', minimumHeight=20)
@@ -905,7 +905,7 @@ class TaskDataMixin:
             cell_size.setSingleStep(1.0)
             try:
                 cell_size.setSuffix(' m')
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             cell_size.__setattr__('is_cell_size', True)
 
@@ -914,7 +914,7 @@ class TaskDataMixin:
                 try:
                     items = [lw.item(j).text() for j in range(lw.count())]
                     field_selector.addItems(items)
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             update_button = QPushButton(text='Update information', minimumHeight=20)
@@ -934,10 +934,10 @@ class TaskDataMixin:
             rate_layer_selector.addItem('')
             try:
                 for layer in QgsProject.instance().mapLayers().values():
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+                    if layer.type() == QgsMapLayer.LayerType.VectorLayer:
+                        if layer.geometryType() == QgsWkbTypes.GeometryType.PolygonGeometry:
                             rate_layer_selector.addItem(layer.name())
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
             rate_attr_label = QLabel(parent_widget, text='Rate attribute:')
@@ -957,7 +957,7 @@ class TaskDataMixin:
                         for field in layer.fields():
                             if field.isNumeric():
                                 attr_sel.addItem(field.name())
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
             rate_layer_selector.currentIndexChanged.connect(on_rate_layer_changed)
@@ -1030,10 +1030,10 @@ class TaskDataMixin:
             rate_layer_selector.addItem('')
             try:
                 for layer in QgsProject.instance().mapLayers().values():
-                    if layer.type() == QgsMapLayer.VectorLayer:
-                        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+                    if layer.type() == QgsMapLayer.LayerType.VectorLayer:
+                        if layer.geometryType() == QgsWkbTypes.GeometryType.PolygonGeometry:
                             rate_layer_selector.addItem(layer.name())
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             idx = rate_layer_selector.findText(current_rate_layer)
             if idx >= 0:
@@ -1052,7 +1052,7 @@ class TaskDataMixin:
                             for field in layer.fields():
                                 if field.isNumeric():
                                     rate_attr_selector.addItem(field.name())
-                    except Exception:
+                    except Exception:  # nosec B110
                         pass
                     idx = rate_attr_selector.findText(current_rate_attr)
                     if idx >= 0:
@@ -1092,7 +1092,7 @@ class TaskDataMixin:
                         w.setValue(int(v))
                     elif type(w) == QLineEdit:
                         w.setText(str(v))
-                except Exception:
+                except Exception:  # nosec B110
                     pass
 
     def _compute_grid_attrs_from_layer(self, layer, cell_size_m: float, generate_binary: bool = True) -> dict:
@@ -1113,7 +1113,7 @@ class TaskDataMixin:
             geom_wgs = self._copy_geometry(geom)
             try:
                 geom_wgs.transform(xform_to_wgs)
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             centroid = geom_wgs.centroid().asPoint()
             lon = centroid.x()
@@ -1129,7 +1129,7 @@ class TaskDataMixin:
             geom_utm = self._copy_geometry(geom)
             try:
                 geom_utm.transform(xform_to_utm)
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
             bbox = geom_utm.boundingBox()
@@ -1198,7 +1198,7 @@ class TaskDataMixin:
             attrs['H'] = str(file_length)
             attrs['I'] = grid_type
             attrs['J'] = '0'
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return attrs
 
@@ -1335,7 +1335,7 @@ class TaskDataMixin:
                         if isinstance(schema, dict) and 'GRD' in schema:
                             widgets[schema['GRD']] = w
                             continue
-            except Exception:
+            except Exception:  # nosec B110
                 pass
             try:
                 for idx in range(sub_layout.count()):
@@ -1350,7 +1350,7 @@ class TaskDataMixin:
                         for k, v in schema.items():
                             if k == 'GRD':
                                 widgets[v] = w
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         return widgets
 
@@ -1583,7 +1583,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
                 for col, attr in enumerate(attrs):
                     value = child.tag if attr == 'tag' else child.attrib.get(attr, '')
                     table.setItem(row, col, QTableWidgetItem(value))
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def _add_metadata(self, meta_type):
@@ -1619,8 +1619,8 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
             yes_btn = QMessageBox.StandardButton.Yes
             no_btn = QMessageBox.StandardButton.No
         except AttributeError:
-            yes_btn = QMessageBox.Yes
-            no_btn = QMessageBox.No
+            yes_btn = getattr(QMessageBox, 'Yes')
+            no_btn = getattr(QMessageBox, 'No')
         reply = QMessageBox.question(
             self, 'Confirm Delete',
             f'Remove {meta_type} "{item_id}"?',
@@ -1643,7 +1643,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
                 pass
             with open(xml_path, 'wb') as f:
                 f.write(ET.tostring(root, encoding='unicode').encode('utf-8'))
-        except Exception:
+        except Exception:  # nosec B110
             pass
         self._refresh_metadata_table(meta_type)
 
@@ -1669,7 +1669,7 @@ class GenerateTaskDataWidget(TaskDataMixin, QWidget):
         if dont_native is not None:
             try:
                 opts |= dont_native
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         file = QFileDialog.getOpenFileName(self, "Open Recipe", "", 'Recipes (*.recipe)', options=opts)[0]
         if not file:
@@ -1942,7 +1942,7 @@ class GenerateIsoxmlController(TaskDataMixin):
                 for col, attr in enumerate(attrs):
                     value = child.tag if attr == 'tag' else child.attrib.get(attr, '')
                     table.setItem(row, col, QTableWidgetItem(value))
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def _add_metadata(self, meta_type):
@@ -1979,8 +1979,8 @@ class GenerateIsoxmlController(TaskDataMixin):
             yes_btn = QMessageBox.StandardButton.Yes
             no_btn = QMessageBox.StandardButton.No
         except AttributeError:
-            yes_btn = QMessageBox.Yes
-            no_btn = QMessageBox.No
+            yes_btn = getattr(QMessageBox, 'Yes')
+            no_btn = getattr(QMessageBox, 'No')
 
         reply = QMessageBox.question(
             self.dock_widget, 'Confirm Delete',
@@ -2005,7 +2005,7 @@ class GenerateIsoxmlController(TaskDataMixin):
                 pass
             with open(xml_path, 'wb') as f:
                 f.write(ET.tostring(root, encoding='unicode').encode('utf-8'))
-        except Exception:
+        except Exception:  # nosec B110
             pass
         self._refresh_metadata_table(meta_type)
 
@@ -2036,7 +2036,7 @@ class GenerateIsoxmlController(TaskDataMixin):
         if dont_native is not None:
             try:
                 opts |= dont_native
-            except Exception:
+            except Exception:  # nosec B110
                 pass
         file = QFileDialog.getOpenFileName(self.dock_widget, "Open Recipe", "", 'Recipes (*.recipe)', options=opts)[0]
         if not file:

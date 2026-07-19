@@ -12,15 +12,16 @@ from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
 
-# Qt5/Qt6 compat: ensure QMessageBox.Yes/No exist as direct attributes
+# Qt5/Qt6 compat: ensure the unscoped Yes/No aliases exist as attributes
 if not hasattr(QMessageBox, 'Yes'):
-    QMessageBox.Yes = QMessageBox.StandardButton.Yes
-    QMessageBox.No = QMessageBox.StandardButton.No
+    setattr(QMessageBox, 'Yes', QMessageBox.StandardButton.Yes)
+    setattr(QMessageBox, 'No', QMessageBox.StandardButton.No)
 try:
     from ..support_scripts.__init__ import TR
 except ImportError:
     from support_scripts.__init__ import TR
 from ..support_scripts.notifier import report_error
+from ..support_scripts.notifier import log as gdf_log
 __author__ = 'Axel Horteborn'
 
 
@@ -532,8 +533,9 @@ class DB:
         except Exception as e:
             try:
                 conn.rollback()
-            except Exception:
-                pass
+            except Exception as rollback_exc:
+                gdf_log.warning(
+                    f'Rollback after failed execute_sql failed: {rollback_exc}')
             if return_failure:
                 self.pool.putconn(conn)
                 error_type, value_, traceback_ = sys.exc_info()
@@ -586,8 +588,9 @@ class DB:
         except Exception as e:
             try:
                 conn.rollback()
-            except Exception:
-                pass
+            except Exception as rollback_exc:
+                gdf_log.warning(
+                    f'Rollback after failed query failed: {rollback_exc}')
             self.pool.putconn(conn)
             if return_failure:
                 error_type, value_, traceback_ = sys.exc_info()
@@ -622,8 +625,9 @@ class DB:
             query = pgsql.SQL("DELETE FROM {}.manual WHERE table_ = %s").format(
                 pgsql.Identifier(schema))
             self.execute_sql(query, params=(tbl,))
-        except:
-            pass
+        except Exception as e:
+            gdf_log.warning(
+                f'Could not remove {tbl} from {schema}.manual: {e}')
 
     def reset_row_id(self: Self, schema: str, tbl: str) -> list:
         query = pgsql.SQL(

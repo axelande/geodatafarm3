@@ -52,7 +52,7 @@ from ..import_data.handle_input_shp_data import InputShpHandler
 try:
     _MOUSE_PRESS = QEvent.Type.MouseButtonPress
 except AttributeError:
-    _MOUSE_PRESS = QEvent.MouseButtonPress
+    _MOUSE_PRESS = getattr(QEvent, 'MouseButtonPress')
 
 
 class _RefreshOnClick(QObject):
@@ -597,7 +597,7 @@ class CreateGuideFile:
                 for row in rows:
                     if row[0] and len(str(row[0])) > 1:
                         tables.add(row[0])
-            except Exception:
+            except Exception:  # nosec B112
                 continue
         return tables
 

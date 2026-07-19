@@ -14,9 +14,11 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
-from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QPushButton
-from qgis.PyQt.QtCore import QVariant, QSettings, Qt
-from qgis.PyQt.QtGui import QPixmap
+from qgis.PyQt.QtWidgets import (QMessageBox, QVBoxLayout, QGridLayout,
+                                 QPushButton, QLabel, QLineEdit)
+from qgis.PyQt.QtCore import QVariant, QSettings, Qt, QPointF
+from qgis.PyQt.QtGui import (QPixmap, QPainter, QPen, QColor, QPolygonF,
+                             QImage)
 from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer, QgsGeometry,
                        QgsFeature,QgsProcessingFeedback, QgsRasterBandStats,
                        QgsExpression, QgsField)
@@ -25,16 +27,20 @@ import sys
 sys.path.append('C:\\OSGeo4W\\apps\\qgis\\python\\plugins\\')
 import processing
 from qgis.core import QgsProcessingException
-from ..support_scripts import check_text, TR
+from ..support_scripts import check_text, TR, isfloat
 from ..support_scripts.notifier import report_warning, report_error, report_success
 from ..support_scripts.cdse_client import CDSEClient, CDSEError
+from ..support_scripts.RG import rg
 from ..import_data.handle_input_shp_data import InputShpHandler
 
 # Where the per-user Copernicus OAuth credentials are stored in QSettings.
 CDSE_ID_KEY = "geodatafarm/cdse_client_id"
-CDSE_SECRET_KEY = "geodatafarm/cdse_client_secret"  # pragma: allowlist secret
+CDSE_SECRET_KEY = "geodatafarm/cdse_client_secret"  # pragma: allowlist secret  # nosec B105
 # URL where users create an OAuth client to obtain their id/secret.
 CDSE_DASHBOARD_URL = "https://shapps.dataspace.copernicus.eu/dashboard/"
+# Extra context (in metres) captured around the field in the true-colour
+# preview, so the surroundings are visible and not just the field itself.
+PREVIEW_BUFFER_M = 300
 
 
 class SatelliteData:
@@ -48,7 +54,12 @@ class SatelliteData:
         self.y_values = []
         self.x_values = []
         self.rarray = []
+        self.rarray_2d = None
+        self.classes = []
+        self.rate_edits = []
+        self._last_num_classes = None
         self.graph_area = QVBoxLayout(self.dlg.QWGraphArea)
+        self.class_grid = QGridLayout(self.dlg.QWValueMapping)
         self.connect_buttons = False
         self.qsettings = QSettings()
         self.client = None
@@ -72,6 +83,7 @@ class SatelliteData:
         self.dlg.PBGenShp.clicked.connect(lambda: self.generate_guide('shp'))
         self.dlg.PBGenIso.clicked.connect(lambda: self.generate_guide('iso'))
         self.dlg.PBUpdateGraph.clicked.connect(self.update_graph)
+        self.dlg.PBUpdateClasses.clicked.connect(self._apply_classification)
         # Pre-fill the saved Copernicus credentials, if any.
         self.dlg.LECdseClientId.setText(
             self.qsettings.value(CDSE_ID_KEY, '') or '')
@@ -112,8 +124,16 @@ class SatelliteData:
         self.client = CDSEClient(client_id, client_secret)
         return self.client
 
-    def _field_geometry(self):
+    def _field_geometry(self, buffer_m=0):
         """Reads the selected field from the database.
+
+        Parameters
+        ----------
+        buffer_m: float
+            If non-zero, the field polygon is expanded outward by this many
+            metres (via ``st_buffer`` on the geography) before its geometry
+            and bbox are returned, e.g. to capture context around the field
+            for the true-colour preview.
 
         Returns
         -------
@@ -127,10 +147,18 @@ class SatelliteData:
         if not field_name:
             report_warning(self.tr('Please select a field first.'))
             return None
-        row = self.parent.db.execute_and_return(
-            "SELECT st_asgeojson(polygon), st_xmin(polygon), st_ymin(polygon),"
-            " st_xmax(polygon), st_ymax(polygon) FROM fields"
-            " WHERE field_name = %s", params=(field_name,))[0]
+        if buffer_m:
+            row = self.parent.db.execute_and_return(
+                "SELECT st_asgeojson(buf), st_xmin(buf), st_ymin(buf),"
+                " st_xmax(buf), st_ymax(buf) FROM (SELECT"
+                " st_buffer(polygon::geography, %s)::geometry AS buf"
+                " FROM fields WHERE field_name = %s) t",
+                params=(buffer_m, field_name))[0]
+        else:
+            row = self.parent.db.execute_and_return(
+                "SELECT st_asgeojson(polygon), st_xmin(polygon), st_ymin(polygon),"
+                " st_xmax(polygon), st_ymax(polygon) FROM fields"
+                " WHERE field_name = %s", params=(field_name,))[0]
         geometry = json.loads(row[0])
         min_lon, min_lat, max_lon, max_lat = (float(row[1]), float(row[2]),
                                               float(row[3]), float(row[4]))
@@ -217,19 +245,29 @@ class SatelliteData:
             self.cleanup()
             return
         self.do_base_calculation(band4, band8)
-        if not self.update_texts():
+        if not self._apply_classification():
             self.cleanup()
             return
         self.dlg.PBUpdateGraph.setEnabled(True)
+        self.dlg.PBUpdateClasses.setEnabled(True)
         self.dlg.PBGenShp.setEnabled(True)
         self.dlg.PBGenIso.setEnabled(True)
-        self.update_graph()
-        # True-color preview alongside the index (best-effort).
-        self._update_preview(client, geometry, date, width, height)
+        # True-colour preview alongside the index (best-effort), padded with
+        # extra context around the field and outlined with the field
+        # boundary so the buffer zone stays distinguishable from the field.
+        preview_field = self._field_geometry(PREVIEW_BUFFER_M)
+        if preview_field is not None:
+            p_geometry, p_bbox, p_width, p_height = preview_field
+            self._update_preview(client, p_geometry, geometry, p_bbox, date,
+                                 p_width, p_height)
 
-    def _update_preview(self, client, geometry, date, width, height):
-        """Fetch a true-color composite for the scene and show it next to the
-        index. Failures are silently ignored — the index already succeeded."""
+    def _update_preview(self, client, geometry, field_geometry, bbox, date,
+                        width, height):
+        """Fetch a true-colour composite covering ``geometry`` (the field
+        buffered by :data:`PREVIEW_BUFFER_M`), draw the actual field boundary
+        (``field_geometry``) on top so it stays distinguishable from the
+        surrounding buffer zone, and show it next to the index. Failures are
+        silently ignored — the index already succeeded."""
         try:
             png = client.get_truecolor(geometry, date, width, height)
         except CDSEError:
@@ -237,13 +275,47 @@ class SatelliteData:
         pixmap = QPixmap()
         if not pixmap.loadFromData(png):
             return
+        self._draw_field_outline(pixmap, field_geometry, bbox)
         try:
             aspect = Qt.AspectRatioMode.KeepAspectRatio
             smooth = Qt.TransformationMode.SmoothTransformation
         except AttributeError:
-            aspect = Qt.KeepAspectRatio
-            smooth = Qt.SmoothTransformation
+            aspect = getattr(Qt, 'KeepAspectRatio')
+            smooth = getattr(Qt, 'SmoothTransformation')
         self.dlg.LSatPreview.setPixmap(pixmap.scaled(300, 300, aspect, smooth))
+
+    def _draw_field_outline(self, pixmap, field_geometry, bbox):
+        """Draws ``field_geometry`` (a GeoJSON Polygon/MultiPolygon in
+        EPSG:4326) as a red line on top of ``pixmap``, mapping its
+        coordinates into pixel space via ``bbox`` (the ``[min_lon, min_lat,
+        max_lon, max_lat]`` extent the pixmap covers)."""
+        min_lon, min_lat, max_lon, max_lat = bbox
+        lon_span = max_lon - min_lon
+        lat_span = max_lat - min_lat
+        if lon_span <= 0 or lat_span <= 0:
+            return
+        w, h = pixmap.width(), pixmap.height()
+
+        def to_px(lon, lat):
+            x = (lon - min_lon) / lon_span * w
+            y = (max_lat - lat) / lat_span * h
+            return QPointF(x, y)
+
+        if field_geometry['type'] == 'Polygon':
+            polygons = [field_geometry['coordinates']]
+        elif field_geometry['type'] == 'MultiPolygon':
+            polygons = field_geometry['coordinates']
+        else:
+            return
+        painter = QPainter(pixmap)
+        painter.setPen(QPen(QColor(255, 0, 0), 2))
+        try:
+            for polygon in polygons:
+                for ring in polygon:
+                    painter.drawPolyline(
+                        QPolygonF([to_px(lon, lat) for lon, lat in ring]))
+        finally:
+            painter.end()
 
     def generate_guide(self, fmt):
         """Hand the current index raster and the index->rate mapping over to the
@@ -344,67 +416,171 @@ class SatelliteData:
                                        entries)
             calc.processCalculation()
 
-    def update_texts(self):
-        """Updates the labels telling the distribution of the index. Currently
-        fixed for 5 different values and interpolates between them."""
-        self.x_values = []
+    def _class_color(self, i, num_classes):
+        """Maps class index ``i`` (of ``num_classes``) to an ``(r, g, b)``
+        tuple in 0..1 via the shared red-to-green colormap (``rg()``), low
+        index=red (stressed), high index=green (healthy). Clamped/rounded
+        defensively before calling ``rg()`` (see support_scripts/RG.py)."""
+        frac = round(max(0.0, min(1.0, float(i) / float(num_classes))), 2)
+        return tuple(rg(frac))
+
+    def _classify_index(self):
+        """Reads ``raster_output.tif`` and splits its valid pixels into
+        ``SBNumClasses`` classes across ``LEClassMin``/``LEClassMax`` (blank
+        = auto, taken from the raster's own min/max), building
+        ``self.classes`` (one dict per class: lo/hi/anchor/text/area/color)
+        and ``self.x_values``. The two extreme classes absorb any pixels
+        outside a user-narrowed min/max so no pixels are silently dropped.
+
+        Returns
+        -------
+        bool
+            False (after a warning) if the input is invalid or the raster
+            has no usable data.
+        """
+        num_classes = self.dlg.SBNumClasses.value()
+        min_text = self.dlg.LEClassMin.text().strip()
+        max_text = self.dlg.LEClassMax.text().strip()
+        if min_text and not isfloat(min_text):
+            report_warning(self.tr('The minimum value must be a number.'))
+            return False
+        if max_text and not isfloat(max_text):
+            report_warning(self.tr('The maximum value must be a number.'))
+            return False
         ds = gdal.Open(self.path + "raster_output.tif")
-        rarray = np.array(ds.GetRasterBand(1).ReadAsArray())
-        rarray = rarray[~np.isnan(rarray)]
-        rarray = rarray[0.01 < rarray]
-        if len(rarray) == 0:
+        rarray_2d = np.array(ds.GetRasterBand(1).ReadAsArray())
+        rarray = rarray_2d[~np.isnan(rarray_2d) & (rarray_2d > 0.01)]
+        if rarray.size == 0:
             report_warning(self.tr(
                 'There is no data in that file, is the day cloud free?'))
             return False
-        min_value = round(float(rarray.min()))
-        max_value = round(float(rarray.max()))
-        interval = (max_value - min_value) / 5
+        min_value = round(float(min_text)) if min_text else round(float(rarray.min()))
+        max_value = round(float(max_text)) if max_text else round(float(rarray.max()))
+        if max_value <= min_value:
+            report_warning(self.tr(
+                'The maximum value must be greater than the minimum value.'))
+            return False
         field_areal = self.parent.db.execute_and_return(
             "SELECT st_area(polygon::geography)/10000 FROM fields WHERE field_name = %s",
             params=(self.dlg.CBFieldList.currentText(),))[0][0]
-        c1 = rarray[(min_value <= rarray) & (rarray < min_value + interval)].size
-        areal = round(field_areal* c1/rarray.size, 2)
-        text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=min_value, mi=min_value,
-                                                   ma=round(float(min_value + interval)), ar=areal)
-        self.dlg.LVal_1.setText(text)
-        self.x_values.append(min_value)
-        c2 = rarray[(min_value + 1 * interval <= rarray) &
-                    (rarray < min_value + 2 * interval)].size
-        areal = round(field_areal * c2 / rarray.size, 2)
-        text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=round(float(min_value + interval * 1.5)),
-                                                  mi=round(float(min_value + interval * 1)),
-                                                  ma=round(float(min_value + interval * 2)),
-                                                  ar=areal)
-        self.dlg.LVal_2.setText(text)
-        self.x_values.append(round(float(min_value + interval * 1.5)))
-        c3 = rarray[(min_value + 2 * interval <= rarray) &
-                    (rarray < min_value + 3 * interval)].size
-        areal = round(field_areal * c3 / rarray.size, 2)
-        text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=round(float(min_value + interval * 2.5)),
-                                                  mi=round(float(min_value + interval * 2)),
-                                                  ma=round(float(min_value + interval * 3)),
-                                                  ar=areal)
-        self.dlg.LVal_3.setText(text)
-        self.x_values.append(round(float(min_value + interval * 2.5)))
-        c4 = rarray[(min_value + 3 * interval <= rarray) &
-                    (rarray < min_value + 4 * interval)].size
-        areal = round(field_areal * c4 / rarray.size, 2)
-        text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=round(float(min_value + interval * 3.5)),
-                                                  mi=round(float(min_value + interval * 3)),
-                                                  ma=round(float(min_value + interval * 4)),
-                                                  ar=areal)
-        self.dlg.LVal_4.setText(text)
-        self.x_values.append(round(float(min_value + interval * 3.5)))
-        c5 = rarray[(min_value + 4 * interval <= rarray) &
-                    (rarray < max_value)].size
-        areal = round(field_areal * c5 / rarray.size, 2)
-        text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(v=max_value,
-                                                  mi=round(float(min_value + interval * 4)),
-                                                  ma=max_value,
-                                                  ar=areal)
-        self.dlg.LVal_5.setText(text)
-        self.x_values.append(max_value)
+        interval = (max_value - min_value) / num_classes
+        classes = []
+        x_values = []
+        for i in range(num_classes):
+            lo = min_value + i * interval
+            hi = max_value if i == num_classes - 1 else min_value + (i + 1) * interval
+            if i == 0:
+                # Absorbs values below min_value too, so a user-narrowed
+                # range never silently drops pixels from the area stats.
+                mask = rarray < hi
+                anchor = min_value
+            elif i == num_classes - 1:
+                mask = rarray >= lo
+                anchor = max_value
+            else:
+                mask = (rarray >= lo) & (rarray < hi)
+                anchor = min_value + interval * (i + 0.5)
+            area = round(field_areal * mask.sum() / rarray.size, 2)
+            text = '{v}% [{mi}-{ma}] ({ar} ha)'.format(
+                v=round(anchor), mi=round(lo), ma=round(hi), ar=area)
+            classes.append({'lo': lo, 'hi': hi, 'anchor': anchor,
+                           'text': text, 'area': area,
+                           'color': self._class_color(i, num_classes)})
+            x_values.append(round(anchor))
+        self.classes = classes
+        self.x_values = x_values
         self.rarray = rarray
+        self.rarray_2d = rarray_2d
+        return True
+
+    def _rebuild_value_grid(self):
+        """Rebuilds the 'Index value mapping' rows (label, color swatch,
+        rate box) from ``self.classes``. Previously typed rates are
+        preserved when the class count hasn't changed since the last
+        classification; otherwise a sensible default rate sequence is
+        reseeded."""
+        old_rates = [le.text() for le in self.rate_edits]
+        reuse_rates = (self._last_num_classes == len(self.classes)
+                      and len(old_rates) == len(self.classes))
+        if not reuse_rates:
+            old_rates = [str(int(round(v))) for v in
+                        np.linspace(200, 100, len(self.classes))]
+        while self.class_grid.count():
+            item = self.class_grid.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        self.rate_edits = []
+        for i, cls in enumerate(self.classes):
+            self.class_grid.addWidget(QLabel(cls['text']), i, 0)
+            red, green, blue = cls['color']
+            swatch = QLabel()
+            swatch.setFixedSize(16, 16)
+            swatch.setStyleSheet(
+                'background-color: rgb({r},{g},{b}); '
+                'border:1px solid palette(mid);'.format(
+                    r=int(red * 255), g=int(green * 255), b=int(blue * 255)))
+            self.class_grid.addWidget(swatch, i, 1)
+            rate_edit = QLineEdit(old_rates[i])
+            rate_edit.setMaximumWidth(120)
+            self.class_grid.addWidget(rate_edit, i, 2)
+            self.rate_edits.append(rate_edit)
+        self._last_num_classes = len(self.classes)
+
+    def _render_index_image(self):
+        """Renders ``raster_output.tif`` as a classified thematic map
+        (colored per ``self.classes``, transparent outside the field) and
+        shows it in the second preview label, next to the true-colour one."""
+        arr = self.rarray_2d
+        valid = ~np.isnan(arr) & (arr > 0.01)
+        h, w = arr.shape
+        rgba = np.zeros((h, w, 4), dtype=np.uint8)
+        for i, cls in enumerate(self.classes):
+            if i == 0:
+                mask = valid & (arr < cls['hi'])
+            elif i == len(self.classes) - 1:
+                mask = valid & (arr >= cls['lo'])
+            else:
+                mask = valid & (arr >= cls['lo']) & (arr < cls['hi'])
+            red, green, blue = cls['color']
+            rgba[mask] = (int(red * 255), int(green * 255), int(blue * 255), 255)
+        rgba = np.ascontiguousarray(rgba)
+        try:
+            img_format = QImage.Format.Format_RGBA8888
+        except AttributeError:
+            img_format = getattr(QImage, 'Format_RGBA8888')
+        # .copy() decouples the QImage from the numpy buffer's lifetime.
+        qimg = QImage(rgba.data, w, h, w * 4, img_format).copy()
+        pixmap = QPixmap.fromImage(qimg)
+        try:
+            aspect = Qt.AspectRatioMode.KeepAspectRatio
+            smooth = Qt.TransformationMode.SmoothTransformation
+        except AttributeError:
+            aspect = getattr(Qt, 'KeepAspectRatio')
+            smooth = getattr(Qt, 'SmoothTransformation')
+        self.dlg.LClassPreview.setPixmap(pixmap.scaled(300, 300, aspect, smooth))
+
+    def _apply_classification(self):
+        """Reclassifies the already-downloaded index raster into the
+        current number of classes/range (no new Copernicus request),
+        rebuilds the value-mapping table, the classified-map preview and
+        the rate graph.
+
+        Returns
+        -------
+        bool
+            True on success. Failures are reported via ``report_warning``
+            and leave whatever was previously on screen untouched (the
+            caller decides whether that also means calling ``cleanup()``).
+        """
+        if not os.path.isfile(self.path + "raster_output.tif"):
+            report_warning(self.tr('Please fetch and process an image first.'))
+            return False
+        if not self._classify_index():
+            return False
+        self._rebuild_value_grid()
+        self._render_index_image()
+        self.update_graph()
         return True
 
     def update_graph(self):
@@ -413,13 +589,10 @@ class SatelliteData:
         fig, ax = plt.subplots()
         if self.canvas is not None:
             self.graph_area.removeWidget(self.canvas)
-        self.y_values = []
-        self.y_values.append(float(self.dlg.LEVal_1.text()))
-        self.y_values.append(float(self.dlg.LEVal_2.text()))
-        self.y_values.append(float(self.dlg.LEVal_3.text()))
-        self.y_values.append(float(self.dlg.LEVal_4.text()))
-        self.y_values.append(float(self.dlg.LEVal_5.text()))
+        self.y_values = [float(le.text()) for le in self.rate_edits]
         ax.plot(self.x_values, self.y_values)
+        ax.set_xlabel(self.tr('Index value (%)'))
+        ax.set_ylabel(self.tr('Application rate'))
         self.canvas = FigureCanvas(fig)
         self.graph_area.addWidget(self.canvas)
         self.canvas.draw()
@@ -436,5 +609,6 @@ class SatelliteData:
         if self.path and os.path.isdir(self.path):
             shutil.rmtree(self.path, ignore_errors=True)
         self.dlg.PBUpdateGraph.setEnabled(False)
+        self.dlg.PBUpdateClasses.setEnabled(False)
         self.dlg.PBGenShp.setEnabled(False)
         self.dlg.PBGenIso.setEnabled(False)

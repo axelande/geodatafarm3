@@ -23,7 +23,7 @@ import requests
 
 __author__ = 'Axel Horteborn'
 
-TOKEN_URL = ("https://identity.dataspace.copernicus.eu/auth/realms/CDSE/"
+TOKEN_URL = ("https://identity.dataspace.copernicus.eu/auth/realms/CDSE/"  # nosec B105
              "protocol/openid-connect/token")
 CATALOG_URL = "https://sh.dataspace.copernicus.eu/api/v1/catalog/1.0.0/search"
 PROCESS_URL = "https://sh.dataspace.copernicus.eu/api/v1/process"
@@ -46,7 +46,7 @@ class CDSEClient:
         The matching OAuth client secret.
     """
 
-    def __init__(self, client_id='', client_secret=''):
+    def __init__(self, client_id='', client_secret=''):  # nosec B107
         self.client_id = client_id
         self.client_secret = client_secret
         self._token = None

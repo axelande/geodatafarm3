@@ -15,6 +15,7 @@ from ..support_scripts.qt_data import _enum_select_rows, _item_flag
 from psycopg2 import sql as pgsql
 from ..import_data.insert_manual_from_file import ManualFromFile
 from ..support_scripts.notifier import report_warning, report_error
+from ..support_scripts.notifier import log as gdf_log
 
 #import pydevd
 #pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
@@ -105,11 +106,11 @@ class InputShpHandler:
                             self.ISD.EPSG.setText(str(int(epsg)))
                         except Exception:
                             self.ISD.EPSG.setText(str(epsg))
-                except Exception:
-                    pass
-        except Exception:
-            # ignore PRJ parsing errors and continue
-            pass
+                except Exception as e:
+                    gdf_log.warning(
+                        f'Could not parse projection WKT from {prj_path}: {e}')
+        except Exception as e:
+            gdf_log.warning(f'Could not read PRJ file {prj_path}: {e}')
         self.get_columns_names()
 
     def get_columns_names(self):
@@ -497,18 +498,14 @@ class InputShpHandler:
                 drop_query = pgsql.SQL("DROP TABLE IF EXISTS {schema}.{tbl}").format(
                     schema=pgsql.Identifier(self.schema), tbl=pgsql.Identifier(self.tbl_name))
                 self.db.execute_sql(drop_query)
-            except Exception:
-                pass
+            except Exception as e:
+                gdf_log.warning(
+                    f'Could not drop existing {self.schema}.{self.tbl_name}: {e}')
 
             try:
                 self.db.execute_sql(intersects_sql, params=params)
             except Exception as e:
-                # Log exception to QGIS message log for visibility
-                try:
-                    from qgis.core import QgsMessageLog, Qgis
-                    QgsMessageLog.logMessage(f"execute_sql for intersects failed: {e}", 'GeoDataFarm', Qgis.Warning)
-                except Exception:
-                    pass
+                gdf_log.warning(f'execute_sql for intersects failed: {e}')
             if task != 'debug':
                 task.setProgress(70)
             if self.schema != 'harvest' and data_as_points:

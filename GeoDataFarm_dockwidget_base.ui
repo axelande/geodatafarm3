@@ -2357,98 +2357,11 @@ To use it, create a free account at the Copernicus Data Space and add an OAuth c
                   <string>MSAVI2</string>
                  </property>
                 </widget></item><item><spacer name="idxSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></widget></item><item><spacer name="indexSp2"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
-            <item><layout class="QHBoxLayout" name="plannedRow"><item><layout class="QVBoxLayout" name="previewCol"><item><widget class="QLabel" name="LSatPreviewTitle"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>True-color preview</string></property></widget></item><item><widget class="QLabel" name="LSatPreview"><property name="minimumSize"><size><width>250</width><height>250</height></size></property><property name="maximumSize"><size><width>350</width><height>350</height></size></property><property name="alignment"><set>Qt::AlignCenter</set></property><property name="styleSheet"><string notr="true">border:1px solid palette(mid); background:palette(base); color:palette(mid);</string></property><property name="text"><string>No image yet</string></property><property name="scaledContents"><bool>false</bool></property></widget></item></layout></item><item><spacer name="plannedSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><layout class="QHBoxLayout" name="classCtrlRow"><item><widget class="QLabel" name="labelNumClasses"><property name="text"><string>Number of classes:</string></property></widget></item><item><widget class="QSpinBox" name="SBNumClasses"><property name="minimum"><number>2</number></property><property name="maximum"><number>12</number></property><property name="value"><number>5</number></property></widget></item><item><widget class="QLabel" name="labelClassMin"><property name="text"><string>Min (blank=auto):</string></property></widget></item><item><widget class="QLineEdit" name="LEClassMin"><property name="maximumSize"><size><width>80</width><height>16777215</height></size></property></widget></item><item><widget class="QLabel" name="labelClassMax"><property name="text"><string>Max (blank=auto):</string></property></widget></item><item><widget class="QLineEdit" name="LEClassMax"><property name="maximumSize"><size><width>80</width><height>16777215</height></size></property></widget></item><item><widget class="QPushButton" name="PBUpdateClasses"><property name="enabled"><bool>false</bool></property><property name="text"><string>Update classes</string></property></widget></item><item><spacer name="classCtrlSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+            <item><layout class="QHBoxLayout" name="plannedRow"><item><layout class="QVBoxLayout" name="previewCol"><item><widget class="QLabel" name="LSatPreviewTitle"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>True-color preview</string></property></widget></item><item><widget class="QLabel" name="LSatPreview"><property name="minimumSize"><size><width>250</width><height>250</height></size></property><property name="maximumSize"><size><width>350</width><height>350</height></size></property><property name="alignment"><set>Qt::AlignCenter</set></property><property name="styleSheet"><string notr="true">border:1px solid palette(mid); background:palette(base); color:palette(mid);</string></property><property name="text"><string>No image yet</string></property><property name="scaledContents"><bool>false</bool></property></widget></item></layout></item><item><layout class="QVBoxLayout" name="classPreviewCol"><item><widget class="QLabel" name="LClassPreviewTitle"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Classified map</string></property></widget></item><item><widget class="QLabel" name="LClassPreview"><property name="minimumSize"><size><width>250</width><height>250</height></size></property><property name="maximumSize"><size><width>350</width><height>350</height></size></property><property name="alignment"><set>Qt::AlignCenter</set></property><property name="styleSheet"><string notr="true">border:1px solid palette(mid); background:palette(base); color:palette(mid);</string></property><property name="text"><string>No image yet</string></property><property name="scaledContents"><bool>false</bool></property></widget></item></layout></item><item><spacer name="plannedSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
             <item><widget class="QFrame" name="satHl2"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="styleSheet"><string notr="true">color:palette(mid);</string></property></widget></item>
             <item><widget class="QLabel" name="valHeading"><property name="styleSheet"><string notr="true">font-weight:600;</string></property><property name="text"><string>Index value mapping</string></property></widget></item>
-            <item><layout class="QGridLayout" name="valGrid"><property name="horizontalSpacing"><number>10</number></property><property name="verticalSpacing"><number>4</number></property><item row="0" column="0"><widget class="QLabel" name="LVal_1">
-             <property name="text">
-              <string>0.1 [0.1-0.2] (10%)</string>
-             </property>
-            </widget></item><item row="0" column="1"><widget class="QLineEdit" name="LEVal_1">
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>200</string>
-             </property>
-            </widget></item><item row="1" column="0"><widget class="QLabel" name="LVal_2">
-             <property name="text">
-              <string>0.3 [0.2-0.4] (25%)</string>
-             </property>
-            </widget></item><item row="1" column="1"><widget class="QLineEdit" name="LEVal_2">
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>180</string>
-             </property>
-            </widget></item><item row="2" column="0"><widget class="QLabel" name="LVal_3">
-             <property name="text">
-              <string>0.5 [0.4-0.6] (25%)</string>
-             </property>
-            </widget></item><item row="2" column="1"><widget class="QLineEdit" name="LEVal_3">
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>150</string>
-             </property>
-            </widget></item><item row="3" column="0"><widget class="QLabel" name="LVal_4">
-             <property name="minimumSize">
-              <size>
-               <width>100</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>0.7 [0.6-0.8] (25%)</string>
-             </property>
-            </widget></item><item row="3" column="1"><widget class="QLineEdit" name="LEVal_4">
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>120</string>
-             </property>
-            </widget></item><item row="4" column="0"><widget class="QLabel" name="LVal_5">
-             <property name="text">
-              <string>0.9 [0.8-0.9] (15%)</string>
-             </property>
-            </widget></item><item row="4" column="1"><widget class="QLineEdit" name="LEVal_5">
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>100</string>
-             </property>
-            </widget></item></layout></item>
+            <item><widget class="QWidget" name="QWValueMapping" native="true"/></item>
             <item><layout class="QHBoxLayout" name="genRow"><item><widget class="QPushButton" name="PBGenShp">
              <property name="enabled">
               <bool>false</bool>
@@ -4157,12 +4070,11 @@ QHeaderView::section {
   <tabstop>PBFetchImage</tabstop>
   <tabstop>RBNdviIndex</tabstop>
   <tabstop>RBMsavi2Index</tabstop>
+  <tabstop>SBNumClasses</tabstop>
+  <tabstop>LEClassMin</tabstop>
+  <tabstop>LEClassMax</tabstop>
+  <tabstop>PBUpdateClasses</tabstop>
   <tabstop>PBUpdateGraph</tabstop>
-  <tabstop>LEVal_1</tabstop>
-  <tabstop>LEVal_2</tabstop>
-  <tabstop>LEVal_3</tabstop>
-  <tabstop>LEVal_4</tabstop>
-  <tabstop>LEVal_5</tabstop>
   <tabstop>PBGenShp</tabstop>
   <tabstop>PBGenIso</tabstop>
   <tabstop>mMapLayerComboBox</tabstop>

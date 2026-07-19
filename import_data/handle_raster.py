@@ -3,7 +3,7 @@ from osgeo import gdal
 from osgeo import osr
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from functools import partial
-import subprocess
+import subprocess  # nosec B404
 from psycopg2 import sql as pgsql
 from qgis.core import (QgsTask, QgsProcessingAlgRunnerTask, QgsApplication,
                        QgsProcessingContext,
@@ -160,7 +160,7 @@ class ImportRaster:
         shp_path = f"{self.plugin_dir}/temp.shp"
         cmd = ["ogr2ogr", "-f", "PostgreSQL", f"PG:{pg_conn}",
                shp_path, "-nln", self.s_tbl]
-        res = subprocess.call(cmd)
+        res = subprocess.call(cmd)  # nosec B603
         if res == 0:
             return True
         else:

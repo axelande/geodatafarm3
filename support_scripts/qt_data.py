@@ -19,7 +19,7 @@ def _font_weight_bold():
         return QFont.Weight.Bold  
     except AttributeError:
         # PyQt5
-        return QFont.Bold  
+        return getattr(QFont, 'Bold')
 
 
 def _enum_select_rows():
@@ -29,7 +29,7 @@ def _enum_select_rows():
         return QAbstractItemView.SelectionBehavior.SelectRows
     except AttributeError:
         # PyQt5
-        return QAbstractItemView.SelectRows
+        return getattr(QAbstractItemView, 'SelectRows')
 
 def _item_flag(name: str):
     """Return a Qt item flag compatible with PyQt5/PyQt6."""

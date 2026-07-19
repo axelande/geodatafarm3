@@ -15,7 +15,7 @@ from qgis.core import QgsMessageLog, Qgis
 LOG_TAG = 'GeoDataFarm'
 
 
-def log(message: str, level: 'Qgis.MessageLevel' = Qgis.Info) -> None:
+def log(message: str, level: 'Qgis.MessageLevel' = Qgis.MessageLevel.Info) -> None:
     """Write a single message to the QGIS log.
 
     Parameters
@@ -28,7 +28,7 @@ def log(message: str, level: 'Qgis.MessageLevel' = Qgis.Info) -> None:
 
 def warning(message: str) -> None:
     """Write a warning to the QGIS log."""
-    QgsMessageLog.logMessage(message, LOG_TAG, Qgis.Warning)
+    QgsMessageLog.logMessage(message, LOG_TAG, Qgis.MessageLevel.Warning)
 
 
 def exception(message: str, exc: BaseException = None) -> None:
@@ -45,4 +45,4 @@ def exception(message: str, exc: BaseException = None) -> None:
         tb = ''.join(
             traceback.format_exception(type(exc), exc, exc.__traceback__))
         message = f'{message}\n{tb}'
-    QgsMessageLog.logMessage(message, LOG_TAG, Qgis.Critical)
+    QgsMessageLog.logMessage(message, LOG_TAG, Qgis.MessageLevel.Critical)

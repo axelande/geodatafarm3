@@ -9,3 +9,5 @@ pytest-qgis
 contextily
 shapely
 geopandas
+bandit
+detect-secrets

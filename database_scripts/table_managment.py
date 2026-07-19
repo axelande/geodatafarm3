@@ -13,6 +13,7 @@ except ModuleNotFoundError:
     from ..support_scripts.__init__ import TR
     from ..support_scripts.qt_data import _check_state, _item_flag, _match_flag
 from ..support_scripts.notifier import report_warning
+from ..support_scripts.notifier import log as gdf_log
 __author__ = 'Axel Horteborn'
 
 
@@ -204,8 +205,9 @@ class TableManagement:
                         schema=pgsql.Identifier(schema),
                         idx=pgsql.Identifier(f"gist_{table}"),
                         tbl=pgsql.Identifier(table)))
-        except:
-            pass
+        except Exception as e:
+            gdf_log.warning(f'Could not (re)create gist index on '
+                            f'{schema}.{table}(pos): {e}')
         model = self.TMD.SAParams.model()
         for item in (self.params_in_table or []):
             qIndex = self.TMD.SAParams.indexFromItem(item)
@@ -251,8 +253,9 @@ class TableManagement:
                             old_idx=pgsql.Identifier(f"{item.text()}_{self.current_schema}_{self.current_table}"),
                             new_idx=pgsql.Identifier(f"{text}_{self.current_schema}_{self.current_table}"))
                         self.db.execute_sql(query)
-                    except:
-                        pass
+                    except Exception as e:
+                        gdf_log.warning(
+                            f'Could not rename index for {item.text()}: {e}')
         self.retrieve_params()
 
     def update_table_list(self: Self) -> None:

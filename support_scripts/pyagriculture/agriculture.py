@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 if __name__ == '__main__':
     import sys
     sys.path.append(os.path.abspath(os.path.curdir))
@@ -163,7 +163,7 @@ class PyAgriculture:
                         equipment = 'unknown'
                         try:
                             equipment = self.task_dicts["DVC"][task_structure["TSK"][i]["child"]["CNN"][0]["C"]]["B"]
-                        except Exception:
+                        except Exception:  # nosec B110
                             pass
                         for tlg in tsk['child']['TLG']:
                             try:

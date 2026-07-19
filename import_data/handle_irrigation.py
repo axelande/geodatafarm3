@@ -26,7 +26,7 @@ class IrrigationHandler:
         #self.ISD = ImportShpDialog()
         self.client_id = 0
         self.user_name = ''
-        self.password = ''
+        self.password = ''  # nosec B105
         self.IIR = ImportIrrigationDialog()
 
     def run(self):

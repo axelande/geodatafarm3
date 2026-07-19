@@ -214,7 +214,7 @@ def report_exception(error: BaseException) -> Optional[str]:
 
 
 def report_message(message: str, *,
-                   level: 'Qgis.MessageLevel' = Qgis.Info,
+                   level: 'Qgis.MessageLevel' = Qgis.MessageLevel.Info,
                    widgets: Optional[List[QWidget]] = None) -> Optional[str]:
     """Show a neutral message through the active notifier (else log it).
 
@@ -241,12 +241,12 @@ def report_message(message: str, *,
 
 def report_info(message: str) -> Optional[str]:
     """Show a neutral, informational message."""
-    return report_message(message, level=Qgis.Info)
+    return report_message(message, level=Qgis.MessageLevel.Info)
 
 
 def report_success(message: str) -> Optional[str]:
     """Show a success (green) message."""
-    return report_message(message, level=Qgis.Success)
+    return report_message(message, level=Qgis.MessageLevel.Success)
 
 
 def report_warning(message: str) -> Optional[str]:
@@ -255,7 +255,7 @@ def report_warning(message: str) -> Optional[str]:
     Use this for "you forgot to fill in X" / "name already exists" cases: the
     user caused it and there is nothing to report, so no buttons are added.
     """
-    return report_message(message, level=Qgis.Warning)
+    return report_message(message, level=Qgis.MessageLevel.Warning)
 
 
 def report_error(message: str, *, detail: Optional[str] = None) -> Optional[str]:
@@ -305,7 +305,7 @@ class NotifierInterface(QObject, metaclass=_QObjectABCMeta):
 
     @abstractmethod
     def display_message(self: Self, message: str, *,
-                        level: 'Qgis.MessageLevel' = Qgis.Info,
+                        level: 'Qgis.MessageLevel' = Qgis.MessageLevel.Info,
                         widgets: Optional[List[QWidget]] = None) -> str:
         """Show ``message`` and return an id identifying it."""
         ...
@@ -348,7 +348,7 @@ class MessageBarNotifier(NotifierInterface):
         """Dismiss everything this notifier put on screen."""
         try:
             self.dismiss_all()
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def _message_bar(self):
@@ -370,7 +370,7 @@ class MessageBarNotifier(NotifierInterface):
         return hasattr(bar, 'createMessage') and hasattr(bar, 'pushWidget')
 
     def display_message(self: Self, message: str, *,
-                        level: 'Qgis.MessageLevel' = Qgis.Info,
+                        level: 'Qgis.MessageLevel' = Qgis.MessageLevel.Info,
                         widgets: Optional[List[QWidget]] = None) -> str:
         """Show a neutral message in the message bar.
 
@@ -424,7 +424,8 @@ class MessageBarNotifier(NotifierInterface):
 
         is_warning = isinstance(error, GeoDataFarmWarning)
         message = error.user_message.rstrip('.') + '.'
-        level = Qgis.Warning if is_warning else Qgis.Critical
+        level = (Qgis.MessageLevel.Warning if is_warning
+                 else Qgis.MessageLevel.Critical)
 
         if is_warning:
             gdf_log.warning(error.user_message)
@@ -468,7 +469,7 @@ class MessageBarNotifier(NotifierInterface):
         """Open the QGIS message log panel."""
         try:
             self.iface.openMessageLog()
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     def _add_error_buttons(self: Self, error: GeoDataFarmError,
