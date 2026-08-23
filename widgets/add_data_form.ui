@@ -63,7 +63,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
        <item>
         <widget class="QLabel" name="pickerTitle">
          <property name="role" stdset="0">
-          <string>h1</string>
+          <string notr="true">h1</string>
          </property>
          <property name="text">
           <string>Add data</string>
@@ -73,7 +73,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
        <item>
         <widget class="QLabel" name="pickerIntro">
          <property name="role" stdset="0">
-          <string>muted</string>
+          <string notr="true">muted</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -86,7 +86,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
        <item>
         <widget class="QLabel" name="grpCrop">
          <property name="role" stdset="0">
-          <string>h2</string>
+          <string notr="true">h2</string>
          </property>
          <property name="text">
           <string>Crop operations</string>
@@ -167,7 +167,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
        <item>
         <widget class="QLabel" name="grpField">
          <property name="role" stdset="0">
-          <string>h2</string>
+          <string notr="true">h2</string>
          </property>
          <property name="text">
           <string>Field work</string>
@@ -216,7 +216,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
        <item>
         <widget class="QLabel" name="grpEnv">
          <property name="role" stdset="0">
-          <string>h2</string>
+          <string notr="true">h2</string>
          </property>
          <property name="text">
           <string>Environment</string>
@@ -276,6 +276,22 @@ QFrame[role="hline"] { color: palette(mid); }</string>
            </property>
           </widget>
          </item>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="opWeather">
+           <property name="card" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>54</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>🌦️   Weather</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -297,14 +313,14 @@ QFrame[role="hline"] { color: palette(mid); }</string>
       <layout class="QVBoxLayout" name="formLayout">
        <property name="leftMargin"><number>20</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>20</number></property><property name="bottomMargin"><number>18</number></property><property name="spacing"><number>10</number></property>
        <item><widget class="QPushButton" name="backBtn"><property name="link" stdset="0"><bool>true</bool></property><property name="sizePolicy"><sizepolicy hsizetype="Maximum" vsizetype="Fixed"><horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text"><string>&#8592;  Choose another operation</string></property></widget></item>
-       <item><widget class="QLabel" name="formTitle"><property name="role" stdset="0"><string>h1</string></property><property name="text"><string>Planting</string></property></widget></item>
+       <item><widget class="QLabel" name="formTitle"><property name="role" stdset="0"><string notr="true">h1</string></property><property name="text"><string>Planting</string></property></widget></item>
        <item>
         <widget class="QScrollArea" name="formScroll"><property name="widgetResizable"><bool>true</bool></property><property name="frameShape"><enum>QFrame::NoFrame</enum></property>
          <widget class="QWidget" name="formScrollContents"><layout class="QVBoxLayout" name="formScrollLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>6</number></property><property name="bottomMargin"><number>0</number></property>
           <item>
-           <widget class="QFrame" name="formCard"><property name="role" stdset="0"><string>card</string></property>
+           <widget class="QFrame" name="formCard"><property name="role" stdset="0"><string notr="true">card</string></property>
             <layout class="QVBoxLayout" name="cardLayout"><property name="leftMargin"><number>18</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>18</number></property><property name="bottomMargin"><number>18</number></property><property name="spacing"><number>12</number></property>
-             <item><widget class="QLabel" name="howLabel"><property name="role" stdset="0"><string>h2</string></property><property name="text"><string>How do you want to add this data?</string></property></widget></item>
+             <item><widget class="QLabel" name="howLabel"><property name="role" stdset="0"><string notr="true">h2</string></property><property name="text"><string>How do you want to add this data?</string></property></widget></item>
              <item><layout class="QHBoxLayout" name="segRow"><property name="spacing"><number>0</number></property>
               <item><widget class="QPushButton" name="segFile"><property name="seg" stdset="0"><bool>true</bool></property><property name="checkable"><bool>true</bool></property><property name="checked"><bool>true</bool></property><property name="text"><string>Import a file</string></property></widget></item>
               <item><widget class="QPushButton" name="segManual"><property name="seg" stdset="0"><bool>true</bool></property><property name="checkable"><bool>true</bool></property><property name="text"><string>Enter manually</string></property></widget></item>
@@ -315,7 +331,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
                <widget class="QWidget" name="filePanel">
                 <layout class="QVBoxLayout" name="filePanelLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>4</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property>
                  <item><widget class="QWidget" name="fileButtonsHost" native="true"><layout class="QVBoxLayout" name="fileButtonsLayout"><property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property><property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property><property name="spacing"><number>6</number></property></layout></widget></item>
-                 <item><widget class="QLabel" name="fileHint"><property name="role" stdset="0"><string>muted</string></property><property name="wordWrap"><bool>true</bool></property><property name="text"><string>Pick the format your machine or app exported. The columns are read automatically.</string></property></widget></item>
+                 <item><widget class="QLabel" name="fileHint"><property name="role" stdset="0"><string notr="true">muted</string></property><property name="wordWrap"><bool>true</bool></property><property name="text"><string>Pick the format your machine or app exported. The columns are read automatically.</string></property></widget></item>
                 </layout>
                </widget>
                <widget class="QWidget" name="manualPanel">
@@ -327,10 +343,10 @@ QFrame[role="hline"] { color: palette(mid); }</string>
                    <item row="1" column="0"><widget class="QLabel" name="lblCrop"><property name="text"><string>Crop:</string></property></widget></item>
                    <item row="1" column="1"><widget class="QComboBox" name="cbCrop"/></item>
                    <item row="2" column="0"><widget class="QLabel" name="lblWhen"><property name="text"><string>When:</string></property></widget></item>
-                   <item row="2" column="1"><widget class="QDateEdit" name="dateWhen"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>yyyy-MM-dd</string></property></widget></item>
+                   <item row="2" column="1"><widget class="QDateEdit" name="dateWhen"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string notr="true">yyyy-MM-dd</string></property></widget></item>
                   </layout>
                  </item>
-                 <item><widget class="QFrame" name="hline"><property name="role" stdset="0"><string>hline</string></property><property name="frameShape"><enum>QFrame::HLine</enum></property></widget></item>
+                 <item><widget class="QFrame" name="hline"><property name="role" stdset="0"><string notr="true">hline</string></property><property name="frameShape"><enum>QFrame::HLine</enum></property></widget></item>
                  <item><widget class="QWidget" name="manualHost" native="true"><layout class="QFormLayout" name="manualForm"><property name="labelAlignment"><set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set></property></layout></widget></item>
                  <item><layout class="QHBoxLayout" name="btnSaveRow"><item><spacer name="saveSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item><item><widget class="QPushButton" name="btnSave"><property name="primary" stdset="0"><bool>true</bool></property><property name="text"><string>Save</string></property></widget></item></layout></item>
                 </layout>

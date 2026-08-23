@@ -73,6 +73,9 @@ class Populate:
                        self.dw.CBSoField]
             if getattr(self.dw, 'add_data_form', None) is not None:
                 cmd_box.append(self.dw.add_data_form.cbField)
+            if getattr(self.dw, 'crop_simulation_page', None) is not None:
+                cmd_box.append(self.dw.crop_simulation_page.CBField)
+                cmd_box.append(self.dw.crop_simulation_page.CBInventoryField)
             fields = self.db.get_distinct('fields', 'field_name', 'public')
             lw = self.dw.LWFields
             lw.clear()

@@ -15,8 +15,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import pyproj
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication, QSizePolicy, QVBoxLayout, QFileDialog, QLabel
-from qgis.PyQt.QtGui import QMovie
-from psycopg2 import IntegrityError, InternalError
+from qgis.PyQt.QtGui import QMovie, QColor
+from psycopg2 import IntegrityError
 from qgis.core import QgsTask
 from shapely import wkt
 from shapely.ops import transform
@@ -25,6 +25,7 @@ from shapely.geometry import Point, Polygon
 from ..support_scripts.pyagriculture.agriculture import PyAgriculture
 from ..widgets.find_iso_fields import FindIsoFieldWidget
 from .notifier import report_warning, report_error
+from .notifier import log as gdf_log
 from ..support_scripts.qt_data import _check_state, _item_flag
 
 
@@ -111,15 +112,106 @@ class FindIsoField:
             return False
         wkt_polygons = [(field_name, polygon.wkt) for field_name, polygon in data]
         self.fifw.LWFields.clear()
-        for name, wkt in wkt_polygons:
-            self.fields[name] = wkt
-            self.fifw.LWFields.addItem(name)
+        existing_fields = self._existing_fields()
+        for name, wkt_str in wkt_polygons:
+            self.fields[name] = wkt_str
+            self._add_field_list_item(name, wkt_str, existing_fields)
+
+    def _existing_fields(self: Self) -> "list[tuple[str, shapely.geometry.polygon.Polygon]]":
+        """Returns (name, polygon) for every field already saved in the database."""
+        rows = self.parent.db.execute_and_return("SELECT field_name, ST_AsText(polygon) FROM fields")
+        if not isinstance(rows, (list, tuple)):
+            return []
+        existing = []
+        for name, wkt_str in rows:
+            if not wkt_str:
+                continue
+            try:
+                existing.append((name, wkt.loads(wkt_str)))
+            except Exception:
+                gdf_log.warning(
+                    f"Skipping field '{name}': stored polygon is not valid WKT ({wkt_str!r}).")
+                continue
+        return existing
+
+    def _matching_existing_field(self: Self, candidate_wkt: str,
+                                 existing_fields: "list[tuple[str, shapely.geometry.polygon.Polygon]]",
+                                 min_overlap: float=0.5) -> str|None:
+        """Returns the name of an already-saved field whose polygon substantially
+        overlaps the candidate (by area), regardless of what either is named, or
+        None if there isn't one."""
+        try:
+            candidate = wkt.loads(candidate_wkt)
+        except Exception:
+            return None
+        if candidate.area == 0:
+            return None
+        for name, polygon in existing_fields:
+            if not candidate.intersects(polygon):
+                continue
+            if candidate.intersection(polygon).area / candidate.area >= min_overlap:
+                return name
+        return None
+
+    def _add_field_list_item(self: Self, name: str, wkt_str: str,
+                             existing_fields: "list[tuple[str, shapely.geometry.polygon.Polygon]]") -> None:
+        """Adds a field to LWFields, greying it out and flagging it with a
+        tooltip if it substantially overlaps a field that's already saved."""
+        item = QListWidgetItem(name)
+        match = self._matching_existing_field(wkt_str, existing_fields)
+        if match is not None:
+            item.setForeground(QColor('gray'))
+            item.setToolTip(self.parent.tr('This overlaps the already-added field "{name}"').format(name=match))
+        self.fifw.LWFields.addItem(item)
 
     def _get_xml_root(self: Self, file_path: str) -> ET.Element:
-        """Parses the XML file and returns the root element."""
+        """Parses the XML file and returns the root element.
+
+        Handles both ISO 11783-10 layouts: a single self-contained
+        TASKDATA.xml, and a "split" dataset where TASKDATA.xml is just an
+        index of ``<XFR A="PFD00000" .../>`` references to separate
+        per-type files (PFD00000.XML, TSK00000.XML, ...) sitting alongside
+        it - some FMIS/terminal software (e.g. Topcon) exports this way.
+        In the split case the actual partfield boundary lives in the
+        referenced PFD file, invisible to a caller that only looks at what
+        was picked - so this transparently merges each referenced file's
+        elements into a single synthetic root, keeping every other method
+        that searches the returned root (e.g. _extract_coordinates's
+        ``root.findall('.//PFD')``) unaware anything special happened."""
         tree = ET.parse(file_path)  # nosec B314 - user-chosen local ISO 11783 XML
         root = tree.getroot()
-        return root
+        xfr_refs = root.findall('XFR')
+        if not xfr_refs:
+            return root
+        directory = os.path.dirname(file_path)
+        merged = ET.Element(root.tag, root.attrib)
+        for child in root:
+            if child.tag != 'XFR':
+                merged.append(child)
+        for xfr in xfr_refs:
+            ref_path = self._resolve_split_file(directory, xfr.get('A'))
+            if ref_path is None:
+                continue
+            try:
+                ref_root = ET.parse(ref_path).getroot()  # nosec B314 - same trusted local dataset
+            except ET.ParseError:
+                continue
+            for child in ref_root:
+                merged.append(child)
+        return merged
+
+    @staticmethod
+    def _resolve_split_file(directory: str, ref_name: str|None) -> str|None:
+        """Finds the file an ``<XFR A="...">`` reference points to, next to
+        the taskdata file - case-insensitively, since ``.XML``/``.xml``
+        both appear in the wild across different exporters."""
+        if not ref_name:
+            return None
+        for ext in ('.XML', '.xml'):
+            candidate = os.path.join(directory, ref_name + ext)
+            if os.path.isfile(candidate):
+                return candidate
+        return None
 
     def _extract_coordinates(self: Self, root: ET.Element) -> list[list[str]|Never]:
         """Extracts coordinates from the XML root and returns them as a list of field names and polygons."""
@@ -152,9 +244,20 @@ class FindIsoField:
     def clear_layout(self):
         """Remove all widgets from a given layout."""
         layout = self.fifw.WShowField.layout()
-        # Stop and remove the loading animation if present
+        # Stop *and* tear down the loading animation if present. On Windows,
+        # QMovie keeps its backing img/loading.gif open at the OS level
+        # until the QMovie object itself is destroyed - stop() alone only
+        # pauses playback, it doesn't release that file lock. Left alive,
+        # that lock persists for the rest of the QGIS session (every
+        # completed "Find ISO field" search leaks one), which is why
+        # `pb_tool deploy` fails to overwrite img/loading.gif with a
+        # PermissionError until QGIS is fully restarted.
+        if hasattr(self, "loading_label"):
+            self.loading_label.setMovie(None)
         if hasattr(self, "movie"):
             self.movie.stop()
+            self.movie.deleteLater()
+            del self.movie
         if hasattr(self, "loading_label") and self.loading_label in [layout.itemAt(i).widget() for i in range(layout.count())]:
             layout.removeWidget(self.loading_label)
             self.loading_label.deleteLater()
@@ -189,6 +292,7 @@ class FindIsoField:
         """Populates the field list based on the pyagri tasks."""
         self.clear_layout()
         self.fifw.LWFields.clear()
+        existing_fields = self._existing_fields()
         for i, task in enumerate(self.py_agri.tasks):
             if 'longitude' not in task.columns:
                 try:
@@ -200,7 +304,7 @@ class FindIsoField:
                         (extent[2], extent[1]),
                         (extent[0], extent[1])
                     ])
-                except:  # nosec B112
+                except Exception:  # nosec B112
                     continue
             else:
                 task['geometry'] = task.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
@@ -215,7 +319,7 @@ class FindIsoField:
 
             name = task.attrs.get('task_name', f'Task {i}')
             self.fields[name] = convex_hull.wkt
-            self.fifw.LWFields.addItem(name)
+            self._add_field_list_item(name, convex_hull.wkt, existing_fields)
 
     def on_item_clicked(self: Self, item: QListWidgetItem) -> None:
         """Handles the event when an item in the field list is clicked."""
@@ -225,11 +329,12 @@ class FindIsoField:
             self.save_updated_polygon()
         if item_name != '':
             self.load_wkt(polygon_wkt=self.fields[item_name])
-            #tsk = QgsTask.fromFunction('Load polygon', self.load_wkt, 
+            #tsk = QgsTask.fromFunction('Load polygon', self.load_wkt,
             #                            polygon_wkt=self.fields[item_name],
             #                            on_finished=None)
             #self.parent.tsk_mngr.addTask(tsk)
             self.current_polygon = self.fields[item_name]
+            self.fifw.LEFieldName.setText(item_name)
 
     def _set_new_crs(self: Self, 
                      polygon: "shapely.geometry.polygon.Polygon", 
@@ -376,19 +481,19 @@ class FindIsoField:
             return False
         sql = ("INSERT INTO fields (field_name, polygon)"
                " VALUES (%s, st_geomfromtext(%s, 4326))")
-        try:
-            res = self.parent.db.execute_sql(
-                sql, params=(name, self.current_polygon), return_failure=True)
-        except IntegrityError:
+        res = self.parent.db.execute_sql(
+            sql, params=(name, self.current_polygon), return_failure=True)
+        if not res[0]:
             if self.parent.test_mode:
                 return False
-            else:
+            elif res[1] is IntegrityError:
                 report_warning(self.parent.tr('Field name already exist, please select a new name'))
-                return
-        except InternalError as e:
-            report_error(str(e), detail=str(e))
-            return
+                return False
+            else:
+                report_error(str(res[2]), detail=str(res[2]))
+                return False
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.parent.dock_widget.LWFields)
         item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
         item.setCheckState(_check_state('Unchecked'))
+        return True

@@ -7,7 +7,7 @@ import psycopg2.pool
 import psycopg2.extras
 from psycopg2 import sql as pgsql
 import traceback
-import sys
+import time
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
@@ -200,15 +200,32 @@ class DB:
                 if res_qm == qm.No:
                     return True
                 else:
-                    query = pgsql.SQL(
-                        "DROP TABLE {schema}.{tbl};"
-                        " DELETE FROM {schema}.manual"
-                        " WHERE table_ = %s"
-                    ).format(
-                        schema=pgsql.Identifier(schema),
-                        tbl=pgsql.Identifier(table_name)
-                    )
-                    self.execute_sql(query, params=(table_name,))
+                    # Not every schema has a .manual reference table (e.g.
+                    # weather doesn't) - a single batch with both
+                    # statements would roll back the DROP too if the
+                    # DELETE half failed, silently leaving the "replaced"
+                    # table in place. See remove_table() for the same check.
+                    manual_exists = self.execute_and_return(
+                        "SELECT COUNT(*) FROM information_schema.tables"
+                        " WHERE table_schema = %s AND table_name = 'manual'",
+                        params=(schema,))
+                    if (isinstance(manual_exists, (list, tuple)) and manual_exists
+                            and manual_exists[0][0] > 0):
+                        query = pgsql.SQL(
+                            "DROP TABLE {schema}.{tbl};"
+                            " DELETE FROM {schema}.manual"
+                            " WHERE table_ = %s"
+                        ).format(
+                            schema=pgsql.Identifier(schema),
+                            tbl=pgsql.Identifier(table_name)
+                        )
+                        self.execute_sql(query, params=(table_name,))
+                    else:
+                        query = pgsql.SQL("DROP TABLE {schema}.{tbl}").format(
+                            schema=pgsql.Identifier(schema),
+                            tbl=pgsql.Identifier(table_name)
+                        )
+                        self.execute_sql(query)
                     return False
             else:
                 return True
@@ -504,6 +521,60 @@ class DB:
             parameter_to_eval[ind]['schema'] = schema
         return parameter_to_eval
 
+    # How long to wait before the one reconnect-and-retry attempt in
+    # _cursor_after_executing - see its docstring.
+    _RECONNECT_DELAY_SECONDS = 2
+
+    def _cursor_after_executing(self: Self, sql, params: tuple|None):
+        """Connects and runs ``cur.execute(sql, params)``, retrying once
+        after :attr:`_RECONNECT_DELAY_SECONDS` if the connection itself
+        turns out to be stale - ``psycopg2.OperationalError`` specifically
+        (e.g. "server closed the connection unexpectedly", the typical
+        symptom right after the machine wakes from sleep or a brief
+        network drop cut the TCP connection while it sat idle in the
+        pool). A real query error (bad SQL, a type mismatch, a constraint
+        violation...) is never retried, since trying again can't fix
+        those - only a connection-level failure can plausibly be gone by
+        the second attempt.
+
+        The stale connection is closed rather than returned to the pool
+        (``pool.putconn(conn, close=True)``), so the retry always gets a
+        genuinely fresh one instead of the same dead one back.
+
+        Returns
+        -------
+        (conn, cur, error)
+            ``error`` is ``None`` on success. ``conn``/``cur`` are always
+            the pair actually used for the last attempt, so the caller
+            can still roll back and return that connection to the pool
+            exactly as before this retry existed. ``(None, None, None)``
+            if no connection to the pool could be established at all,
+            even before trying to execute anything.
+        """
+        conn = self._connect()
+        if not conn:
+            return None, None, None
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        try:
+            cur.execute(sql, params)
+            return conn, cur, None
+        except psycopg2.OperationalError as e:
+            gdf_log.warning(
+                f'DB connection looked stale ({e}) - reconnecting and retrying once')
+            self.pool.putconn(conn, close=True)
+            time.sleep(self._RECONNECT_DELAY_SECONDS)
+            conn = self._connect()
+            if not conn:
+                return None, None, None
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            try:
+                cur.execute(sql, params)
+                return conn, cur, None
+            except Exception as e2:
+                return conn, cur, e2
+        except Exception as e:
+            return conn, cur, e
+
     def execute_sql(self: Self, sql, params: tuple|None=None,
                     return_failure: bool=False,
                     return_row_count: bool=False, disregard_failure: bool=False,
@@ -520,17 +591,18 @@ class DB:
         disregard_failure: bool, optional default False
             If True disregards failures and don't print etc.
         """
-        conn = self._connect()
-        if not conn:
+        conn, cur, e = self._cursor_after_executing(sql, params)
+        if conn is None:
             nc = NoConnection(self.tr)
             nc.run_failure(suppress_message=suppress_message)
             return 'There was no connection established'
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        try:
-            cur.execute(sql, params)
-            conn.commit()
-            row_count = cur.rowcount
-        except Exception as e:
+        if e is None:
+            try:
+                conn.commit()
+                row_count = cur.rowcount
+            except Exception as commit_error:
+                e = commit_error
+        if e is not None:
             try:
                 conn.rollback()
             except Exception as rollback_exc:
@@ -538,8 +610,7 @@ class DB:
                     f'Rollback after failed execute_sql failed: {rollback_exc}')
             if return_failure:
                 self.pool.putconn(conn)
-                error_type, value_, traceback_ = sys.exc_info()
-                return [False, error_type, e]
+                return [False, type(e), e]
             elif disregard_failure:
                 pass
             else:
@@ -576,16 +647,17 @@ class DB:
         list of lists
             the data requested in the statement
         """
-        conn = self._connect()
-        if not conn:
+        conn, cur, e = self._cursor_after_executing(sql, params)
+        if conn is None:
             nc = NoConnection(self.tr)
             nc.run_failure(suppress_message=suppress_message)
             return 'There was no connection established'
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        try:
-            cur.execute(sql, params)
-            data = cur.fetchall()
-        except Exception as e:
+        if e is None:
+            try:
+                data = cur.fetchall()
+            except Exception as fetch_error:
+                e = fetch_error
+        if e is not None:
             try:
                 conn.rollback()
             except Exception as rollback_exc:
@@ -593,8 +665,7 @@ class DB:
                     f'Rollback after failed query failed: {rollback_exc}')
             self.pool.putconn(conn)
             if return_failure:
-                error_type, value_, traceback_ = sys.exc_info()
-                return [False, error_type, e]
+                return [False, type(e), e]
             else:
                 if self.test_mode:
                     return 'There were an error..'
@@ -621,6 +692,19 @@ class DB:
         query = pgsql.SQL("DROP TABLE IF EXISTS {}.{}").format(
             pgsql.Identifier(schema), pgsql.Identifier(tbl))
         self.execute_sql(query)
+        # Not every schema has a .manual reference table to clean up after
+        # (e.g. weather doesn't - its data comes from Open-Meteo/imported
+        # files, never manual entry) - check first instead of just trying
+        # the DELETE, since a failed query here shows the user an error
+        # dialog directly (see execute_sql) even though the actual removal
+        # above already succeeded.
+        manual_exists = self.execute_and_return(
+            "SELECT COUNT(*) FROM information_schema.tables"
+            " WHERE table_schema = %s AND table_name = 'manual'",
+            params=(schema,))
+        if not (isinstance(manual_exists, (list, tuple)) and manual_exists
+                and manual_exists[0][0] > 0):
+            return
         try:
             query = pgsql.SQL("DELETE FROM {}.manual WHERE table_ = %s").format(
                 pgsql.Identifier(schema))
@@ -642,3 +726,26 @@ class DB:
         )
         fail = self.execute_sql(query, return_failure=True)
         return [fail]
+
+
+def ensure_ferti_nutrient_column(db: DB) -> None:
+    """Lazily migrates ``ferti.manual`` to have a ``nutrient`` column, for
+    farms whose database was created before it existed - same
+    check-then-``ALTER TABLE`` idiom as
+    support_scripts.crop_model_settings.ensure_settings_table. Safe/cheap to
+    call every time a caller is about to read or write ``ferti.manual``.
+
+    A row with no ``nutrient`` set defaults to ``'N'``, matching what
+    ``ferti.manual.rate`` has always implicitly meant (see
+    support_scripts.fertilizer_timing_model.FertilizerEvent.rate_text) -
+    every row that existed before this migration keeps behaving exactly as
+    it did before it.
+    """
+    has_column = db.execute_and_return(
+        "SELECT 1 FROM information_schema.columns WHERE table_schema = 'ferti'"
+        " AND table_name = 'manual' AND column_name = 'nutrient'")
+    if isinstance(has_column, (list, tuple)) and has_column:
+        return
+    db.execute_sql(
+        "ALTER TABLE ferti.manual ADD COLUMN IF NOT EXISTS nutrient text"
+        " NOT NULL DEFAULT 'N'")

@@ -32,6 +32,13 @@ def test_collect_data_no_data(gdf):
     class EmptyDB:
         def execute_and_return(self, sql, params=None, return_failure=False):
             return []
+
+        def execute_sql(self, sql, params=None, **kwargs):
+            # collect_data's fertilizing section self-heals ferti.manual's
+            # nutrient column (ensure_ferti_nutrient_column) before querying
+            # it - a no-op here is enough since this stub's execute_and_return
+            # already reports the column as "missing" on every call.
+            pass
     dummy_data = {
         "db": EmptyDB(),
         "tr": gdf.tr,

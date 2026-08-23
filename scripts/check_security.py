@@ -1,18 +1,29 @@
-"""Run the security scanners that plugins.qgis.org applies on upload, so
-you can catch and fix findings BEFORE committing / packaging / uploading.
+"""Run the security AND code-quality checks that plugins.qgis.org applies
+on upload, so you can catch and fix findings BEFORE committing / packaging
+/ uploading.
 
-Two scanners are run over the plugin code:
+Three scanners are run over the plugin code:
 
   * ``bandit``          -- Python static security analysis.
   * ``detect-secrets``  -- hardcoded secret / API-key / password scanning.
                            This is the "Secrets Detection" gate that rejects
                            uploads on plugins.qgis.org.
+  * ``flake8``           -- restricted to the specific codes plugins.qgis.org's
+                           "Python code quality and style checker" has
+                           actually flagged on an upload (see
+                           :data:`_QUALITY_CODES`) -- NOT flake8's full
+                           default ruleset, which is dominated by whitespace/
+                           line-length noise (2000+ findings in this
+                           codebase) the store's checker clearly does not
+                           apply. If a future upload flags a code not in
+                           that list, add it there.
 
-Both tools honour inline suppression comments, which this script respects
-because it just shells out to the real tools:
+All three tools honour inline suppression comments, which this script
+respects because it just shells out to the real tools:
 
   * bandit          ->  ``# nosec``  /  ``# nosec B105``
   * detect-secrets  ->  ``# pragma: allowlist secret``
+  * flake8          ->  ``# noqa``  /  ``# noqa: F401``
 
 By default the script scans your working source tree. The server actually
 scans the *packaged* plugin, so before an upload run it with ``--package``
@@ -20,10 +31,11 @@ to scan the built ``zip_build/`` tree -- an exact match for what gets sent.
 
 Exit codes (safe to use as a pre-commit / pre-upload gate)::
 
-    0   both scanners clean (no secrets, no medium/high bandit findings)
+    0   all scanners clean (no secrets, no medium/high bandit findings,
+        no flagged flake8 codes)
     1   findings that would block or warrant attention
     2   an internal / scanner error
-    3   a required tool (bandit / detect-secrets) is not installed
+    3   a required tool (bandit / detect-secrets / flake8) is not installed
 
 Usage::
 
@@ -37,11 +49,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess  # nosec B404
 import sys
 import tempfile
 from collections import Counter
 from pathlib import Path
+
+# The flake8 codes plugins.qgis.org's quality checker has actually flagged:
+# bare 'except:' (E722), 'type(x) == Y' instead of isinstance (E721), star
+# imports and names only resolvable through one (F403/F405), and shadowed
+# imports/redefinitions (F402/F811). See this module's docstring.
+_QUALITY_CODES = ('E721', 'E722', 'F402', 'F403', 'F405', 'F811')
+_FLAKE8_LINE_RE = re.compile(
+    r'^(?P<filename>.+):(?P<line_number>\d+):(?P<col>\d+): '
+    r'(?P<code>\w+) (?P<text>.*)$')
 
 # Directories that are not shipped plugin code (tests, translations, build
 # artefacts, docs, caches). Scanning them only produces noise the server
@@ -122,6 +144,31 @@ def run_detect_secrets(scan_root: Path) -> "tuple[dict, str | None]":
     return merged, None
 
 
+def run_flake8(scan_root: Path) -> "tuple[list[dict], str | None]":
+    """Run flake8, restricted to :data:`_QUALITY_CODES`, over the python
+    files under ``scan_root`` and return (results, error). Each result is
+    ``{'filename', 'line_number', 'col', 'code', 'text'}``."""
+    files = [str(p.relative_to(scan_root).as_posix())
+             for p in _iter_py_files(scan_root)]
+    if not files:
+        return [], None
+    select = ','.join(_QUALITY_CODES)
+    results = []
+    for batch in _chunked(files, 150):
+        proc = subprocess.run(  # nosec B603 - fixed args, our own interpreter
+            [sys.executable, '-m', 'flake8', f'--select={select}', *batch],
+            cwd=str(scan_root), capture_output=True, text=True,
+        )
+        # flake8 exits 1 when it finds issues; that is expected, not an error.
+        if proc.returncode not in (0, 1):
+            return [], (proc.stderr.strip() or 'flake8 failed to run')
+        for line in proc.stdout.splitlines():
+            match = _FLAKE8_LINE_RE.match(line)
+            if match:
+                results.append(match.groupdict())
+    return results, None
+
+
 def _resolve_scan_root(repo_root: Path, package: bool) -> "Path | None":
     """Pick the directory to scan. ``--package`` targets the built plugin."""
     if not package:
@@ -159,7 +206,7 @@ def main() -> int:
               'first, then re-run with --package.', file=sys.stderr)
         return 2
 
-    missing = [m for m in ('bandit', 'detect_secrets')
+    missing = [m for m in ('bandit', 'detect_secrets', 'flake8')
                if not _tool_available(m)]
     if missing:
         pretty = ' '.join('detect-secrets' if m == 'detect_secrets' else m
@@ -231,6 +278,22 @@ def main() -> int:
                   'line with `# nosec` / `# nosec B###`.')
 
     if not by_sev['HIGH'] and not by_sev['MEDIUM'] and not low:
+        print('  clean -- no findings.')
+    print()
+
+    # --- flake8 (code quality / style - the plugins.qgis.org quality gate) --
+    quality, err = run_flake8(scan_root)
+    print('== flake8 (code quality/style: {}) =='.format(', '.join(_QUALITY_CODES)))
+    if err:
+        print(f'  ERROR: {err}', file=sys.stderr)
+        return 2
+    if quality:
+        failed = True
+        print(f'  {len(quality)} issue(s) found:')
+        for issue in quality:
+            print(f'    {issue["filename"]}:{issue["line_number"]}  '
+                  f'{issue["code"]}  {issue["text"]}')
+    else:
         print('  clean -- no findings.')
     print()
 

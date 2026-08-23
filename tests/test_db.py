@@ -1,6 +1,7 @@
 import hashlib
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QInputDialog
 from qgis.PyQt.QtCore import Qt
+import psycopg2
 from psycopg2.errors import UndefinedTable
 from psycopg2 import sql as pgsql
 import pytest
@@ -13,6 +14,60 @@ from geodatafarm.support_scripts.qt_data import _check_state
 @pytest.fixture
 def db():
     return DB(test_mode=True)
+
+
+@patch('geodatafarm.database_scripts.db.time.sleep')
+def test_execute_and_return_retries_once_after_a_stale_connection(mock_sleep, db):
+    # Reproduces the real-world report: right after the machine wakes from
+    # sleep, or a brief network drop, a connection sitting in the pool can
+    # look fine but actually be dead - the first real use of it raises
+    # psycopg2.OperationalError ("server closed the connection
+    # unexpectedly"). Rather than failing outright, this discards the
+    # stale connection, waits _RECONNECT_DELAY_SECONDS, and tries once
+    # more with a fresh one before giving up.
+    stale_conn = MagicMock()
+    stale_cursor = MagicMock()
+    stale_cursor.execute.side_effect = psycopg2.OperationalError(
+        'server closed the connection unexpectedly')
+    stale_conn.cursor.return_value = stale_cursor
+
+    fresh_conn = MagicMock()
+    fresh_cursor = MagicMock()
+    fresh_cursor.fetchall.return_value = [[1]]
+    fresh_conn.cursor.return_value = fresh_cursor
+
+    db._connect = MagicMock(side_effect=[stale_conn, fresh_conn])
+    db.pool = MagicMock()
+
+    result = db.execute_and_return('SELECT 1')
+
+    assert result == [[1]]
+    assert db._connect.call_count == 2
+    mock_sleep.assert_called_once_with(db._RECONNECT_DELAY_SECONDS)
+    db.pool.putconn.assert_any_call(stale_conn, close=True)
+    db.pool.putconn.assert_any_call(fresh_conn)
+
+
+@patch('geodatafarm.database_scripts.db.time.sleep')
+def test_execute_and_return_does_not_retry_a_real_query_error(mock_sleep, db):
+    # A genuine SQL problem (bad syntax, wrong table, wrong types...) can
+    # never be fixed by trying again - only a connection-level failure
+    # (psycopg2.OperationalError) gets the reconnect-and-retry treatment.
+    conn = MagicMock()
+    cursor = MagicMock()
+    cursor.execute.side_effect = UndefinedTable('relation does not exist')
+    conn.cursor.return_value = cursor
+
+    db._connect = MagicMock(return_value=conn)
+    db.pool = MagicMock()
+
+    result = db.execute_and_return('SELECT 1 FROM non_existing_table', return_failure=True)
+
+    assert result[0] is False
+    assert isinstance(result[2], UndefinedTable)
+    assert db._connect.call_count == 1
+    mock_sleep.assert_not_called()
+    db.pool.putconn.assert_called_once_with(conn)
 
 @patch('geodatafarm.database_scripts.db.QMessageBox')
 def test_check_table_exists_table_not_exists(mock_QMessageBox, db):
@@ -51,7 +106,11 @@ def test_check_table_exists_table_exists_replace(mock_QMessageBox, db):
     result = db.check_table_exists('existing_table', 'public')
 
     # Assert
-    db.execute_and_return.assert_called_once()
+    # Called twice: the initial "does the table exist" check, then
+    # check_table_exists's own follow-up check for whether the schema has
+    # a .manual table to fold into the replace query (see db.py) - the mock
+    # returns [[1]] for both, so that follow-up resolves "yes" here too.
+    assert db.execute_and_return.call_count == 2
     mock_QMessageBox().question.assert_called_once()
     db.execute_sql.assert_called()
     assert result == False

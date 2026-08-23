@@ -715,7 +715,7 @@ class Analyze:
                 feature = self.add_field.field.getFeature(1)
                 QgsProject.instance().removeMapLayer(self.add_field.field.id())
                 self.add_field.field = None
-            except:
+            except Exception:
                 report_warning(self.tr(
                 'No coordinates were found, did you mark the field on the canvas?'))
                 return
@@ -790,7 +790,7 @@ class Analyze:
             except AttributeError:
                 try:
                     current_value = round(filtered_data[1][i], 2)
-                except:
+                except Exception:
                     current_value = filtered_data[1][i]
             current_count = filtered_data[2][i]
             m_yield = round(m_yield, 2)

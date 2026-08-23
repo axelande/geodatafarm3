@@ -1,6 +1,7 @@
 matplotlib
 numpy
 pandas
+pdfplumber
 psycopg2_binary
 reportlab
 requests
@@ -11,3 +12,4 @@ shapely
 geopandas
 bandit
 detect-secrets
+flake8

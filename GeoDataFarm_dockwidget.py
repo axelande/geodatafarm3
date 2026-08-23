@@ -31,7 +31,7 @@ from qgis.PyQt.QtWidgets import (
     QLabel, QLineEdit, QListWidget, QPlainTextEdit, QPushButton, QRadioButton,
     QSpinBox, QTableWidget, QTabWidget, QVBoxLayout, QWidget
 )
-from qgis.gui import QgsMapLayerComboBox
+from qgis.gui import QgsMapLayerComboBox, QgsMessageBar
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'GeoDataFarm_dockwidget_base.ui'))
@@ -47,6 +47,13 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     # ==================== Main Tab Widget ====================
     tabWidget: QTabWidget
     navSidebar: QListWidget
+
+    # ==================== Tab: Crop simulation (tabCropSimulation) ========
+    # Placeholder layout that the CropSimulationPage widget is dropped into
+    # at runtime (see GeoDataFarm.set_buttons) - includes the Pro license
+    # section (LELicenseKey/PBActivateLicense/LLicenseStatus), moved here
+    # from Farm & Fields since this is the feature it gates.
+    layoutCropSimulation: QVBoxLayout
 
     # ==================== Tab: Add data (tabAddData) ====================
     # Placeholder layout that the shared AddDataForm widget is dropped into
@@ -235,9 +242,6 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     label_84: QLabel
     label_87: QLabel
     label_110: QLabel
-
-    # ------ Sub-tab: Weather (tab_14) ------
-    label_65: QLabel
 
     # ------ Sub-tab: Soil (tab_15) ------
     DESoil: QCalendarWidget
@@ -484,11 +488,33 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
 
+        # Plugin errors/warnings/success messages show here - see
+        # GeoDataFarm.run() (wires this into MessageBarNotifier) and
+        # support_scripts/notifier/notifier.py. Previously these only
+        # showed in the main QGIS window's message bar, above the map
+        # canvas - easy to miss while working inside this docked panel.
+        self._insert_message_bar()
+
         # Replace the top tab bar with the left sidebar navigation
         self._setup_sidebar_nav()
 
         # Initialize the Generate ISOXML tab controller
         self._setup_generate_isoxml_controller()
+
+    def _insert_message_bar(self):
+        """Adds a QgsMessageBar above the sidebar/tab area, spanning the
+        whole dock. gridLayout_18 (dockWidgetContents' top-level layout)
+        holds a single item - gridLayout_16, the sidebar+tabs row - at
+        (0, 0); QGridLayout has no "insert row" API, so this takes that
+        item out, puts the message bar in its place, and puts it back one
+        row down."""
+        self.message_bar = QgsMessageBar()
+        self.message_bar.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding,
+            QtWidgets.QSizePolicy.Policy.Fixed)
+        content_item = self.gridLayout_18.takeAt(0)
+        self.gridLayout_18.addWidget(self.message_bar, 0, 0)
+        self.gridLayout_18.addItem(content_item, 1, 0)
 
     def _setup_sidebar_nav(self):
         """Drive the tab widget from the left 'navSidebar' list and hide the
@@ -511,6 +537,7 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             # Same order as the navSidebar items in the .ui.
             self._nav = [
                 (self.tab_4, None, None),                              # Farm & Fields
+                (self.tabCropSimulation, None, None),                 # Crop simulation
                 (self.tabAddData, None, None),                        # Add data
                 (self.tabYourData, self.tabWidgetYourData, 0),        # Data sets
                 (self.tabYourData, self.tabWidgetYourData, 1),        # Visualization

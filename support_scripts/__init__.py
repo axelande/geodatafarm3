@@ -79,6 +79,32 @@ def isfloat(x: str) -> bool:
         return True
 
 
+def db_rows(result) -> list:
+    """Normalises a ``DB.execute_and_return()`` result to always be a
+    list of rows.
+
+    On failure (with ``return_failure=False``, the default), that method
+    returns a plain error *string* instead of rows - ``'There were an
+    error..'`` in test mode, or nothing at all otherwise (it shows the
+    error itself and returns the same string). A bare ``result or []``
+    guard doesn't catch this, since a non-empty string is truthy: the
+    caller ends up iterating it character by character, each character
+    then failing to unpack/index as if it were a row - a confusing
+    IndexError/ValueError far from the real cause. Wrap every
+    ``execute_and_return`` call site that iterates its result with this
+    instead of ``result or []``.
+
+    Parameters
+    ----------
+    result
+
+    Returns
+    -------
+    list
+    """
+    return result if isinstance(result, list) else []
+
+
 def isint(x: str) -> bool:
     """Checks if the inserted value is of int type
 

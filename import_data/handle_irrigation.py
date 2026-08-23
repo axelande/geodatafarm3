@@ -1,10 +1,9 @@
 from psycopg2 import sql as pgsql
-from qgis.PyQt.QtWidgets import QMessageBox
 from datetime import datetime
 # Import the code for the dialog
 from ..widgets.import_irrigation_dialog import ImportIrrigationDialog
 from ..support_scripts.rain_dancer import MyRainDancer
-from ..support_scripts.__init__ import check_text, TR
+from ..support_scripts.__init__ import check_text, db_rows, TR
 from ..support_scripts.notifier import report_warning
 __author__ = 'Axel Horteborn'
 
@@ -13,6 +12,7 @@ class IrrigationHandler:
     def __init__(self, parent_widget):
         """A widget that enables the possibility to insert data from a text
         file into a shapefile"""
+        self.parent = parent_widget
         self.db = parent_widget.db
         translate = TR('IrrigationHandler')
         self.tr = translate.tr
@@ -71,7 +71,19 @@ class IrrigationHandler:
     def get_grid_data(self):
         """
         Function that loops though all irrigation operations during the selected year.
-        It adds the precipitation amount to each 2x2 cell that the operation "covers".
+        It adds the precipitation amount to each 2x2 cell that the operation "covers"
+        (weather.irrigation_{year}, unaffected by this change - still what
+        database_scripts/mean_analyse.py's free-tier per-year analysis reads),
+        and - since a Raindancer operation actually comes with its own real
+        finish date and a real flight-path geometry - also logs each
+        operation as its own dated, spatially-precise row via
+        :meth:`_store_dated_operation`, into a
+        ``weather.<field>_irrigation_events_<year>`` table per field. That's
+        what lets database_scripts/crop_simulation.py's per-cell stress map
+        actually vary by where the irrigation really landed - this is the
+        only way dated irrigation gets logged at all: there's no manual
+        whole-field entry, since no real irrigation pass covers a whole
+        field in one go.
         Returns
         -------
         """
@@ -107,3 +119,43 @@ class IrrigationHandler:
                 " 30, 'endcap=flat join=round')::geometry)"
             ).format(tbl=pgsql.Identifier(f"irrigation_{finished[:4]}"))
             self.db.execute_sql(query, params=(data["precipitation"], line))
+            self._store_dated_operation(line, fin, data["precipitation"])
+
+    def _store_dated_operation(self, line, finished_date, precipitation):
+        """Logs one Raindancer operation into the dated
+        ``weather.<field>_irrigation_events_<year>`` table of every field
+        its flight path actually overlaps, with its real date and its real
+        geometry (the same 30m flight-path buffer already used to find
+        which grid cells it covers above, clipped to each field). A pass
+        that clips two neighbouring fields logs a row in each, each
+        clipped to that field's own boundary.
+
+        No duplicate-import guard here - re-running "Add from raindancer"
+        for an overlapping date range already double-counts in the
+        ``weather.irrigation_{year}`` grid above today, so this doesn't
+        introduce a new failure mode, just carries the existing one
+        (re-fetching the same range) into the new table too.
+        """
+        fields = db_rows(self.db.execute_and_return(
+            "SELECT field_name FROM fields WHERE st_intersects(polygon,"
+            " ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext(%s), 4326) AS geography),"
+            " 30, 'endcap=flat join=round')::geometry)", params=(line,)))
+        date_str = finished_date.strftime('%Y-%m-%d')
+        for (field_name,) in fields:
+            table = check_text('{}_irrigation_events_{}'.format(field_name, date_str[:4]))
+            tbl_id = pgsql.Identifier(table)
+            self.db.execute_sql(
+                pgsql.SQL(
+                    "CREATE TABLE IF NOT EXISTS weather.{tbl} (row_id serial"
+                    " PRIMARY KEY, date_ date, irrigation_mm double precision,"
+                    " polygon geometry, source text)"
+                ).format(tbl=tbl_id))
+            self.db.execute_sql(
+                pgsql.SQL(
+                    "INSERT INTO weather.{tbl} (date_, irrigation_mm, polygon, source)"
+                    " SELECT %s, %s, st_intersection("
+                    " ST_Buffer(CAST(ST_SetSRID(ST_geomfromtext(%s), 4326) AS geography),"
+                    " 30, 'endcap=flat join=round')::geometry, f.polygon), 'raindancer'"
+                    " FROM fields f WHERE f.field_name = %s"
+                ).format(tbl=tbl_id),
+                params=(date_str, precipitation, line, field_name))

@@ -103,13 +103,13 @@ class MetaData(QDialog):
         for item in self.available_items_table_widget.selectedItems():
             xml_item = self.tree_root.findall(item.text().split(' - ')[0])[0]
             for i in range(self.type_widgets_layout.count()):
-                if type(self.type_widgets_layout.itemAt(i).widget()) == QFrame:
+                if isinstance(self.type_widgets_layout.itemAt(i).widget(), QFrame):
                     lay = self.type_widgets_layout.itemAt(i).widget().layout()
                     widget = lay.itemAt(1).widget()
                     attr_value = xml_item.attrib.get(widget.attr, '')
-                    if type(widget) == QLineEdit:
+                    if isinstance(widget, QLineEdit):
                         widget.setText(attr_value)
-                    elif type(widget) == QComboBox:
+                    elif isinstance(widget, QComboBox):
                         # Try to find and select the matching item
                         idx = widget.findText(attr_value)
                         if idx >= 0:
@@ -120,12 +120,12 @@ class MetaData(QDialog):
                                 widget.setCurrentIndex(int(attr_value))
                             except (ValueError, TypeError):
                                 pass
-                    elif type(widget) == QSpinBox:
+                    elif isinstance(widget, QSpinBox):
                         try:
                             widget.setValue(int(attr_value))
                         except (ValueError, TypeError):
                             widget.setValue(0)
-                    elif type(widget) == QDoubleSpinBox:
+                    elif isinstance(widget, QDoubleSpinBox):
                         try:
                             widget.setValue(float(attr_value))
                         except (ValueError, TypeError):
@@ -255,13 +255,13 @@ class MetaData(QDialog):
         from qgis.PyQt.QtWidgets import QSpinBox, QDoubleSpinBox
         sub = self.get_xml_sub_schema()
         for i in range(self.type_widgets_layout.count()):
-            if type(self.type_widgets_layout.itemAt(i).widget()) == QFrame:
+            if isinstance(self.type_widgets_layout.itemAt(i).widget(), QFrame):
                 lay = self.type_widgets_layout.itemAt(i).widget().layout()
                 widget = lay.itemAt(1).widget()
                 key = widget.attr
-                if type(widget) == QLineEdit:
+                if isinstance(widget, QLineEdit):
                     value = widget.text()
-                elif type(widget) == QComboBox:
+                elif isinstance(widget, QComboBox):
                     # For IDREF comboboxes, extract the ID part
                     text = widget.currentText()
                     if ' - ' in text:
@@ -269,9 +269,9 @@ class MetaData(QDialog):
                     else:
                         # For NMTOKEN, use the current index
                         value = str(widget.currentIndex())
-                elif type(widget) == QSpinBox:
+                elif isinstance(widget, QSpinBox):
                     value = str(widget.value())
-                elif type(widget) == QDoubleSpinBox:
+                elif isinstance(widget, QDoubleSpinBox):
                     value = str(widget.value())
                 else:
                     value = ''

@@ -4,8 +4,22 @@ if TYPE_CHECKING:
     import geodatafarm.widgets.import_text_dialog
 
 from qgis.PyQt.QtWidgets import QLabel, QLineEdit, QComboBox, QCheckBox
+from ..database_scripts.db import ensure_ferti_nutrient_column
 from ..support_scripts import check_text
 from ..support_scripts.__init__ import TR
+
+# Spec columns whose value is always one fixed choice for the *whole*
+# import, never a per-row source column - rendered as a plain QComboBox
+# instead of the generic column-reference/typed-value/not-applicable
+# widget set _resolve builds for the rest. Nutrient is the only one so
+# far (see ferti.manual.nutrient, database_scripts.db.
+# ensure_ferti_nutrient_column): unlike Variety/Rate, a ferti import's
+# nutrient doesn't vary row to row - one product goes in the spreader
+# per pass - so "point me at a column" doesn't make sense for it, and
+# routing it through the same check_text() sanitiser _resolve's combo
+# path uses for a column-name reference would lowercase it ('N' ->
+# 'n'), breaking the exact-case match rate_keys.get(nutrient) needs.
+FIXED_CHOICE_COLUMNS = {'Nutrient': ['N', 'P', 'K', 'Mg', 'S', 'Na']}
 
 
 class ManualFromFile:
@@ -34,16 +48,20 @@ class ManualFromFile:
         columns_to_add: list
         """
         for i, column in enumerate(self.spec_columns):
+            if self.manual_values[i].get('fixed_choice'):
+                continue  # already fully populated in add_specific_columns
             self.manual_values[i]['Combo'].setEnabled(True)
             self.manual_values[i]['Combo'].addItems(columns_to_add)
             self.manual_values[i]['line_edit'].setEnabled(True)
             self.manual_values[i]['checkbox'].setEnabled(True)
 
-    def add_specific_columns(self: Self, 
-                             widget: "geodatafarm.widgets.import_text_dialog.ImportTextDialog", 
+    def add_specific_columns(self: Self,
+                             widget: "geodatafarm.widgets.import_text_dialog.ImportTextDialog",
                              spec_columns: list[str]) -> None:
         """Adds rows for the user to manual define which columns contains
-        schema specific columns (or one single value / Not applicable)
+        schema specific columns (or one single value / Not applicable) -
+        or, for a column in :data:`FIXED_CHOICE_COLUMNS`, a plain combo
+        of that column's fixed choices instead (see its docstring).
 
         Parameters
         ----------
@@ -58,6 +76,15 @@ class ManualFromFile:
             self.manual_values[i] = {}
             label = QLabel(column)
             widget.GLSpecific.addWidget(label, i, 0)
+            if column in FIXED_CHOICE_COLUMNS:
+                combo = QComboBox()
+                combo.addItems(FIXED_CHOICE_COLUMNS[column])
+                combo.setFixedWidth(220)
+                self.manual_values[i]['Combo'] = combo
+                self.manual_values[i]['fixed_choice'] = True
+                widget.GLSpecific.addWidget(combo, i, 1)
+                continue
+            self.manual_values[i]['fixed_choice'] = False
             combo = QComboBox()
             combo.setEnabled(False)
             combo.setFixedWidth(220)
@@ -90,10 +117,23 @@ class ManualFromFile:
             If success or not
         """
         def _resolve(idx):
+            if self.manual_values[idx].get('fixed_choice'):
+                return self.manual_values[idx]['Combo'].currentText()
             if self.manual_values[idx]['checkbox'].isChecked():
                 return 'None'
             combo_text = self.manual_values[idx]['Combo'].currentText()
             if combo_text != '':
+                # combo_text names a column in the imported file whose
+                # value varies row by row - storing the column's own name
+                # here (rather than a value) is intentional:
+                # generate_reports.py's retrieve_distinct/retrieve_avg
+                # read it straight back as a column reference into this
+                # row's `table_` to fetch the real per-row data for the
+                # "advanced" report. Any *other* reader of this row (e.g.
+                # CropSimulation._load_variety) must not treat it as a
+                # literal value - see that method's own decoding of this
+                # same three-way ('c_' prefix / 'None' / column name)
+                # convention.
                 return check_text(combo_text)
             return f"c_{self.manual_values[idx]['line_edit'].text()}"
 
@@ -115,12 +155,15 @@ class ManualFromFile:
                    " VALUES (%s, %s, %s, %s, %s)")
             self.db.execute_sql(sql, params=(field, crop, date_, table, variety))
         elif data_type == 'ferti':
+            ensure_ferti_nutrient_column(self.db)
             variety = _resolve(0)
-            rate = _resolve(1)
+            nutrient = _resolve(1)
+            rate = _resolve(2)
             sql = ("INSERT INTO ferti.manual"
-                   " (field, crop, table_, date_text, variety, rate)"
-                   " VALUES (%s, %s, %s, %s, %s, %s)")
-            self.db.execute_sql(sql, params=(field, crop, table, date_, variety, rate))
+                   " (field, crop, table_, date_text, variety, nutrient, rate)"
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s)")
+            self.db.execute_sql(
+                sql, params=(field, crop, table, date_, variety, nutrient, rate))
         elif data_type == 'spray':
             variety = _resolve(0)
             rate = _resolve(1)

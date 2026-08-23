@@ -29,7 +29,7 @@ class SaveFertilizing:
 
     def run_file_import(self):
         """The function loads the correct import dialog for files"""
-        columns = [self.tr('Variety'), self.tr('Rate'), self.tr('Depth')]
+        columns = [self.tr('Variety'), self.tr('Nutrient'), self.tr('Rate'), self.tr('Depth')]
         if self.dw.CBFFileType.currentText() == self.tr('Text file (.csv; .txt)'):
             add_f = InputTextHandler(self.parent, 'ferti', columns=columns)
             add_f.run()

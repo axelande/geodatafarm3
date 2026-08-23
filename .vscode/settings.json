@@ -1,7 +1,11 @@
 {
+    "python.defaultInterpreterPath": "C:\\OSGeo4W\\apps\\Python312\\python.exe",
+    "python.envFile": "${workspaceFolder}/.vscode/qgis.env",
+    "python.testing.cwd": "${workspaceFolder}",
     "python.testing.pytestArgs": [
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }

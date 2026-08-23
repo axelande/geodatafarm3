@@ -1090,7 +1090,7 @@ class TaskDataMixin:
                         w.setValue(float(v))
                     if type(w) in [QSpinBox]:
                         w.setValue(int(v))
-                    elif type(w) == QLineEdit:
+                    elif isinstance(w, QLineEdit):
                         w.setText(str(v))
                 except Exception:  # nosec B110
                     pass
@@ -1358,9 +1358,9 @@ class TaskDataMixin:
         """Get value from a widget."""
         if type(widget) in [QSpinBox, QDoubleSpinBox]:
             value = str(widget.value())
-        elif type(widget) == QLineEdit:
+        elif isinstance(widget, QLineEdit):
             value = widget.text()
-        elif type(widget) == QComboBox:
+        elif isinstance(widget, QComboBox):
             if widget in self.idref_widgets:
                 text = widget.currentText()
                 if ' - ' in text:
@@ -1369,7 +1369,7 @@ class TaskDataMixin:
                     value = text
             else:
                 value = widget.currentIndex()
-        elif type(widget) == QPushButton:
+        elif isinstance(widget, QPushButton):
             value = widget.value
         else:
             raise MsgError('Could not find the widget type')
@@ -1382,7 +1382,7 @@ class TaskDataMixin:
         for i in range(layout.rowCount()):
             item = layout.itemAtPosition(i, 0)
             if item is not None:
-                if type(item) == QHBoxLayout:
+                if isinstance(item, QHBoxLayout):
                     widget = item.itemAt(1).widget()
                     # Skip widgets without schema (e.g., metadata selectors, field selectors)
                     if widget is None or not hasattr(widget, 'schema'):

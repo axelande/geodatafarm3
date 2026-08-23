@@ -5,7 +5,7 @@ import numpy as np
 from operator import xor
 import pandas as pd
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QTableWidgetItem, QComboBox, QHeaderView
+from qgis.PyQt.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QTableWidgetItem, QComboBox, QHeaderView, QInputDialog
 from qgis.core import QgsTask
 
 from psycopg2 import sql as pgsql
@@ -59,21 +59,26 @@ class Iso11783:
             self.IXB.exec()
 
     def add_to_canvas(self, schema, tbl, focus_cols):
-        """At the end add the layers to the canvas, one layer for 
+        """At the end add the layers to the canvas, one layer for
         each of the columns in the focus_cols"""
         add_background()
         create_layer = CreateLayer(self.db)
-        for param_layer in focus_cols[0]:
+        for param_layer in focus_cols:
             param_layer = check_text(param_layer)
             target_field = param_layer
-            if self.data_type == 'harvest':
-                layer = self.db.add_postgis_layer(tbl, 'pos', '{schema}'.format(schema=schema),
-                                                check_text(param_layer.lower()))
-            else:
-                layer = self.db.add_postgis_layer(tbl, 'polygon', '{schema}'.format(schema=schema),
-                                                check_text(param_layer.lower()))
+            try:
+                if self.data_type == 'harvest':
+                    layer = self.db.add_postgis_layer(tbl, 'pos', '{schema}'.format(schema=schema),
+                                                    check_text(param_layer.lower()))
+                else:
+                    layer = self.db.add_postgis_layer(tbl, 'polygon', '{schema}'.format(schema=schema),
+                                                    check_text(param_layer.lower()))
 
-            create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
+                create_layer.create_layer_style(layer, check_text(target_field), tbl, schema)
+            except Exception as layer_exc:
+                report_warning(self.tr('Could not add/style layer for column "{col}" in {tbl}, skipping it: {err}').format(
+                    col=target_field, tbl=tbl, err=layer_exc))
+                continue
 
     def close(self, result, values):
         """Disconnects buttons and closes the widget when all tasks are completed, 
@@ -162,8 +167,13 @@ class Iso11783:
                      + pgsql.SQL(") SELECT field_name FROM start_sel GROUP BY field_name"))
             fields_ = self.db.execute_and_return(query, params=tuple(union_params))
             if len(fields_) == 0 and not self.parent.test_mode:
-                report_warning(self.tr('At least one of the tasked was placed outside the field at approximate: ') +
-                                                      f'{round(lat, 4)}, {round(lon, 4)}')
+                task_name = data_set.attrs.get('task_name', f'Task {task_nr}')
+                report_warning(self.tr(
+                    'The task "{task}" does not overlap any of your fields (e.g. near {lat}, {lon}).'
+                    ' Check that the field it belongs to has been added, and that its boundary covers that area.'
+                ).format(task=task_name,
+                         lat=round(data_set['latitude'].iloc[0], 4),
+                         lon=round(data_set['longitude'].iloc[0], 4)))
             for field in fields_:
                 fields.append([field[0], time_stamp.values[-1]])
             task_names[task_nr] = fields
@@ -290,7 +300,7 @@ class Iso11783:
             if item.column() == 0 and item.text() not in existing_values:
                 index = self.IXB.TWColumnNames.selectedIndexes()[i].row()
                 unit = self.IXB.TWColumnNames.cellWidget(index, 4).currentText()
-                if unit != item.text():
+                if unit != item.text() and unit != '':
                     items_to_add.append(f'{item.text()}_{check_text(unit)}')
                 else:
                     items_to_add.append(f'{check_text(item.text())}')
@@ -312,8 +322,35 @@ class Iso11783:
         if self.IXB.TWtoParam.rowCount() == 0:
             self.IXB.PBInsert.setEnabled(False)
 
+    def _collect_task_columns(self: Self) -> "tuple[list[str], dict[str, tuple[int, int]]]":
+        """Walks every loaded task (not just the first) and returns the union
+        of their non-geometry, non-empty columns in first-seen order, plus
+        a {column_name: (task_index, position_in_that_task)} map used to read
+        that column's own stats/unit from the task it actually came from -
+        tasks don't all log the same columns, so no single task can be used
+        as the source for all of them."""
+        valid_columns = []
+        sources = {}
+        for t_idx, task in enumerate(self.tasks):
+            pos = -1
+            for column in task.columns:
+                if column in ['latitude', 'longitude', 'geometry']:
+                    continue
+                pos += 1
+                if column in sources:
+                    continue
+                if task[column].isnull().all():
+                    continue
+                if len(task.attrs['unit_row']) <= pos:
+                    continue
+                sources[column] = (t_idx, pos)
+                valid_columns.append(column)
+        return valid_columns, sources
+
     def set_column_list(self: Self) -> None:
-        """A function that retrieves the name of the columns from the first tasks."""
+        """Populates the column table with the union of columns across all
+        loaded tasks - a column missing from one task but present in another
+        must still be configurable here."""
         self.IXB.TWColumnNames.clear()  # Clear the table
         self.IXB.TWColumnNames.setRowCount(0)  # Reset row count
         self.IXB.TWColumnNames.setColumnCount(6)  # Set the number of columns
@@ -331,13 +368,7 @@ class Iso11783:
         # Check if there are tasks to populate the table
         if self.tasks is None or len(self.tasks) == 0:
             return
-        valid_columns = []
-        for column in self.tasks[0].columns:
-            if column not in ['latitude', 'longitude', 'geometry']:
-                # Check if the column contains any non-null data
-                if not self.tasks[0][column].isnull().all():
-                    if len(self.tasks[0].attrs['unit_row']) > len(valid_columns):
-                        valid_columns.append(column)
+        valid_columns, sources = self._collect_task_columns()
 
         # Populate the table with data
         self.IXB.TWColumnNames.setRowCount(len(valid_columns))
@@ -345,32 +376,34 @@ class Iso11783:
         self.IXB.TWColumnNames.setSelectionBehavior(_enum_select_rows())
 
         for i, row in enumerate(valid_columns):
+            t_idx, pos = sources[row]
+            task = self.tasks[t_idx]
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
             self.IXB.TWColumnNames.setItem(i, 0, item1)
 
             try:
-                mean = str(round(self.tasks[0][row].mean(), 2))
-            except:
+                mean = str(round(task[row].mean(), 2))
+            except Exception:
                 mean = ''
             item2 = QTableWidgetItem(mean)
             self.IXB.TWColumnNames.setItem(i, 1, item2)
 
             try:
-                _min = str(self.tasks[0][row].min())
-            except:
+                _min = str(task[row].min())
+            except Exception:
                 _min = ''
             item3 = QTableWidgetItem(_min)
             self.IXB.TWColumnNames.setItem(i, 2, item3)
 
             try:
-                _max = str(self.tasks[0][row].max())
-            except:
+                _max = str(task[row].max())
+            except Exception:
                 _max = ''
             item4 = QTableWidgetItem(_max)
             self.IXB.TWColumnNames.setItem(i, 3, item4)
 
-            unit = self.tasks[0].attrs['unit_row'][i]
+            unit = task.attrs['unit_row'][pos]
             unit_col = self.get_units_option(unit)
             self.unit_boxes[len(self.unit_boxes)] = {'box': unit_col, 'org_item': unit}
             unit_col.__setattr__('index', i)
@@ -508,12 +541,16 @@ class Iso11783:
         return [True, fields, crops, dates, focus_cols, idxs]
 
     def scale_dfs(self: Self, df: "pandas.core.frame.DataFrame") -> list:
-        col_id = -1
+        scale_factors = {
+            self.IXB.TWColumnNames.item(row_idx, 0).text(): self.IXB.TWColumnNames.item(row_idx, 5).text()
+            for row_idx in range(self.IXB.TWColumnNames.rowCount())
+        }
         for col in df.attrs['columns']:
             if col in ['latitude', 'longitude', 'geometry']:
                 continue
-            col_id += 1
-            scale_f = self.IXB.TWColumnNames.item(col_id, 5).text()
+            # A column this task doesn't have configured (e.g. it's only
+            # present in a different task in the batch) is left untouched.
+            scale_f = scale_factors.get(col, '1')
             if scale_f == 'C':
                 df[col] = self.far2cel(df[col])
                 continue
@@ -530,18 +567,24 @@ class Iso11783:
                 pass
         return [True, df]
 
-    def get_col_types(self: Self) -> list:
-        """Gather the column types (0=int, 1=float, 2=string)"""
-        col_types = []
-        for dtype in self.py_agri.tasks[0].dtypes:
-            if dtype == np.int64:
-                col_types.append(0)
-            elif dtype == np.float64:
-                col_types.append(1)
-            elif dtype == np.str_:
-                col_types.append(2)
-            else:
-                col_types.append(2)
+    def get_col_types(self: Self) -> dict:
+        """Gather the column type (0=int, 1=float, 2=string) for every column
+        across all loaded tasks, keyed by column name - tasks can differ in
+        which columns they have and in what order, so a single task's column
+        order can't be used as a stand-in for every task's."""
+        col_types = {}
+        for task in self.tasks:
+            for column, dtype in task.dtypes.items():
+                if column in col_types:
+                    continue
+                if dtype == np.int64:
+                    col_types[column] = 0
+                elif dtype == np.float64:
+                    col_types[column] = 1
+                elif dtype == np.str_:
+                    col_types[column] = 2
+                else:
+                    col_types[column] = 2
         return col_types
 
     def get_col_units(self: Self) -> dict:
@@ -558,6 +601,25 @@ class Iso11783:
                 col_units[column] = ''
         return col_units
 
+    def _prompt_ferti_nutrient(self: Self) -> str:
+        """Which nutrient this whole batch of fertilizer imports actually
+        is - asked once per "Insert" click, not once per field/date,
+        since one import batch is one spreading operation: one product
+        goes in the spreader per pass, not a per-row/per-field mix (see
+        CropSimulation._load_imported_ferti_events, which reads the
+        answer back from a constant column this adds to each created
+        table below). Cancelling keeps the original nitrogen-only
+        assumption rather than blocking the import."""
+        if self.parent.test_mode:
+            return getattr(self, '_test_ferti_nutrient', 'N')
+        nutrient, ok = QInputDialog.getItem(
+            self.IXB, self.tr('Fertilizer nutrient'),
+            self.tr('Which nutrient does this import represent?\n'
+                    '(one product per spreading pass, so this applies to '
+                    'every field/date selected below)'),
+            ['N', 'P', 'K', 'Mg', 'S', 'Na'], 0, False)
+        return nutrient if ok else 'N'
+
     def add_to_database(self: Self) -> bool:
         """Initiate the insertion of data to the database."""
         col_types = self.get_col_types()
@@ -569,40 +631,57 @@ class Iso11783:
         crops = prep_data[2]
         dates = prep_data[3]
         focus_cols = prep_data[4]
+        idxs = prep_data[5]
         self.added_nbrs = 0
         self.tasks_to_run = len(fields)
+        nutrient = self._prompt_ferti_nutrient() if self.data_type == 'ferti' else None
         for i, field in enumerate(fields):
             try:
-                df = self.tasks[i]
+                # idxs[i], not i: fields/crops/dates/focus_cols only contain
+                # the checked rows, so if any row in between got unchecked,
+                # i alone would drift from which task this row actually is.
+                df = self.tasks[idxs[i]]
                 success = self.scale_dfs(df)
                 if not success[0]:
                     return False
-                
+
                 crop = crops[i]
                 date = dates[i]
                 columns = []
                 table = f'{check_text(field)}_{check_text(crop)}_{check_text(date)}'
                 for col in df.columns:
                     columns.append(check_text(col.strip()))
-                suc, insert_sql, _ = create_table(self.db, self.data_type, columns, 
+                # A parameter chosen "to be analysed" may not be present in
+                # every task in the batch - only index/style it for the
+                # tasks that actually have it, skip it for the rest.
+                task_focus_col = [c for c in focus_cols[i] if c in columns]
+                suc, insert_sql, _ = create_table(self.db, self.data_type, columns,
                                                 'latitude', 'longitude', 'time_stamp', '',
-                                                col_types, column_units=col_units, table=table, 
+                                                col_types, column_units=col_units, table=table,
                                                 ask_replace=False, test_mode=self.parent.test_mode,
                                                 task_nr=i)
                 if not suc:
-                    return False
-                
+                    report_warning(self.tr('A table for "{field}" ({date}) already exists, skipping it.').format(
+                        field=field, date=date))
+                    self.tasks_to_run -= 1
+                    continue
+                if nutrient:
+                    self.db.execute_sql(pgsql.SQL(
+                        "ALTER TABLE {schema}.{tbl} ADD COLUMN nutrient text DEFAULT %s"
+                    ).format(schema=pgsql.Identifier(self.data_type), tbl=pgsql.Identifier(table)),
+                        params=(nutrient,))
+
                 if not self.parent.test_mode:
                     db = DB(self.parent.dock_widget, path=self.parent.plugin_dir, test_mode=self.parent.test_mode)
                     connected = db.set_conn(False)
                     task = QgsTask.fromFunction(f'Adding field: {field}{prep_data[5][i]}', insert_data,
-                                                db, df, self.data_type, 
-                                                insert_sql, table, field, focus_cols, 
+                                                db, df, self.data_type,
+                                                insert_sql, table, field, task_focus_col,
                                                 col_types, i, on_finished=self.close)
                     self.parent.tsk_mngr.addTask(task)
                 else:
-                    res = insert_data(None, self.db, df, self.data_type, 
-                                                insert_sql, table, field, focus_cols, 
+                    res = insert_data(None, self.db, df, self.data_type,
+                                                insert_sql, table, field, task_focus_col,
                                                 col_types, i)
                     # self.close(True, res)
                     return res[0]
@@ -619,10 +698,8 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
         for row_nr, row in data.iterrows():
             placeholders = []
             lat_lon_insert = False
-            lat_lon_c = 0
-            for col_nr, col in enumerate(data.columns):
+            for col in data.columns:
                 if col in ['latitude', 'longitude']:
-                    lat_lon_c += 1
                     if not lat_lon_insert:
                         placeholders.append("ST_PointFromText(%s, 4326)")
                         batch_params.append(f"POINT({row['longitude']} {row['latitude']})")
@@ -635,7 +712,7 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
                 val_str = str(row[col])
                 if val_str == 'nan' or val_str.lower() == 'none':
                     placeholders.append("NULL")
-                elif col_types[col_nr-lat_lon_c] == 2:
+                elif col_types.get(col, 2) == 2:
                     placeholders.append("%s")
                     batch_params.append(val_str)
                 else:
@@ -687,10 +764,9 @@ def insert_data(qtask: None, db: DB, data: pd.DataFrame, schema: str, insert_sql
                 tbl=pgsql.Identifier(f"temp_table{tsk_nr}")))
         if qtask is not None:
             qtask.setProgress(90)
-        for j, col in enumerate(focus_col):
-            db.create_indexes(tbl_name, col, schema, primary_key=False)
-            if qtask is not None:
-                qtask.setProgress(90 + j / len(focus_col) * 10)
+        db.create_indexes(tbl_name, focus_col, schema, primary_key=False)
+        if qtask is not None:
+            qtask.setProgress(100)
         return True, schema, tbl_name, focus_col
     except Exception as e:
         return False, e

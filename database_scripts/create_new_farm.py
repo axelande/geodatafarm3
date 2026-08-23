@@ -262,14 +262,15 @@ class CreateFarm:
             other text, 
             table_ text)"""
         self.db.execute_sql(sql)
-        sql = """create table ferti.manual(field text, 
-            crop text, 
-            date_ date, 
+        sql = """create table ferti.manual(field text,
+            crop text,
+            date_ date,
             date_text text,
-            variety text, 
-            rate text, 
-            saw_depth text, 
-            other text, 
+            variety text,
+            rate text,
+            nutrient text NOT NULL DEFAULT 'N',
+            saw_depth text,
+            other text,
             table_ text)"""
         self.db.execute_sql(sql)
         sql = """create table spray.manual(field text, 

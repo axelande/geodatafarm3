@@ -55,10 +55,14 @@ Temporary Items
 help/build/
 .idea/
 resources.py
-connection_data.ini
+.pytest_cache/
+.vscode/
+scripts/_cdse*
 zip_build/
 tests/test_data/TaskPotatis/*
 tests/__pycache__/*
+example_iso_files/
+homepage/
 
 # Meta data XML files (contain personal data)
 # Use *.xml.template files as starting point

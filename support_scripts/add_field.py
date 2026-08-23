@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 from qgis.core import QgsProject, QgsVectorLayer, QgsTask
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QListWidgetItem, QApplication
-from psycopg2 import IntegrityError, InternalError, sql as pgsql
+from psycopg2 import IntegrityError, sql as pgsql
 
 # Qt5/Qt6 compat: ensure the unscoped Yes/No aliases exist as attributes
 if not hasattr(QMessageBox, 'Yes'):
@@ -231,7 +231,7 @@ class AddField:
             self.iface.actionToggleEditing().trigger()
             feature = self.field.getFeature(1)
             QgsProject.instance().removeMapLayers([self.field.id()])
-        except:
+        except Exception:
             if self.parent.test_mode:
                 return False
             else:
@@ -245,27 +245,23 @@ class AddField:
             return
         sql = ("INSERT INTO fields (field_name, polygon)"
                " VALUES (%s, st_geomfromtext(%s, 4326))")
-        try:
-            res = self.db.execute_sql(sql, params=(name, polygon), return_failure=True)
-        except IntegrityError:
+        res = self.db.execute_sql(sql, params=(name, polygon), return_failure=True)
+        if not res[0]:
             if self.parent.test_mode:
                 return False
-            else:
+            elif res[1] is IntegrityError:
                 report_warning(self.tr('Field name already exist, please select a new name'))
-                return
-        except InternalError as e:
-            report_error(str(e), detail=str(e))
-            return
+                return False
+            else:
+                report_error(str(res[2]), detail=str(res[2]))
+                return False
         _name = QApplication.translate("qadashboard", name, None)
         item = QListWidgetItem(_name, self.dock_widget.LWFields)
         item.setFlags(item.flags() | _item_flag('ItemIsUserCheckable'))
         item.setCheckState(_check_state('Unchecked'))
         self.defined_field = name
         self.view_fields()
-        if not res[0]:
-            return False
-        else:
-            return True
+        return True
 
     def help(self):
         """A function that gives some advice on how the function works for the user.

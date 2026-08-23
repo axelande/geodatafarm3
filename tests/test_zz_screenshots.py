@@ -103,5 +103,48 @@ def test_capture_screenshots(gdf: GeoDataFarm):
     _grab(dw, 'ui_guide_isoxml.png')
     _grab(cgf, 'guide_isoxml_panel.png')
 
+    # Crop simulation documentation shots. These use a small deterministic
+    # map fixture so the screenshots show the real Premium controls and map
+    # legend without requiring a live weather request during capture.
+    crop_simulation = gdf.crop_simulation
+    crop_page = crop_simulation.page
+    crop_page.resize(1100, 900)
+    crop_page.show()
+    saved_license_key = crop_simulation.qsettings.value(
+        'geodatafarm/pro_license_key', '')
+    saved_license_instance = crop_simulation.qsettings.value(
+        'geodatafarm/pro_license_instance_id', '')
+    crop_simulation.qsettings.remove('geodatafarm/pro_license_key')
+    crop_simulation.qsettings.remove('geodatafarm/pro_license_instance_id')
+    crop_simulation._refresh_license_status()
+    _settle()
+    _grab(crop_page, 'crop_simulation_locked.png')
+    if saved_license_key:
+        crop_simulation.qsettings.setValue('geodatafarm/pro_license_key', saved_license_key)
+    if saved_license_instance:
+        crop_simulation.qsettings.setValue(
+            'geodatafarm/pro_license_instance_id', saved_license_instance)
+    crop_simulation._cell_polygons = {
+        1: 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))',
+        2: 'POLYGON((1 0, 1 1, 2 1, 2 0, 1 0))',
+    }
+    crop_simulation._trace_dates = ['2026-05-01', '2026-07-15', '2026-09-15']
+    crop_simulation._cell_yields = {1: 7.2, 2: 5.8}
+    crop_simulation._cell_yields_by_date = {
+        1: {'2026-05-01': 0.0, '2026-07-15': 2.8, '2026-09-15': 7.2},
+        2: {'2026-05-01': 0.0, '2026-07-15': 2.1, '2026-09-15': 5.8},
+    }
+    crop_simulation._cell_traces = {}
+    crop_simulation._cell_water_totals = {}
+    crop_page.CBMapMode.setCurrentIndex(crop_page.CBMapMode.findData('yield'))
+    crop_simulation._render_heatmap('2026-07-15')
+    _settle()
+    _grab(crop_page, 'crop_simulation_yield_map.png')
+    crop_simulation._render_heatmap('2026-07-15')
+    crop_page.CBMapMode.setCurrentIndex(crop_page.CBMapMode.findData('stress'))
+    _settle()
+    _grab(crop_page, 'crop_simulation_stress_map.png')
+    crop_page.hide()
+
     # at least the guide shots must exist
     assert os.path.isfile(os.path.join(OUT, 'ui_guide_isoxml.png'))

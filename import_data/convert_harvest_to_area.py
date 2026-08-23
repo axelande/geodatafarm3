@@ -98,7 +98,7 @@ class ConvertToAreas:
                 dat = f.read()
                 read_all = dat.decode('utf-8')
                 self.encoding = 'utf-8'
-            except:
+            except UnicodeDecodeError:
                 dat = f.read()
                 read_all = dat.decode('ansi')
                 self.encoding = 'ansi'

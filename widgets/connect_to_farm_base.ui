@@ -222,6 +222,9 @@ existing database</string>
       <property name="text">
        <string>password</string>
       </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
      </widget>
     </item>
     <item row="2" column="1">

@@ -71,6 +71,11 @@ QListWidget#navSidebar::item:hover:!selected { background: #3a6240; }</string>
         </item>
         <item>
          <property name="text">
+          <string>🌱   Crop simulation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>➕   Add data</string>
          </property>
         </item>
@@ -194,6 +199,25 @@ QListWidget#navSidebar::item:hover:!selected { background: #3a6240; }</string>
           <string>➕ Add data</string>
          </attribute>
          <layout class="QVBoxLayout" name="layoutAddData">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabCropSimulation">
+         <attribute name="title">
+          <string>🌱 Crop simulation</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="layoutCropSimulation">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -1507,30 +1531,6 @@ QListWidget#navSidebar::item:hover:!selected { background: #3a6240; }</string>
                 </layout>
                </widget>
               </widget>
-              <widget class="QWidget" name="tab_14">
-               <attribute name="title">
-                <string>Weather</string>
-               </attribute>
-               <widget class="QLabel" name="label_65">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>10</y>
-                  <width>401</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>9</pointsize>
-                  <underline>true</underline>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Support for loading weather data will come in the future</string>
-                </property>
-               </widget>
-              </widget>
               <widget class="QWidget" name="tab_15">
                <attribute name="title">
                 <string>Soil</string>
@@ -2273,7 +2273,7 @@ To use it, create a free account at the Copernicus Data Space and add an OAuth c
              </property>
             </widget></item><item><widget class="QDateEdit" name="DECdseFrom">
              <property name="displayFormat">
-              <string>yyyy-MM-dd</string>
+              <string notr="true">yyyy-MM-dd</string>
              </property>
              <property name="calendarPopup">
               <bool>true</bool>
@@ -2291,7 +2291,7 @@ To use it, create a free account at the Copernicus Data Space and add an OAuth c
              </property>
             </widget></item><item><widget class="QDateEdit" name="DECdseTo">
              <property name="displayFormat">
-              <string>yyyy-MM-dd</string>
+              <string notr="true">yyyy-MM-dd</string>
              </property>
              <property name="calendarPopup">
               <bool>true</bool>

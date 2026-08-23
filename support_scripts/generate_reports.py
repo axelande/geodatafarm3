@@ -3,7 +3,6 @@ from psycopg2 import sql as pgsql
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
@@ -14,6 +13,7 @@ from functools import partial
 import traceback
 from .notifier import report_warning, report_error
 from ..support_scripts.__init__ import TR
+from ..database_scripts.db import ensure_ferti_nutrient_column
 width, height = A4
 styles = getSampleStyleSheet()
 styleH = styles['Heading1']
@@ -489,6 +489,8 @@ class RapportGen:
                 return_list.append(crop)
             if 'variety' in meta_data.keys():
                 return_list.append(retrieve_distinct(meta_data['variety'], meta_data['tbl'], schema, data['year']))
+            if 'nutrient' in meta_data.keys():
+                return_list.append(retrieve_distinct(meta_data['nutrient'], meta_data['tbl'], schema, data['year']))
             if 'rate' in meta_data.keys():
                 return_list.append(retrieve_distinct(meta_data['rate'], meta_data['tbl'], schema, data['year']))
             if 'yield' in meta_data.keys():
@@ -558,7 +560,8 @@ class RapportGen:
                     data_dict['planting']['advance_dat'] = adv_data
                     data_dict['planting']['adv_heading'] = adv_heading
             # Fertilizing
-            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, rate"
+            ensure_ferti_nutrient_column(data['db'])
+            sql = ("SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), ''), field, crop, variety, nutrient, rate"
                    " FROM ferti.manual WHERE table_ = 'None'")
             params = None
             if data['year'] is not None:
@@ -569,7 +572,7 @@ class RapportGen:
                 task.setProgress(15)
             simple_ferti_data = data['db'].execute_and_return(sql, params=params)
             if len(simple_ferti_data) > 0:
-                simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Rate')]
+                simple_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Nutrient'), data['tr']('Rate')]
                 for row in simple_ferti_data:
                     date_str = ''
                     for date_nr in row[0].split(','):
@@ -578,10 +581,11 @@ class RapportGen:
                     row[1] = Paragraph(row[1], styleN)
                     row[2] = Paragraph(row[2], styleN)
                     row[3] = Paragraph(row[3], styleN)
+                    row[4] = Paragraph(row[4], styleN)
                 data_dict['fertilizing']['simple'] = True
                 data_dict['fertilizing']['simple_data'] = simple_ferti_data
                 data_dict['fertilizing']['simple_heading'] = simple_heading
-            sql = ("SELECT date_text, field, crop, variety, rate, table_ FROM ferti.manual"
+            sql = ("SELECT date_text, field, crop, variety, nutrient, rate, table_ FROM ferti.manual"
                    " WHERE table_ <> 'None'")
             params = None
             if data['year'] is not None:
@@ -591,13 +595,13 @@ class RapportGen:
             fertilizing_data_advanced = data['db'].execute_and_return(sql, params=params)
             if len(fertilizing_data_advanced) > 0:
                 adv_data = []
-                for date_, field, crop, variety, rate, table_ in fertilizing_data_advanced:
+                for date_, field, crop, variety, nutrient, rate, table_ in fertilizing_data_advanced:
                     dat = {'date': date_, 'field': field, 'crop': crop, 'variety': variety,
-                           'tbl': table_, 'rate': rate}
-                    [_date_, field, crop, _variety_, rate_] = get_data(dat, 'ferti')
-                    adv_data.append([_date_, field, crop, _variety_, rate_])
+                           'tbl': table_, 'nutrient': nutrient, 'rate': rate}
+                    [_date_, field, crop, _variety_, _nutrient_, rate_] = get_data(dat, 'ferti')
+                    adv_data.append([_date_, field, crop, _variety_, _nutrient_, rate_])
                 if len(adv_data) > 0:
-                    adv_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Rate')]
+                    adv_heading = [data['tr']('Date'), data['tr']('Field'), data['tr']('Crop'), data['tr']('Variety'), data['tr']('Nutrient'), data['tr']('Rate')]
                     data_dict['fertilizing']['advanced'] = True
                     data_dict['fertilizing']['advance_dat'] = adv_data
                     data_dict['fertilizing']['adv_heading'] = adv_heading

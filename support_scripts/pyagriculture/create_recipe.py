@@ -177,11 +177,11 @@ class CreateRecipe(QDialog):
         for key, val in d.items():
             # create an Element
             # class object
-            if type(val) == dict:
+            if isinstance(val, dict):
 
                 val = self.dict_to_xml(key, val)
                 ET.SubElement(elem, val)
-            elif type(val) == list:
+            elif isinstance(val, list):
                 child = ET.Element(key)
                 child.text = str(val)
                 elem.append(child)

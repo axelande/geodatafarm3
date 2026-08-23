@@ -167,6 +167,8 @@ class CreateLayer:
                 if temp_list[-1] != distinct_values[-1]:
                     temp_list.append(distinct_values[-1])
                 distinct_values = temp_list
+        if not distinct_values:
+            return
         if isinstance(distinct_values[0], str):
             str_values = True
         colors = self._create_colors(len(distinct_values))

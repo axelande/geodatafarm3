@@ -1,8 +1,24 @@
 # GeoDataFarm
 
-This is QGIS plugin, intended to be used by farmers that wants to analyze their field data. The first version of the plugin was released to [plugins.qgis.org](https://plugins.qgis.org/plugins/geodatafarm/) in 2018 and since then has many updates been added. The plugin is 100% free and the development is performed as an active hobby project. If you like the work that I'm doing considering to [Sponsor me](https://github.com/sponsors/axelande).
+This is QGIS plugin, intended to be used by farmers that wants to analyze their field data. The first version of the plugin was released to [plugins.qgis.org](https://plugins.qgis.org/plugins/geodatafarm/) in 2018 and since then has many updates been added. The core plugin is free to use, with an optional paid tier that unlocks the premium crop simulation and fertilizer-timing tools; the development is performed as an active hobby project. If you like the work that I'm doing considering to [Sponsor me](https://github.com/sponsors/axelande).
 
 For guidance on the usage of the plugin please have a look at [geodatafarm.com](http://www.geodatafarm.com) 
+
+## Premium crop simulation
+
+The optional Premium crop simulation uses weather, soil, fertilizer, irrigation,
+crop, and variety data to estimate water stress, nutrient limitations, and
+predicted yield. The field map resolves crop and variety settings per grid cell
+when spatial planting data is available, and the date slider shows yield
+formation as the crop develops.
+
+The model is literature-informed and planning-grade, not a guaranteed harvest
+forecast or a substitute for local agronomic advice. Growing degree days drive
+crop development; the potato and cereal yield-formation onset points are
+simplified crop-level assumptions and are not calibrated to every cultivar,
+field, or climate. The **Teach your model** workflow can fit selected model
+parameters to representative historical field and harvest data, but its result
+is only as reliable as the data supplied.
 
 ## Contributions
 To contribute to the project please fork the repository and create Pull requests with suggested updates / new features. If possible try to create requests as simple as possible regarding only one topic. Also before creating any pull requests make sure that all tests passes (`pytest tests`)

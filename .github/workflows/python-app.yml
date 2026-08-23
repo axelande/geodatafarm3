@@ -13,8 +13,9 @@ permissions:
 
 jobs:
   security-scan:
-    # bandit + detect-secrets are pure Python and need no QGIS, so this runs
-    # on a plain runner. Mirrors `python scripts/check_security.py` locally.
+    # bandit + detect-secrets + flake8 are pure Python and need no QGIS, so
+    # this runs on a plain runner. Mirrors `python scripts/check_security.py`
+    # locally.
     runs-on: ubuntu-latest
 
     steps:
@@ -23,9 +24,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
-    - name: Install security tools
-      run: python -m pip install bandit detect-secrets
-    - name: Run security checks (bandit + detect-secrets)
+    - name: Install security & quality tools
+      run: python -m pip install bandit detect-secrets flake8
+    - name: Run security & quality checks (bandit + detect-secrets + flake8)
       run: python scripts/check_security.py
 
   build-linux-stable:

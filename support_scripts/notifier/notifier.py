@@ -27,7 +27,7 @@ from typing import Any, Callable, List, Optional, Self
 from urllib.parse import quote
 
 from qgis.core import Qgis
-from qgis.PyQt.QtCore import QObject, QUrl
+from qgis.PyQt.QtCore import QObject, Qt, QThread, QUrl, pyqtSignal
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QWidget
 
@@ -340,9 +340,36 @@ class MessageBarNotifier(NotifierInterface):
     _ITEM_NAME = 'GeoDataFarmMessageBarItem'
     _ID_PROPERTY = 'GeoDataFarmMessageId'
 
+    # Carry already-prepared data (never a not-yet-created QWidget) across
+    # threads - see _on_main_thread's docstring for why this exists at all.
+    _show_message_signal = pyqtSignal(str, object, list, str)
+    _show_exception_signal = pyqtSignal(object)
+
     def __init__(self: Self, iface, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
         self.iface = iface
+        self._dock_message_bar = None
+        self._show_message_signal.connect(
+            self._display_message_on_main_thread, Qt.ConnectionType.QueuedConnection)
+        self._show_exception_signal.connect(
+            self._display_exception_on_main_thread, Qt.ConnectionType.QueuedConnection)
+
+    def _on_main_thread(self: Self) -> bool:
+        """Whether the calling thread is this notifier's own (the main/GUI
+        thread it was constructed on - see GeoDataFarm.run(), which builds
+        it up front, before any background task exists).
+
+        display_message/display_exception ultimately create and manipulate
+        real QWidgets (the message bar item, its buttons) - Qt widgets are
+        not thread-safe, so doing that from a QgsTask's worker thread (e.g.
+        a DB call failing partway through CropSimulation._compute_teach_scan,
+        which runs on such a thread - see _RunTeachScanTask) is undefined
+        behaviour and can hang or crash the whole application rather than
+        just showing an error message. When called off the main thread,
+        display_message/display_exception instead emit a signal connected
+        with an explicit QueuedConnection, which Qt safely delivers on the
+        main thread's own event loop instead of running it inline here."""
+        return QThread.currentThread() is self.thread()
 
     def __del__(self: Self) -> None:
         """Dismiss everything this notifier put on screen."""
@@ -351,8 +378,25 @@ class MessageBarNotifier(NotifierInterface):
         except Exception:  # nosec B110
             pass
 
+    def set_dock_message_bar(self: Self, bar) -> None:
+        """Route future messages into the GeoDataFarm dock's own message
+        bar instead of the main QGIS window's - see
+        GeoDataFarm_dockwidget.py's ``message_bar`` and GeoDataFarm.run(),
+        which calls this once the dock exists.
+
+        Messages otherwise showed up above the map canvas, easy to miss
+        while working inside the docked panel; this puts them right where
+        the user is already looking. Pass ``None`` to fall back to the
+        main window's bar again (e.g. once the dock is closed).
+        """
+        self._dock_message_bar = bar
+
     def _message_bar(self):
-        """Return the QGIS message bar, or None when unavailable (tests)."""
+        """The message bar to show on: the dock's own if one has been set
+        via :meth:`set_dock_message_bar`, else the main QGIS window's
+        (None when neither is available, e.g. in tests)."""
+        if self._dock_message_bar is not None:
+            return self._dock_message_bar
         try:
             return self.iface.messageBar()
         except Exception:
@@ -387,21 +431,28 @@ class MessageBarNotifier(NotifierInterface):
             The id of the shown message.
         """
         message_id = str(uuid.uuid4())
-        bar = self._message_bar()
         gdf_log.log(message, level)
-        if bar is None:
+        if not self._on_main_thread():
+            self._show_message_signal.emit(message, level, list(widgets or []), message_id)
             return message_id
+        self._display_message_on_main_thread(message, level, list(widgets or []), message_id)
+        return message_id
+
+    def _display_message_on_main_thread(self: Self, message: str, level: 'Qgis.MessageLevel',
+                                        widgets: List[QWidget], message_id: str) -> None:
+        bar = self._message_bar()
+        if bar is None:
+            return
         if not self._supports_widgets(bar):
             bar.pushMessage(PLUGIN_NAME, message, level, 0)
-            return message_id
+            return
         widget = bar.createMessage(PLUGIN_NAME, message)
-        for custom_widget in (widgets or []):
+        for custom_widget in widgets:
             custom_widget.setParent(widget)
             widget.layout().addWidget(custom_widget)
         item = bar.pushWidget(widget, level)
         item.setObjectName(self._ITEM_NAME)
         item.setProperty(self._ID_PROPERTY, message_id)
-        return message_id
 
     def display_exception(self: Self, error: BaseException) -> str:
         """Show ``error`` in the message bar, wrapping plain exceptions.
@@ -423,28 +474,35 @@ class MessageBarNotifier(NotifierInterface):
             error = wrapped
 
         is_warning = isinstance(error, GeoDataFarmWarning)
-        message = error.user_message.rstrip('.') + '.'
-        level = (Qgis.MessageLevel.Warning if is_warning
-                 else Qgis.MessageLevel.Critical)
-
         if is_warning:
             gdf_log.warning(error.user_message)
         else:
             gdf_log.exception(error.log_message, error)
 
+        if not self._on_main_thread():
+            self._show_exception_signal.emit(error)
+            return error.error_id
+        self._display_exception_on_main_thread(error)
+        return error.error_id
+
+    def _display_exception_on_main_thread(
+            self: Self, error: 'GeoDataFarmError | GeoDataFarmWarning') -> None:
+        is_warning = isinstance(error, GeoDataFarmWarning)
+        message = error.user_message.rstrip('.') + '.'
+        level = (Qgis.MessageLevel.Warning if is_warning
+                 else Qgis.MessageLevel.Critical)
         bar = self._message_bar()
         if bar is None:
-            return error.error_id
+            return
         if not self._supports_widgets(bar):
             bar.pushMessage(PLUGIN_NAME, message, level, 0)
-            return error.error_id
+            return
         widget = bar.createMessage(PLUGIN_NAME, message)
         if not is_warning:
             self._add_error_buttons(error, widget)
         item = bar.pushWidget(widget, level)
         item.setObjectName(self._ITEM_NAME)
         item.setProperty(self._ID_PROPERTY, error.error_id)
-        return error.error_id
 
     def dismiss_message(self: Self, message_id: str) -> None:
         """Remove a single message by its id."""

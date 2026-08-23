@@ -160,7 +160,7 @@ class InputTextHandler(object):
                 dat = f.read()
                 read_all = dat.decode('utf-8')
                 self.encoding = 'utf-8'
-            except:
+            except UnicodeDecodeError:
                 dat = f.read()
                 read_all = dat.decode('ansi')
                 self.encoding = 'ansi'
@@ -576,13 +576,13 @@ def move_points(db, move_x, move_y, tbl_name, task):
         return [False, e]
 
 
-def create_table(db: DB, schema: str, heading_row: list[str], 
-                 latitude_col: str, longitude_col:str, 
+def create_table(db: DB, schema: str, heading_row: list[str],
+                 latitude_col: str, longitude_col:str,
                  date_row:str, all_same_date: str,
-                 column_types: list[int], 
-                 column_units: dict[str]|None|None=None, 
-                 table: str='', ask_replace: bool=True, 
-                 test_mode: bool=False, 
+                 column_types: "list[int]|dict[str, int]",
+                 column_units: dict[str]|None|None=None,
+                 table: str='', ask_replace: bool=True,
+                 test_mode: bool=False,
                  task_nr: int|str|str='') -> list[str]:
     temp_tbl = f"temp_table{task_nr}"
     safe_schema = '"' + schema.replace('"', '""') + '"'
@@ -595,6 +595,7 @@ def create_table(db: DB, schema: str, heading_row: list[str],
     for i, col_name in enumerate(heading_row):
         if col_name in ['latitude', 'longitude', 'geometry']:
             lat_lon_inserted_c += 1
+        col_type = column_types.get(col_name, 2) if isinstance(column_types, dict) else column_types[i]
         if column_units is not None:
             if col_name in column_units.keys():
                 col_name = col_name + column_units[col_name]
@@ -616,11 +617,11 @@ def create_table(db: DB, schema: str, heading_row: list[str],
             col_defs += "Date_ TIMESTAMP, "
             inserting_text += 'Date_, '
             date_inserted = True
-        if column_types[i] == 0:
+        if col_type == 0:
             col_defs += f"{str(col_name)} INT, "
-        elif column_types[i] == 1:
+        elif col_type == 1:
             col_defs += f"{str(col_name)} REAL, "
-        elif column_types[i] == 2:
+        elif col_type == 2:
             col_defs += f"{str(col_name)} text, "
         inserting_text += f"{str(col_name)}, "
     col_defs = col_defs[:-2]

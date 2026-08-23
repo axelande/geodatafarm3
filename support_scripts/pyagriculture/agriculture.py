@@ -20,6 +20,13 @@ else:
     from .grid import Grid
 #from .cython_agri import read_static_binary_data, cython_read_dlvs
 
+# ISO 11783-10 reserves 65534 (0xFFFE) as the "no value" placeholder for an
+# unsigned WORD field. Some ISO-XML generators write this literal value on
+# optional object-ID reference attributes (e.g. DPD@F, DPT@E) instead of
+# omitting the attribute, meaning "no object is referenced" rather than a
+# dangling/broken reference.
+NO_VALUE_OBJECT_ID = '65534'
+
 
 class PyAgriculture:
     def __init__(self: Self, path: str) -> None:
@@ -156,7 +163,7 @@ class PyAgriculture:
                     # Handle all GRD entries
                     if 'GRD' in tsk['child'].keys():
                         for grd in tsk['child']['GRD']:
-                            task_names.append(f'unknown - {tsk.get("B", "unknown")}')
+                            task_names.append(f'unknown - {tsk.get("B", tsk.get("A", "unknown"))}')
                             file_names.append(grd['G'])
                     # Handle all TLG entries
                     if 'TLG' in tsk['child'].keys():
@@ -179,7 +186,8 @@ class PyAgriculture:
                             tlg_dict = self.combine_task_tlg_data(tlg_dict, task_data_dict)
                             self.task_infos.append(tlg_dict)
                             try:
-                                task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
+                                tsk_key = list(task_data_dict['TSK'].keys())[i]
+                                task_name = task_data_dict['TSK'][tsk_key].get('B', tsk_key)
                             except IndexError:
                                 task_name = 'unknown'
                             task_names.append(f"{equipment}-{task_name}")
@@ -243,7 +251,8 @@ class PyAgriculture:
                         self.task_infos.append(tlg_dict)
                         columns = self.get_tlg_columns(tlg_dict)
                         try:
-                            task_name = task_data_dict['TSK'][list(task_data_dict['TSK'].keys())[i]]['B']
+                            tsk_key = list(task_data_dict['TSK'].keys())[i]
+                            task_name = task_data_dict['TSK'][tsk_key].get('B', tsk_key)
                         except IndexError:
                             task_name = 'unknown'
                         if len(most_importants) == 0:
@@ -329,9 +338,30 @@ class PyAgriculture:
         return columns
 
     @staticmethod
-    def _add_device(task_data_dict: dict[str, dict[str, dict[str, str]]], 
+    def _resolve_dvp(task_data_dict: dict[str, dict[str, dict[str, str]]],
+                     dvp_id: str, parent_id: str, source_tag: str) -> dict | None:
+        """
+        Resolves an optional DeviceValuePresentationObjectId reference (DPD@F, DPT@E, ...)
+        to its DVP entry. Returns None when no DVP is referenced, either because the
+        attribute is absent or set to the ISO 11783 "no value" placeholder (NO_VALUE_OBJECT_ID).
+        Raises KeyError if the reference is present but genuinely unresolvable.
+        """
+        if dvp_id is None or dvp_id == NO_VALUE_OBJECT_ID:
+            return None
+        if dvp_id not in task_data_dict['DVP']:
+            raise KeyError(f"Key {dvp_id} is used in {source_tag}, however no matching DVP exists")
+        dvp = task_data_dict['DVP'][dvp_id]
+        if isinstance(dvp, list):
+            for dvp_i in dvp:
+                if dvp_i['parent_id'] == parent_id:
+                    return dvp_i
+            return dvp[0]
+        return dvp
+
+    @staticmethod
+    def _add_device(task_data_dict: dict[str, dict[str, dict[str, str]]],
                     dlv_key: str, dlv_idx: int,
-                    tlg_dict: dict[str, dict[str, dict[str, str]]], 
+                    tlg_dict: dict[str, dict[str, dict[str, str]]],
                     pd_id: str, det_a: str) -> None:
         """
         Adds device information to the DLV entry, resolving names and units using DPD and DPT mappings.
@@ -356,15 +386,8 @@ class PyAgriculture:
                     else:
                         tlg_dict['DLV'][dlv_key][dlv_idx]['Name'] = ''
                     # Check for DVP (Device Value Parameters) and assign scale, offset, and unit
-                    if 'F' in dpd.keys():
-                        if dpd['F'] not in task_data_dict['DVP']:
-                            raise KeyError(f"Key {dpd['F']} is used in DPD, however it is as a DVP")
-                        dvp = task_data_dict['DVP'][dpd['F']]
-                        if isinstance(dvp, list):
-                            for dvp_i in dvp:
-                                if dvp_i['parent_id'] == dpd['parent_id']:
-                                    dvp = dvp_i
-                                    break
+                    dvp = PyAgriculture._resolve_dvp(task_data_dict, dpd.get('F'), dpd.get('parent_id'), 'DPD')
+                    if dvp is not None:
                         tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = {
                             'nr_decimals': dvp['D'],
                             'scale': dvp['C'],
@@ -390,10 +413,8 @@ class PyAgriculture:
                     # Assign the name from the DPT entry
                     tlg_dict['DLV'][dlv_key][dlv_idx]['Name'] = dpt['D']
                     # Check for DVP and assign scale, offset, and unit
-                    if 'E' in dpt.keys():
-                        if dpt['E'] not in task_data_dict['DVP']:
-                            return
-                        dvp = task_data_dict['DVP'][dpt['E']]
+                    dvp = PyAgriculture._resolve_dvp(task_data_dict, dpt.get('E'), dpt.get('parent_id'), 'DPT')
+                    if dvp is not None:
                         tlg_dict['DLV'][dlv_key][dlv_idx]['DVP'] = {
                             'nr_decimals': dvp['D'],
                             'scale': dvp['C'],

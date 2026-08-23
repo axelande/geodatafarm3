@@ -11,11 +11,11 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=3.1.3
+version=3.3.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
-about=This plugin is designed for farmers as both a log for various field operations and a tool to analyze the yield impact of different parameters. It supports all crop types and field parameters, though it has been primarily tested on potatoes. The plugin requires third-party packages, which are typically installed by default with the QGIS plugin QPIP. A stable internet connection is necessary for proper functionality. For questions, feature requests, or modifications, please contact: geodatafarm@gmail.com . The plugin is completely free. If you find it useful, please consider sponsoring the project on [github](https://github.com/sponsors/axelande) to support ongoing development .
+about=This plugin is designed for farmers as both a log for various field operations and a tool to analyze the yield impact of different parameters. It supports all crop types and field parameters, though it has been primarily tested on potatoes. The plugin requires third-party packages, which are typically installed by default with the QGIS plugin QPIP. A stable internet connection is necessary for proper functionality. For questions, feature requests, or modifications, please contact: geodatafarm@gmail.com . The core plugin is free to use; the premium crop simulation module (fertilizer-timing and leaching-risk analysis) is available as a paid add-on. If you find it useful, please consider sponsoring the project on [github](https://github.com/sponsors/axelande) to support ongoing development .
 
 tracker=https://github.com/axelande/geodatafarm3/issues
 repository=https://github.com/axelande/geodatafarm3
@@ -25,6 +25,18 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the fol/lowing line and add your changelog:
 changelog=
+  Version 3.3.0 (2026-08-23)
+  - [feature] Added per-cell predicted-yield maps with variety-aware crop models.
+  - [feature] Added crop-development timing and a yield-specific field-map legend.
+  - [feature] Added bounded offline license grace and restricted the developer bypass to tests.
+  (Version 3.2.2 (2026-08-12))
+  - [bug] fixed a small error connected the ISOXML.
+  Version 3.2.1 (2026-08-11)
+  - [bug] fixed a small error connected the ISOXML.
+  (Version 3.2.0 (2026-08-10))
+  - [feature] Added a premium crop simulation model with fertilizer-timing/leaching-risk analysis, driven by weather data from Open-Meteo
+  - [feature] Added a weather tab for fetching and reviewing field weather data
+  - [feature] Premium crop simulation tools are now license-gated
   Version 3.1.3 (2026-07-19)
   - Fixed some bugs and improve the satellite handling.
   - Other minor updates for qt5/qt6 checks

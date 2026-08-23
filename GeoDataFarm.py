@@ -40,6 +40,7 @@ else:
     sys.path.append('/usr/share/qgis/python/plugins')
 from qgis.core import QgsApplication
 
+from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QListWidgetItem, QScrollArea, QFrame
 from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
@@ -52,14 +53,15 @@ from psycopg2 import IntegrityError, sql as pgsql
 import os
 
 import webbrowser
-from .resources import *
+from . import resources  # noqa: F401 - registers the compiled Qt resource paths (:/plugins/GeoDataFarm/...) as an import side effect
 plugin_dir = os.path.dirname(__file__)
 
 # Import the code for the dock_widget and the subwidgets
 from .database_scripts.create_new_farm import CreateFarm
-from .database_scripts.db import DB
+from .database_scripts.db import DB, ensure_ferti_nutrient_column
 from .database_scripts.mean_analyse import Analyze
 from .database_scripts.plan_ahead import PlanAhead
+from .database_scripts.crop_simulation import CropSimulation
 from .database_scripts.table_managment import TableManagement
 from .import_data.handle_irrigation import IrrigationHandler
 from .import_data.save_planting_data import SavePlanting
@@ -72,6 +74,7 @@ from .import_data.save_harrowing_data import SaveHarrowing
 from .import_data.save_soil_data import SaveSoil
 from .import_data.convert_harvest_to_area import ConvertToAreas
 from .import_data.satellite_data import SatelliteData
+from .import_data.handle_weather import WeatherData
 from .import_data.handle_text_data import InputTextHandler
 from .import_data.handle_iso11783 import Iso11783
 from .import_data.handle_input_shp_data import InputShpHandler
@@ -529,12 +532,36 @@ class GeoDataFarm:
             self.dock_widget.add_data_form = self.add_data_form
             if self.dock_widget.layoutAddData.count() == 0:
                 self.dock_widget.layoutAddData.addWidget(self.add_data_form)
+            # Crop simulation tab (Pro): same "build in Python, drop into an
+            # empty .ui placeholder" pattern as Add data above - created
+            # before Populate so its field combo gets filled too.
+            if getattr(self, 'crop_simulation', None) is None:
+                self.crop_simulation = CropSimulation(self)
+            self.dock_widget.crop_simulation_page = self.crop_simulation.page
+            if self.dock_widget.layoutCropSimulation.count() == 0:
+                # Wrapped in a scroll area the same way layoutGuideFile is
+                # below - this page's content (season estimate, actual-yield
+                # and rain/irrigation lines, date slider, stress map, per
+                # -application details) routinely runs taller than the dock,
+                # and unlike a plain addWidget() a QScrollArea actually lets
+                # the user reach what's below the fold instead of just
+                # clipping it with no way to scroll.
+                _cs_scroll = QScrollArea()
+                _cs_scroll.setWidgetResizable(True)
+                _cs_scroll.setFrameShape(
+                    QFrame.Shape.NoFrame if hasattr(QFrame, 'Shape')
+                    else getattr(QFrame, 'NoFrame'))
+                _cs_scroll.setWidget(self.crop_simulation.page)
+                self.dock_widget.layoutCropSimulation.addWidget(_cs_scroll)
             self.populate = Populate(self)
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
             self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
             self.save_planting = SavePlanting(self)
             self.satellite_data = SatelliteData(self)
             self.satellite_data.set_widget_connections()
+            self.weather_data = WeatherData(self)
+            self.weather_data.set_widget_connections()
+            self.crop_simulation.set_widget_connections()
             self.save_planting.set_widget_connections()
             self.save_fertilizing = SaveFertilizing(self)
             self.save_fertilizing.set_widget_connections()
@@ -608,6 +635,8 @@ class GeoDataFarm:
         if cfg['needs_crop'] and (not v.get('crop') or v['crop'] == self.tr('--- Select crop ---')):
             report_warning(self.tr('In order to save the data you must select a crop'))
             return
+        if cfg['table'] == 'ferti.manual':
+            ensure_ferti_nutrient_column(self.db)
         cols = (['field'] + (['crop'] if cfg['needs_crop'] else []) + ['date_']
                 + [c for _, c, _ in cfg['fields']] + ['other'])
         params = ([v['field']] + ([v['crop']] if cfg['needs_crop'] else []) + [v['date']]
@@ -660,6 +689,8 @@ class GeoDataFarm:
         """Card-click actions for operations without a manual form."""
         if op == 'irrigation':
             self.import_irrigation()
+        elif op == 'weather':
+            self.weather_data.open_dialog()
 
     def _save_other_from_form(self):
         """Custom save for the 'Other' operation (dynamic per-operation table),
@@ -748,6 +779,11 @@ class GeoDataFarm:
                 # Create the dock_widget (after translation) and keep reference
                 self.dock_widget = GeoDataFarmDockWidget()
 
+                # From now on, plugin messages show in the dock's own
+                # message bar instead of the main QGIS window's - see
+                # notifier.MessageBarNotifier.set_dock_message_bar.
+                self.notifier.set_dock_message_bar(self.dock_widget.message_bar)
+
                 # Set the parent_gdf reference for GenerateTaskDataWidget
                 if hasattr(self.dock_widget, 'generate_taskdata_widget'):
                     self.dock_widget.generate_taskdata_widget.parent_gdf = self
@@ -778,7 +814,7 @@ class GeoDataFarm:
             self.dock_widget.PBConnect2Farm.clicked.connect(self.connect_to_farm)
             try:
                 self.reload_range()
-            except:  # nosec B110
+            except Exception:  # nosec B110
                 pass
             self.dock_widget.mMapLayerComboBox.currentIndexChanged.connect(self.reload_range)
             # show the dock_widget

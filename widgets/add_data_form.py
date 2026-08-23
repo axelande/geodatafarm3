@@ -50,10 +50,10 @@ OPERATIONS = {
     "opFertilizing": dict(
         title="🧪  Fertilizing", op="ferti", needs_crop=True,
         table="ferti.manual", table_none=True,
-        schema="ferti", import_columns=["Variety", "Rate", "Depth"],
+        schema="ferti", import_columns=["Variety", "Nutrient", "Rate", "Depth"],
         file_types=[TEXT, ISO, SHP, DBF, RAS],
-        fields=[("Variety", "variety", None), ("Rate", "rate", "kg/ha"),
-                ("Sowing depth", "saw_depth", "cm")]),
+        fields=[("Variety", "variety", None), ("Nutrient", "nutrient", None),
+                ("Rate", "rate", "kg/ha"), ("Sowing depth", "saw_depth", "cm")]),
     "opSpraying": dict(
         title="💧  Spraying", op="spray", needs_crop=True,
         table="spray.manual", table_none=True,
@@ -96,7 +96,16 @@ OPERATIONS = {
     # Irrigation: clicking the card opens the Raindancer window (no manual form yet).
     "opIrrigation": dict(title="💦  Irrigation", op="irrigation", needs_crop=False,
                          picker_action=True, file_types=[], fields=[]),
+    # Weather: clicking the card opens the free Open-Meteo import window
+    # (plus the Pro license key section) - see import_data/handle_weather.py.
+    "opWeather": dict(title="🌦️  Weather", op="weather", needs_crop=False,
+                      picker_action=True, file_types=[], fields=[]),
 }
+
+# db_column -> fixed choice list, for manual fields that render as a
+# QComboBox instead of free text. Currently just fertilizing's nutrient type
+# (see ferti.manual.nutrient, database_scripts.db.ensure_ferti_nutrient_column).
+FIELD_CHOICES = {"nutrient": ["N", "P", "K", "Mg", "S", "Na"]}
 
 
 class AddDataForm(QtWidgets.QWidget):
@@ -179,7 +188,11 @@ class AddDataForm(QtWidgets.QWidget):
             form.removeRow(0)
         self._edits = {}
         for label, db_col, unit in fields:
-            edit = QtWidgets.QLineEdit()
+            if db_col in FIELD_CHOICES:
+                edit = QtWidgets.QComboBox()
+                edit.addItems(FIELD_CHOICES[db_col])
+            else:
+                edit = QtWidgets.QLineEdit()
             edit.setMinimumHeight(30)
             self._edits[db_col] = edit
             if unit:
@@ -236,7 +249,10 @@ class AddDataForm(QtWidgets.QWidget):
         if self.config and self.config["needs_crop"]:
             vals["crop"] = self.cbCrop.currentText()
         for db_col, edit in self._edits.items():
-            vals[db_col] = edit.text() or None
+            if isinstance(edit, QtWidgets.QComboBox):
+                vals[db_col] = edit.currentText()
+            else:
+                vals[db_col] = edit.text() or None
         return vals
 
     def clear(self):
@@ -245,7 +261,10 @@ class AddDataForm(QtWidgets.QWidget):
         if self.cbCrop.count():
             self.cbCrop.setCurrentIndex(0)
         for edit in self._edits.values():
-            edit.setText("")
+            if isinstance(edit, QtWidgets.QComboBox):
+                edit.setCurrentIndex(0)
+            else:
+                edit.setText("")
         if self._notes:
             self._notes.setPlainText("")
 

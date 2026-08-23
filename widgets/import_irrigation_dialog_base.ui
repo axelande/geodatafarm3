@@ -177,6 +177,9 @@ QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
       <property name="text">
        <string />
       </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
      </widget>
     </item>
     <item row="7" column="3">
@@ -324,6 +327,23 @@ QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
        </widget>
       </item>
      </layout>
+    </item>
+    <item row="8" column="0" colspan="4">
+     <widget class="Line" name="lineManualIrr">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0" colspan="4">
+     <widget class="QLabel" name="labelManualIrrHeading">
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>"Add from raindancer" above logs each operation with its own real date and flight path - no separate whole-field entry here, since no real irrigation pass covers a whole field at once.</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
