@@ -1,4 +1,5 @@
 """Small controller widget for building a field fertility-index preview."""
+from psycopg2 import sql as pgsql
 from qgis.PyQt.QtCore import Qt, QVariant
 from qgis.PyQt.QtWidgets import (QComboBox, QFormLayout, QLabel, QLineEdit,
                                  QListWidget, QListWidgetItem, QPushButton,
@@ -65,10 +66,21 @@ class FertilityIndexPage(QWidget):
         self.reload_sources()
 
     def _get_tables_for_field(self, schema, field_name):
-        """Return imported tables linked to the selected field."""
+        """Return imported tables linked to the selected field.
+
+        The schema is composed with ``psycopg2.sql.Identifier`` rather than
+        formatted into the string. Both call sites pass a literal
+        ('harvest', 'soil'), so nothing untrusted reaches it today - but
+        plugins.qgis.org's upload check flags any query built by string
+        formatting (bandit B608) and rejects the package over it, and the
+        rest of this codebase composes identifiers this way already (see
+        support_scripts/journal_fields.py).
+        """
+        table = pgsql.SQL('.').join(
+            (pgsql.Identifier(schema), pgsql.Identifier('manual')))
         try:
             rows = self.parent.db.execute_and_return(
-                f'SELECT table_ FROM {schema}.manual WHERE field = %s',
+                pgsql.SQL('SELECT table_ FROM {} WHERE field = %s').format(table),
                 params=(field_name,))
         except Exception:
             return set()
