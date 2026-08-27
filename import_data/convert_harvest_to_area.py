@@ -11,10 +11,12 @@ from operator import xor, itemgetter
 from ..widgets.import_interpolate_harvest_dialog import ImportInterpolateHarvestDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
-from ..support_scripts import (TR, check_text, isfloat, isint, error_in_sign)
+from ..support_scripts import (TR, check_text, isfloat, isint, error_in_sign,
+                              TEXT_ENCODING)
 from ..support_scripts.qt_data import _check_state, _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
 from ..support_scripts.notifier import report_warning, report_error
+from .handle_text_data import LATITUDE_NAMES, LONGITUDE_NAMES
 __author__ = 'Axel Horteborn'
 
 
@@ -47,7 +49,7 @@ class ConvertToAreas:
         self.mff = ManualFromFile(parent.db, self.IIHD, [])
         translate = TR('ConvertToAreas')
         self.tr = translate.tr
-        self.encoding = 'utf-8'
+        self.encoding = TEXT_ENCODING
 
     def run(self):
         """Presents the sub widget ImportTextDialog and connects the different
@@ -97,7 +99,7 @@ class ConvertToAreas:
             try:
                 dat = f.read()
                 read_all = dat.decode('utf-8')
-                self.encoding = 'utf-8'
+                self.encoding = TEXT_ENCODING
             except UnicodeDecodeError:
                 dat = f.read()
                 read_all = dat.decode('ansi')
@@ -240,10 +242,10 @@ class ConvertToAreas:
         self.IIHD.ComBMoisture.addItems(columns)
         for word in columns:
             for part in word.split(' '):
-                if part.lower() in "latitude lat y":
+                if part.lower() in LATITUDE_NAMES:
                     index = self.IIHD.ComBNorth.findText(word)
                     self.IIHD.ComBNorth.setCurrentIndex(index)
-                if part.lower() in "longitude lat x":
+                if part.lower() in LONGITUDE_NAMES:
                     index = self.IIHD.ComBEast.findText(word)
                     self.IIHD.ComBEast.setCurrentIndex(index)
                 if 'yield' in part.lower():

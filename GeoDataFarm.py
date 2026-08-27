@@ -79,7 +79,11 @@ from .import_data.handle_text_data import InputTextHandler
 from .import_data.handle_iso11783 import Iso11783
 from .import_data.handle_input_shp_data import InputShpHandler
 from .import_data.handle_raster import ImportRaster
-from .widgets.add_data_form import AddDataForm
+from .widgets.add_data_form import AddDataForm, FieldSpec
+from .widgets.fertility_index_page import FertilityIndexPage
+from .widgets.journal_fields_dialog import JournalFieldsDialog
+from .support_scripts import combo_arrow
+from .support_scripts import journal_fields as jf
 from .support_scripts.__init__ import isint, TR
 from .support_scripts.notifier import (
     MessageBarNotifier, GeoDataFarmError, set_active_notifier,
@@ -123,6 +127,11 @@ class GeoDataFarm:
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+        # Draws the combo box arrow and registers the gdfarrow: search path
+        # the .ui stylesheets point at. Has to happen before the first .ui
+        # is loaded, since Qt resolves a stylesheet's urls when the sheet is
+        # applied - see support_scripts/combo_arrow.py.
+        combo_arrow.install()
         translate = TR()
         self.tr = translate.tr
         # initialize locale
@@ -529,6 +538,12 @@ class GeoDataFarm:
                 self.add_data_form.save_callback = self.save_add_data
                 self.add_data_form.import_callback = self.import_add_data
                 self.add_data_form.picker_action_callback = self.handle_add_data_action
+                # The manual fields come from this farm's own journal-field
+                # configuration rather than OPERATIONS' static list - see
+                # support_scripts/journal_fields.py.
+                self.add_data_form.field_provider = self.journal_field_specs
+                self.add_data_form.journal_settings_callback = self.open_journal_settings
+                self.add_data_form.field_changed_callback = self._autofill_add_data_form
             self.dock_widget.add_data_form = self.add_data_form
             if self.dock_widget.layoutAddData.count() == 0:
                 self.dock_widget.layoutAddData.addWidget(self.add_data_form)
@@ -553,6 +568,12 @@ class GeoDataFarm:
                     else getattr(QFrame, 'NoFrame'))
                 _cs_scroll.setWidget(self.crop_simulation.page)
                 self.dock_widget.layoutCropSimulation.addWidget(_cs_scroll)
+            if getattr(self, 'fertility_index', None) is None:
+                self.fertility_index = FertilityIndexPage(self)
+                self.dock_widget.fertility_index_page = self.fertility_index
+                self.dock_widget.tabWidget.addTab(self.fertility_index, 'Fertility index')
+                self.dock_widget.insert_nav_page(
+                    2, '🌾   Fertility index', self.fertility_index)
             self.populate = Populate(self)
             self.dock_widget.PBOpenRD.clicked.connect(self.import_irrigation)
             self.dock_widget.PBUpdateLists.clicked.connect(self.populate.update_table_list)
@@ -611,11 +632,92 @@ class GeoDataFarm:
             self.dock_widget.PBSponsor.clicked.connect(lambda: webbrowser.open('https://github.com/sponsors/axelande'))
             self.dock_widget.PBHvInterpolateData.clicked.connect(self.run_interpolate_harvest)
 
+    def journal_field_specs(self, operation):
+        """The Add-data form's ``field_provider``: this farm's configured
+        journal fields for ``operation``, as widget-level FieldSpecs.
+
+        Returns None on any failure so the form falls back to its static
+        OPERATIONS list - a farm that can't reach the journal-field table
+        should still be able to record a spraying the way it always could.
+        """
+        if self.db is None or operation not in jf.MANUAL_TABLES:
+            return None
+        try:
+            fields = jf.get_fields(self.db, operation)
+        except Exception as e:
+            self._log_exception('Failed to read journal fields', e)
+            return None
+        # History is a convenience, so a failure to read it must not cost
+        # the user the form itself - they still get every field, just
+        # without the shortcut.
+        try:
+            history = jf.recent_values(self.db, operation, fields)
+        except Exception as e:
+            self._log_exception('Failed to read previous journal entries', e)
+            history = {}
+        return [FieldSpec(f.translated_label(), f.key, f.unit, f.field_type,
+                          f.choices, f.required, history.get(f.key, ()))
+                for f in fields]
+
+    def _journal_fields_for_save(self, cfg):
+        """The JournalField list the save should write, mirroring whatever
+        journal_field_specs handed the form.
+
+        Same fallback, for the same reason: if the configuration can't be
+        read, the operation's original fixed field list still saves exactly
+        the columns it always did.
+        """
+        operation = cfg['op']
+        if self.db is not None and operation in jf.MANUAL_TABLES:
+            try:
+                fields = jf.get_fields(self.db, operation)
+                if fields:
+                    return fields
+            except Exception as e:
+                self._log_exception('Failed to read journal fields', e)
+        return [jf.JournalField(operation=operation, key=key, label=label, unit=unit)
+                for label, key, unit in cfg['fields']]
+
+    def open_journal_settings(self, operation=None):
+        """Opens the journal-field editor (the ⚙ button on the Add-data
+        form)."""
+        if self.db is None:
+            report_warning(self.tr('You must connect to a farm first'))
+            return
+        dialog = JournalFieldsDialog(
+            self.db, operation or 'spray', self.dock_widget)
+        dialog.exec()
+
+    def _autofill_add_data_form(self, operation, field_name):
+        """Fills in the journal values that follow from the selected field
+        (place of application, treated area) and from the farm settings
+        (operator) - see journal_fields.autofill_values for why these are
+        derived rather than typed.
+
+        Only empty inputs are touched (AddDataForm.set_value), so this can
+        run on every field change without ever undoing the user's typing.
+        """
+        if self.db is None or operation not in jf.MANUAL_TABLES:
+            return
+        if not field_name or field_name == self.tr('--- Select field ---'):
+            return
+        try:
+            values = jf.autofill_values(self.db, operation, field_name)
+        except Exception as e:
+            self._log_exception('Failed to derive journal values', e)
+            return
+        for key, value in values.items():
+            self.add_data_form.set_value(key, value)
+
     def save_add_data(self):
         """Generic, config-driven manual save for the shared Add-data form.
 
-        Reads the open operation's config + the form values (keyed by DB
-        column) and builds the same INSERT the old per-operation handlers did.
+        Reads the open operation's journal fields + the form values (keyed
+        by field key) and builds the same INSERT the old per-operation
+        handlers did, with two additions: fields the user configured that
+        aren't real columns go to the row's jsonb ``extra`` column, and any
+        field the journal marks required has to be filled in first (see
+        support_scripts/journal_fields.py).
         """
         form = self.add_data_form
         cfg = form.config
@@ -637,10 +739,21 @@ class GeoDataFarm:
             return
         if cfg['table'] == 'ferti.manual':
             ensure_ferti_nutrient_column(self.db)
+        fields = self._journal_fields_for_save(cfg)
+        missing = jf.missing_required(fields, v)
+        if missing:
+            report_warning(self.tr('These journal fields are required: {}').format(
+                ', '.join(missing)))
+            return
+        column_values, extra = jf.split_values(fields, v)
         cols = (['field'] + (['crop'] if cfg['needs_crop'] else []) + ['date_']
-                + [c for _, c, _ in cfg['fields']] + ['other'])
+                + list(column_values) + ['other'])
         params = ([v['field']] + ([v['crop']] if cfg['needs_crop'] else []) + [v['date']]
-                  + [v[c] for _, c, _ in cfg['fields']] + [v['other']])
+                  + list(column_values.values()) + [v['other']])
+        if extra:
+            jf.ensure_extra_column(self.db, cfg['table'])
+            cols.append('extra')
+            params.append(jf.json_param(extra))
         if cfg.get('table_none'):
             cols.append('table_')
             params.append('None')
@@ -656,6 +769,10 @@ class GeoDataFarm:
             self.db.execute_sql(sql, params=tuple(params))
             report_success(self.tr('The data was stored correctly'))
             form.clear()
+            # ...and rebuild, so what was just entered joins the history
+            # lists straight away - the second spraying of the day should be
+            # able to pick the operator off the list the first one created.
+            form.refresh_fields()
         except Exception as e:
             report_error(self.tr('Following error occurred: {}').format(e),
                          detail=str(e))

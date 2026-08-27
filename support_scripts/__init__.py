@@ -5,6 +5,14 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication
 
+# Read text files as utf-8-sig, never plain utf-8: a byte order mark
+# survives into the heading read from the file but not into the combo box
+# the user picks a column from - Qt's line edit drops the zero width mark -
+# and check_text() then turns it into a leading underscore on one side only,
+# so the two names for the same column no longer match. On a file without a
+# mark utf-8-sig behaves exactly like utf-8.
+TEXT_ENCODING = 'utf-8-sig'
+
 
 class TR:
     def __init__(self: Self, class_name: str='GeoDataFarm') -> None:
@@ -125,7 +133,8 @@ def isint(x: str) -> bool:
         return a == b
 
 
-def check_date_format(sample: list, column: str, format_: str) -> tuple[bool, datetime | None]:
+def check_date_format(sample: list, column: str,
+                      format_: str) -> tuple[bool, datetime | None, str]:
     """Checks that the date format matches the selected format
 
     Parameters
@@ -139,24 +148,35 @@ def check_date_format(sample: list, column: str, format_: str) -> tuple[bool, da
 
     Returns
     -------
-    bool
-        That tells if the sample had the correct format
+    tuple[bool, datetime | None, str]
+        Whether the sample matched the format, the first date read from it,
+        and - when it did not match - what stood in the way. Saying only that
+        the format was wrong leaves the one person who can fix it guessing at
+        which column and which value were meant.
     """
-    try:
-        first_row = True
-        second_row = True
-        for row in sample:
-            if first_row:
-                heading_row = row
-                first_row = False
-            else:
-                if second_row:
-                    sec_data = datetime.strptime(row[heading_row.index(column)], format_)
-                    second_row = False
-                datetime.strptime(row[heading_row.index(column)], format_)
-        return [True, sec_data]
-    except ValueError:
-        return [False]
+    heading_row = sample[0] if sample else []
+    if column not in heading_row:
+        return False, None, (f'no column named "{column}" among '
+                             f'{len(heading_row)} columns: {heading_row}')
+    index = heading_row.index(column)
+    first_date = None
+    for number, row in enumerate(sample[1:], start=2):
+        if index >= len(row) or not row[index].strip():
+            # An export can carry a unit row right under the heading, and rows
+            # that only report a sensor reading can leave the stamp out. The
+            # import drops those rows, so they must not condemn the format.
+            continue
+        value = row[index].strip().strip('"')
+        try:
+            date = datetime.strptime(value, format_)
+        except ValueError:
+            return False, None, (f'row {number} of column "{column}" holds '
+                                 f'"{value}", which is not "{format_}"')
+        if first_date is None:
+            first_date = date
+    if first_date is None:
+        return False, None, f'column "{column}" holds no date at all'
+    return True, first_date, ''
 
 
 def error_in_sign(sign):

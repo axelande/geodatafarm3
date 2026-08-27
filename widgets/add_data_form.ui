@@ -20,6 +20,8 @@ QLabel[role="muted"] { color: palette(mid); }
 QPushButton[card="true"] { text-align: left; padding: 14px; font-size: 14px; font-weight: 600; }
 QPushButton[primary="true"] { font-weight: 600; padding: 8px 18px; }
 QPushButton[link="true"] { border: none; background: transparent; text-align: left; padding: 4px 0; }
+QPushButton[back="true"] { border: 1px solid palette(mid); border-radius: 6px; padding: 7px 14px; font-weight: 600; }
+QPushButton[back="true"]:hover { background: palette(midlight); }
 QPushButton[seg="true"] { padding: 7px 18px; min-width: 120px; }
 QPushButton[seg="true"]:checked { font-weight: 600; }
 QFrame[role="card"] { border: 1px solid palette(mid); border-radius: 10px; }
@@ -312,7 +314,7 @@ QFrame[role="hline"] { color: palette(mid); }</string>
      <widget class="QWidget" name="formPage">
       <layout class="QVBoxLayout" name="formLayout">
        <property name="leftMargin"><number>20</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>20</number></property><property name="bottomMargin"><number>18</number></property><property name="spacing"><number>10</number></property>
-       <item><widget class="QPushButton" name="backBtn"><property name="link" stdset="0"><bool>true</bool></property><property name="sizePolicy"><sizepolicy hsizetype="Maximum" vsizetype="Fixed"><horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text"><string>&#8592;  Choose another operation</string></property></widget></item>
+       <item><widget class="QPushButton" name="backBtn"><property name="back" stdset="0"><bool>true</bool></property><property name="sizePolicy"><sizepolicy hsizetype="Maximum" vsizetype="Fixed"><horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text"><string>&#8592;  Back to all operations</string></property><property name="toolTip"><string>Return to the operation list to add a different kind of data</string></property></widget></item>
        <item><widget class="QLabel" name="formTitle"><property name="role" stdset="0"><string notr="true">h1</string></property><property name="text"><string>Planting</string></property></widget></item>
        <item>
         <widget class="QScrollArea" name="formScroll"><property name="widgetResizable"><bool>true</bool></property><property name="frameShape"><enum>QFrame::NoFrame</enum></property>

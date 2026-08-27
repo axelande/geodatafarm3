@@ -90,6 +90,11 @@ QComboBox::drop-down {
   border: none;
   width: 20px;
 }
+QComboBox::down-arrow {
+  image: url(gdfarrow:combo_arrow.png);
+  width: 14px;
+  height: 14px;
+}
 QComboBox QAbstractItemView {
   color: palette(text);
   background: palette(base);

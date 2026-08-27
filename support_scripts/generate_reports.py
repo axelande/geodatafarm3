@@ -1,9 +1,10 @@
 from typing import Self
 from psycopg2 import sql as pgsql
+from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import Table, TableStyle, Paragraph
+from reportlab.platypus import Spacer, Table, TableStyle, Paragraph
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from datetime import date
@@ -11,8 +12,9 @@ from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import QgsTask
 from functools import partial
 import traceback
-from .notifier import report_warning, report_error
-from ..support_scripts.__init__ import TR
+from .notifier import report_success, report_warning, report_error
+from ..support_scripts.__init__ import TR, db_rows
+from ..support_scripts import journal_fields as jf
 from ..database_scripts.db import ensure_ferti_nutrient_column
 width, height = A4
 styles = getSampleStyleSheet()
@@ -95,6 +97,7 @@ class RapportGen:
         self.dw.PBReportPerOperation.clicked.connect(self.report_per_operation)
         self.dw.PBReportPerField.clicked.connect(self.report_per_field)
         self.dw.PBReportSelectFolder.clicked.connect(self.select_folder)
+        self.dw.PBReportSprayJournal.clicked.connect(self.spray_journal)
 
     def select_folder(self):
         """A function that lets the user select the folder for the
@@ -133,6 +136,137 @@ class RapportGen:
             report_name = '{p}\\{t}_{y}.pdf'.format(p=self.path,
                                                     t=self.tr('GeoDataFarm_Limited_report'),
                                                     y=year)
+
+    def spray_journal(self):
+        """Writes the spraying journal PDF: every recorded spraying with
+        every journal field the farm configured.
+
+        Separate from the per-operation report on purpose. That one prints
+        one row per operation with a handful of shared columns, which is
+        why a spraying's wind speed and direction have never appeared in it
+        even though they were being stored - there is no room, and a full
+        Jordbruksverket field list is around twenty items, none of which
+        fits as a twentieth column on A4.
+
+        So this report is transposed, exactly like Jordbruksverket's own
+        paper form: requirements down the left, one column per application,
+        three applications to a table. A field the user never filled in
+        prints as an empty cell, again like the paper form - the journal
+        shows what was recorded, and a gap in it is information too.
+        """
+        if self.path is None:
+            report_warning(self.tr('A directory to save the report must be selected.'))
+            return
+        year = None if self.dw.RBAllYear.isChecked() else self.dw.DEReportYear.text()
+        fields = jf.get_fields(self.db, 'spray')
+        if not fields:
+            report_warning(self.tr('No journal fields are configured for spraying.'))
+            return
+        applications = self.collect_spray_journal(self.db, fields, year)
+        if not applications:
+            report_warning(self.tr('No data where found for that year'))
+            return
+        name = self.tr('GeoDataFarm_spraying_journal')
+        report_name = '{p}\\{t}.pdf'.format(p=self.path, t=name) if year is None \
+            else '{p}\\{t}_{y}.pdf'.format(p=self.path, t=name, y=year)
+        story = [Paragraph(self.tr('Spraying journal'), styleH)]
+        story.extend(self.spray_journal_tables(fields, applications))
+        try:
+            MyDocTemplate(report_name, self.plugin_dir, year,
+                          date.today().isoformat()).multiBuild(story)
+        except OSError:
+            report_warning(self.tr('You must close the file in order to create it again'))
+            return
+        report_success(self.tr('The spraying journal was written to {}').format(report_name))
+
+    @staticmethod
+    def collect_spray_journal(db, fields, year=None) -> list:
+        """Every spraying, newest last, as ``(header, values)`` pairs.
+
+        Parameters
+        ----------
+        db: DB
+        fields: list of journal_fields.JournalField
+            The configured spraying journal fields, in journal order.
+        year: str or None
+            Growing year to limit to, or None for everything.
+
+        Returns
+        -------
+        list of tuple
+            ``(header_dict, {field_key: text})`` per application. Header
+            carries date/field/crop, which every journal needs regardless
+            of how the field list is configured.
+        """
+        jf.ensure_extra_column(db, 'spray.manual')
+        column_keys = [f.key for f in fields if f.storage == 'column']
+        select = pgsql.SQL(
+            "SELECT COALESCE(to_char(date_, 'YYYY-MM-DD'), date_text, ''),"
+            " COALESCE(field, ''), COALESCE(crop, ''), extra")
+        if column_keys:
+            select = select + pgsql.SQL(', ') + pgsql.SQL(', ').join(
+                pgsql.Identifier(k) for k in column_keys)
+        sql = select + pgsql.SQL(" FROM spray.manual")
+        params = None
+        if year is not None:
+            # date_text is matched too because file-imported rows store their
+            # date only as text (see collect_data's spraying queries).
+            sql = sql + pgsql.SQL(
+                " WHERE extract(year FROM date_) = %s OR date_text LIKE %s")
+            params = (year, f'%{year}%')
+        sql = sql + pgsql.SQL(" ORDER BY date_, field")
+        applications = []
+        for row in db_rows(db.execute_and_return(sql, params=params)):
+            date_, field, crop, extra = row[0], row[1], row[2], jf.extra_of(row[3])
+            row_columns = dict(zip(column_keys, row[4:]))
+            applications.append((
+                {'date': date_, 'field': field, 'crop': crop},
+                {f.key: jf.value_of(f, row_columns, extra) for f in fields}))
+        return applications
+
+    # How many applications share one table. Three is what fits an A4
+    # column width at a readable size, and is also what Jordbruksverket's
+    # own form uses per page.
+    APPLICATIONS_PER_TABLE = 3
+
+    def spray_journal_tables(self, fields, applications) -> list:
+        """The transposed journal tables - see :meth:`spray_journal`."""
+        label_width, value_width = 150, 100
+        rows_meta = [(self.tr('Date'), 'date'), (self.tr('Field'), 'field'),
+                     (self.tr('Crop'), 'crop')]
+        story = []
+        for start in range(0, len(applications), self.APPLICATIONS_PER_TABLE):
+            chunk = applications[start:start + self.APPLICATIONS_PER_TABLE]
+            data = []
+            for label, key in rows_meta:
+                data.append([Paragraph(f'<b>{label}</b>', styleN)]
+                            + [Paragraph(header[key], styleN) for header, _ in chunk])
+            for field in fields:
+                # The required marker is the report's own record that a blank
+                # cell is a gap in the documentation rather than a field that
+                # simply doesn't apply.
+                label = field.translated_label()
+                if field.unit:
+                    label = f'{label} ({field.unit})'
+                if field.required:
+                    label += ' *'
+                data.append([Paragraph(label, styleN)]
+                            + [Paragraph(values.get(field.key, ''), styleN)
+                               for _, values in chunk])
+            table = Table(data, repeatRows=len(rows_meta), hAlign='LEFT',
+                          colWidths=[label_width] + [value_width] * len(chunk))
+            table.setStyle(TableStyle([
+                ('GRID', (0, 0), (-1, -1), 0.4, colors.grey),
+                ('BACKGROUND', (0, 0), (0, -1), colors.Color(0.94, 0.94, 0.96)),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 4),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 4)]))
+            story.append(table)
+            story.append(Spacer(1, 12))
+        story.append(Paragraph(self.tr(
+            '* Required by the journal configuration - an empty cell is a gap '
+            'in the documentation.'), styleN))
+        return story
 
     def report_per_field(self):
         """Creates a QgsTask in order to collect data then on finish it runs

@@ -74,3 +74,24 @@ def test_join_grid_to_table_matches_cells_inside_a_polygon_only(gdf: GeoDataFarm
 
     gdf.db.execute_sql("DROP TABLE IF EXISTS soil.test_field_grid_join_synthetic")
     field_grid.drop_grid(gdf.db)
+
+
+def test_join_grid_to_table_matches_points_inside_cells(gdf: GeoDataFarm):
+    cells = field_grid.build_grid(gdf.db, 'test_field')
+    assert cells
+    gdf.db.execute_sql("DROP TABLE IF EXISTS harvest.test_field_grid_point_join_synthetic")
+    gdf.db.execute_sql(
+        "CREATE TABLE harvest.test_field_grid_point_join_synthetic (row_id serial"
+        " PRIMARY KEY, yield_value real, pos geometry(Point, 4326))")
+    gdf.db.execute_sql(
+        "INSERT INTO harvest.test_field_grid_point_join_synthetic (yield_value, pos)"
+        " SELECT 123.0, st_centroid(polygon) FROM public.crop_sim_grid LIMIT 1")
+
+    matches = field_grid.join_grid_to_table(
+        gdf.db, 'harvest', 'test_field_grid_point_join_synthetic',
+        ['yield_value'], geometry_column='pos')
+
+    assert len(matches) == 1
+    assert matches[0]['yield_value'] == 123.0
+    gdf.db.execute_sql("DROP TABLE IF EXISTS harvest.test_field_grid_point_join_synthetic")
+    field_grid.drop_grid(gdf.db)

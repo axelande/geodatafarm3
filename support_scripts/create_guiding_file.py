@@ -6,6 +6,7 @@ import operator as op
 import os
 import re
 import struct
+import tempfile
 
 import numpy as np
 from osgeo import osr, ogr, gdal
@@ -223,6 +224,80 @@ class CreateGuideFile:
             sat = self.CGF.IsoRBSatData.isChecked()
             self.CGF.groupIsoStep1.setEnabled(not sat)
             self.CGF.groupIsoStep2.setEnabled(not sat)
+
+    def open_for_fertility_index(self: Self, fmt: str, field_name: str,
+                                 cells: list, class_count: int) -> None:
+        """Open Guide file with the calculated index handed over as raster."""
+        raster_path = self._fertility_raster(cells)
+        if raster_path is None:
+            return
+        x_values = list(range(1, class_count + 1))
+        self.sat[fmt] = {'raster': raster_path, 'x_values': x_values,
+                         'y_values': x_values, 'field': field_name,
+                         'index': 'Fertility'}
+        if fmt == 'shp':
+            self.CGF.tabFormat.setCurrentWidget(self.CGF.tabShp)
+            self.CGF.RBSatData.setEnabled(True)
+            self.CGF.RBSatData.setChecked(True)
+            self.CGF.CBFields.setCurrentText(field_name)
+        else:
+            self.CGF.tabFormat.setCurrentWidget(self.CGF.tabIso)
+            self.CGF.IsoRBSatData.setEnabled(True)
+            self.CGF.IsoRBSatData.setChecked(True)
+            self.CGF.IsoCBFields.setCurrentText(field_name)
+        self._toggle_data_mode(fmt)
+        try:
+            self.dock_widget.tabWidget.setCurrentWidget(
+                self.dock_widget.tabGuideFile)
+            self.dock_widget.show()
+            self.dock_widget.raise_()
+        except Exception:  # nosec B110 - routing is best-effort
+            pass
+
+    def _fertility_raster(self, cells: list) -> str | None:
+        """Write the calculated cell classes to a temporary WGS84 raster."""
+        if not cells:
+            return None
+        geometries = [ogr.CreateGeometryFromWkt(cell.polygon_wkt)
+                      for cell, index, class_number in cells
+                      if index is not None and class_number is not None]
+        if not geometries:
+            return None
+        xmin = min(geometry.GetEnvelope()[0] for geometry in geometries)
+        xmax = max(geometry.GetEnvelope()[1] for geometry in geometries)
+        ymin = min(geometry.GetEnvelope()[2] for geometry in geometries)
+        ymax = max(geometry.GetEnvelope()[3] for geometry in geometries)
+        first_envelope = geometries[0].GetEnvelope()
+        cell_width = first_envelope[1] - first_envelope[0]
+        cell_height = first_envelope[3] - first_envelope[2]
+        width = max(1, int(math.ceil((xmax - xmin) / cell_width)))
+        height = max(1, int(math.ceil((ymax - ymin) / cell_height)))
+        pixel_x = (xmax - xmin) / width or 1e-8
+        pixel_y = (ymax - ymin) / height or 1e-8
+        handle, path = tempfile.mkstemp(prefix='geodatafarm_fertility_',
+                                        suffix='.tif')
+        os.close(handle)
+        driver = gdal.GetDriverByName('GTiff')
+        dataset = driver.Create(path, width, height, 1, gdal.GDT_Float32)
+        dataset.SetGeoTransform((xmin, pixel_x, 0, ymax, 0, -pixel_y))
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+        dataset.SetProjection(srs.ExportToWkt())
+        band = dataset.GetRasterBand(1)
+        band.Fill(float('nan'))
+        for cell, index, class_number in cells:
+            if index is None or class_number is None:
+                continue
+            geometry = ogr.CreateGeometryFromWkt(cell.polygon_wkt)
+            center = geometry.Centroid()
+            px = int((center.GetX() - xmin) / pixel_x)
+            py = int((ymax - center.GetY()) / pixel_y)
+            if 0 <= px < width and 0 <= py < height:
+                band.WriteRaster(px, py, 1, 1,
+                                 struct.pack('f', float(class_number)))
+        dataset.FlushCache()
+        dataset = band = driver = None
+        return path
 
     def arm_satellite(self: Self, fmt: str, raster_path: str, x_values: list,
                       y_values: list, field_name: str,

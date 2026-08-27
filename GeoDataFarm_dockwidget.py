@@ -534,7 +534,13 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             for inner in (self.tabWidgetYourData, self.tabWidgetReportsPlanning):
                 inner.tabBar().hide()
             # Sidebar row -> (top page, inner tab widget or None, inner index or None).
-            # Same order as the navSidebar items in the .ui.
+            # One entry per navSidebar item declared in the .ui, in the same
+            # order: the two lists are addressed by the same row number, so a
+            # page present in only one of them shifts every row below it, and
+            # each of those rows then opens its neighbour's page. Pages built
+            # at runtime (Fertility index) must therefore be added through
+            # insert_nav_page(), which updates both lists together - never by
+            # leaving a placeholder here.
             self._nav = [
                 (self.tab_4, None, None),                              # Farm & Fields
                 (self.tabCropSimulation, None, None),                 # Crop simulation
@@ -548,33 +554,88 @@ class GeoDataFarmDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                 (self.tabReportsPlanning, self.tabWidgetReportsPlanning, 1),  # Plan ahead
                 (self.tab_generate_isoxml, None, None),               # ISO-XML
             ]
+            if len(self._nav) != self.navSidebar.count():
+                print(f"ERROR: sidebar nav out of step - navSidebar has "
+                      f"{self.navSidebar.count()} items but _nav has "
+                      f"{len(self._nav)} entries; rows will open the wrong page")
             self.navSidebar.currentRowChanged.connect(self._on_nav_changed)
-            # Keep the sidebar highlight in sync if a page is shown from elsewhere.
+            # currentRowChanged only fires when the row actually *changes*, so
+            # clicking the row you are already on did nothing. On a two-step
+            # page that leaves the user stuck: 'Add data' -> Harvest, then
+            # clicking 'Add data' again to enter something else kept showing
+            # the harvest form. Handle the click as well, so a sidebar row
+            # always lands on its page's start view.
+            self.navSidebar.itemClicked.connect(
+                lambda item: self._on_nav_changed(self.navSidebar.row(item)))
+            # Keep the sidebar highlight in sync if a page is shown from
+            # elsewhere - either another top page, or another sub-tab of a page
+            # that several sidebar rows share (tabYourData).
             tw.currentChanged.connect(self._sync_sidebar)
+            for inner in (self.tabWidgetYourData, self.tabWidgetReportsPlanning):
+                inner.currentChanged.connect(
+                    lambda _i: self._sync_sidebar(self.tabWidget.currentIndex()))
             self.navSidebar.setCurrentRow(0)
         except Exception as e:
             print(f"ERROR setting up sidebar nav: {e}")
             import traceback
             traceback.print_exc()
 
+    def insert_nav_page(self, row, label, page, inner=None, inner_idx=None):
+        """Add a sidebar row for a page that is built at runtime.
+
+        Both the navSidebar item and the matching self._nav entry are inserted
+        here, since the row number is the only thing tying the two together.
+        _nav goes first: inserting the item can move the current row and emit
+        currentRowChanged, and the mapping has to be right by then.
+        """
+        self._nav.insert(row, (page, inner, inner_idx))
+        self.navSidebar.insertItem(row, label)
+
     def _on_nav_changed(self, row):
         """Show the top page (and inner sub-tab) mapped to the sidebar row."""
         if 0 <= row < len(self._nav):
             page, inner, inner_idx = self._nav[row]
-            self.tabWidget.setCurrentWidget(page)
+            if page is None:
+                return
+            # Sub-tab first: setCurrentWidget() below feeds _sync_sidebar,
+            # which needs the inner index already pointing at this row.
             if inner is not None and inner_idx is not None:
                 inner.setCurrentIndex(inner_idx)
+            self.tabWidget.setCurrentWidget(page)
+            self._reset_page(page)
+
+    def _reset_page(self, page):
+        """Show a page's own start view when it is opened from the sidebar.
+
+        Only 'Add data' needs it: it is two steps deep (operation picker ->
+        one shared form, see widgets/add_data_form.py), and without this it
+        reopened on whichever operation was last used, so 'Add data' looked
+        like it went straight to Harvest.
+
+        Deliberately driven by the sidebar and not by tabWidget.currentChanged
+        - the crop-simulation gap links switch to this page precisely in order
+        to open one operation's form (CropSimulation._open_add_data_for_gap),
+        and must not be reset back to the picker.
+        """
+        form = getattr(self, 'add_data_form', None)
+        if form is not None and page is self.tabAddData:
+            form.show_picker()
 
     def _sync_sidebar(self, index):
-        """Reflect an externally-driven top-page change in the sidebar."""
+        """Reflect an externally-driven page change in the sidebar. Data sets,
+        Visualization and Data tools all live on tabYourData, so the inner tab
+        index is what decides which of those rows is actually showing."""
         widget = self.tabWidget.widget(index)
-        for row, (page, _inner, _idx) in enumerate(self._nav):
-            if page is widget:
-                if self.navSidebar.currentRow() != row:
-                    self.navSidebar.blockSignals(True)
-                    self.navSidebar.setCurrentRow(row)
-                    self.navSidebar.blockSignals(False)
-                break
+        for row, (page, inner, inner_idx) in enumerate(self._nav):
+            if page is not widget:
+                continue
+            if inner is not None and inner.currentIndex() != inner_idx:
+                continue
+            if self.navSidebar.currentRow() != row:
+                self.navSidebar.blockSignals(True)
+                self.navSidebar.setCurrentRow(row)
+                self.navSidebar.blockSignals(False)
+            break
 
     def _setup_generate_isoxml_controller(self):
         """Initialize the controller for the static Generate ISOXML tabs."""

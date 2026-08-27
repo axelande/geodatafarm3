@@ -282,10 +282,12 @@ class InputShpHandler:
             return
         date_dict = {}
         if self.ISD.RBDateOnly.isChecked():
-            is_ok, first_date = check_date_format(self.sample_data, check_text(self.ISD.ComBDate.currentText()),
-                                                  self.ISD.ComBDate_2.currentText())
+            is_ok, first_date, problem = check_date_format(
+                self.sample_data, check_text(self.ISD.ComBDate.currentText()),
+                self.ISD.ComBDate_2.currentText())
             if not is_ok:
-                report_warning(self.tr("The date format didn't match the selected format, please change"))
+                report_warning(self.tr("The date format didn't match the "
+                                       "selected format, please change") + f' - {problem}')
                 return
             manual_date = 'date_'
             date_dict['date_row'] = check_text(self.ISD.ComBDate.currentText())

@@ -2574,6 +2574,14 @@ If you are missing a report / something in a report please send a e-mail to geod
                   <string>List all operations per operation</string>
                  </property>
                 </widget></item><item><spacer name="genBtnSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+          <item><layout class="QHBoxLayout" name="journalBtnRow"><item><widget class="QPushButton" name="PBReportSprayJournal">
+                 <property name="text">
+                  <string>Spraying journal</string>
+                 </property>
+                 <property name="toolTip">
+                  <string>One column per application with every configured journal field, laid out like the authority's own form. Configure the fields with the gear button on the Add data page.</string>
+                 </property>
+                </widget></item><item><spacer name="journalBtnSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
           <item><spacer name="repEndSp"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
          </layout>
         </widget>
@@ -3866,6 +3874,11 @@ QComboBox:hover {
 QComboBox::drop-down {
   border: none;
   width: 20px;
+}
+QComboBox::down-arrow {
+  image: url(gdfarrow:combo_arrow.png);
+  width: 14px;
+  height: 14px;
 }
 QComboBox QAbstractItemView {
   color: palette(text);

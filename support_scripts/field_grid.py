@@ -102,14 +102,13 @@ def drop_grid(db):
         tbl=pgsql.Identifier(_GRID_TABLE)))
 
 
-def join_grid_to_table(db, schema, table, columns):
+def join_grid_to_table(db, schema, table, columns, geometry_column='polygon'):
     """Matches every grid cell (see :func:`build_grid` - must be called
-    first) to whichever row(s) of ``schema.table`` cover its centroid.
+    first) to whichever row(s) of ``schema.table`` overlap it.
 
-    A cell's centroid rather than the cell polygon itself is used to avoid
-    a cell picking up two candidate rows just because it straddles a
-    shared edge between two adjacent Voronoi polygons - each cell gets
-    (at most) one row per candidate table.
+    Polygon sources use the cell centroid to avoid picking up two candidate
+    rows at a shared Voronoi edge. Point sources use the whole cell because
+    a harvest point will almost never lie exactly on the cell centroid.
 
     Parameters
     ----------
@@ -126,12 +125,22 @@ def join_grid_to_table(db, schema, table, columns):
     """
     select = pgsql.SQL(', ').join(
         [pgsql.SQL('t.') + pgsql.Identifier(c) for c in columns])
+    if geometry_column == 'pos':
+        spatial_match = pgsql.SQL(
+            'st_intersects(t.{geom}, g.polygon)').format(
+                geom=pgsql.Identifier(geometry_column))
+    else:
+        spatial_match = pgsql.SQL(
+            'st_intersects(t.{geom}, st_centroid(g.polygon))').format(
+                geom=pgsql.Identifier(geometry_column))
     query = pgsql.SQL(
         "SELECT g.cell_id, {select} FROM public.{grid} g"
         " JOIN {schema}.{tbl} t"
-        " ON t.polygon IS NOT NULL"
-        " AND st_intersects(t.polygon, st_centroid(g.polygon))"
+        " ON t.{geom} IS NOT NULL"
+        " AND {spatial_match}"
     ).format(select=select, grid=pgsql.Identifier(_GRID_TABLE),
-             schema=pgsql.Identifier(schema), tbl=pgsql.Identifier(table))
+             schema=pgsql.Identifier(schema), tbl=pgsql.Identifier(table),
+             geom=pgsql.Identifier(geometry_column),
+             spatial_match=spatial_match)
     rows = db_rows(db.execute_and_return(query))
     return [dict(zip(['cell_id'] + columns, row)) for row in rows]

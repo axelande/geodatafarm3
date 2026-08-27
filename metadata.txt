@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=3.3.0
+version=3.4.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,11 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the fol/lowing line and add your changelog:
 changelog=
+  Version 3.4.0 (2026-08-27)
+  - [feature] Journal fields and spraying journal: the field list per operation is now configurable per farm, with a template for Jordbruksverket's 2026 requirements. Comes with its own spraying journal PDF, transposed like their form. Free-text fields suggest previous entries.
+  - [feature] Fertility index: a new page combining harvest and soil sources into a 0-100 index with adjustable classes.
+  - [feature] Time shift on text import: matches rows against their delayed measurement, with a map preview before saving.
+  - Minor bugfixes
   Version 3.3.0 (2026-08-23)
   - [feature] Added per-cell predicted-yield maps with variety-aware crop models.
   - [feature] Added crop-development timing and a yield-specific field-map legend.

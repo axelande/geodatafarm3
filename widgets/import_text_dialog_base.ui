@@ -90,6 +90,11 @@ QComboBox::drop-down {
   border: none;
   width: 20px;
 }
+QComboBox::down-arrow {
+  image: url(gdfarrow:combo_arrow.png);
+  width: 14px;
+  height: 14px;
+}
 QComboBox QAbstractItemView {
   color: palette(text);
   background: palette(base);
@@ -502,6 +507,12 @@ QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
       </item>
       <item row="1" column="3">
        <widget class="QComboBox" name="ComBEast">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="locale">
          <locale language="English" country="UnitedKingdom" />
         </property>
@@ -629,6 +640,12 @@ QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
       </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="ComBNorth">
+        <property name="minimumSize">
+         <size>
+          <width>170</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="locale">
          <locale language="English" country="UnitedKingdom" />
         </property>
@@ -671,7 +688,54 @@ QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus {
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="3" column="3">
+      <item row="3" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="timeShiftLayout">
+        <item>
+         <widget class="QLabel" name="LTimeShift">
+          <property name="text">
+           <string>Delayed measurements (seconds):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="SBTimeDelay">
+          <property name="minimum"><double>-86400.000000000000000</double></property>
+          <property name="maximum"><double>86400.000000000000000</double></property>
+          <property name="decimals"><number>3</number></property>
+          <property name="singleStep"><double>1.000000000000000</double></property>
+          <property name="value"><double>0.000000000000000</double></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="CBTimeStrategy">
+          <item><property name="text"><string>Nearest measurement</string></property></item>
+          <item><property name="text"><string>Previous measurement</string></property></item>
+          <item><property name="text"><string>Next measurement</string></property></item>
+          <item><property name="text"><string>Leave shifted values blank</string></property></item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelTimeTolerance">
+          <property name="text"><string>Max difference:</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="SBTimeTolerance">
+          <property name="minimum"><double>0.000000000000000</double></property>
+          <property name="maximum"><double>86400.000000000000000</double></property>
+          <property name="decimals"><number>3</number></property>
+          <property name="singleStep"><double>0.5</double></property>
+          <property name="value"><double>1.000000000000000</double></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="PBPreviewTimeShift">
+          <property name="text"><string>Preview</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="3">
        <widget class="QDialogButtonBox" name="button_box">
         <property name="locale">
          <locale language="English" country="UnitedKingdom" />
@@ -762,7 +826,7 @@ following column</string>
         </attribute>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="QPushButton" name="PBInsertDataIntoDB">
         <property name="enabled">
          <bool>false</bool>
@@ -848,6 +912,41 @@ following column</string>
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>PBAddInputFile</tabstop>
+  <tabstop>CBField</tabstop>
+  <tabstop>CBCrop</tabstop>
+  <tabstop>PBHelp</tabstop>
+  <tabstop>LEEPSG</tabstop>
+  <tabstop>RBComma</tabstop>
+  <tabstop>RBSemi</tabstop>
+  <tabstop>RBTab</tabstop>
+  <tabstop>RBOwnSep</tabstop>
+  <tabstop>LEOwnSep</tabstop>
+  <tabstop>TWColumnNames</tabstop>
+  <tabstop>PBAddParam</tabstop>
+  <tabstop>PBRemParam</tabstop>
+  <tabstop>TWtoParam</tabstop>
+  <tabstop>PBContinue</tabstop>
+  <tabstop>ComBNorth</tabstop>
+  <tabstop>ComBEast</tabstop>
+  <tabstop>LEMinimumYield</tabstop>
+  <tabstop>LEMaximumYield</tabstop>
+  <tabstop>LEMoveX</tabstop>
+  <tabstop>LEMoveY</tabstop>
+  <tabstop>RBUserTime</tabstop>
+  <tabstop>RBDateOnly</tabstop>
+  <tabstop>DE</tabstop>
+  <tabstop>ComBDate</tabstop>
+  <tabstop>ComBDate_2</tabstop>
+  <tabstop>PBAbbreviations</tabstop>
+  <tabstop>SBTimeDelay</tabstop>
+  <tabstop>CBTimeStrategy</tabstop>
+  <tabstop>SBTimeTolerance</tabstop>
+  <tabstop>PBPreviewTimeShift</tabstop>
+  <tabstop>PBInsertDataIntoDB</tabstop>
+  <tabstop>button_box</tabstop>
+ </tabstops>
  <resources />
  <connections>
   <connection>

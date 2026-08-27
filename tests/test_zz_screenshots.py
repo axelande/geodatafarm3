@@ -20,6 +20,14 @@ def _settle(ms_loops=12):
         QCoreApplication.processEvents()
 
 
+def _nav_row(nav, keyword):
+    """Row number of the sidebar item whose label contains `keyword`."""
+    for row in range(nav.count()):
+        if keyword in nav.item(row).text():
+            return row
+    raise AssertionError(f'no sidebar row labelled {keyword!r}')
+
+
 def _grab(widget, name):
     path = os.path.join(OUT, name)
     pm = widget.grab()
@@ -55,25 +63,28 @@ def test_capture_screenshots(gdf: GeoDataFarm):
 
     nav = dw.navSidebar
 
-    # Whole-dock shots per sidebar page (row indices from _setup_sidebar_nav).
+    # Whole-dock shots per sidebar page. Looked up by label rather than by row
+    # number - rows shift whenever a page is added (Fertility index is even
+    # inserted at runtime), and a stale number silently shoots the wrong page.
     pages = {
-        0: 'ui_farm_fields.png',
-        1: 'ui_add_data.png',
-        2: 'ui_data_sets.png',
-        3: 'ui_visualization.png',
-        4: 'ui_data_tools.png',
-        6: 'ui_satellite.png',
-        7: 'ui_reports.png',
-        8: 'ui_plan_ahead.png',
-        9: 'ui_isoxml_generator.png',
+        'Farm': 'ui_farm_fields.png',
+        'Crop simulation': 'ui_crop_simulation.png',
+        'Add data': 'ui_add_data.png',
+        'Data sets': 'ui_data_sets.png',
+        'Visualization': 'ui_visualization.png',
+        'Data tools': 'ui_data_tools.png',
+        'Satellite': 'ui_satellite.png',
+        'Reports': 'ui_reports.png',
+        'Plan ahead': 'ui_plan_ahead.png',
+        'ISO-XML': 'ui_isoxml_generator.png',
     }
-    for row, name in pages.items():
-        nav.setCurrentRow(row)
+    for keyword, name in pages.items():
+        nav.setCurrentRow(_nav_row(nav, keyword))
         _settle()
         _grab(dw, name)
 
     # Add-data unified form (opened from a picker card): file + manual views.
-    nav.setCurrentRow(1)
+    nav.setCurrentRow(_nav_row(nav, 'Add data'))
     _settle()
     form = getattr(gdf, 'add_data_form', None)
     if form is not None:
@@ -90,7 +101,7 @@ def test_capture_screenshots(gdf: GeoDataFarm):
             print('add-data form capture skipped:', e)
 
     # Guide file page: capture both sub-tabs (and a close-up of just the wizard).
-    nav.setCurrentRow(5)
+    nav.setCurrentRow(_nav_row(nav, 'Guide file'))
     _settle()
     cgf = gdf.guide.CGF
     tabf = cgf.tabFormat

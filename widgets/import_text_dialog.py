@@ -50,4 +50,9 @@ class ImportTextDialog(QtWidgets.QDialog, FORM_CLASS):
         self.PBAddInputFile: QtWidgets.QPushButton
         self.PBHelp: QtWidgets.QPushButton
         self.PBInsertDataIntoDB: QtWidgets.QPushButton
+        self.SBTimeDelay: QtWidgets.QDoubleSpinBox
+        self.CBTimeStrategy: QtWidgets.QComboBox
+        self.SBTimeTolerance: QtWidgets.QDoubleSpinBox
+        self.PBPreviewTimeShift: QtWidgets.QPushButton
+        self.LTimeShift: QtWidgets.QLabel
 

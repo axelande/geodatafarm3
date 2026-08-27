@@ -1,4 +1,6 @@
 from typing import Self
+import csv
+import os
 import webbrowser
 from qgis.core import QgsTask
 import traceback
@@ -17,11 +19,22 @@ from ..widgets.import_text_dialog import ImportTextDialog
 from ..support_scripts.radio_box import RadioComboBox
 from ..support_scripts.create_layer import CreateLayer
 from ..support_scripts.__init__ import (TR, check_text, isfloat, isint,
-                                        check_date_format)
+                                        check_date_format, TEXT_ENCODING)
 from ..support_scripts.qt_data import _check_state, _enum_select_rows, _item_flag
 from ..import_data.insert_manual_from_file import ManualFromFile
 from ..support_scripts.notifier import report_warning, report_error, report_info
+from ..support_scripts.time_shift import (shift_import_attributes,
+                                          match_source_indexes)
+from ..widgets.time_shift_preview_dialog import TimeShiftPreviewDialog
 __author__ = 'Axel Horteborn'
+
+# Exact column names, not a substring test. "part in 'latitude lat y'"
+# is true for every substring of that string - including the empty string
+# that a column name with a leading space splits into, which handed the
+# coordinate columns to whichever oddly spaced column happened to come
+# last and left every row failing check_row_failed's float().
+LATITUDE_NAMES = ('latitude', 'lat', 'y')
+LONGITUDE_NAMES = ('longitude', 'lon', 'x')
 
 
 class InputTextHandler(object):
@@ -67,7 +80,9 @@ class InputTextHandler(object):
         self.heading_row = None
         self.sample_data = None
         self.tbl_name = ''
-        self.encoding = 'utf-8'
+        self.encoding = TEXT_ENCODING
+        self._preview_rows_cache = {}
+        self._preview_field_cache = {}
 
     def run(self: Self) -> None:
         """Presents the sub widget ImportTextDialog and connects the different
@@ -81,6 +96,7 @@ class InputTextHandler(object):
         self.ITD.PBInsertDataIntoDB.clicked.connect(self.trigger_insection)
         self.ITD.PBContinue.clicked.connect(self.prepare_last_choices)
         self.ITD.PBAbbreviations.clicked.connect(self.show_abbreviations)
+        self.ITD.PBPreviewTimeShift.clicked.connect(self.preview_time_shift)
         self.ITD.RBComma.clicked.connect(self.change_sep)
         self.ITD.RBSemi.clicked.connect(self.change_sep)
         self.ITD.RBTab.clicked.connect(self.change_sep)
@@ -97,6 +113,11 @@ class InputTextHandler(object):
             self.ITD.LMoveY.setEnabled(True)
             self.ITD.LEMoveX.setEnabled(True)
             self.ITD.LEMoveY.setEnabled(True)
+            self.ITD.LTimeShift.setEnabled(True)
+            self.ITD.SBTimeDelay.setEnabled(True)
+            self.ITD.CBTimeStrategy.setEnabled(True)
+            self.ITD.SBTimeTolerance.setEnabled(True)
+            self.ITD.PBPreviewTimeShift.setEnabled(True)
         if self.data_type == 'soil':
             self.ITD.CBCrop.setEnabled(False)
         if not self.parent_widget.test_mode:
@@ -159,7 +180,7 @@ class InputTextHandler(object):
             try:
                 dat = f.read()
                 read_all = dat.decode('utf-8')
-                self.encoding = 'utf-8'
+                self.encoding = TEXT_ENCODING
             except UnicodeDecodeError:
                 dat = f.read()
                 read_all = dat.decode('ansi')
@@ -184,17 +205,10 @@ class InputTextHandler(object):
         """A function that retrieves the name of the columns from the text file
         and fills the TWColumnName list with the name, first value and data type"""
         self.ITD.TWColumnNames.clear()
-        with open(self.file_name_with_path, encoding=self.encoding) as f:
-            read_all = f.readlines()
-            first_row = True
-            for row in read_all:
-                row = re.split((self.sep + ' |' + self.sep), row)
-                if first_row:
-                    heading_row = row
-                    first_row = False
-                else:
-                    second_row = row
-                    break
+        with open(self.file_name_with_path, encoding=self.encoding, newline='') as f:
+            reader = csv.reader(f, delimiter=self._csv_separator())
+            heading_row = next(reader)
+            second_row = next(reader, [''] * len(heading_row))
         self.determine_column_type()
         combo_box_options = ["Integer", "Decimal value", "Character"]
         self.combo = []
@@ -220,6 +234,9 @@ class InputTextHandler(object):
             self.ITD.TWColumnNames.setItem(i, 1, item2)
             self.ITD.TWColumnNames.setCellWidget(i, 2, self.combo[i])
         self.add_to_db_row_count = i
+
+    def _csv_separator(self) -> str:
+        return self.sep.decode() if isinstance(self.sep, bytes) else self.sep
 
     def set_sep_radio_but(self: Self) -> None:
         """Sets the radioButton indicating the separator of the file"""
@@ -275,6 +292,8 @@ class InputTextHandler(object):
             else:
                 return
         self.file_name_with_path = file_name_with_path
+        self._preview_rows_cache.clear()
+        self._preview_field_cache.clear()
         temp_var = self.file_name_with_path.split("/")
         self.file_name = temp_var[len(temp_var)-1][0:-4]
         self.input_file_path = self.file_name_with_path[0:self.file_name_with_path.index(self.file_name)]
@@ -295,13 +314,13 @@ class InputTextHandler(object):
         lat_check, lon_check = False, False
         for word in columns_to_add:
             for part in word.split(' '):
-                if part.lower() in "latitude lat y":
+                if part.lower() in LATITUDE_NAMES:
                     lat_check = True
                     only_char = check_text(word)
                     self.latitude_col = only_char
                     index = self.ITD.ComBNorth.findText(word)
                     self.ITD.ComBNorth.setCurrentIndex(index)
-                if part.lower() in "longitude lat x":
+                if part.lower() in LONGITUDE_NAMES:
                     lon_check = True
                     only_char = check_text(word)
                     self.longitude_col = only_char
@@ -316,9 +335,93 @@ class InputTextHandler(object):
         self.ITD.ComBNorth.setEnabled(True)
         self.ITD.ComBEast.setEnabled(True)
         self.ITD.ComBDate.setEnabled(True)
+        self.ITD.ComBDate.clear()
         self.ITD.ComBDate.addItems(columns_to_add)
         self.ITD.PBInsertDataIntoDB.setEnabled(True)
         self.mff.prepare_data(columns_to_add)
+
+    def _time_shift_strategy(self) -> str:
+        return {
+            0: 'nearest',
+            1: 'previous',
+            2: 'next',
+            3: 'blank',
+        }[self.ITD.CBTimeStrategy.currentIndex()]
+
+    @staticmethod
+    def _read_timestamped_rows(file_name: str, encoding: str, separator: str,
+                               date_index: int, date_format: str
+                               ) -> tuple[list[list[str]], list[datetime|None]]:
+        rows = []
+        timestamps = []
+        separator = separator.decode() if isinstance(separator, bytes) else separator
+        with open(file_name, encoding=encoding, newline='') as file_handle:
+            reader = csv.reader(file_handle, delimiter=separator)
+            next(reader, None)
+            for source_row, row in enumerate(reader, start=2):
+                if not any(value.strip() for value in row):
+                    continue
+                if date_index >= len(row) or not row[date_index].strip():
+                    rows.append(row)
+                    timestamps.append(None)
+                    continue
+                try:
+                    timestamp_value = row[date_index].strip().strip('"')
+                    timestamp = datetime.strptime(timestamp_value, date_format)
+                except ValueError as error:
+                    raise ValueError(f'row {source_row}: {error}') from error
+                rows.append(row)
+                timestamps.append(timestamp)
+        return rows, timestamps
+
+    def preview_time_shift(self) -> None:
+        """Show a small sample of the row mapping before importing."""
+        if not self.ITD.RBDateOnly.isChecked():
+            report_warning(self.tr('Select a date and time column before previewing a time shift.'))
+            return
+        try:
+            date_format = self.ITD.ComBDate_2.currentText()
+            date_name = check_text(self.ITD.ComBDate.currentText())
+            headers = [check_text(self.ITD.TWColumnNames.item(i, 0).text())
+                       for i in range(self.add_to_db_row_count + 1)]
+            date_index = headers.index(date_name)
+            latitude_index = headers.index(check_text(self.ITD.ComBNorth.currentText()))
+            longitude_index = headers.index(check_text(self.ITD.ComBEast.currentText()))
+            yield_index = None
+            if self.data_type == 'harvest' and self.add_to_param_row_count:
+                yield_name = check_text(self.ITD.TWtoParam.item(0, 0).text())
+                yield_index = headers.index(yield_name)
+            cache_key = (self.file_name_with_path, self.encoding,
+                         self._csv_separator(), date_index, date_format,
+                         os.stat(self.file_name_with_path).st_mtime_ns)
+            if cache_key not in self._preview_rows_cache:
+                self._preview_rows_cache[cache_key] = self._read_timestamped_rows(
+                    self.file_name_with_path, self.encoding, self.sep, date_index,
+                    date_format)
+            lines, timestamps = self._preview_rows_cache[cache_key]
+            source_indexes = match_source_indexes(
+                timestamps, self.ITD.SBTimeDelay.value(),
+                self._time_shift_strategy(), self.ITD.SBTimeTolerance.value())
+            field_wkt = None
+            field_name = self.ITD.CBField.currentText().strip()
+            if field_name and field_name != self.tr('--- Select field ---'):
+                if field_name not in self._preview_field_cache:
+                    self._preview_field_cache[field_name] = self.db.execute_and_return(
+                        'SELECT ST_AsText(polygon) FROM fields WHERE field_name = %s',
+                        params=(field_name,))
+                result = self._preview_field_cache[field_name]
+                if result and result[0][0]:
+                    field_wkt = result[0][0]
+            preview = TimeShiftPreviewDialog(
+                lines, source_indexes, latitude_index, longitude_index,
+                yield_index, field_wkt, field_name, self.ITD,
+                timestamps=timestamps, date_index=date_index,
+                delay_seconds=self.ITD.SBTimeDelay.value(),
+                strategy=self._time_shift_strategy(),
+                tolerance_seconds=self.ITD.SBTimeTolerance.value())
+            preview.exec()
+        except (ValueError, IndexError) as error:
+            report_warning(self.tr(f'Could not preview the time shift: {error}'))
 
     def determine_column_type(self: Self) -> None:
         """
@@ -327,17 +430,15 @@ class InputTextHandler(object):
         """
         row_types = []
         self.sample_data = []
-        with open(self.file_name_with_path, encoding=self.encoding) as f:
-            read_all = f.readlines()
-            first_row = True
+        with open(self.file_name_with_path, encoding=self.encoding, newline='') as f:
+            reader = csv.reader(f, delimiter=self._csv_separator())
+            read_all = list(reader)
             max_rows = len(read_all)
             if max_rows > 1000:
                 max_rows = 1000
-            for row in read_all[:max_rows]:
-                row = re.split((self.sep + ' |' + self.sep), row)
-                if first_row:
+            for row_number, row in enumerate(read_all[:max_rows]):
+                if row_number == 0:
                     self.heading_row = row
-                    first_row = False
                     h_row = []
                     for col in self.heading_row:
                         h_row.append(check_text(col))
@@ -378,12 +479,14 @@ class InputTextHandler(object):
         params['latitude_col'] = check_text(self.ITD.ComBNorth.currentText())
         params['focus_col'] = []
         if self.ITD.RBDateOnly.isChecked():
-            is_ok, first_date = check_date_format(self.sample_data, check_text(self.ITD.ComBDate.currentText()),
-                                                  self.ITD.ComBDate_2.currentText())
+            is_ok, first_date, problem = check_date_format(
+                self.sample_data, check_text(self.ITD.ComBDate.currentText()),
+                self.ITD.ComBDate_2.currentText())
             if not is_ok:
-                assert isinstance(first_date, datetime)  # nosec B101
-                report_warning(self.tr("The date format didn't match the selected format, please change"))
+                report_warning(self.tr("The date format didn't match the "
+                                       "selected format, please change") + f' - {problem}')
                 return
+            assert isinstance(first_date, datetime)  # nosec B101
             params['date_row'] = check_text(self.ITD.ComBDate.currentText())
             params['date_format'] = self.ITD.ComBDate_2.currentText()
             params['all_same_date'] = ''
@@ -417,6 +520,9 @@ class InputTextHandler(object):
             params['move_y'] = float(self.ITD.LEMoveY.text())
         else:
             params['move'] = False
+        params['time_shift_seconds'] = self.ITD.SBTimeDelay.value()
+        params['time_shift_strategy'] = self._time_shift_strategy()
+        params['time_shift_tolerance'] = self.ITD.SBTimeTolerance.value()
         #a = insert_data_to_database('debug', self.db, params)
         #print(a)
         params['test_mode'] = self.parent_widget.test_mode
@@ -481,6 +587,7 @@ class InputTextHandler(object):
         self.ITD.PBInsertDataIntoDB.clicked.disconnect()
         self.ITD.PBContinue.clicked.disconnect()
         self.ITD.PBAbbreviations.clicked.disconnect()
+        self.ITD.PBPreviewTimeShift.clicked.disconnect()
         self.ITD.RBComma.clicked.disconnect()
         self.ITD.RBSemi.clicked.disconnect()
         self.ITD.RBTab.clicked.disconnect()
@@ -662,6 +769,18 @@ def create_polygons(db: DB, schema: str, tbl_name: str,
     return res
 
 
+def _write_rows(db: DB, sql: str) -> None:
+    """Send one batch of rows, and let a refusal be heard.
+
+    Without this the call swallows its own failure and the import walks on to
+    report success over an empty table, which is a long way from where the
+    problem actually is.
+    """
+    result = db.execute_sql(sql, return_failure=True)
+    if isinstance(result, list) and not result[0]:
+        raise result[1](result[2])
+
+
 def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
     """Walks though the text files and adds data to the database
     Parameters
@@ -710,22 +829,39 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
             task.setProgress(2)
         count_db_insert = 0
         with open(file_name_with_path, encoding=encoding) as f:
-            read_all = f.readlines()
-            first_row = True
+            csv_rows = list(csv.reader(f, delimiter=sep.decode() if isinstance(sep, bytes) else sep))
+            read_all = csv_rows
+            heading_row = [check_text(value) for value in csv_rows[0]]
+            data_rows = csv_rows[1:]
+            time_shift = params.get('time_shift_seconds', 0.0)
+            if date_row:
+                date_index = heading_row.index(date_row)
+                latitude_index = heading_row.index(latitude_col)
+                longitude_index = heading_row.index(longitude_col)
+                data_rows, timestamps = InputTextHandler._read_timestamped_rows(
+                    file_name_with_path, encoding, sep, date_index, date_format)
+            if time_shift and date_row:
+                data_rows, _ = shift_import_attributes(
+                    data_rows, timestamps, date_index, longitude_index,
+                    latitude_index, time_shift,
+                    params.get('time_shift_strategy', 'nearest'),
+                    params.get('time_shift_tolerance', 1.0))
+            # check_row_failed() looks these up per row and catches ValueError,
+            # so a name that is not in the file reads as "every row has a bad
+            # coordinate" and the import quietly stores nothing. Say it once,
+            # loudly, instead.
+            missing = [name for name in (latitude_col, longitude_col)
+                       if name not in heading_row]
+            if missing:
+                raise ValueError(
+                    f'The coordinate columns {missing} are not among the columns '
+                    f'of the file: {heading_row}')
             some_wrong_len = 0
-            for row_count, row in enumerate(read_all):
+            for row_count, row in enumerate(data_rows, start=1):
                 row_value = '('
-                row = re.split((sep + ' |' + sep), row)
                 for i in range(len(row)):
                     row[i] = row[i].replace(",", ".")
                 lat_lon_inserted = False
-                if first_row:
-                    heading_row = []
-                    for col in row:
-                        only_char = check_text(col)
-                        heading_row.append(only_char)
-                    first_row = False
-                    continue
                 if check_row_failed(row, heading_row, latitude_col, longitude_col, yield_row,
                                     max_yield, min_yield):
                             some_wrong_len += 1
@@ -752,9 +888,13 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
                         row_value += "'{s}', ".format(s=all_same_date)
                         date_inserted = True
                     if key == date_row:
-                        in_date = datetime.strptime(row[heading_row.index(date_row)], date_format)
-                        out_date = datetime.strftime(in_date, '%Y-%m-%d %H:%M:%S')
-                        row_value += "'{s}', ".format(s=out_date)
+                        date_value = row[heading_row.index(date_row)].strip().strip('"')
+                        if not date_value:
+                            row_value += 'Null, '
+                        else:
+                            in_date = datetime.strptime(date_value, date_format)
+                            out_date = datetime.strftime(in_date, '%Y-%m-%d %H:%M:%S')
+                            row_value += "'{s}', ".format(s=out_date)
                     elif column_types[heading_row.index(key)] == 0:
                         try:  # Trying to add a int
                             row_value += '{s}, '.format(s=int(float(col_data)))
@@ -775,15 +915,13 @@ def insert_data_to_database(task: str, db: DB, params: dict) -> list[bool]:
                         row_value += "'{s}', ".format(s=check_text(col_data, allow_first_digit=True))
                 inserting_text += row_value[:-2] + '),'
                 if count_db_insert > 10000:
-                    #print(inserting_text)
-                    db.execute_sql(inserting_text[:-1])
+                    _write_rows(db, inserting_text[:-1])
                     inserting_text = insert_org_sql
                     count_db_insert = 0
                 else:
                     count_db_insert += 1
-            #print(inserting_text[:-1])
             if count_db_insert > 0:
-                db.execute_sql(inserting_text[:-1])
+                _write_rows(db, inserting_text[:-1])
         no_miss_heading = True
         if some_wrong_len > 0:
             no_miss_heading = False
