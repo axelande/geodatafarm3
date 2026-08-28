@@ -251,14 +251,64 @@ _SE_2026_SPRAY = [
     _f('rate', 'Dose', 'kg/ha or l/ha', NUMBER, required=True),
     _f('treated_area_ha', 'Treated area', 'ha', NUMBER, required=True,
        remember=False),
-    _f('fixed_buffer_m', 'Fixed buffer zone', 'm', TEXT, required=True),
-    _f('adapted_buffer_m', 'Adapted buffer zone', 'm', TEXT, required=True),
+    # Both buffer rows on Jordbruksverket's form ask for "objekt och
+    # avstånd i hela antal meter" - the object is as much a part of the
+    # requirement as the distance, and a bare "6" does not document
+    # anything. Hence a pair of fields per row rather than one.
+    #
+    # The fixed row's object comes from a fixed list because the distance
+    # follows from it in law (NFS 2015:2: ditch 2 m, watercourse 6 m,
+    # drinking-water well 12 m) - see FIXED_BUFFER_DISTANCES_M, which is
+    # what lets the distance be filled in once the object is picked. The
+    # adapted row's object is free text: what needs protecting downwind
+    # may be a dwelling, an organic holding, a bee yard or a protected
+    # biotope, and no fixed list would cover it.
+    _f('sensitivity', 'Consideration', None, CHOICE,
+       ('', 'General', 'Special')),
+    _f('fixed_buffer_object', 'Fixed buffer zone - object', None, CHOICE,
+       ('', 'Nothing requiring a fixed distance', 'Open ditch or drain',
+        'Watercourse or lake', 'Drinking water well'), required=True),
+    _f('fixed_buffer_m', 'Fixed buffer zone - distance', 'm', NUMBER,
+       required=True),
+    _f('adapted_buffer_object', 'Adapted buffer zone - object', None, TEXT,
+       required=True),
+    _f('adapted_buffer_m', 'Adapted buffer zone - distance', 'm', NUMBER,
+       required=True),
     _f('flowering_vegetation', 'Flowering vegetation', None, CHOICE, _YES_NO),
     _f('phi_days', 'Pre-harvest interval', 'days', NUMBER),
     _f('harvest_date', 'Harvest date', None, DATE),
-    _f('spray_time', 'Time of day', None, TEXT),
+    # Jordbruksverket's form heads every application column with "Datum:"
+    # *and* "Klockslag:", so the time of day is required alongside the
+    # date, not an optional note. The form's own date lives outside the
+    # journal field list (it is the row's date_ column), which is why only
+    # the time appears here.
+    _f('spray_time', 'Time of day', None, TEXT, required=True),
     _f('water_volume_l_ha', 'Water volume', 'l/ha', NUMBER),
+    # Not required by the regulation, but a farm with more than one
+    # sprayer cannot reconstruct a treatment from the nozzle alone.
+    _f('equipment', 'Sprayer', None, TEXT),
     _f('nozzle_type', 'Nozzle type', None, TEXT),
+    # The remaining Hjälpredan inputs. Kemikalieinspektionen's edition
+    # prints no nozzle tables - spray quality and drift-reduction class
+    # come from the equipment manufacturer - so they have to be recorded
+    # rather than derived from the nozzle name. Either one answers the
+    # lookup; a farm that knows only one of them fills in only that.
+    _f('spray_quality', 'Spray quality', None, CHOICE,
+       ('', 'Fine', 'Medium', 'Coarse')),
+    _f('drift_reduction_percent', 'Drift reduction class', '%', CHOICE,
+       ('', '50', '75', '90')),
+    _f('boom_height_cm', 'Boom height', 'cm', CHOICE,
+       ('', '25', '40', '50', '60')),
+    # Only the orchard variant of the Hjälpredan asks for this; an arable
+    # farm switches it off in the journal settings. It is here because
+    # without it the fläktspruta lookup cannot be called at all, and
+    # 'Fruit growing' is one of the use types this template offers.
+    _f('foliage', 'Foliage (orchard)', None, CHOICE,
+       ('', 'Sparse', 'Dense')),
+    # The dose column is a fraction of the label's *highest* dose, not of
+    # the dose that was planned - so the label maximum has to be recorded
+    # beside the dose actually used before the class can be worked out.
+    _f('label_max_dose', 'Label maximum dose', 'kg/ha or l/ha', NUMBER),
     _f('pressure_bar', 'Pressure', 'bar', NUMBER),
     _f('wind_speed', 'Wind speed', 'm/s', NUMBER),
     _f('wind_dir', 'Wind direction', 'deg', NUMBER),
@@ -272,6 +322,31 @@ TEMPLATES = {
     'generic': _GENERIC,
     'se_2026': dict(_GENERIC, spray=_SE_2026_SPRAY),
 }
+
+# Naturvårdsverket's fixed minimum distances (NFS 2015:2), keyed by the
+# choice the journal offers for ``fixed_buffer_object``. Recording the
+# object is what makes the distance derivable: the two belong together
+# in law, which is why the form asks for both.
+#
+# Keyed on the English choice text rather than an index because a user
+# may reorder or extend the list in the settings dialog. If they rename
+# one, the lookup simply misses and the distance is typed by hand - the
+# journal is never wrong, only less convenient. ``None`` means "no fixed
+# distance applies", which is a different answer from not having asked.
+FIXED_BUFFER_DISTANCES_M = {
+    'Nothing requiring a fixed distance': None,
+    'Open ditch or drain': 2,
+    'Watercourse or lake': 6,
+    'Drinking water well': 12,
+}
+
+
+def fixed_buffer_distance(choice) -> "int | None":
+    """The NFS 2015:2 distance for a ``fixed_buffer_object`` choice, or
+    None if the choice is blank, unrecognised, or means no fixed
+    distance applies."""
+    return FIXED_BUFFER_DISTANCES_M.get((choice or '').strip())
+
 
 # Shown in the settings dialog's template picker. Kept separate from
 # TEMPLATES so the ordering is stable and the description is

@@ -83,6 +83,7 @@ from .widgets.add_data_form import AddDataForm, FieldSpec
 from .widgets.fertility_index_page import FertilityIndexPage
 from .widgets.journal_fields_dialog import JournalFieldsDialog
 from .support_scripts import combo_arrow
+from .support_scripts import hjalpredan_client as hjalpredan
 from .support_scripts import journal_fields as jf
 from .support_scripts.__init__ import isint, TR
 from .support_scripts.notifier import (
@@ -544,6 +545,13 @@ class GeoDataFarm:
                 self.add_data_form.field_provider = self.journal_field_specs
                 self.add_data_form.journal_settings_callback = self.open_journal_settings
                 self.add_data_form.field_changed_callback = self._autofill_add_data_form
+                self.add_data_form.value_changed_callback = self._journal_value_changed
+                # The one journal number the authority's own form tells you
+                # to look up rather than judge - see
+                # support_scripts/hjalpredan_client.py.
+                self.add_data_form.field_actions = {
+                    'adapted_buffer_m': (self.tr('Hjälpredan…'),
+                                         self.compute_adapted_buffer)}
             self.dock_widget.add_data_form = self.add_data_form
             if self.dock_widget.layoutAddData.count() == 0:
                 self.dock_widget.layoutAddData.addWidget(self.add_data_form)
@@ -708,6 +716,82 @@ class GeoDataFarm:
             return
         for key, value in values.items():
             self.add_data_form.set_value(key, value)
+
+    def _journal_value_changed(self, key, value):
+        """One journal field filling in another.
+
+        Only the buffer-zone pair so far: which object lies downwind
+        fixes the minimum distance in law (NFS 2015:2), so once the user
+        has named it there is nothing left to decide. Fills only an empty
+        box, like every other derived value here - a distance the user
+        typed is theirs.
+        """
+        if key != 'fixed_buffer_object':
+            return
+        distance = jf.fixed_buffer_distance(value)
+        if distance is not None:
+            self.add_data_form.set_value('fixed_buffer_m', str(distance))
+
+    def compute_adapted_buffer(self):
+        """Looks the adapted buffer distance up in the Hjälpredan and fills
+        it in, from what the journal has already recorded.
+
+        Reports what governed the answer rather than just writing a
+        number: the tables can give a shorter distance than NFS 2015:2
+        allows next to water, in which case the fixed distance wins, and
+        an operator has every right to know which rule produced the
+        figure now in their journal.
+        """
+        form = self.add_data_form
+        values = form.values()
+        variant = hjalpredan.variant_for(values)
+        prepared = hjalpredan.from_journal_values(values)
+        missing = hjalpredan.missing_inputs(prepared, variant)
+        if missing:
+            report_warning(self.tr(
+                'The Hjälpredan needs these first: {}').format(
+                    ', '.join(self.tr(label) for label in missing)))
+            return
+        client = hjalpredan.HjalpredanClient()
+        try:
+            if variant == 'orchard':
+                reading = client.orchard_sprayer(**prepared)
+            else:
+                reading = client.boom_sprayer(**prepared)
+        except hjalpredan.HjalpredanError as e:
+            report_warning(str(e))
+            return
+        except hjalpredan.HjalpredanUnavailable as e:
+            # Never fatal: the distance is a field the user can fill in
+            # themselves, and a journal entry must not be blocked by a
+            # server being unreachable.
+            report_info(str(e))
+            return
+        form.set_value('adapted_buffer_m', str(reading.get('distance_m')),
+                       only_if_empty=False)
+        report_success(self._reading_summary(reading))
+
+    def _reading_summary(self, reading):
+        """One line saying what the Hjälpredan answered and why.
+
+        The 'why' is the point. A reading can come from the tables or from
+        the NFS 2015:2 minimum overriding them, it can have been read at a
+        tabulated step next to the one measured, and it is measured to
+        different things in the two cases - none of which the bare number
+        in the journal would show.
+        """
+        parts = [self.tr('Adapted buffer zone: {} m').format(reading.get('label'))]
+        if reading.get('governed_by') == hjalpredan.GOVERNED_BY_FIXED:
+            obj = reading.get('nearest_object')
+            parts.append(self.tr('set by the fixed distance to {}').format(
+                self.tr(hjalpredan.OBJECT_LABELS.get(obj, obj))))
+        if reading.get('measured'):
+            parts.append(self.tr('measured {}').format(reading['measured']))
+        if reading.get('rounded'):
+            parts.append(self.tr('rounded to the tabulated {}').format(
+                ', '.join(reading['rounded'])))
+        parts.append(str(reading.get('edition', '')))
+        return ' - '.join(part for part in parts if part)
 
     def save_add_data(self):
         """Generic, config-driven manual save for the shared Add-data form.

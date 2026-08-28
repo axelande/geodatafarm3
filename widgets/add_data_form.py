@@ -208,6 +208,16 @@ class AddDataForm(QtWidgets.QWidget):
         # journal values (place of application, treated area) can be filled
         # in - see GeoDataFarm._autofill_add_data_form.
         self.field_changed_callback = None
+        # field key -> (button text, callback). Puts a button beside that
+        # field's input, for a value that can be worked out rather than
+        # typed - the Hjälpredan's adapted buffer distance being the case
+        # this exists for. Kept as a plain dict so the widget knows nothing
+        # about what any particular button does.
+        self.field_actions = {}
+        # Called with (field key, value) whenever a choice or checkbox
+        # changes, so one journal field can fill in another - picking the
+        # object behind a fixed buffer zone fixes its distance in law.
+        self.value_changed_callback = None
 
         self._add_settings_button()
         self._wire()
@@ -356,19 +366,45 @@ class AddDataForm(QtWidgets.QWidget):
             # than only complaining on Save - the point of a national
             # template is to show what the journal must contain up front.
             label = f"{spec.label} *:" if spec.required else f"{spec.label}:"
-            if spec.unit:
+            action = self.field_actions.get(spec.key)
+            if spec.unit or action:
                 cell = QtWidgets.QWidget()
                 row = QtWidgets.QHBoxLayout(cell)
                 row.setContentsMargins(0, 0, 0, 0)
                 row.addWidget(edit, 1)
-                row.addWidget(QtWidgets.QLabel(spec.unit))
+                if spec.unit:
+                    row.addWidget(QtWidgets.QLabel(spec.unit))
+                if action:
+                    text, callback = action
+                    button = QtWidgets.QPushButton(text)
+                    button.clicked.connect(lambda _=False, cb=callback: cb())
+                    row.addWidget(button)
                 form.addRow(label, cell)
             else:
                 form.addRow(label, edit)
+            self._connect_value_changed(spec.key, edit)
         self._notes = QtWidgets.QPlainTextEdit()
         self._notes.setPlaceholderText("Other comments…")
         self._notes.setMaximumHeight(70)
         form.addRow("Notes:", self._notes)
+
+    def _connect_value_changed(self, key, edit):
+        """Reports a changed choice or checkbox to value_changed_callback.
+
+        Only those two: a line edit fires on every keystroke, and a
+        callback that reacts to a half-typed value would be filling other
+        fields in from something the user has not finished writing.
+        """
+        if isinstance(edit, QtWidgets.QComboBox):
+            edit.currentTextChanged.connect(
+                lambda text, k=key: self._value_changed(k, text))
+        elif isinstance(edit, QtWidgets.QCheckBox):
+            edit.toggled.connect(
+                lambda checked, k=key: self._value_changed(k, checked))
+
+    def _value_changed(self, key, value):
+        if self.value_changed_callback:
+            self.value_changed_callback(key, value)
 
     @staticmethod
     def _widget_for(spec):

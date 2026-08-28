@@ -685,3 +685,61 @@ def test_a_farm_configured_before_remember_existed_is_migrated(gdf: GeoDataFarm,
     fields = jf.get_fields(gdf.db, 'spray')
 
     assert all(f.remember for f in fields)
+
+
+def test_the_time_of_day_is_required_by_the_swedish_template():
+    """Jordbruksverket's form heads each application column with both
+    "Datum:" and "Klockslag:" - the time is a requirement, not a note."""
+    fields = {f.key: f for f in jf.template_fields('se_2026', 'spray')}
+
+    assert fields['spray_time'].required
+
+
+def test_the_swedish_template_records_which_sprayer_was_used():
+    keys = {f.key for f in jf.template_fields('se_2026', 'spray')}
+
+    assert {'equipment', 'nozzle_type'} <= keys
+
+
+# ---------------------------------------------------------------------
+# Buffer zones
+# ---------------------------------------------------------------------
+def test_both_buffer_rows_record_an_object_as_well_as_a_distance():
+    """Jordbruksverket's form asks for "objekt och avstånd" on both rows -
+    a bare distance does not meet the requirement."""
+    fields = {f.key: f for f in jf.template_fields('se_2026', 'spray')}
+
+    for key in ('fixed_buffer_object', 'fixed_buffer_m',
+                'adapted_buffer_object', 'adapted_buffer_m'):
+        assert fields[key].required, key
+
+
+def test_the_fixed_buffer_object_offers_the_objects_the_law_names():
+    fields = {f.key: f for f in jf.template_fields('se_2026', 'spray')}
+
+    choices = fields['fixed_buffer_object'].choices
+    assert set(jf.FIXED_BUFFER_DISTANCES_M) <= set(choices)
+
+
+def test_the_fixed_distance_follows_from_the_object():
+    """NFS 2015:2: ditch 2 m, watercourse 6 m, drinking-water well 12 m."""
+    assert jf.fixed_buffer_distance('Open ditch or drain') == 2
+    assert jf.fixed_buffer_distance('Watercourse or lake') == 6
+    assert jf.fixed_buffer_distance('Drinking water well') == 12
+
+
+def test_no_fixed_distance_is_distinguishable_from_not_asked():
+    assert jf.fixed_buffer_distance('Nothing requiring a fixed distance') is None
+    assert jf.fixed_buffer_distance('') is None
+    # A renamed choice must not silently produce a wrong distance.
+    assert jf.fixed_buffer_distance('Dike') is None
+
+
+def test_the_template_records_every_hjalpredan_input():
+    """The lookup needs these; without them the journal cannot answer it."""
+    keys = {f.key for f in jf.template_fields('se_2026', 'spray')}
+
+    assert {'temperature_c', 'wind_speed', 'boom_height_cm', 'sensitivity',
+            'label_max_dose', 'rate'} <= keys
+    # Either of these answers the drift-reduction column.
+    assert {'spray_quality', 'drift_reduction_percent'} <= keys
