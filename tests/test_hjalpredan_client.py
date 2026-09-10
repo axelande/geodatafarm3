@@ -77,6 +77,64 @@ def test_the_orchard_variant_asks_for_foliage_not_boom_height():
 
 
 # ---------------------------------------------------------------------
+# One drift-reduction field per variant
+# ---------------------------------------------------------------------
+# The two books print different classes - 50/75/90 % for the bomspruta,
+# 0/25/50/75/90/95/99 % for the fläktspruta - so the journal records them
+# in separate fields. Reading the wrong one is silent: the number would
+# still be a valid class, just not the one the operator's equipment is
+# approved at, and the journal would carry a distance nobody could
+# reproduce from the sprayer.
+
+
+def test_the_orchard_variant_reads_its_own_reduction_field():
+    """A 99 % fläktspruta must reach the 99 % column. Sharing the boom
+    field would cap it at 90 % and cost the grower distance their
+    equipment has earned."""
+    row = dict(FULL_ROW, use_type='Fruit growing', foliage='Dense',
+               drift_reduction_orchard_percent='99',
+               drift_reduction_percent='')
+
+    assert hj.from_journal_values(row)['drift_reduction_percent'] == 99.0
+
+
+def test_the_boom_variant_ignores_the_orchard_reduction_field():
+    """And the other way round: 25 % is a fläktspruta column the boom
+    tables do not have, so it must not leak into a boom lookup.
+
+    Read at 50 cm with no spray quality recorded, so the only thing this
+    exercises is which *field* the class comes from. With a taller boom or
+    a spray quality beside it the column resolution steps in, and that is
+    tested on its own further down.
+    """
+    row = dict(FULL_ROW, boom_height_cm='50', spray_quality='',
+               drift_reduction_percent='75',
+               drift_reduction_orchard_percent='25')
+
+    assert hj.from_journal_values(row)['drift_reduction_percent'] == 75.0
+
+
+def test_the_orchard_variant_ignores_the_boom_reduction_field():
+    row = dict(FULL_ROW, use_type='Fruit growing', foliage='Sparse',
+               drift_reduction_percent='90',
+               drift_reduction_orchard_percent='')
+
+    assert hj.from_journal_values(row)['drift_reduction_percent'] is None
+
+
+def test_the_journal_offers_every_class_each_book_prints():
+    """Offline half of the contract: the choices a user can pick have to
+    cover the columns, or a sprayer becomes unrecordable."""
+    fields = {f.key: f for f in jf.template_fields('se_2026', 'spray')}
+
+    boom = [c for c in fields[hj.BOOM_REDUCTION_FIELD].choices if c]
+    orchard = [c for c in fields[hj.ORCHARD_REDUCTION_FIELD].choices if c]
+
+    assert boom == ['50', '75', '90']
+    assert orchard == ['0', '25', '50', '75', '90', '95', '99']
+
+
+# ---------------------------------------------------------------------
 # Naming what is missing
 # ---------------------------------------------------------------------
 def test_a_complete_row_is_missing_nothing():
@@ -104,7 +162,12 @@ def test_the_dose_is_missing_unless_both_halves_are_given():
 
 
 def test_either_spray_quality_or_drift_reduction_will_do():
-    without_quality = dict(FULL_ROW, spray_quality='', drift_reduction_percent='75')
+    """At a boom height the reduction row is printed for. Higher than that
+    the book prints no reduction row and the two stop being alternatives -
+    see test_a_high_boom_with_only_a_reduction_class_is_reported_not_sent.
+    """
+    without_quality = dict(FULL_ROW, boom_height_cm='50', spray_quality='',
+                           drift_reduction_percent='75')
 
     assert hj.missing_inputs(hj.from_journal_values(without_quality), 'boom') == []
 
@@ -253,10 +316,19 @@ def test_the_journals_choices_are_the_ones_the_service_accepts():
     assert set(hj.SENSITIVITIES.values()) <= set(options['sensitivities'])
     assert set(hj.SPRAY_QUALITIES.values()) <= set(options['boom']['spray_qualities'])
     assert set(hj.FOLIAGES.values()) <= set(options['orchard']['foliages'])
-    # The journal's boom-height choices must be steps the tables print.
+    # The journal's numeric choices must be steps the tables print. Each
+    # book has its own drift-reduction classes, and offering one the server
+    # has no column for turns a lookup into a 422 the user cannot act on.
     fields = {f.key: f for f in jf.template_fields('se_2026', 'spray')}
-    offered = {int(c) for c in fields['boom_height_cm'].choices if c}
-    assert offered <= set(options['boom']['boom_heights_cm'])
+
+    def offered(key):
+        return {int(c) for c in fields[key].choices if c}
+
+    assert offered('boom_height_cm') <= set(options['boom']['boom_heights_cm'])
+    assert offered(hj.BOOM_REDUCTION_FIELD) \
+        == set(options['boom']['drift_reduction_percent'])
+    assert offered(hj.ORCHARD_REDUCTION_FIELD) \
+        == set(options['orchard']['drift_reduction_percent'])
 
 
 @pytest.mark.network
@@ -280,3 +352,131 @@ def test_the_governed_by_values_are_the_ones_this_plugin_checks_for():
     assert from_table['governed_by'] == hj.GOVERNED_BY_TABLE
     assert from_floor['governed_by'] == hj.GOVERNED_BY_FIXED
     assert from_floor['distance_m'] == 12
+
+
+# ---------------------------------------------------------------------
+# The bomspruta's two column groups
+# ---------------------------------------------------------------------
+# Every page of that book has a spray-quality group and a drift-reduction
+# group, and a reading comes from exactly one. The journal can hold both
+# facts, so the client has to choose - and choose in a way the tables can
+# actually be read at.
+def test_both_columns_recorded_reads_the_reduction_one_when_the_boom_allows():
+    """Drift reduction is what the equipment was bought for, and at or
+    below the book's reduction row it is readable."""
+    row = dict(FULL_ROW, boom_height_cm='50', spray_quality='Medium',
+               drift_reduction_percent='75')
+
+    prepared = hj.from_journal_values(row)
+
+    assert prepared['drift_reduction_percent'] == 75
+    assert prepared['spray_quality'] is None
+
+
+def test_both_columns_recorded_falls_back_to_spray_quality_on_a_high_boom():
+    """Above the reduction row the book prints nothing, so the
+    spray-quality columns are the only reading."""
+    row = dict(FULL_ROW, boom_height_cm='60', spray_quality='Medium',
+               drift_reduction_percent='75')
+
+    prepared = hj.from_journal_values(row)
+
+    assert prepared['spray_quality'] == 'medium'
+    assert prepared['drift_reduction_percent'] is None
+
+
+def test_a_high_boom_with_only_a_reduction_class_is_reported_not_sent():
+    """It would come back 422. Naming the box to fill in is far more use
+    than relaying the rejection."""
+    row = dict(FULL_ROW, boom_height_cm='60', spray_quality='',
+               drift_reduction_percent='75')
+
+    missing = hj.missing_inputs(hj.from_journal_values(row), 'boom')
+
+    assert any('Spray quality' in item for item in missing)
+    assert any('50 cm or lower' in item for item in missing)
+
+
+def test_a_low_boom_with_only_a_reduction_class_is_fine():
+    row = dict(FULL_ROW, boom_height_cm='40', spray_quality='',
+               drift_reduction_percent='75')
+
+    assert hj.missing_inputs(hj.from_journal_values(row), 'boom') == []
+
+
+def test_only_one_column_group_is_ever_sent():
+    """The lookup rejects a request carrying both, whatever the height."""
+    for height in ('25', '40', '50', '60'):
+        prepared = hj.from_journal_values(dict(
+            FULL_ROW, boom_height_cm=height, spray_quality='Medium',
+            drift_reduction_percent='75'))
+        both = (prepared['spray_quality'] is not None
+                and prepared['drift_reduction_percent'] is not None)
+        assert not both, height
+
+
+@pytest.mark.network
+def test_the_service_accepts_what_the_column_resolution_produces():
+    """The regression this was written for: the journal offers both boxes,
+    the client used to send both, and the lookup answered 422."""
+    client = hj.HjalpredanClient()
+    for height in ('25', '40', '50', '60'):
+        row = dict(FULL_ROW, boom_height_cm=height, spray_quality='Medium',
+                   drift_reduction_percent='75')
+        prepared = hj.from_journal_values(row)
+        assert hj.missing_inputs(prepared, 'boom') == [], height
+        try:
+            reading = client.boom_sprayer(**prepared)
+        except hj.HjalpredanUnavailable as e:
+            pytest.skip(f'Hjälpredan service unreachable: {e}')
+        assert reading['label'], height
+
+
+@pytest.mark.network
+def test_a_reduction_reading_is_taken_at_the_books_own_row():
+    """A 40 cm boom reads the 50 cm row, which is the conservative
+    direction since distance grows with height - and the answer says so
+    rather than quietly restating 40."""
+    client = hj.HjalpredanClient()
+    row = dict(FULL_ROW, boom_height_cm='40', spray_quality='',
+               drift_reduction_percent='75',
+               fixed_buffer_object='Nothing requiring a fixed distance')
+    try:
+        reading = client.boom_sprayer(**hj.from_journal_values(row))
+    except hj.HjalpredanUnavailable as e:
+        pytest.skip(f'Hjälpredan service unreachable: {e}')
+
+    assert reading['requested_inputs']['boom_height_cm'] == 40
+    assert reading['table_inputs']['boom_height_cm'] == \
+        hj.REDUCTION_MAX_BOOM_HEIGHT_CM
+    # The booklet's caveat that the equipment's approval conditions still
+    # govern travels with the reading.
+    assert any('approval conditions' in note for note in reading['notes'])
+
+
+# ---------------------------------------------------------------------
+# Where the Hjälpredan applies
+# ---------------------------------------------------------------------
+# It is Swedish law - Kemikalieinspektionen's tables plus the fixed minimum
+# distances of NFS 2015:2 - and it answers with an edition and a page
+# reference, which reads as authoritative wherever it is shown.
+def test_the_hjalpredan_applies_in_sweden():
+    assert hj.applies_in('SE')
+    assert hj.applies_in('se')
+    assert hj.applies_in(' SE ')
+
+
+def test_the_hjalpredan_does_not_apply_elsewhere():
+    """A confident wrong buffer distance is worse than an empty box: the
+    empty box is visibly the grower's to fill in."""
+    for country in ('DK', 'NO', 'FI', 'DE'):
+        assert not hj.applies_in(country), country
+
+
+def test_an_unset_country_does_not_summon_the_hjalpredan():
+    """Nothing is assumed from silence. A farm that has not said where it
+    is gets no national tool - see journal_fields.farm_country, which
+    infers a country from the ruleset actually in force rather than from
+    the QGIS language."""
+    assert not hj.applies_in('')
+    assert not hj.applies_in(None)

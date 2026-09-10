@@ -82,13 +82,16 @@ from .import_data.handle_raster import ImportRaster
 from .widgets.add_data_form import AddDataForm, FieldSpec
 from .widgets.fertility_index_page import FertilityIndexPage
 from .widgets.journal_fields_dialog import JournalFieldsDialog
+from .widgets.pesticide_search_dialog import PesticideSearchDialog
 from .support_scripts import combo_arrow
 from .support_scripts import hjalpredan_client as hjalpredan
 from .support_scripts import journal_fields as jf
+from .support_scripts import pesticide_client as pesticides
 from .support_scripts.__init__ import isint, TR
 from .support_scripts.notifier import (
     MessageBarNotifier, GeoDataFarmError, set_active_notifier,
     report_info, report_success, report_warning, report_error)
+from .support_scripts.notifier import log as gdf_log
 from .support_scripts.qt_data import _check_state, _item_flag
 from .support_scripts.add_field import AddField
 from .support_scripts.add_layer_to_canvas import AddLayerToCanvas
@@ -546,12 +549,7 @@ class GeoDataFarm:
                 self.add_data_form.journal_settings_callback = self.open_journal_settings
                 self.add_data_form.field_changed_callback = self._autofill_add_data_form
                 self.add_data_form.value_changed_callback = self._journal_value_changed
-                # The one journal number the authority's own form tells you
-                # to look up rather than judge - see
-                # support_scripts/hjalpredan_client.py.
-                self.add_data_form.field_actions = {
-                    'adapted_buffer_m': (self.tr('Hjälpredan…'),
-                                         self.compute_adapted_buffer)}
+            self._set_journal_field_actions()
             self.dock_widget.add_data_form = self.add_data_form
             if self.dock_widget.layoutAddData.count() == 0:
                 self.dock_widget.layoutAddData.addWidget(self.add_data_form)
@@ -695,6 +693,10 @@ class GeoDataFarm:
         dialog = JournalFieldsDialog(
             self.db, operation or 'spray', self.dock_widget)
         dialog.exec()
+        # The dialog is where the farm's country is set, and the country
+        # decides whether the Hjälpredan button belongs on this farm at
+        # all - so the actions are rebuilt before the form is.
+        self._set_journal_field_actions()
 
     def _autofill_add_data_form(self, operation, field_name):
         """Fills in the journal values that follow from the selected field
@@ -716,6 +718,109 @@ class GeoDataFarm:
             return
         for key, value in values.items():
             self.add_data_form.set_value(key, value)
+
+    def _set_journal_field_actions(self):
+        """Puts the Hjälpredan button beside the adapted buffer distance -
+        but only on a farm the Hjälpredan actually governs.
+
+        It is Swedish law, and it answers with an edition and a page
+        reference, which reads as authoritative wherever it is shown. On a
+        farm outside Sweden that authority would be misplaced, and a
+        confident wrong distance in a journal is worse than an empty box:
+        the empty box is visibly the grower's to fill in.
+
+        Re-read on every connection rather than cached, because the farm's
+        country is a setting the user can change (see
+        journal_fields.farm_country) and the button has to follow it.
+        """
+        form = getattr(self, 'add_data_form', None)
+        if form is None:
+            return
+        try:
+            country = jf.farm_country(self.db) if self.db is not None else ''
+        except Exception as e:
+            self._log_exception('Failed to read the farm country', e)
+            country = ''
+        actions = {}
+        if hjalpredan.applies_in(country):
+            actions['adapted_buffer_m'] = (self.tr('Hjälpredan…'),
+                                           self.compute_adapted_buffer)
+        if country and country in self._pesticide_countries():
+            actions['variety'] = (self.tr('Find product…'),
+                                  self.search_pesticide)
+        form.field_actions = actions
+
+    def _pesticide_countries(self):
+        """Which countries the product register has actually been imported
+        for.
+
+        Asked of the server rather than assumed: the API knows how to read
+        a Swedish export long before anyone has uploaded one, and a search
+        button that can only ever return nothing is worse than no button.
+        Read once per connection - the register changes when someone runs
+        an import, not while the plugin is open.
+        """
+        if getattr(self, '_pesticide_countries_cache', None) is None:
+            try:
+                self._pesticide_countries_cache = pesticides.supported_countries(
+                    pesticides.PesticideClient().options())
+            except pesticides.PesticideUnavailable as e:
+                # No button rather than a broken one, and no message: the
+                # user did not ask for anything yet.
+                gdf_log.info(f'Product register unavailable: {e}')
+                self._pesticide_countries_cache = set()
+        return self._pesticide_countries_cache
+
+    def search_pesticide(self):
+        """Opens the product search and fills the product name and its
+        registration number together.
+
+        Both, because they identify the same thing and only one of them is
+        printed in big letters on the can. Filling one and leaving the
+        other to be typed is how a journal ends up with a name that does
+        not match its number.
+        """
+        form = self.add_data_form
+        values = form.values()
+        dialog = PesticideSearchDialog(
+            country=jf.farm_country(self.db),
+            purpose=values.get('purpose') or '',
+            language=self._journal_language(),
+            parent=self.dock_widget)
+        if not dialog.exec() or dialog.selected is None:
+            return
+        product = dialog.selected
+        form.set_value('variety', product.get('name'), only_if_empty=False)
+        form.set_value('reg_number', product.get('registration_number'),
+                       only_if_empty=False)
+        # The purpose only when the register is unambiguous about it and
+        # the form has not already been answered: a product approved for
+        # two purposes says nothing about which one this spraying was for,
+        # and an unasked answer in a journal that has to be defensible is
+        # worse than a blank one. only_if_empty does the second half.
+        form.set_value('purpose', pesticides.sole_purpose(product))
+        report_success(self._product_summary(product))
+
+    @staticmethod
+    def _journal_language():
+        """'sv' where the register offers Swedish, else English. The
+        disclosure text is the authority's own wording and is worth
+        showing in the language it was written in."""
+        locale = QSettings().value('locale/userLocale') or ''
+        return 'sv' if str(locale).startswith('sv') else 'en'
+
+    def _product_summary(self, product):
+        """What was filled in, and whether it may still be sprayed."""
+        parts = [self.tr('{name} ({number})').format(
+            name=product.get('name'), number=product.get('registration_number'))]
+        validity = pesticides.validity(product)
+        if validity:
+            parts.append(self.tr(validity))
+        if not product.get('usable', True):
+            # Worth saying out loud rather than leaving to a grey line in a
+            # dialog that has already closed.
+            parts.append(self.tr('This product may no longer be used.'))
+        return ' - '.join(part for part in parts if part)
 
     def _journal_value_changed(self, key, value):
         """One journal field filling in another.
@@ -785,13 +890,38 @@ class GeoDataFarm:
             obj = reading.get('nearest_object')
             parts.append(self.tr('set by the fixed distance to {}').format(
                 self.tr(hjalpredan.OBJECT_LABELS.get(obj, obj))))
+        else:
+            parts.append(self._column_read(reading))
         if reading.get('measured'):
             parts.append(self.tr('measured {}').format(reading['measured']))
         if reading.get('rounded'):
             parts.append(self.tr('rounded to the tabulated {}').format(
                 ', '.join(reading['rounded'])))
         parts.append(str(reading.get('edition', '')))
+        # The booklet's own caveats - most importantly that a
+        # drift-reduction reading still depends on the equipment's approval
+        # conditions being met - are too long for the message bar but must
+        # not be lost.
+        for note in reading.get('notes', []):
+            gdf_log.info(f'Hjälpredan: {note}')
         return ' - '.join(part for part in parts if part)
+
+    def _column_read(self, reading):
+        """Which of the two column groups the answer came from.
+
+        Worth saying: the journal may hold both a spray quality and a
+        drift-reduction class, only one of them can be read (see
+        hjalpredan_client._resolve_boom_columns), and the two give
+        different distances.
+        """
+        used = reading.get('table_inputs', {})
+        if used.get('drift_reduction_percent') is not None:
+            return self.tr('read from the {}% drift-reduction column at {} cm').format(
+                used['drift_reduction_percent'], used.get('boom_height_cm'))
+        if used.get('spray_quality'):
+            return self.tr('read from the {} spray-quality column').format(
+                used['spray_quality'])
+        return ''
 
     def save_add_data(self):
         """Generic, config-driven manual save for the shared Add-data form.

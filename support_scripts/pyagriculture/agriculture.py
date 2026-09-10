@@ -269,6 +269,24 @@ class PyAgriculture:
                     # Merge all DataFrames for this TSK
                     tsk_dfs = [df.loc[:, ~df.columns.duplicated()].reset_index(drop=True) for df in tsk_dfs]
                     merged_df = pd.concat(tsk_dfs, ignore_index=True)
+                    # pd.concat only keeps .attrs when every input's attrs are
+                    # identical - a TSK backed by more than one TLG/GRD source
+                    # (each with its own unit info) loses it here. Rebuild it
+                    # explicitly from the sources instead of trusting concat.
+                    # GRD sources never carry a 'task_name' (grid.py doesn't set
+                    # one), so only set the key when a real name is found -
+                    # leaving it unset (rather than '') preserves every caller's
+                    # own attrs.get('task_name', <fallback>) default, some of
+                    # which treat '' as a meaningful "nothing selected" value.
+                    merged_task_name = next((df.attrs['task_name'] for df in tsk_dfs
+                                            if df.attrs.get('task_name')), None)
+                    if merged_task_name is not None:
+                        merged_df.attrs['task_name'] = merged_task_name
+                    merged_df.attrs['columns'] = list(merged_df.columns)
+                    merged_unit_map = {}
+                    for df in tsk_dfs:
+                        merged_unit_map.update(self._unit_map(df))
+                    merged_df.attrs['unit_map'] = merged_unit_map
                     self.tasks.append(merged_df)
                 elif 'GRD' not in tsk['child'].keys() and 'TLG' not in tsk['child'].keys():
                     print('Only tasks with TLG or GRD data are supported')
@@ -336,6 +354,28 @@ class PyAgriculture:
                 if 'Name' in tlg_dict['DLV'][key].keys():
                     columns.append(check_text(tlg_dict['DLV'][key]['Name']))
         return columns
+
+    @staticmethod
+    def _unit_map(df: pd.DataFrame) -> dict[str, str]:
+        """
+        Converts one source frame's positional 'unit_row' (aligned by a running
+        count of its own non-geometry columns) into a {column_name: unit} map.
+        A name-keyed map survives pd.concat and column reordering, unlike the
+        positional list, which is what makes it safe to merge the unit info of
+        multiple TLG/GRD sources belonging to the same task.
+        """
+        unit_row = df.attrs.get('unit_row')
+        if not unit_row:
+            return {}
+        pos = -1
+        unit_map = {}
+        for col in df.columns:
+            if col in ('latitude', 'longitude', 'geometry'):
+                continue
+            pos += 1
+            if pos < len(unit_row):
+                unit_map[col] = unit_row[pos]
+        return unit_map
 
     @staticmethod
     def _resolve_dvp(task_data_dict: dict[str, dict[str, dict[str, str]]],

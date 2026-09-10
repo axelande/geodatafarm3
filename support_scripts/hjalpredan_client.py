@@ -56,6 +56,38 @@ FOLIAGES = {'Sparse': 'sparse', 'Dense': 'dense'}
 # Every other use type reads the boom sprayer's.
 ORCHARD_USE_TYPE = 'Fruit growing'
 
+# The Hjälpredan is Swedish law: Kemikalieinspektionen's tables plus the
+# fixed minimum distances of Naturvårdsverket's NFS 2015:2. It answers a
+# question about Swedish fields and nothing else.
+COUNTRY = 'SE'
+
+
+def applies_in(country: str) -> bool:
+    """Whether the Hjälpredan governs a farm in ``country``.
+
+    Guards the button that fills the adapted buffer distance in. Offering
+    it elsewhere would hand a grower a Swedish number complete with
+    edition and page reference - and a confident wrong distance is worse
+    than an empty box, because an empty box is visibly the user's to
+    fill and a filled one is not.
+    """
+    return (country or '').strip().upper() == COUNTRY
+
+# The drift-reduction class is recorded in a different journal field per
+# variant, because the two books print different classes: 50/75/90 % for the
+# bomspruta, 0/25/50/75/90/95/99 % for the fläktspruta. One shared field
+# would either cap a fruit grower at 90 %, or offer an arable user a 25 %
+# the boom tables have no column for.
+BOOM_REDUCTION_FIELD = 'drift_reduction_percent'
+ORCHARD_REDUCTION_FIELD = 'drift_reduction_orchard_percent'
+
+# The bomspruta booklet prints its drift-reduction columns on one boom
+# height only - the height approved equipment is tested at (p. 19). A boom
+# at or below it reads that row, which is the conservative direction since
+# distance grows with height; above it the book gives nothing to read and
+# the lookup refuses, so the spray-quality columns are the only way in.
+REDUCTION_MAX_BOOM_HEIGHT_CM = 50
+
 # What a reading's ``governed_by`` can say. The tables can give a shorter
 # distance than NFS 2015:2 allows next to water, in which case the fixed
 # minimum wins - and which rule produced the number is part of what makes
@@ -244,7 +276,6 @@ def from_journal_values(values) -> dict:
         'sensitivity': _wire(SENSITIVITIES, values.get('sensitivity')),
         'used_dose': _number(values.get('rate')),
         'label_maximum_dose': _number(values.get('label_max_dose')),
-        'drift_reduction_percent': _number(values.get('drift_reduction_percent')),
         'nearest_object': _wire(NEAREST_OBJECTS, values.get('fixed_buffer_object')),
     }
     if variant_for(values) == 'orchard':
@@ -252,11 +283,51 @@ def from_journal_values(values) -> dict:
         # wind speed is the one measured inside the planting - the
         # booklet's own model, not a simplification.
         shared['foliage'] = _wire(FOLIAGES, values.get('foliage'))
+        # Its own field, because the two books print different classes -
+        # see journal_fields._SE_2026_SPRAY. Reading the boom sprayer's
+        # here would cap a fruit grower at 90 % and silently cost them the
+        # 95 % and 99 % columns their equipment may be approved for.
+        shared['drift_reduction_percent'] = _number(
+            values.get(ORCHARD_REDUCTION_FIELD))
         return shared
     shared['temperature_c'] = _number(values.get('temperature_c'))
     shared['boom_height_cm'] = _number(values.get('boom_height_cm'))
     shared['spray_quality'] = _wire(SPRAY_QUALITIES, values.get('spray_quality'))
+    shared['drift_reduction_percent'] = _number(
+        values.get(BOOM_REDUCTION_FIELD))
+    _resolve_boom_columns(shared)
     return shared
+
+
+def _resolve_boom_columns(prepared) -> None:
+    """Picks one of the bomspruta's two column groups, in place.
+
+    Every page of that book has a spray-quality group and a
+    drift-reduction group, and the booklet has the operator read one or
+    the other (steps 6 and 7) - the lookup rejects a request carrying
+    both. A journal legitimately holds both facts, though: a grower knows
+    their nozzle gives medium droplets *and* that their equipment is
+    approved to 75 %, and filling in both boxes is the natural thing to
+    do. So the choice is made here rather than handed to the user as an
+    error.
+
+    Drift reduction wins where the book allows it to be read, because
+    that is what the equipment was bought for and what its approval
+    entitles the operator to. Above :data:`REDUCTION_MAX_BOOM_HEIGHT_CM`
+    the book prints no reduction row at all, so spray quality is the only
+    reading there. Either way the answer's ``table_inputs`` names the
+    column actually read, and its notes carry the booklet's own caveat
+    that the equipment's approval conditions - boom height, nozzle
+    pressure, 8 km/h - still govern.
+    """
+    if prepared.get('spray_quality') is None \
+            or prepared.get('drift_reduction_percent') is None:
+        return
+    height = prepared.get('boom_height_cm')
+    if height is not None and height <= REDUCTION_MAX_BOOM_HEIGHT_CM:
+        prepared['spray_quality'] = None
+    else:
+        prepared['drift_reduction_percent'] = None
 
 
 # The inputs each variant cannot be called without, and the journal field
@@ -273,19 +344,44 @@ REQUIRED_INPUTS = {
 
 
 def missing_inputs(prepared, variant='boom') -> list:
-    """The labels of the Hjälpredan inputs that are still blank.
+    """What the user still has to fill in before the lookup can be called.
+
+    Mostly blank fields, but not only: an entry can be complete and still
+    unreadable, and naming that here is far better than sending a request
+    that comes back 422.
 
     The dose is checked as a pair: the class is a fraction of the label's
     highest dose, so one of the two without the other tells the lookup
-    nothing. Drift reduction is checked as an alternative to spray
-    quality, and only on the boom variant - the orchard tables have a
-    0 % column, so leaving it out there is an answer rather than a gap.
+    nothing. Drift reduction is an alternative to spray quality, and only
+    on the boom variant - the orchard tables have a 0 % column, so
+    leaving it out there is an answer rather than a gap.
     """
     missing = [label for name, label in REQUIRED_INPUTS[variant]
                if prepared.get(name) is None]
     if prepared.get('used_dose') is None or prepared.get('label_maximum_dose') is None:
         missing.append('Dose and label maximum dose')
-    if variant == 'boom' and prepared.get('spray_quality') is None \
-            and prepared.get('drift_reduction_percent') is None:
-        missing.append('Spray quality or drift reduction class')
+    if variant == 'boom':
+        missing.extend(_missing_boom_columns(prepared))
     return missing
+
+
+def _missing_boom_columns(prepared) -> list:
+    """Whether the bomspruta tables can be read at all for this row.
+
+    Two ways they cannot. Neither column group filled in is the ordinary
+    gap. The other is subtler and would otherwise only surface as a 422:
+    a drift-reduction class recorded for a boom running higher than the
+    book's reduction row, where there is nothing to read and the
+    spray-quality columns are the only way to an answer.
+    """
+    quality = prepared.get('spray_quality')
+    reduction = prepared.get('drift_reduction_percent')
+    if quality is None and reduction is None:
+        return ['Spray quality or drift reduction class']
+    height = prepared.get('boom_height_cm')
+    if quality is None and height is not None \
+            and height > REDUCTION_MAX_BOOM_HEIGHT_CM:
+        return ['Spray quality - the drift-reduction columns are only '
+                'printed for booms at {} cm or lower'.format(
+                    REDUCTION_MAX_BOOM_HEIGHT_CM)]
+    return []

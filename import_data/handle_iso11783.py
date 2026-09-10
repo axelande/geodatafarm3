@@ -322,28 +322,27 @@ class Iso11783:
         if self.IXB.TWtoParam.rowCount() == 0:
             self.IXB.PBInsert.setEnabled(False)
 
-    def _collect_task_columns(self: Self) -> "tuple[list[str], dict[str, tuple[int, int]]]":
+    def _collect_task_columns(self: Self) -> "tuple[list[str], dict[str, int]]":
         """Walks every loaded task (not just the first) and returns the union
         of their non-geometry, non-empty columns in first-seen order, plus
-        a {column_name: (task_index, position_in_that_task)} map used to read
-        that column's own stats/unit from the task it actually came from -
-        tasks don't all log the same columns, so no single task can be used
-        as the source for all of them."""
+        a {column_name: task_index} map used to read that column's own
+        stats/unit from the task it actually came from - tasks don't all log
+        the same columns, so no single task can be used as the source for all
+        of them."""
         valid_columns = []
         sources = {}
         for t_idx, task in enumerate(self.tasks):
-            pos = -1
+            unit_map = task.attrs.get('unit_map', {})
             for column in task.columns:
                 if column in ['latitude', 'longitude', 'geometry']:
                     continue
-                pos += 1
                 if column in sources:
                     continue
                 if task[column].isnull().all():
                     continue
-                if len(task.attrs['unit_row']) <= pos:
+                if column not in unit_map:
                     continue
-                sources[column] = (t_idx, pos)
+                sources[column] = t_idx
                 valid_columns.append(column)
         return valid_columns, sources
 
@@ -376,7 +375,7 @@ class Iso11783:
         self.IXB.TWColumnNames.setSelectionBehavior(_enum_select_rows())
 
         for i, row in enumerate(valid_columns):
-            t_idx, pos = sources[row]
+            t_idx = sources[row]
             task = self.tasks[t_idx]
             item1 = QTableWidgetItem(row)
             item1.setFlags(xor(item1.flags(), _item_flag('ItemIsEditable')))
@@ -403,7 +402,7 @@ class Iso11783:
             item4 = QTableWidgetItem(_max)
             self.IXB.TWColumnNames.setItem(i, 3, item4)
 
-            unit = task.attrs['unit_row'][pos]
+            unit = task.attrs.get('unit_map', {}).get(row, '')
             unit_col = self.get_units_option(unit)
             self.unit_boxes[len(self.unit_boxes)] = {'box': unit_col, 'org_item': unit}
             unit_col.__setattr__('index', i)

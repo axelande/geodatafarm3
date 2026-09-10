@@ -89,8 +89,6 @@ class JournalFieldsDialog(QDialog):
         top.addSpacing(20)
         top.addWidget(QLabel(self.tr_('Template:')))
         self.cbTemplate = QComboBox()
-        for key, label in jf.TEMPLATE_LABELS:
-            self.cbTemplate.addItem(self.tr_(label), key)
         top.addWidget(self.cbTemplate, 1)
         self.PBApplyTemplate = QPushButton(self.tr_('Reset to template'))
         top.addWidget(self.PBApplyTemplate)
@@ -135,20 +133,31 @@ class JournalFieldsDialog(QDialog):
         row_btns.addStretch(1)
         layout.addLayout(row_btns)
 
-        operator_row = QHBoxLayout()
-        operator_row.addWidget(QLabel(self.tr_('Default operator:')))
+        farm_row = QHBoxLayout()
+        farm_row.addWidget(QLabel(self.tr_('Country:')))
+        self.cbCountry = QComboBox()
+        for code, label in jf.COUNTRIES:
+            self.cbCountry.addItem(self.tr_(label), code)
+        farm_row.addWidget(self.cbCountry)
+        farm_row.addSpacing(20)
+        farm_row.addWidget(QLabel(self.tr_('Default operator:')))
         self.LEOperator = QLineEdit()
         self.LEOperator.setPlaceholderText(self.tr_('Name of whoever usually sprays'))
-        operator_row.addWidget(self.LEOperator, 1)
-        layout.addLayout(operator_row)
+        farm_row.addWidget(self.LEOperator, 1)
+        layout.addLayout(farm_row)
 
-        operator_note = QLabel(self.tr_(
-            'Filled in automatically on new entries, together with the place '
-            'of application and the treated area, which are both read from '
-            'the selected field. You can always type over them.'))
-        operator_note.setWordWrap(True)
-        operator_note.setStyleSheet(_CAPTION_STYLE)
-        layout.addWidget(operator_note)
+        farm_note = QLabel(self.tr_(
+            'The country decides which national rulesets are offered above, '
+            'and whether tools that are one country\'s law - the Swedish '
+            'Hjälpredan, for one - are offered at all. It is not taken from '
+            'the QGIS language: plenty of farms run QGIS in English, and a '
+            'language is not a jurisdiction.\n'
+            'The operator is filled in automatically on new entries, together '
+            'with the place of application and the treated area, which are '
+            'both read from the selected field. You can always type over them.'))
+        farm_note.setWordWrap(True)
+        farm_note.setStyleSheet(_CAPTION_STYLE)
+        layout.addWidget(farm_note)
 
         buttons = QHBoxLayout()
         buttons.addStretch(1)
@@ -160,6 +169,7 @@ class JournalFieldsDialog(QDialog):
         layout.addLayout(buttons)
 
         self.cbOperation.currentIndexChanged.connect(self._operation_changed)
+        self.cbCountry.currentIndexChanged.connect(self._country_changed)
         self.PBApplyTemplate.clicked.connect(self._apply_template)
         self.PBUp.clicked.connect(lambda: self._move(-1))
         self.PBDown.clicked.connect(lambda: self._move(1))
@@ -168,17 +178,60 @@ class JournalFieldsDialog(QDialog):
         self.PBCancel.clicked.connect(self.reject)
         self.PBSave.clicked.connect(self._save)
 
-        idx = self.cbOperation.findData(operation)
-        if idx != -1:
-            self.cbOperation.setCurrentIndex(idx)
-        self.LEOperator.setText(
-            jf.get_setting(self.db, jf.DEFAULT_OPERATOR_KEY, '') or '')
+        self._loading = True
+        try:
+            idx = self.cbOperation.findData(operation)
+            if idx != -1:
+                self.cbOperation.setCurrentIndex(idx)
+            country = jf.farm_country(self.db)
+            idx = self.cbCountry.findData(country)
+            self.cbCountry.setCurrentIndex(idx if idx != -1 else 0)
+            self.LEOperator.setText(
+                jf.get_setting(self.db, jf.DEFAULT_OPERATOR_KEY, '') or '')
+        finally:
+            self._loading = False
         self._load()
 
     # ---- state -----------------------------------------------------------
     @property
     def operation(self):
         return self.cbOperation.currentData()
+
+    @property
+    def country(self):
+        return self.cbCountry.currentData() or ''
+
+    def _country_changed(self):
+        """The country decides which templates are worth offering, so the
+        picker is rebuilt whenever it changes."""
+        if self._loading:
+            return
+        self._populate_templates()
+
+    def _populate_templates(self):
+        """Fills the template picker for the current country.
+
+        The operation's *active* template is always included even when the
+        country would filter it out. A farm that has Jordbruksverket's
+        requirements applied and then sets its country to somewhere else
+        has a contradiction to resolve, and a picker that quietly showed a
+        different template than the one in force would hide it.
+        """
+        active = jf.active_template(self.db, self.operation) if self.operation else None
+        entries = list(jf.templates_for(self.country))
+        if active and active not in [key for key, _label, _c in entries]:
+            entries += [e for e in jf.TEMPLATE_LABELS if e[0] == active]
+        was_loading, self._loading = self._loading, True
+        try:
+            self.cbTemplate.clear()
+            for key, label, _country in entries:
+                self.cbTemplate.addItem(self.tr_(label), key)
+            if active:
+                idx = self.cbTemplate.findData(active)
+                if idx != -1:
+                    self.cbTemplate.setCurrentIndex(idx)
+        finally:
+            self._loading = was_loading
 
     def _operation_changed(self):
         """Switching operation parks the current table in :attr:`_pending`
@@ -201,10 +254,10 @@ class JournalFieldsDialog(QDialog):
             self._fields = self._pending.get(operation)
             if self._fields is None:
                 self._fields = jf.get_fields(self.db, operation, enabled_only=False)
-            idx = self.cbTemplate.findData(jf.active_template(self.db, operation))
-            if idx != -1:
-                self.cbTemplate.setCurrentIndex(idx)
             self._current_op = operation
+            # After _current_op, since the picker's contents depend on which
+            # template this operation currently has applied.
+            self._populate_templates()
             self._render()
         finally:
             self._loading = False
@@ -366,6 +419,7 @@ class JournalFieldsDialog(QDialog):
                 return
         for operation, fields in self._pending.items():
             jf.save_fields(self.db, operation, fields)
+        jf.set_farm_country(self.db, self.country)
         jf.set_setting(self.db, jf.DEFAULT_OPERATOR_KEY,
                        self.LEOperator.text().strip() or None)
         self._fields = self._pending.get(self.operation, self._fields)

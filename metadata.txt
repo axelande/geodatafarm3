@@ -11,7 +11,7 @@ name=GeoDataFarm
 qgisMinimumVersion=2.99
 qgisMaximumVersion=4.99
 description=For farmers, tracking efforts on the field, planing for next season etc.
-version=3.4.0
+version=3.5.0
 author=Axel Horteborn
 email=geodatafarm@gmail.com
 
@@ -25,6 +25,10 @@ repository=https://github.com/axelande/geodatafarm3
 
 # Uncomment the fol/lowing line and add your changelog:
 changelog=
+  (Version 3.5.0 (2026-09-10))
+  - [feature] Plant-protection product search: a "Find product" button beside the spraying journal's product field looks the product up in the national register (via api.geodatafarm.com) and fills in name and registration number together. Shown only for countries the register has been imported for.
+  - [feature] Hjälpredan: only offered on Swedish farms, the orchard sprayer gets its own drift-reduction field, and an entry with both spray quality and drift reduction is resolved automatically instead of rejected.
+  - [bug] ISOXML import: units are now matched by column name rather than position.
   Version 3.4.0 (2026-08-27)
   - [feature] Journal fields and spraying journal: the field list per operation is now configurable per farm, with a template for Jordbruksverket's 2026 requirements. Comes with its own spraying journal PDF, transposed like their form. Free-text fields suggest previous entries.
   - [feature] Fertility index: a new page combining harvest and soil sources into a 0-100 index with adjustable classes.

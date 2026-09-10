@@ -299,12 +299,25 @@ _SE_2026_SPRAY = [
        ('', '50', '75', '90')),
     _f('boom_height_cm', 'Boom height', 'cm', CHOICE,
        ('', '25', '40', '50', '60')),
-    # Only the orchard variant of the Hjälpredan asks for this; an arable
-    # farm switches it off in the journal settings. It is here because
-    # without it the fläktspruta lookup cannot be called at all, and
-    # 'Fruit growing' is one of the use types this template offers.
+    # The next two are asked only by the orchard variant of the Hjälpredan;
+    # an arable farm switches them off in the journal settings. They are
+    # here because without them the fläktspruta lookup cannot be called at
+    # all, and 'Fruit growing' is one of the use types this template offers.
     _f('foliage', 'Foliage (orchard)', None, CHOICE,
        ('', 'Sparse', 'Dense')),
+    # A separate field from the boom sprayer's because the two books print
+    # different classes: the bomspruta tables have columns for 50/75/90 %,
+    # the fläktspruta tables for 0/25/50/75/90/95/99 %. Sharing one field
+    # would mean a fruit grower with a 99 % sprayer had to record 90 % and
+    # keep a longer distance than their equipment earns them, and an arable
+    # user could pick a 25 % the boom tables have no column for.
+    #
+    # 0 % is offered rather than left implicit: it is the fläktspruta
+    # booklet's own instruction when the sprayer's drift properties are not
+    # known for another class (p. 11), and recording that positively is a
+    # different answer from having left the box empty.
+    _f('drift_reduction_orchard_percent', 'Drift reduction class (orchard)',
+       '%', CHOICE, ('', '0', '25', '50', '75', '90', '95', '99')),
     # The dose column is a fraction of the label's *highest* dose, not of
     # the dose that was planned - so the label maximum has to be recorded
     # beside the dose actually used before the class can be worked out.
@@ -348,13 +361,91 @@ def fixed_buffer_distance(choice) -> "int | None":
     return FIXED_BUFFER_DISTANCES_M.get((choice or '').strip())
 
 
-# Shown in the settings dialog's template picker. Kept separate from
-# TEMPLATES so the ordering is stable and the description is
-# translatable at the call site.
+# Shown in the settings dialog's template picker: (key, label, country).
+# Kept separate from TEMPLATES so the ordering is stable and the
+# description is translatable at the call site.
+#
+# The country is what stops a national ruleset being offered, or applied,
+# where it does not hold. ``None`` means the template makes no national
+# claim and suits any farm.
 TEMPLATE_LABELS = (
-    ('generic', 'Generic (no national requirements)'),
-    ('se_2026', 'Sweden - Jordbruksverket 2026'),
+    ('generic', 'Generic (no national requirements)', None),
+    ('se_2026', 'Sweden - Jordbruksverket 2026', 'SE'),
 )
+
+# The countries a farm can be set to. Deliberately only those this plugin
+# has something country-specific for, plus "not set" - a list of every
+# country would imply support that isn't there.
+COUNTRIES = (
+    ('', 'Not set'),
+    ('SE', 'Sweden'),
+)
+
+# Where the farm's country is kept. Chosen once, in the journal-field
+# settings dialog.
+#
+# NOT derived from the QGIS locale. Plenty of growers run QGIS in English
+# from a Swedish farm, and a language is not a jurisdiction - guessing
+# would put one country's rules on another country's farm, silently, which
+# is the exact failure this setting exists to prevent.
+COUNTRY_KEY = 'country'
+
+
+def template_country(template: str) -> "str | None":
+    """Which country's rules a template encodes, or None for a template
+    that makes no national claim."""
+    for key, _label, country in TEMPLATE_LABELS:
+        if key == template:
+            return country
+    return None
+
+
+def farm_country(db) -> str:
+    """The farm's country, or '' when it has not been chosen.
+
+    Falls back to inferring it from the templates already in use: a farm
+    whose spraying journal is on ``se_2026`` has adopted Jordbruksverket's
+    requirements, which is a statement about where it is. That inference
+    is evidence, not a guess, and it only fills in for farms configured
+    before this setting existed - once chosen, the setting wins.
+    """
+    ensure_tables(db)
+    # One query for the country and every operation's template, rather
+    # than a get_setting call each: this runs at startup, the database is
+    # remote, and eight round trips for what is one row of interest is
+    # eight chances for a slow link to matter.
+    rows = db_rows(db.execute_and_return(pgsql.SQL(
+        "SELECT setting_key, setting_value FROM public.{tbl}"
+        " WHERE setting_key = %s OR setting_key LIKE 'template:%%'"
+    ).format(tbl=pgsql.Identifier(_SETTINGS_TABLE)), params=(COUNTRY_KEY,)))
+    settings = {key: value for key, value in rows}
+    chosen = settings.get(COUNTRY_KEY)
+    if chosen:
+        return chosen
+    for operation in MANUAL_TABLES:
+        country = template_country(
+            settings.get(_template_key(operation)) or DEFAULT_TEMPLATE)
+        if country:
+            return country
+    return ''
+
+
+def set_farm_country(db, country: str) -> None:
+    """Records the farm's country. Empty string clears it."""
+    set_setting(db, COUNTRY_KEY, (country or '').strip() or None)
+
+
+def templates_for(country: str) -> tuple:
+    """The templates worth offering a farm in ``country``.
+
+    Everything when the country is unset - a farm that has not said where
+    it is should still be able to find its own ruleset - and otherwise
+    the country-neutral ones plus that country's own. A Danish farm has
+    no business being offered Jordbruksverket's requirements as though
+    they applied.
+    """
+    return tuple(entry for entry in TEMPLATE_LABELS
+                 if not country or entry[2] in (None, country))
 
 
 # Column names every manual row already uses for something else (see

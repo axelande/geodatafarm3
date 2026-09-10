@@ -743,3 +743,62 @@ def test_the_template_records_every_hjalpredan_input():
             'label_max_dose', 'rate'} <= keys
     # Either of these answers the drift-reduction column.
     assert {'spray_quality', 'drift_reduction_percent'} <= keys
+
+
+# ---------------------------------------------------------------------
+# The farm's country
+# ---------------------------------------------------------------------
+def test_templates_declare_which_country_they_encode():
+    assert jf.template_country('se_2026') == 'SE'
+    # A template that makes no national claim suits any farm.
+    assert jf.template_country('generic') is None
+    assert jf.template_country('no_such_template') is None
+
+
+def test_a_farm_with_no_country_is_offered_every_template():
+    """It should still be able to find its own ruleset."""
+    keys = [key for key, _label, _c in jf.templates_for('')]
+
+    assert 'generic' in keys and 'se_2026' in keys
+
+
+def test_a_country_hides_another_countrys_ruleset():
+    keys = [key for key, _label, _c in jf.templates_for('DK')]
+
+    assert keys == ['generic']
+    assert 'se_2026' in [k for k, _l, _c in jf.templates_for('SE')]
+
+
+def test_the_country_round_trips(gdf: GeoDataFarm, spray_default):
+    jf.set_farm_country(gdf.db, 'SE')
+    assert jf.farm_country(gdf.db) == 'SE'
+
+    jf.set_farm_country(gdf.db, '')
+    assert jf.get_setting(gdf.db, jf.COUNTRY_KEY) is None
+
+
+def test_an_unset_country_is_inferred_from_the_template_in_force(
+        gdf: GeoDataFarm, spray_default):
+    """A farm that adopted Jordbruksverket's requirements before this
+    setting existed has already said where it is. That is evidence, not a
+    guess - unlike the QGIS language, which says nothing about
+    jurisdiction."""
+    jf.set_farm_country(gdf.db, '')
+    jf.apply_template(gdf.db, 'spray', 'se_2026')
+
+    assert jf.farm_country(gdf.db) == 'SE'
+
+
+def test_an_explicit_country_beats_the_inference(gdf: GeoDataFarm, spray_default):
+    jf.apply_template(gdf.db, 'spray', 'se_2026')
+    jf.set_farm_country(gdf.db, 'DK')
+
+    assert jf.farm_country(gdf.db) == 'DK'
+
+    jf.set_farm_country(gdf.db, '')
+
+
+def test_a_generic_farm_infers_no_country(gdf: GeoDataFarm, spray_default):
+    jf.set_farm_country(gdf.db, '')
+
+    assert jf.farm_country(gdf.db) == ''
