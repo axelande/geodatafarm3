@@ -2581,6 +2581,13 @@ If you are missing a report / something in a report please send a e-mail to geod
                  <property name="toolTip">
                   <string>One column per application with every configured journal field, laid out like the authority's own form. Configure the fields with the gear button on the Add data page.</string>
                  </property>
+                </widget></item><item><widget class="QLabel" name="journalOrderLbl"><property name="text"><string>Organise by:</string></property></widget></item><item><widget class="QComboBox" name="CBSprayJournalOrder">
+                 <property name="toolTip">
+                  <string>Date lists every application in order. Field and Crop give each field or crop its own heading and tables, using the year chosen above.</string>
+                 </property>
+                 <item><property name="text"><string>Date</string></property></item>
+                 <item><property name="text"><string>Field</string></property></item>
+                 <item><property name="text"><string>Crop</string></property></item>
                 </widget></item><item><spacer name="journalBtnSp"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
           <item><spacer name="repEndSp"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
          </layout>

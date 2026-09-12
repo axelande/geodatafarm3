@@ -19,6 +19,7 @@ from ..database_scripts.db import ensure_ferti_nutrient_column
 width, height = A4
 styles = getSampleStyleSheet()
 styleH = styles['Heading1']
+styleH2 = styles['Heading2']
 styleN = styles['Normal']
 
 
@@ -158,19 +159,28 @@ class RapportGen:
             report_warning(self.tr('A directory to save the report must be selected.'))
             return
         year = None if self.dw.RBAllYear.isChecked() else self.dw.DEReportYear.text()
+        group_by = self.spray_journal_group_by()
         fields = jf.get_fields(self.db, 'spray')
         if not fields:
             report_warning(self.tr('No journal fields are configured for spraying.'))
             return
-        applications = self.collect_spray_journal(self.db, fields, year)
+        applications = self.collect_spray_journal(self.db, fields, year, group_by)
         if not applications:
             report_warning(self.tr('No data where found for that year'))
             return
         name = self.tr('GeoDataFarm_spraying_journal')
+        if group_by is not None:
+            name += '_' + self.tr('per_{}').format(group_by)
         report_name = '{p}\\{t}.pdf'.format(p=self.path, t=name) if year is None \
             else '{p}\\{t}_{y}.pdf'.format(p=self.path, t=name, y=year)
         story = [Paragraph(self.tr('Spraying journal'), styleH)]
-        story.extend(self.spray_journal_tables(fields, applications))
+        for title, group in self.group_applications(applications, group_by):
+            if title is not None:
+                story.append(Paragraph(self._section_title(group_by, title), styleH2))
+            story.extend(self.spray_journal_tables(fields, group))
+        story.append(Paragraph(self.tr(
+            '* Required by the journal configuration - an empty cell is a gap '
+            'in the documentation.'), styleN))
         try:
             MyDocTemplate(report_name, self.plugin_dir, year,
                           date.today().isoformat()).multiBuild(story)
@@ -179,8 +189,61 @@ class RapportGen:
             return
         report_success(self.tr('The spraying journal was written to {}').format(report_name))
 
+    # The combo box on the report tab, in item order. None is the plain
+    # chronological journal; the other two name a header key that the
+    # applications are grouped and ordered by.
+    SPRAY_JOURNAL_ORDERS = (None, 'field', 'crop')
+
+    def spray_journal_group_by(self):
+        """What the user chose to organise the journal by, or None for a
+        single chronological list.
+
+        Why both field and crop are offered: an inspection asks about a
+        field, while a grower planning next season's rotation thinks in
+        crops - and the journal is only useful to read if it is sorted the
+        way the reader is asking.
+        """
+        combo = getattr(self.dw, 'CBSprayJournalOrder', None)
+        index = combo.currentIndex() if combo is not None else 0
+        if 0 <= index < len(self.SPRAY_JOURNAL_ORDERS):
+            return self.SPRAY_JOURNAL_ORDERS[index]
+        return None
+
+    def _section_title(self, group_by, value):
+        """The heading over one field's or crop's tables. A blank value is
+        said out loud - a heading that is simply empty looks like a layout
+        error rather than what it is, a spraying recorded without a field."""
+        if value:
+            return value
+        return self.tr('(no field recorded)') if group_by == 'field' \
+            else self.tr('(no crop recorded)')
+
     @staticmethod
-    def collect_spray_journal(db, fields, year=None) -> list:
+    def group_applications(applications, group_by=None) -> list:
+        """Splits the journal into ``(title, applications)`` sections.
+
+        One section titled None when ``group_by`` is None. Otherwise one
+        section per distinct value of that header key, in first-seen order
+        - which is the order the query already sorted by. Grouping is done
+        here rather than by starting a new table whenever the value
+        changes, because the sections are what get headings and the tables
+        must not straddle two of them: a table holding the last spraying
+        of one field and the first of the next reads like the same field.
+
+        An application with no field or crop recorded is grouped under an
+        empty title rather than dropped: the journal shows what was
+        recorded, and a spraying nobody assigned to a field is still a
+        spraying.
+        """
+        if group_by is None:
+            return [(None, list(applications))]
+        sections = {}
+        for header, values in applications:
+            sections.setdefault(header.get(group_by) or '', []).append((header, values))
+        return list(sections.items())
+
+    @staticmethod
+    def collect_spray_journal(db, fields, year=None, group_by=None) -> list:
         """Every spraying, newest last, as ``(header, values)`` pairs.
 
         Parameters
@@ -190,6 +253,10 @@ class RapportGen:
             The configured spraying journal fields, in journal order.
         year: str or None
             Growing year to limit to, or None for everything.
+        group_by: str or None
+            'field' or 'crop' to order by that first, then by date, so that
+            :meth:`group_applications` finds each group contiguous. None
+            orders by date alone.
 
         Returns
         -------
@@ -214,7 +281,11 @@ class RapportGen:
             sql = sql + pgsql.SQL(
                 " WHERE extract(year FROM date_) = %s OR date_text LIKE %s")
             params = (year, f'%{year}%')
-        sql = sql + pgsql.SQL(" ORDER BY date_, field")
+        if group_by in ('field', 'crop'):
+            sql = sql + pgsql.SQL(" ORDER BY {}, date_, field").format(
+                pgsql.Identifier(group_by))
+        else:
+            sql = sql + pgsql.SQL(" ORDER BY date_, field")
         applications = []
         for row in db_rows(db.execute_and_return(sql, params=params)):
             date_, field, crop, extra = row[0], row[1], row[2], jf.extra_of(row[3])
@@ -230,7 +301,9 @@ class RapportGen:
     APPLICATIONS_PER_TABLE = 3
 
     def spray_journal_tables(self, fields, applications) -> list:
-        """The transposed journal tables - see :meth:`spray_journal`."""
+        """The transposed journal tables for one section - see
+        :meth:`spray_journal`. The required-marker footnote is the
+        caller's, so it prints once however many sections there are."""
         label_width, value_width = 150, 100
         rows_meta = [(self.tr('Date'), 'date'), (self.tr('Field'), 'field'),
                      (self.tr('Crop'), 'crop')]
@@ -263,9 +336,6 @@ class RapportGen:
                 ('RIGHTPADDING', (0, 0), (-1, -1), 4)]))
             story.append(table)
             story.append(Spacer(1, 12))
-        story.append(Paragraph(self.tr(
-            '* Required by the journal configuration - an empty cell is a gap '
-            'in the documentation.'), styleN))
         return story
 
     def report_per_field(self):

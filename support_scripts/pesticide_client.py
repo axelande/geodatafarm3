@@ -23,6 +23,7 @@ typeable, and a journal entry must never be blocked by a server being
 unreachable.
 """
 from typing import Self
+from urllib.parse import quote
 
 import requests
 
@@ -33,6 +34,10 @@ __author__ = 'Axel Horteborn'
 BASE_URL = 'https://api.geodatafarm.com/api/pesticide-register'
 # Short, because a person is waiting on a search box.
 TIMEOUT_S = 15
+# Shorter still for the conditions check, which runs when Save is pressed:
+# a slow server must not turn saving a journal entry into a wait, and the
+# check is help, not a gate - see GeoDataFarm._warn_about_conditions.
+CHECK_TIMEOUT_S = 5
 
 # How many hits to ask for. The register holds ~600 usable products for
 # Sweden and the purpose filter roughly halves that, so this is generous
@@ -109,6 +114,48 @@ class PesticideClient:
         if status:
             params['status'] = status
         return self._get('/products', params)
+
+    def conditions(self: Self, registration_number: str) -> dict:
+        """The conditions of use behind one registration's decision.
+
+        One row per approved use - crop, equipment, BBCH window,
+        treatments per year, days to harvest, maximum dose - read out of
+        Kemikalieinspektionen's "Villkor för användning" attachment by the
+        API (``geodatafarm_mobile/api``, module ``pesticide_conditions``).
+        The register export the search runs on carries none of this.
+
+        ``available`` false in the answer means no decision has been
+        fetched for that registration; it is not an error and the product
+        is still perfectly pickable.
+        """
+        return self._get(
+            f'/products/{quote(str(registration_number).strip())}/conditions',
+            {})
+
+    def check(self: Self, registration_number: str, rate=None, bbch=None) -> dict:
+        """What a journal entry says that no approved use of this product
+        allows.
+
+        The rule lives on the server, not here, so that this plugin and
+        the phone app cannot disagree about a compliance statement - the
+        same reason the Hjälpredan is served rather than copied. It warns
+        only when the entry is outside *every* approved use; which row
+        applies depends on the crop, and the API deliberately does not
+        guess that. The answer's ``messages`` are ready sentences per
+        language - see :func:`warning_lines`.
+
+        ``rate`` and ``bbch`` are the journal's own strings, as typed.
+        Only what was entered is sent; a dimension left blank is simply not
+        checked.
+        """
+        params = {}
+        if rate not in (None, ''):
+            params['rate'] = str(rate)
+        if bbch not in (None, ''):
+            params['bbch'] = str(bbch)
+        return self._get(
+            f'/products/{quote(str(registration_number).strip())}/conditions/check',
+            params)
 
     def _get(self: Self, path: str, params: dict) -> dict:
         try:
@@ -273,3 +320,74 @@ def validity(product) -> str:
     if product.get('withdrawn_on'):
         return f"withdrawn {product['withdrawn_on']}"
     return ''
+
+
+# ---------------------------------------------------------------------
+# Conditions of use, for the search dialog and the save-time check
+# ---------------------------------------------------------------------
+# One decision row -> the (label, value) pairs the dialog shows. Labels are
+# English literals like details()' and are translated by the dialog; values
+# are the decision's own Swedish text and are shown as printed. A blank cell
+# is left out rather than shown as a dash: an empty karens column means the
+# decision sets no karens, not that it sets one of nought days.
+_USE_ROWS = (
+    ('Purpose', 'purpose'),
+    ('Equipment', 'equipment'),
+    ('Growth stage', 'stage'),
+    ('Max treatments', 'max_treatments'),
+    ('Days between treatments', 'min_days_between'),
+    ('Days to harvest', 'min_days_to_harvest'),
+    ('Other conditions', 'other'),
+)
+
+
+def conditions_rows(payload, language='en') -> list:
+    """The approved uses and further conditions as ``(label, value)`` pairs,
+    to follow :func:`details` in the dialog's panel.
+
+    Empty when nothing is on file, so a product without a fetched decision
+    shows exactly what it showed before. The decision's own provenance line
+    and the link to the PDF come last, because they are the whole basis on
+    which the rows above can be trusted and must not be dropped on the way
+    to the screen.
+    """
+    if not payload or not payload.get('available'):
+        return []
+    uses = payload.get('uses') or []
+    rows = []
+    for index, use in enumerate(uses, 1):
+        where = ' / '.join(part for part in (use.get('crop'), use.get('where')) if part)
+        rows.append((f'Approved use {index} of {len(uses)}',
+                     where or '(no crop stated)'))
+        for label, key in _USE_ROWS:
+            if use.get(key):
+                rows.append((label, use[key]))
+        dose = ' / '.join(part for part in (
+            use.get('max_dose_product'), use.get('max_dose_substance')) if part)
+        if dose:
+            rows.append(('Max dose', dose))
+    for extra in payload.get('extra_conditions') or []:
+        text = ' — '.join(part for part in (
+            extra.get('condition'), extra.get('note')) if part)
+        if text:
+            rows.append((extra.get('category') or 'Further condition', text))
+    disclosure = (payload.get('disclosure') or {})
+    words = disclosure.get(language) or disclosure.get('en') or {}
+    if words.get('source'):
+        rows.append(('Decision', words['source']))
+    if words.get('note'):
+        rows.append(('Note', words['note']))
+    url = (payload.get('document') or {}).get('url')
+    if url:
+        rows.append(('Decision attachment', url))
+    return rows
+
+
+def warning_lines(payload, language='en') -> list:
+    """The check's warnings as sentences in ``language``, English if the
+    server has no sentence in that language. Empty for no warnings - and
+    for a product with nothing on file, which is the ordinary case."""
+    if not payload:
+        return []
+    messages = payload.get('messages') or {}
+    return list(messages.get(language) or messages.get('en') or [])

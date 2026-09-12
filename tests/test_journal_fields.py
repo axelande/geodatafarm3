@@ -414,6 +414,68 @@ def test_the_spray_journal_collects_column_and_json_fields_together(gdf: GeoData
     _cleanup_rows(gdf)
 
 
+def test_the_spray_journal_groups_by_field_or_crop_and_keeps_the_unassigned():
+    from ..support_scripts.generate_reports import RapportGen
+
+    def app(field, crop, date):
+        return ({'date': date, 'field': field, 'crop': crop}, {})
+
+    applications = [app('North', 'Potato', '2026-05-01'),
+                    app('North', 'Potato', '2026-06-01'),
+                    app('South', 'Wheat', '2026-05-02'),
+                    app('', 'Wheat', '2026-05-03')]
+
+    # No grouping: one untitled section holding everything, in order.
+    assert RapportGen.group_applications(applications) == [(None, applications)]
+
+    by_field = RapportGen.group_applications(applications, 'field')
+    assert [title for title, _ in by_field] == ['North', 'South', '']
+    assert len(by_field[0][1]) == 2
+    # A spraying without a field is still in the journal, under its own
+    # (blank) heading rather than silently dropped.
+    assert by_field[2][1] == [applications[3]]
+
+    by_crop = RapportGen.group_applications(applications, 'crop')
+    assert [title for title, _ in by_crop] == ['Potato', 'Wheat']
+    assert len(by_crop[1][1]) == 2
+
+
+def test_the_spray_journal_orders_by_the_grouping_column_first(gdf: GeoDataFarm,
+                                                                spray_default):
+    from ..support_scripts.generate_reports import RapportGen
+
+    jf.apply_template(gdf.db, 'spray', 'se_2026')
+    _cleanup_rows(gdf)
+    fields = jf.get_fields(gdf.db, 'spray')
+    other = _FIELD + '_b'
+    for field, crop, day in ((other, 'pytest_wheat', '01'),
+                             (_FIELD, 'pytest_crop', '02'),
+                             (other, 'pytest_wheat', '03')):
+        gdf.db.execute_sql(
+            "INSERT INTO spray.manual (field, crop, date_, date_text, table_)"
+            " VALUES (%s, %s, %s, %s, 'None')",
+            params=(field, crop, f'2026-05-{day}', f'2026-05-{day}'))
+    try:
+        ours = {_FIELD, other}
+
+        by_date = [h for h, _ in RapportGen.collect_spray_journal(
+            gdf.db, fields, year='2026') if h['field'] in ours]
+        assert [h['date'] for h in by_date] == ['2026-05-01', '2026-05-02', '2026-05-03']
+
+        by_field = [h for h, _ in RapportGen.collect_spray_journal(
+            gdf.db, fields, year='2026', group_by='field') if h['field'] in ours]
+        assert [h['field'] for h in by_field] == [_FIELD, other, other]
+        # Within a field the journal stays chronological.
+        assert [h['date'] for h in by_field[1:]] == ['2026-05-01', '2026-05-03']
+
+        by_crop = [h for h, _ in RapportGen.collect_spray_journal(
+            gdf.db, fields, year='2026', group_by='crop') if h['field'] in ours]
+        assert [h['crop'] for h in by_crop] == ['pytest_crop', 'pytest_wheat', 'pytest_wheat']
+    finally:
+        gdf.db.execute_sql("DELETE FROM spray.manual WHERE field = %s", params=(other,))
+        _cleanup_rows(gdf)
+
+
 # ---------------------------------------------------------------------
 # The settings dialog
 # ---------------------------------------------------------------------

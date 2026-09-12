@@ -750,6 +750,39 @@ class GeoDataFarm:
                                   self.search_pesticide)
         form.field_actions = actions
 
+    def _warn_about_conditions(self, values):
+        """Says so when a spraying being saved is outside every approved use
+        of its product - and saves it anyway.
+
+        The comparison is the API's (``pesticide_conditions.check_entry``),
+        called here rather than copied, so this plugin and the phone app
+        give an inspector the same answer. It warns only when the dose or
+        the growth stage is outside *every* approved use the decision
+        lists; which row applies depends on the crop, and neither side
+        guesses that. The message quotes both the entry and the maximum,
+        because the journal's dose column carries no unit and the operator
+        has to be able to see which of the two numbers is in the unit they
+        meant.
+
+        Never blocks. A journal records what was actually sprayed, and
+        neither a weekly register export nor a PDF is a good enough reason
+        to stop somebody recording it. Silent on a server that cannot be
+        reached: the entry the user is saving is not the thing that went
+        wrong.
+        """
+        number = (values.get('reg_number') or '').strip()
+        if not number:
+            return
+        try:
+            result = pesticides.PesticideClient(
+                timeout=pesticides.CHECK_TIMEOUT_S).check(
+                    number, rate=values.get('rate'), bbch=values.get('bbch'))
+        except pesticides.PesticideUnavailable as e:
+            gdf_log.info(f'Conditions of use not checked: {e}')
+            return
+        for line in pesticides.warning_lines(result, self._journal_language()):
+            report_warning(line)
+
     def _pesticide_countries(self):
         """Which countries the product register has actually been imported
         for.
@@ -959,6 +992,10 @@ class GeoDataFarm:
             report_warning(self.tr('These journal fields are required: {}').format(
                 ', '.join(missing)))
             return
+        if cfg['table'] == 'spray.manual':
+            # Advisory only - see the method. The save goes ahead below
+            # whatever it says.
+            self._warn_about_conditions(v)
         column_values, extra = jf.split_values(fields, v)
         cols = (['field'] + (['crop'] if cfg['needs_crop'] else []) + ['date_']
                 + list(column_values) + ['other'])

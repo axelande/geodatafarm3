@@ -22,7 +22,7 @@ from html import escape
 from qgis.PyQt.QtCore import Qt, QTimer
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView, QComboBox, QDialog, QHBoxLayout, QLabel, QLineEdit,
-    QListWidget, QListWidgetItem, QPushButton, QTextEdit, QVBoxLayout)
+    QListWidget, QListWidgetItem, QPushButton, QTextBrowser, QVBoxLayout)
 
 from ..support_scripts.__init__ import TR
 from ..support_scripts import pesticide_client as pc
@@ -90,11 +90,19 @@ class PesticideSearchDialog(QDialog):
         # before it is committed to the journal. The list can only carry a
         # name and a date; the decision needs the approved uses, the
         # active substance and who is allowed to apply it.
-        self.details = QTextEdit()
+        # A QTextBrowser rather than a QTextEdit so the decision attachment
+        # is a link that opens: the conditions of use are read out of a PDF,
+        # and the PDF is the thing that governs when a row is unclear.
+        self.details = QTextBrowser()
         self.details.setReadOnly(True)
+        self.details.setOpenExternalLinks(True)
         self.details.setPlaceholderText(
             self.tr_('Select a product to see what the register holds for it.'))
         layout.addWidget(self.details, 1)
+        # Conditions already fetched this session, by registration number.
+        # Selecting the same hit twice, or two names of one registration,
+        # must not cost two requests.
+        self._conditions = {}
 
         self.LStatus = QLabel()
         self.LStatus.setWordWrap(True)
@@ -223,22 +231,49 @@ class PesticideSearchDialog(QDialog):
     def _selection_changed(self):
         product = self.current_product()
         self.PBUse.setEnabled(product is not None)
-        self.details.setHtml(self._details_html(product))
+        self.details.setHtml(
+            self._details_html(product, self._conditions_for(product)))
 
-    def _details_html(self, product):
-        """The record as a small table. Escaped, because every value here
-        is a product name or a use description from an external register,
-        and one containing an ampersand should not become markup."""
-        rows = pc.details(product)
+    def _conditions_for(self, product):
+        """The conditions of use behind the highlighted product, or None.
+
+        None on any failure, and quietly: the register lookup this sits
+        under has already succeeded, and a product without a fetched
+        decision is still the right product to pick. Cached per
+        registration number for the life of the dialog.
+        """
+        if product is None:
+            return None
+        number = product.get('registration_number')
+        if not number:
+            return None
+        if number not in self._conditions:
+            try:
+                self._conditions[number] = self.client.conditions(number)
+            except pc.PesticideUnavailable:
+                self._conditions[number] = None
+        return self._conditions[number]
+
+    def _details_html(self, product, conditions=None):
+        """The record as a small table, the decision's approved uses under
+        it. Escaped, because every value here is a product name or a use
+        description from an external register, and one containing an
+        ampersand should not become markup. The one link is the decision
+        attachment, and it is the only value rendered as one."""
+        rows = pc.details(product) + pc.conditions_rows(conditions, self.language)
         if not rows:
             return ''
         cells = []
         for label, value in rows:
+            if value.startswith('https://'):
+                shown = f'<a href="{escape(value)}">{escape(value)}</a>'
+            else:
+                shown = escape(value).replace(chr(10), '<br>')
             cells.append(
                 '<tr>'
                 f'<td style="color:#666;padding-right:10px;vertical-align:top;'
                 f'white-space:nowrap;">{escape(self.tr_(label))}</td>'
-                f'<td>{escape(value).replace(chr(10), "<br>")}</td>'
+                f'<td>{shown}</td>'
                 '</tr>')
         return f'<table>{"".join(cells)}</table>'
 
