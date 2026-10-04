@@ -79,11 +79,7 @@ class TimeShiftPreviewDialog(QDialog):
         self.redraw_timer.timeout.connect(
             lambda: self._delay_changed(self.delay_spin.value()))
         self.delay_spin.valueChanged.connect(lambda _: self.redraw_timer.start())
-        if hasattr(QDialogButtonBox, 'Close'):
-            close_button = QDialogButtonBox.Close
-        else:
-            close_button = QDialogButtonBox.StandardButton.Close
-        buttons = QDialogButtonBox(close_button)
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
         buttons.rejected.connect(self.reject)
         buttons.accepted.connect(self.accept)
         layout = QVBoxLayout(self)

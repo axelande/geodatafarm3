@@ -106,6 +106,13 @@ def test_resolve_manual_field_decodes_the_three_way_convention():
     assert resolve('fontane', 'None') == 'fontane'
     assert resolve('c_fontane', 'None') == 'c_fontane'
     assert resolve('150 kg N/ha', None) == '150 kg N/ha'
+    # A plain number is never a column name: the fertilizer PDF importer
+    # writes literal per-nutrient rates with table_ = 'pdf_import_<year>',
+    # and those must survive (they were dropped as "column references"
+    # before 2026-09-26, so every PDF-imported application read as unlogged).
+    assert resolve('83.00', 'pdf_import_2025') == '83.00'
+    assert resolve('83,5', 'pdf_import_2025') == '83,5'
+    assert resolve('rate_column', 'pdf_import_2025') is None
 
 
 def test_load_variety_ignores_a_column_name_reference_from_manual(gdf: GeoDataFarm):

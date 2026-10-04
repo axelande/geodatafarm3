@@ -1256,6 +1256,42 @@ def test_load_irrigation_sums_logged_events_within_the_date_range(gdf: GeoDataFa
     gdf.db.execute_sql("DROP TABLE IF EXISTS weather.{}".format(table))
 
 
+def test_load_irrigation_weights_each_strip_by_its_share_of_the_field(gdf: GeoDataFarm):
+    # Two Raindancer strips on the same day, each clipped to one half of
+    # the field, each 10mm: the field as a whole received 10mm, not 20mm.
+    # A strip covering the whole field counts in full, and a row without a
+    # geometry (manual entry) keeps its full mm.
+    table = 'test_field_irrigation_events_2024'
+    gdf.db.execute_sql("DROP TABLE IF EXISTS weather.{}".format(table))
+    gdf.db.execute_sql(
+        "CREATE TABLE weather.{} (row_id serial PRIMARY KEY, date_ date,"
+        " irrigation_mm double precision, polygon geometry, source text)".format(table))
+    bbox = gdf.db.execute_and_return(
+        "SELECT st_xmin(polygon), st_xmax(polygon), st_ymin(polygon),"
+        " st_ymax(polygon) FROM fields WHERE field_name = 'test_field'")[0]
+    xmin, xmax, ymin, ymax = bbox
+    xmid = (xmin + xmax) / 2
+    insert = ("INSERT INTO weather.{} (date_, irrigation_mm, polygon, source) VALUES"
+              " (%s, %s, st_intersection(st_makeenvelope(%s, %s, %s, %s, 4326),"
+              " (SELECT polygon FROM fields WHERE field_name = 'test_field')),"
+              " 'raindancer')".format(table))
+    gdf.db.execute_sql(insert, params=('2024-06-01', 10.0, xmin - 1, ymin - 1, xmid, ymax + 1))
+    gdf.db.execute_sql(insert, params=('2024-06-01', 10.0, xmid, ymin - 1, xmax + 1, ymax + 1))
+    gdf.db.execute_sql(insert, params=('2024-06-05', 7.0, xmin - 1, ymin - 1, xmax + 1, ymax + 1))
+    gdf.db.execute_sql(
+        "INSERT INTO weather.{} (date_, irrigation_mm, source)"
+        " VALUES ('2024-06-09', 4.0, 'manual')".format(table))
+
+    totals = gdf.crop_simulation._load_irrigation('test_field', '2024-06-01', '2024-06-30')
+
+    assert set(totals) == {'2024-06-01', '2024-06-05', '2024-06-09'}
+    assert abs(totals['2024-06-01'] - 10.0) < 0.5
+    assert abs(totals['2024-06-05'] - 7.0) < 0.05
+    assert totals['2024-06-09'] == 4.0
+
+    gdf.db.execute_sql("DROP TABLE IF EXISTS weather.{}".format(table))
+
+
 def test_load_irrigation_returns_empty_when_no_table_exists(gdf: GeoDataFarm):
     gdf.db.execute_sql(
         "DROP TABLE IF EXISTS weather.test_field_irrigation_events_2024")

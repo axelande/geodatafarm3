@@ -1544,7 +1544,18 @@ class CropSimulation:
         its own geometry actually covers - see
         :meth:`_resolve_irrigation_by_cell`. See
         :meth:`_render_legacy_irrigation_warning` for the older, spatially
-        resolved but undated grid this can't use instead."""
+        resolved but undated grid this can't use instead.
+
+        Each row is one Raindancer pass: a 30m strip clipped to the field
+        (see handle_irrigation.py's ``_store_dated_operation``), so its
+        millimetres fell on that strip only. The field-wide figure for a
+        date is therefore each row's mm weighted by the share of the
+        field its strip covers - ten 18mm strips that together cover the
+        field once are 18mm of irrigation, not 180mm. Summing the raw
+        mm per date (what this did before 2026-09-26) put 1200-1400mm on
+        heavily irrigated 2018 potato fields, which switched water stress
+        off entirely for the whole season estimate. A row without a
+        geometry (a manual whole-field entry) keeps its full mm."""
         totals = {}
         for year in range(int(date_from[:4]), int(date_to[:4]) + 1):
             table = check_text('{}_irrigation_events_{}'.format(field_name, year))
@@ -1552,10 +1563,16 @@ class CropSimulation:
                 continue
             rows = db_rows(self.db.execute_and_return(
                 pgsql.SQL(
-                    "SELECT date_, irrigation_mm FROM weather.{tbl}"
-                    " WHERE date_ >= %s AND date_ <= %s"
+                    "SELECT e.date_, sum(e.irrigation_mm * COALESCE(LEAST(1.0,"
+                    " st_area(e.polygon::geography)"
+                    " / NULLIF(st_area(f.polygon::geography), 0)), 1.0))"
+                    " FROM weather.{tbl} e"
+                    " LEFT JOIN fields f ON f.field_name = %s"
+                    " WHERE e.irrigation_mm IS NOT NULL"
+                    " AND e.date_ >= %s AND e.date_ <= %s"
+                    " GROUP BY e.date_"
                 ).format(tbl=pgsql.Identifier(table)),
-                params=(date_from, date_to)))
+                params=(field_name, date_from, date_to)))
             for date_value, mm in rows:
                 if mm is None:
                     continue
@@ -1717,6 +1734,14 @@ class CropSimulation:
             return value
         if value.startswith('c_'):
             return value[2:]
+        # A plain number can never be a column name, so it is a literal
+        # whichever importer wrote the row. The fertilizer PDF importer
+        # (scripts/import_fertilizing_pdfs.py) writes one ferti.manual row
+        # per nutrient with table_ = 'pdf_import_<year>' and the rate as
+        # a number - before 2026-09-26 those rates were silently dropped
+        # here, so every PDF-imported application counted as unlogged.
+        if isfloat(value.replace(',', '.')):
+            return value
         return None
 
     def _load_variety(self, field_name, date_to):
