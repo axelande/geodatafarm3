@@ -35,7 +35,7 @@ import glob
 import itertools
 import math
 import os
-import pickle
+import pickle  # nosec B403 - loads only the pickles export_training_examples.py wrote
 import random
 from collections import defaultdict
 from dataclasses import replace as dataclasses_replace
@@ -328,7 +328,7 @@ def load_examples(data_dir, exclude_years=(), exclude_field_years=()):
     groups = defaultdict(list)  # (farm, crop) -> examples
     for path in sorted(glob.glob(os.path.join(data_dir, '*_training_examples.pkl'))):
         with open(path, 'rb') as handle:
-            payload = pickle.load(handle)
+            payload = pickle.load(handle)  # nosec B301 - our own export, see module docstring
         ferti_rows = load_ferti_rows(data_dir, payload['farm'])
         for ex in payload['examples']:
             if ex.year in exclude_years or (ex.field_name, ex.year) in exclude_field_years:
@@ -374,7 +374,7 @@ def main():
     args = parser.parse_args()
     global UNLOGGED_NUTRIENTS
     UNLOGGED_NUTRIENTS = args.unlogged_nutrients
-    random.seed(RANDOM_SEED)
+    rng = random.Random(RANDOM_SEED)  # nosec B311 - statistical resampling, not security
     exclude_years = {int(y) for y in args.exclude_years.split(',') if y}
     exclude_fy = {(p.split(':')[0], int(p.split(':')[1]))
                   for p in args.exclude_field_years.split(',') if p}
@@ -491,7 +491,7 @@ def main():
                 if math.comb(n, k) <= MAX_COMBINATIONS:
                     combos = list(itertools.combinations(range(n), k))
                 else:
-                    combos = {tuple(sorted(random.sample(range(n), k)))
+                    combos = {tuple(sorted(rng.sample(range(n), k)))
                               for _ in range(MAX_COMBINATIONS * 3)}
                     combos = list(combos)[:MAX_COMBINATIONS]
                 print('  learning curve k={} ({} combinations)'.format(k, len(combos)))
@@ -529,7 +529,7 @@ def main():
 
         # Bootstrap over field-years
         for b in range(args.bootstrap):
-            sample = [groups_list[random.randrange(n)] for _ in range(n)]
+            sample = [groups_list[rng.randrange(n)] for _ in range(n)]
             train = [ex for g in sample for ex in g]
             fitted, _ = fit(base, train)
             boot.append(dict(farm=farm, crop=crop, resample=b,

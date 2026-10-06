@@ -82,7 +82,8 @@ s4_add = '''    struct = read('structure_sensitivity.csv')
             lines.append('| {} | {:.2f} to {:.2f} | {} | {} |'.format(
                 meta[key][0], min(inside), max(inside), meta[key][1], meta[key][2]))
 '''
-assert s4_anchor in s
+if s4_anchor not in s:
+    raise SystemExit('S4 anchor not found in make_tables.py')
 s = s.replace(s4_anchor, s4_add + s4_anchor)
 s5_anchor = "    with open(os.path.join(OUT, 'tableS5_fertility_detail.md'), 'w', encoding='utf-8') as handle:"
 s5_add = '''    src = read('fertility_sources.csv')
@@ -105,7 +106,8 @@ s5_add = '''    src = read('fertility_sources.csv')
                 label, len(rows_g), statistics.median(rn), min(rn), max(rn),
                 statistics.median(rr), max(rr), sum(1 for v in rr if v > 0.2)))
 '''
-assert s5_anchor in s
+if s5_anchor not in s:
+    raise SystemExit('S5 anchor not found in make_tables.py')
 s = s.replace(s5_anchor, s5_add + s5_anchor)
 ast.parse(s)
 open(p, 'w', encoding='utf-8').write(s)

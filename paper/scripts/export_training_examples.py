@@ -20,7 +20,9 @@ import argparse
 import csv
 import dataclasses
 import os
-import pickle
+import pickle  # nosec B403 - only written here, read back by cross_validate.py
+
+from psycopg2 import sql as pgsql
 
 import paper_common as pc
 
@@ -109,8 +111,9 @@ def main():
     wanted = [c for c in columns if c not in ('field_row_id', 'polygon', 'pos', 'field')]
     for field_name, season_from, season_to in sorted(seen):
         rows = db.execute_and_return(
-            'SELECT {} FROM ferti.manual WHERE field = %s AND date_ >= %s AND date_ <= %s '
-            'ORDER BY date_'.format(', '.join('"{}"'.format(c) for c in wanted)),
+            pgsql.SQL('SELECT {cols} FROM ferti.manual WHERE field = %s AND date_ >= %s '
+                      'AND date_ <= %s ORDER BY date_').format(
+                cols=pgsql.SQL(', ').join(pgsql.Identifier(c) for c in wanted)),
             params=(field_name, season_from, season_to))
         for row in rows:
             ferti_rows.append(dict({'field': anon.field_id(field_name)},

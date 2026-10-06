@@ -6,7 +6,7 @@ parentheses, \\min, \\max, \\exp, \\, and \\; spacing, Greek letters via
 \\alpha etc. (a few), and plain text. Anything else is emitted as text.
 """
 import re
-from xml.sax.saxutils import escape
+from html import escape
 
 M = 'http://schemas.openxmlformats.org/officeDocument/2006/math'
 GREEK = {'alpha': 'α', 'beta': 'β', 'gamma': 'γ', 'delta': 'δ', 'rho': 'ρ', 'sigma': 'σ',
@@ -19,7 +19,7 @@ def _run(text, italic=True):
     if not text:
         return ''
     style = '' if italic else '<m:rPr><m:sty m:val="p"/></m:rPr>'
-    return '<m:r>{}<m:t xml:space="preserve">{}</m:t></m:r>'.format(style, escape(text))
+    return '<m:r>{}<m:t xml:space="preserve">{}</m:t></m:r>'.format(style, escape(text, quote=False))
 
 
 def _split_braces(s, i):

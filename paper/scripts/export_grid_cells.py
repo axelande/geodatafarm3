@@ -15,6 +15,8 @@ import csv
 import os
 import re
 
+from psycopg2 import sql as pgsql
+
 import paper_common as pc
 
 CLAY_PREFIXES = ('clay', 'total_lerhalt', 'lerhalt')
@@ -50,8 +52,10 @@ def tables_in_schema(db, schema):
 
 def table_touches_field(db, schema, table, geom_col, field_name):
     rows = db.execute_and_return(
-        'SELECT count(*) FROM {}."{}" t, fields f WHERE f.field_name = %s '
-        'AND st_intersects(t.{}, f.polygon)'.format(schema, table, geom_col),
+        pgsql.SQL('SELECT count(*) FROM {schema}.{table} t, fields f WHERE f.field_name = %s '
+                  'AND st_intersects(t.{geom}, f.polygon)').format(
+            schema=pgsql.Identifier(schema), table=pgsql.Identifier(table),
+            geom=pgsql.Identifier(geom_col)),
         params=(field_name,))
     return rows and rows[0][0] > 0
 
@@ -64,8 +68,9 @@ def table_year(db, schema, table):
     if match:
         return int(match.group(0))
     rows = db.execute_and_return(
-        'SELECT extract(year FROM date_)::int AS y, count(*) FROM {}."{}" '
-        'WHERE date_ IS NOT NULL GROUP BY y ORDER BY count(*) DESC LIMIT 1'.format(schema, table))
+        pgsql.SQL('SELECT extract(year FROM date_)::int AS y, count(*) FROM {schema}.{table} '
+                  'WHERE date_ IS NOT NULL GROUP BY y ORDER BY count(*) DESC LIMIT 1').format(
+            schema=pgsql.Identifier(schema), table=pgsql.Identifier(table)))
     if rows and rows[0][0]:
         return int(rows[0][0])
     return None
