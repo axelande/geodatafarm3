@@ -16,7 +16,7 @@ crop_models = pc.import_plugin_module('support_scripts.crop_models')
 
 # (field, label, unit, source note) in the order Table 1 should list them.
 ROWS = [
-    ('gdd_base_c', 'Base temperature for GDD', 'deg C', 'extension convention (potato 4.4, cereals 0)'),
+    ('gdd_base_c', 'Base temperature for growing degree days (GDD)', 'deg C', 'extension convention (potato 4.4, cereals 0)'),
     ('season_end_gdd', 'Season length', 'GDD', 'potato ~1100 GDD to harvest readiness; cereals crop-specific'),
     ('kc_ini_end_gdd', 'End of initial stage', 'GDD', 'FAO-56 Table 11 stage proportions'),
     ('kc_mid_end_gdd', 'End of development stage', 'GDD', 'FAO-56 Table 11 stage proportions'),
@@ -34,8 +34,8 @@ ROWS = [
     ('season_n_demand_kg_ha', 'Season nitrogen demand', 'kg N/ha', 'CDFA-FREP guidelines'),
     ('n_uptake_midpoint_gdd', 'Nitrogen uptake midpoint', 'GDD', 'logistic placement'),
     ('n_uptake_steepness', 'Nitrogen uptake steepness', '1/GDD', 'logistic placement'),
-    ('ky_nitrogen', 'Ky nitrogen (fitted)', '-', 'planning estimate; calibrated in this study'),
-    ('min_relative_yield_nitrogen', 'Nitrogen floor (fitted)', '-', 'zero-N plots 30-60 % of fertilised yield; calibrated'),
+    ('ky_nitrogen', '**Ky nitrogen (fitted)**', '-', 'planning estimate; calibrated in this study'),
+    ('min_relative_yield_nitrogen', '**Nitrogen floor (fitted)**', '-', 'zero-N plots 30-60 % of fertilised yield; calibrated'),
     ('season_k_demand_kg_ha', 'Season potassium demand', 'kg K/ha', 'PDA offtake figures'),
     ('k_uptake_midpoint_gdd', 'Potassium uptake midpoint', 'GDD', 'logistic placement'),
     ('k_uptake_steepness', 'Potassium uptake steepness', '1/GDD', 'logistic placement'),
@@ -43,7 +43,7 @@ ROWS = [
     ('min_relative_yield_potassium', 'Potassium floor (active, not calibrated)', '-', 'mirrors nitrogen floor'),
     ('season_p_demand_kg_ha', 'Season phosphorus demand', 'kg P/ha', 'PDA/FAO offtake; flag only'),
     ('season_mg_demand_kg_ha', 'Season magnesium demand', 'kg Mg/ha', 'PDA offtake; flag only'),
-    ('potential_yield_t_ha', 'Potential yield (fitted)', 't/ha', 'attainable-yield ranges; calibrated in this study'),
+    ('potential_yield_t_ha', '**Potential yield (fitted)**', 't/ha', 'attainable-yield ranges; calibrated in this study'),
     ('heat_stress_threshold_c', 'Heat-stress threshold', 'deg C', 'indicative; ky_heat = 0 disables'),
     ('ky_heat', 'Ky heat', '-', 'disabled by default'),
     ('reference_spacing_mm', 'Reference in-row spacing', 'mm', '0 = spacing effect disabled (as in this study)'),
@@ -64,7 +64,8 @@ def main():
     lines = ['Table 1. Default crop-model parameters for potato and for wheat as the '
              'cereal archetype (barley, rye and oats differ only in season length, '
              'seasonal Ky, Ky nitrogen and potential yield; see Table S1). '
-             'Parameters marked (fitted) are the three calibrated by "Teach the model".',
+             'Parameters in bold and marked (fitted) are the three calibrated by "Teach the model". '
+             'The source labels are explained in Supplementary Note S1.',
              '',
              '| Parameter | Unit | Potato | Wheat | Source |',
              '|---|---|---|---|---|']

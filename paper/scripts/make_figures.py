@@ -90,7 +90,10 @@ def fig2():
     if not rows:
         return
     years = list(range(min(int(r['year']) for r in rows), max(int(r['year']) for r in rows) + 1))
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.2, 3), gridspec_kw={'width_ratios': [3, 2]})
+    fig = plt.figure(figsize=(7.2, 5.6))
+    grid = fig.add_gridspec(2, 2, width_ratios=[3, 2], height_ratios=[1, 1.05], hspace=0.55, wspace=0.25)
+    ax1, ax2 = fig.add_subplot(grid[0, 0]), fig.add_subplot(grid[0, 1])
+    ax3 = fig.add_subplot(grid[1, :])
     counts = np.array([len({(r['farm'], r['field']) for r in rows if int(r['year']) == y})
                        for y in years])
     ax1.bar(years, counts, color='#2a78d6', width=0.7, edgecolor='white', linewidth=1)
@@ -128,9 +131,95 @@ def fig2():
     for i, (label, v) in enumerate(zip(labels, values)):
         ax2.text(0, i - 0.42, label, va='bottom', ha='left', fontsize=7, color=TEXT)
         ax2.text(v, i, ' {}'.format(v), va='center', fontsize=7.5, color=TEXT)
+    # (c) the observed yields themselves: every variety observation by
+    # field-year, with the field-year mean, ordered by harvest year
+    by_fy = defaultdict(list)
+    for r in rows:
+        by_fy[(int(r['year']), r['field'])].append(num(r['actual_t_ha']))
+    keys = sorted(by_fy)
+    for i, key in enumerate(keys):
+        vals = by_fy[key]
+        ax3.plot([i, i], [min(vals), max(vals)], color=GRID, linewidth=3, zorder=1)
+        ax3.scatter([i] * len(vals), vals, s=14, color='#2a78d6', zorder=3, linewidths=0)
+        ax3.plot([i - 0.3, i + 0.3], [np.mean(vals)] * 2, color='#eb6834', linewidth=1.6, zorder=4)
+    ax3.axhline(np.mean([v for vals in by_fy.values() for v in vals]), color=MUTED, linewidth=0.8,
+                linestyle='--', zorder=0)
+    ax3.set_xticks(range(len(keys)))
+    ax3.set_xticklabels(['{}:{}'.format(f, y) for y, f in keys], rotation=90, fontsize=6.5)
+    ax3.set_xlim(-0.7, len(keys) - 0.3)
+    ax3.set_ylabel('Observed yield (t/ha)')
+    ax3.set_xlabel('Field-year (field:harvest year)')
+    ax3.text(len(keys) * 0.8, np.mean([v for vals in by_fy.values() for v in vals]) + 1,
+             'mean of all 48 observations', ha='center', va='bottom', fontsize=7, color=MUTED)
+    ax3.text(0.01, 0.03, 'dots: variety observations; orange mark: field-year mean',
+             transform=ax3.transAxes, ha='left', va='bottom', fontsize=7, color=MUTED)
     ax1.set_title('a', loc='left', fontweight='bold')
-    ax2.set_title('b', loc='left', fontweight='bold')
+    ax2.set_title('b', loc='left', fontweight='bold', x=-0.04)
+    ax3.set_title('c', loc='left', fontweight='bold')
     save(fig, 'fig2_data_inventory')
+
+
+# Figure 2 (new): percentile-ranking schematic --------------------------------
+def fig_percentile_schematic():
+    """How the productivity index is built, on a nine-cell field: three
+    sources in different units, their percentile ranks (Eq. 5), the
+    equal-weight index with a missing cell dropped, and the classes. The
+    numbers are computed by the plugin's own functions."""
+    fertility_index = pc.import_plugin_module('database_scripts.fertility_index')
+    values = {
+        'Yield 2023 (t/ha)': [48, 52, 61, 45, 55, 63, 40, 50, 58],
+        'Yield 2024 (kg/ha)': [41000, 47000, 53000, 38000, 47000, None, 36000, 44000, 50000],
+        'Clay content (%)': [12, 14, 15, 11, 13, 16, 10, 13, 18],
+    }
+    ranks = {k: fertility_index.percentile_ranks(v) for k, v in values.items()}
+    index = fertility_index.combine_sources(values)
+    classes = fertility_index.classify_index(index)
+
+    def fmt(v):
+        if v is None:
+            return 'no data'
+        if isinstance(v, float) and not float(v).is_integer():
+            return '{:.1f}'.format(v)
+        return '{:g}'.format(v)
+
+    def grid(ax, vals, cmap, title, vmin=None, vmax=None, text_fmt=fmt):
+        arr = np.array([[math.nan if v is None else float(v) for v in vals[i * 3:i * 3 + 3]]
+                        for i in range(3)])
+        ax.imshow(np.where(np.isnan(arr), np.nan, arr), cmap=cmap, vmin=vmin, vmax=vmax)
+        for i in range(3):
+            for j in range(3):
+                v = vals[i * 3 + j]
+                ax.text(j, i, text_fmt(v), ha='center', va='center', fontsize=7.5 if v is not None else 6,
+                        color=TEXT if v is not None else MUTED)
+        ax.set_xticks(np.arange(-0.5, 3, 1))
+        ax.set_yticks(np.arange(-0.5, 3, 1))
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.tick_params(length=0)
+        ax.grid(True, color='white', linewidth=1.5)
+        for spine in ax.spines.values():
+            spine.set_visible(True)
+            spine.set_color(MUTED)
+        ax.set_title(title, fontsize=8)
+
+    neutral = LinearSegmentedColormap.from_list('neutral', ['#f2f2f2', '#f2f2f2'])
+    fig, axes = plt.subplots(3, 3, figsize=(6.4, 6.6))
+    for ax, (name, vals) in zip(axes[0], values.items()):
+        grid(ax, vals, neutral, name)
+    for ax, (name, vals) in zip(axes[1], ranks.items()):
+        grid(ax, vals, YIELD, 'Rank of {}\n(0 to 100)'.format(name.split(' (')[0].lower()), 0, 100)
+    grid(axes[2][0], index, YIELD, 'Index: mean of the\navailable ranks', 0, 100)
+    grid(axes[2][1], classes, CLASSES, 'Classes at\n20, 40, 60 and 80', 1, 5,
+         text_fmt=lambda v: 'class {:g}'.format(v))
+    axes[2][2].axis('off')
+    axes[2][2].text(0, 0.95, 'Equal weights, one per source.\n\nThe cell without a 2024 value\n'
+                             'takes the mean of its two\nremaining ranks.\n\nEach source scores its best\n'
+                             'cell 100 and its worst 0,\nwhatever the unit.',
+                    transform=axes[2][2].transAxes, fontsize=7.5, va='top', color=TEXT)
+    for row, letter in zip(axes, 'abc'):
+        row[0].text(-0.3, 1.08, letter, transform=row[0].transAxes, fontweight='bold', fontsize=10)
+    fig.subplots_adjust(hspace=0.5, wspace=0.3, left=0.1)
+    save(fig, 'fig_percentile_schematic')
 
 
 # Figure 3: predicted vs observed, field-year level (primary unit) -----------
@@ -442,10 +531,14 @@ def fig8():
     classes = np.array([math.nan if c is None else c
                         for c in fertility_index.classify_index(list(index))])
     rho_prev = pick['spearman']
-    panels = [('Yield {} (t/ha)'.format(y0), prev, YIELD),
-              ('Index from yield {} (0-100)'.format(y0), index, YIELD),
-              ('Index classes', classes, CLASSES),
-              ('Yield {} (t/ha)'.format(y1), cur, YIELD)]
+
+    def crop(values):  # the same yield-magnitude rule as the pairs matrix
+        return 'potato' if np.nanmedian(values) >= 20 else 'cereal or rape'
+
+    panels = [('{}\nyield {} (t/ha)'.format(crop(prev).capitalize(), y0), prev, YIELD),
+              ('Index from\nyield {} (0-100)'.format(y0), index, YIELD),
+              ('Index\nclasses', classes, CLASSES),
+              ('{}\nyield {} (t/ha)'.format(crop(cur).capitalize(), y1), cur, YIELD)]
     fig, axes = plt.subplots(1, 4, figsize=(7.2, 2.6))
     for ax, (title, values, cmap) in zip(axes, panels):
         ok = ~np.isnan(values)
@@ -538,7 +631,7 @@ if __name__ == '__main__':
     parser.add_argument('--suffix', default='_unmodelled', help='cross-validation output suffix')
     SUFFIX = parser.parse_args().suffix
     np.random.seed(1)
-    for f in (fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, figS1):
+    for f in (fig2, fig_percentile_schematic, fig3, fig4, fig5, fig6, fig7, fig8, fig9, figS1):
         try:
             f()
         except Exception as exc:  # keep going; report which figure failed

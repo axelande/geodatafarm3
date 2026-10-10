@@ -23,6 +23,8 @@ import re
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_COLOR_INDEX
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 import omml
@@ -38,55 +40,78 @@ TABLE_FILES = {'1': 'table1_parameters.md', '2': 'table2_inventory.md',
                '3': 'table3_cv_metrics.md', '4': 'table4_fertility.md',
                '5': 'table5_reproducibility.md'}
 SUPP_TABLE_FILES = ['tableS3_cv_detail.md', 'tableS4_sensitivity.md', 'tableS5_fertility_detail.md']
+SUPP_NOTES = os.path.join(PAPER, 'supplementary_notes.md')
+# Figure number -> (file, caption); the file names keep their historical
+# numbers, the keys are the numbers used in the text.
 FIGURE_FILES = {
     '1': ('fig1_dataflow.png',
-          'Figure 1. Data flow in GeoDataFarm from field data to the two analyses evaluated in '
-          'this study.'),
-    '2': ('fig2_data_inventory.png',
-          'Figure 2. Data inventory of the study farm. (a) Potato field-years with a usable '
-          'training example by harvest year; 2022 had none. (b) Field-years excluded, by reason.'),
-    '3': ('fig3_predicted_vs_observed.png',
-          'Figure 3. Predicted against observed potato yield for held-out field-years, post hoc '
+          'Figure 1. Schematic representation of data processing in GeoDataFarm, linking field '
+          'observations to the two analyses examined in this study.'),
+    '2': ('fig_percentile_schematic.png',
+          'Figure 2. How the productivity index is built, on a nine-cell field. (a) Three sources '
+          'in different units: two yield maps and a clay map; one cell has no 2024 value. (b) Each '
+          'source converted to inclusive percentile ranks (Eq. 5): the best cell scores 100 and the '
+          'worst 0, tied cells share a rank. (c) The index as the equal-weight mean of the ranks '
+          'available in each cell, and its five classes at the default boundaries. The numbers '
+          "are computed by the plugin's own functions."),
+    '3': ('fig_evaluation_workflow.png',
+          'Figure 3. Evaluation workflow. Top: the records that entered and the units of analysis. '
+          'Left: objectives O1 and O2, the leave-one-field-year-out cross-validation, the model '
+          'variants and baselines predicted for the same held-out field-years, the resampling '
+          'analyses and the scores. Right: objective O3, the consecutive-year pairs, the index '
+          'variants and their scores. Analyses marked post hoc were added after the first results '
+          'had been seen.'),
+    '4': ('fig2_data_inventory.png',
+          'Figure 4. Data inventory of the study farm. (a) Potato field-years with a usable '
+          'training example by harvest year; 2022 had none. (b) Field-years excluded, by reason. '
+          '(c) Observed yield of the 48 variety observations by field-year (dots), with the '
+          'field-year mean (orange mark) and the mean of all observations (dashed line); '
+          'field-years are ordered by harvest year.'),
+    '5': ('fig3_predicted_vs_observed.png',
+          'Figure 5. Predicted against observed potato yield for held-out field-years, post hoc '
           'variant, one point per field-year (mean over its variety observations). (a) Literature '
-          'defaults. (b) Farm-calibrated, three crop-level parameters. (c) Farm-calibrated with '
+          'defaults, that is the model run with the default parameters of Table 1 and no fitting. '
+          '(b) Farm-calibrated, three crop-level parameters. (c) Farm-calibrated with '
           'potential yield refitted per variety. (d) Training-set same-variety mean. Dashed line '
           'is 1:1. The variety-observation level is Figure S2.'),
-    '4': ('fig4_learning_curve.png',
-          'Figure 4. Learning curve. (a) Median typical error (RMSE) on the remaining field-years '
+    '6': ('fig4_learning_curve.png',
+          'Figure 6. Learning curve. (a) Median typical error (RMSE) on the remaining field-years '
           'against the number of training field-years for the three-parameter fit, the '
           'potential-yield-only fit, the per-variety fit, and the farm-mean and variety-mean '
           'baselines computed from the same training field-years; bands are interquartile ranges '
           'across random training sets; the dashed line is the literature defaults. (b) Fitted '
           'potential yield against training field-years, median and interquartile range.'),
-    '5': ('fig5_parameter_stability.png',
-          'Figure 5. Fitted parameters across the 22 leave-one-field-year-out folds and 50 '
+    '7': ('fig5_parameter_stability.png',
+          'Figure 7. Fitted parameters across the 22 leave-one-field-year-out folds and 50 '
           'bootstrap resamples of field-years, unlogged nutrients not modelled.'),
-    '6': ('fig6_limiting_factors.png',
-          'Figure 6. (a) Model-attributed limiting factor per variety observation by harvest year, '
+    '8': ('fig6_limiting_factors.png',
+          'Figure 8. (a) Model-attributed limiting factor per variety observation by harvest year, '
           'defined as the modelled term with the lowest relative yield when below 0.95; not an '
           'agronomically verified limitation. (b) Water relative '
           'yield of the calibrated model against logged irrigation, one point per field-year; '
           'orange points are 2015 to 2017, for which no irrigation record exists.'),
-    '7': ('fig7_pairs_matrix.png',
-          'Figure 7. The 15 fields with at least one scored consecutive-year pair: harvest years '
+    '9': ('fig7_pairs_matrix.png',
+          'Figure 9. The 15 fields with at least one scored consecutive-year pair: harvest years '
           'with a yield map covering at least 300 grid cells, the crop inferred from yield '
           'magnitude, the pairs scored for the productivity index, and the fields with a soil layer '
           '(EM38 conductivity or laboratory sampling). All 36 fields are shown in Figure S3.'),
-    '8': ('fig8_example_field.png',
-          "Figure 8. The field-year pair at the median rank correlation among pairs with a soil "
-          "map: the previous season's yield map, the index built from it alone, its five "
-          "classes, and the following season's yield map. Each panel is colour-scaled independently "
-          "between its own 2nd and 98th percentile, so the two yield maps are not on a common scale; "
-          "the analysis is rank-based. Shown with the farmer's consent."),
-    '9': ('fig9_index_performance.png',
-          "Figure 9. Spearman rank correlation between each index variant and the following "
-          "season's cell yield on the 13 field-year pairs with a soil map; grey lines join "
-          "the same pair, orange bars are medians."),
+    '10': ('fig8_example_field.png',
+           "Figure 10. The field-year pair at the median rank correlation among pairs with a soil "
+           "map: the previous season's yield map, the index built from it alone, its five "
+           "classes, and the following season's yield map. The crop of each yield map, inferred "
+           "from yield magnitude as in Figure 9, is given in the panel title; the two seasons grew "
+           "different crops, so the yield ranges differ. Each panel is colour-scaled independently "
+           "between its own 2nd and 98th percentile, and the analysis is rank-based. Shown with the "
+           "farmer's consent."),
+    '11': ('fig9_index_performance.png',
+           "Figure 11. Spearman rank correlation between each index variant and the following "
+           "season's cell yield on the 13 field-year pairs with a soil map; grey lines join "
+           "the same pair, orange bars are medians."),
     'S2': ('figS2_predicted_vs_observed_examples.png',
-           'Figure S2. As Figure 3 but at the level of the 48 variety observations; grey lines '
+           'Figure S2. As Figure 5 but at the level of the 48 variety observations; grey lines '
            'join the varieties of one field-year.'),
     'S3': ('figS3_pairs_matrix_all.png',
-           'Figure S3. Field-by-year matrix of yield maps for all 36 fields, as Figure 7.'),
+           'Figure S3. Field-by-year matrix of yield maps for all 36 fields, as Figure 9.'),
     'S1': ('figS1_objective_surfaces.png',
            'Figure S1. Sum of squared error at the all-data fit. (a) Over potential yield and '
            'nitrogen floor and (b) over the nitrogen factor and floor, unlogged nutrients not '
@@ -144,6 +169,7 @@ def add_table(doc, lines):
             cell = table.cell(i, j)
             cell.text = ''
             paragraph = cell.paragraphs[0]
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT  # not justified in narrow cells
             add_runs(paragraph, row[j] if j < len(row) else '')
             for run in paragraph.runs:
                 run.font.size = Pt(8)
@@ -158,9 +184,11 @@ def add_figure(doc, key):
     if not os.path.exists(path):
         doc.add_paragraph('[{} missing]'.format(name))
         return
-    doc.add_picture(path, width=Cm(16))
+    # the two box diagrams use the full text width; the rest stay at 16 cm
+    doc.add_picture(path, width=Cm(16.5 if key in ('1', '3') else 16))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
     cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.LEFT
     add_runs(cap, caption)
     for run in cap.runs:
         run.font.size = Pt(9)
@@ -175,6 +203,27 @@ def add_table_file(doc, name):
     with open(path, encoding='utf-8') as handle:
         lines = handle.read().splitlines()
     add_markdown_block(doc, lines, place_inline=False)
+
+
+def add_markdown_file(doc, path):
+    """A standalone markdown file with '###'/'####' headings (the
+    supplementary notes), rendered without inline figure placement."""
+    if not os.path.exists(path):
+        doc.add_paragraph('[{} missing]'.format(os.path.basename(path)))
+        return
+    with open(path, encoding='utf-8') as handle:
+        lines = handle.read().splitlines()
+    block = []
+    for line in lines + ['# end']:
+        heading = re.match(r'^(#{1,4})\s+(.*)', line)
+        if heading:
+            if block:
+                add_markdown_block(doc, block, place_inline=False)
+                block = []
+            if heading.group(2).strip() != 'end':
+                doc.add_heading(heading.group(2).strip(), level=min(len(heading.group(1)), 3))
+        else:
+            block.append(line)
 
 
 def place_after(doc, text):
@@ -251,6 +300,19 @@ def main():
     style = doc.styles['Normal']
     style.font.name = 'Calibri'
     style.font.size = Pt(11)
+    # justified body text, proofing language British English (the headings,
+    # lists, captions and table text inherit both from Normal)
+    style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    rpr = style.element.get_or_add_rPr()
+    for old in rpr.findall(qn('w:lang')):
+        rpr.remove(old)
+    lang = OxmlElement('w:lang')
+    lang.set(qn('w:val'), 'en-GB')
+    lang.set(qn('w:eastAsia'), 'en-GB')
+    rpr.append(lang)
+    theme_lang = OxmlElement('w:themeFontLang')
+    theme_lang.set(qn('w:val'), 'en-GB')
+    doc.settings.element.append(theme_lang)
     for section in doc.sections:
         section.left_margin = section.right_margin = Cm(2.5)
         section.top_margin = section.bottom_margin = Cm(2.5)
@@ -265,7 +327,7 @@ def main():
             block.clear()
 
     for line in lines:
-        heading = re.match(r'^(#{1,3})\s+(.*)', line)
+        heading = re.match(r'^(#{1,4})\s+(.*)', line)
         if heading:
             flush()
             level = len(heading.group(1))
@@ -297,6 +359,7 @@ def main():
         if ('Table', key) not in placed:
             add_table_file(doc, name)
     doc.add_heading('Supplementary material', level=1)
+    add_markdown_file(doc, SUPP_NOTES)
     add_figure(doc, 'S1')
     add_figure(doc, 'S2')
     add_figure(doc, 'S3')
